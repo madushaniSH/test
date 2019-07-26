@@ -174,6 +174,7 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
                         Category</a>
                     <a data-toggle="modal" class="dropdown-item" data-target="#suggest_client_sub_category">Suggest
                         Client Sub Category</a>
+                    <a data-toggle="modal" class="dropdown-item" data-target="#suggest_brand">Suggest Brand</a>
                 </div>
             </div>
         </div>
@@ -307,6 +308,26 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
                     <button type="button" class="btn btn-success" onclick="submit_client_sub_category_form();"
                         value="Submit">Save changes</button>
                         </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade modal-form" id="suggest_brand" tabindex="-1" role="dialog"
+        aria-labelledby="suggest_brand_title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="suggest_brand_title">Suggest New Brand</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" value="Submit">Save changes</button>
+                    </form>
                 </div>
             </div>
         </div>

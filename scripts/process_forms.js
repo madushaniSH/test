@@ -66,7 +66,6 @@ function submit_manufacturer_form() {
     var manufacturer_local_name = document.getElementById('manufacturer_local_name').value;
     var manufacturer_source = document.getElementById('manufacturer_source').value;
     var manu_logo = document.getElementById('file-input-manu-logo').files[0];
-    var image_size_mb = document.getElementById('file-input-manu-logo').files[0].size / 1024 / 1024;
     var form_ok = true;
 
     // checks if manufacturer name is not empty
@@ -86,18 +85,20 @@ function submit_manufacturer_form() {
     }
 
     // checks if a manufacturer image was uploaded
-    if (document.getElementById('file-input-manu-logo').value == ''){
+    if (document.getElementById('file-input-manu-logo').value == '') {
         document.getElementById('manufacturer_image_error').innerHTML = 'Required';
         form_ok = false;
-    }else {
+    } else {
         document.getElementById('manufacturer_image_error').innerHTML = '';
-    }
-
-    if (image_size_mb > 3){
-        document.getElementById('manufacturer_image_size_error').innerHTML = 'Image Size cannot exceed 3 MB';
-        form_ok = false;
-    }else{
-        document.getElementById('manufacturer_image_size_error').innerHTML = '';
+        // gets the image size in mega bytes
+        var image_size_mb = document.getElementById('file-input-manu-logo').files[0].size / 1024 / 1024;
+        // checks if the image is large than 3 MB
+        if (image_size_mb > 3) {
+            document.getElementById('manufacturer_image_size_error').innerHTML = 'Image Size cannot exceed 3 MB';
+            form_ok = false;
+        } else {
+            document.getElementById('manufacturer_image_size_error').innerHTML = '';
+        }
     }
 
     if (form_ok) {
