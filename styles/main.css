@@ -1,0 +1,276 @@
+* {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "segoe ui", roboto, oxygen, ubuntu, cantarell, "fira sans", "droid sans", "helvetica neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: lightgrey;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #011627;
+}
+
+.navbar .navbar-brand {
+    color: #7D6B91;
+    font-size: 1vw;
+    font-weight: bold;
+    margin: 0;
+    padding: 0.2vw;
+}
+
+.dashboard-btn {
+    margin: 5vw;
+    font-size: 1.5vw;
+}
+
+.dashboard-btn:hover {
+    background: #7D6B91;
+    color: gold;
+}
+
+.dashboard-btn:hover .fas {
+    color: gold;
+}
+
+.navbar .fa-user-cog,
+.navbar .fa-sign-out-alt {
+    color: lightgrey;
+}
+
+.navbar .fa-user-cog:hover,
+.navbar .fa-sign-out-alt:hover {
+    color: #7D6B91;
+}
+
+/* Transition CSS*/
+#fader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999999;
+    pointer-events: none;
+    background: white;
+    animation-duration: 400ms;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1
+    }
+
+    to {
+        opacity: 0
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+#fader.fade-out {
+    opacity: 0;
+    animation-name: fade-out;
+}
+
+#fader.fade-in {
+    opacity: 1;
+    animation-name: fade-in;
+}
+
+
+.register-page {
+    background-image: url('images/back.jpg');
+}
+
+#register-form {
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 5vw;
+    padding: 1vw;
+    background-color: lightslategrey;
+    color: whitesmoke;
+    opacity: 0.8;
+}
+
+#register-form input:hover,
+#register-form input:focus {
+    border-color: #011627;
+    border-width: 0.1vw;
+}
+
+#register-form button {
+    background-color: #011627;
+}
+
+#register-form button:hover {
+    background-color: red;
+    color: white;
+}
+
+#register-form a {
+    color: #011627;
+    padding: 0.5vw;
+}
+
+.error-popup {
+    color: darkred;
+    font-weight: bold;
+    font-size: 0.7vw;
+}
+
+.success-popup {
+    color: green;
+    font-weight: bold;
+    font-size: 0.7vw;
+}
+
+
+.confirm-message {
+    background-color: lightslategray;
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 5vw;
+    padding: 2vw;
+    color: whitesmoke;
+    opacity: 0.95;
+}
+
+.confirm-message a {
+    color: #011627;
+    margin-top: 0.5vw;
+}
+
+.confirm-message button {
+    margin-right: 1vw;
+}
+
+.details {
+    width: 25%;
+    margin: 0 auto;
+    background-color: lightslategray;
+    padding: 2vw;
+    margin-top: 2vw;
+    font-weight: bold;
+    color: whitesmoke;
+}
+
+.details p {
+    padding: 0.5vw;
+}
+
+.details p:hover {
+    color: #011627;
+}
+
+.details figure .avatar-image {
+    margin-bottom: 0;
+}
+
+.avatar-image {
+    width: 180px;
+    height: 180px;
+    margin: 2vw;
+}
+
+#profile-pic-upload {
+    font-size: 0.5vw;
+    padding: 1vw;
+    padding-top: 0;
+}
+
+.profile-upload-label {
+    font-size: 0.6vw;
+}
+
+.details .alert {
+    font-size: 0.6vw;
+    padding: 0.2vw;
+}
+
+.grid-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    object-fit: cover;
+    height: 2vw;
+    width: 2vw;
+}
+
+#product_table td {
+    background-color: whitesmoke;
+    border-width: 0.1px;
+}
+
+.dataTables_filter {
+    display: none;
+}
+
+#product_table {
+    border: none;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+#dropdown_form_list {
+    font-size: 1vw;
+    padding: 0.5vw;
+    color: #7D6B91;
+}
+
+.modal-form .image-upload>input {
+    display: none;
+}
+
+.modal-form .image-upload label {
+    margin: 0;
+}
+
+.modal-form .image-upload {
+    width: 150px;
+    height: 200px;
+    display: table;
+    background-color: #ccc;
+}
+
+
+.modal-form .image-upload label {
+    text-align: center;
+    vertical-align: middle;
+    display: table-cell;
+}
+
+.modal-form .image-upload img {
+    max-width: 100px;
+    max-height: 150px;
+}
+
+.modal-form .form-row .upload-section {
+    padding: 2vw;
+    padding-bottom: 0;
+    padding-top: 1vw;
+}
+
+.modal-form .form-row .upload-section a {
+    color: red;
+    cursor: pointer;
+}
+
+.hide {
+    display: none;
+}

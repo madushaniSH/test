@@ -1,0 +1,64 @@
+body {
+    background-image: url('images/back.jpg');
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.login-form {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.login-form h1 {
+    text-align: center;
+    font-size: 1.8vw;
+    font-weight: 500;
+    padding: 3vw 0 2vw 0;
+}
+
+.login-form form input[type="password"],
+.login-form form input[type="text"],
+.login-form form .alert {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.login-form form input[type="password"],
+.login-form form input[type="text"] {
+    margin-top: 4vw;
+    background-color: #f3f3f3;
+}
+
+.login-form form button {
+    width: 50%;
+    padding: 0.6vw;
+    margin: 0 auto;
+    margin-top: 2.4vw;
+    background-color: #011627;
+    border: 0;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff;
+    transition: background-color 0.2s;
+}
+
+.login-form a {
+    padding: 0;
+    margin: 0 auto;
+    display: block;
+}
+
+.login-form button:hover {
+    background-color: white;
+    transition: background-color 0.2s;
+    color: #7D6B91;
+}
+
+.jumbotron {
+    font-size: 1.2vw;
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 8vw;
+}

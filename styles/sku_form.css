@@ -1,0 +1,106 @@
+#sku_form .top-section {
+    background-color: lightslategrey;
+    padding: 0.5vw;
+}
+
+#sku_form .image-upload>input {
+    display: none;
+}
+
+#sku_form .image-upload label {
+    margin: 0;
+}
+
+#sku_form .image-upload {
+    width: 150px;
+    height: 200px;
+    display: table;
+    background-color: #ccc;
+}
+
+
+#sku_form .image-upload label {
+    text-align: center;
+    vertical-align: middle;
+    display: table-cell;
+}
+
+#sku_form .image-upload img {
+    max-width: 100px;
+    max-height: 150px;
+}
+
+#sku_form .form-section {
+    background-color: white;
+    margin-top: 0;
+    padding: 1vw;
+    margin: 0 auto;
+}
+
+#sku_form .form-row .upload-section {
+    padding: 2vw;
+    padding-bottom: 0;
+    padding-top: 1vw;
+}
+
+#sku_form .form-row .upload-section a {
+    color: red;
+    cursor: pointer;
+}
+
+#sku_form .modal-body .form-row .upload-section .alt-design-image-upload{
+    width: 90px;
+    height: 125px;
+}
+
+#sku_form .modal-body .form-row .upload-section .alt-design-image-upload img{
+    max-width: 75px;
+    max-height: 100px;
+}
+
+#sku_form .modal-body #alt-text-section{
+    margin-left: 2vw;
+}
+
+#sku_form #sku_only{
+    display: none;
+}
+
+#sku_form #alt_design_link{
+    display: none;
+}
+
+.hide {
+    display: none;
+}
+
+/* Style the tab */
+.tab {
+    overflow: hidden;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding-left: 4vw;
+    padding-right: 4vw;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    border-bottom: #7D6B91 4px solid;
+}
+
+.sub-tab button.active{
+    border-bottom: none;
+    border-bottom: #7D6B91 2px solid;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+}
