@@ -46,6 +46,11 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
+
+$sql = 'SELECT manufacturer_name FROM manufacturer';
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$manufacturer_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -83,6 +88,12 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
     </script>
     <script src="scripts/sku_form_image_preview.js"></script>
     <script src="scripts/process_forms.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.10/dist/css/bootstrap-select.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.10/dist/js/bootstrap-select.min.js"></script>
+
     <script type="text/javascript">
         // releases the hold on the $ identifier
         $.noConflict();
@@ -323,6 +334,67 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
                     </button>
                 </div>
                 <div class="modal-body">
+                    <form action="POST" id="new_brand">
+                        <div class="form-row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="brand_name">*Name:</label>
+                                    <input type="text" id="brand_name" class="form-control">
+                                    <span id="brand_name_error" class="error-popup"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="brand_local_name">Local Name:</label>
+                                    <input type="text" id="brand_local_name" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="brand_manufacturer">*Manufacturer:</label>
+                                    <select name="brand_manufacturer" id="brand_manufacturer" class="form-control selectpicker"
+                                        data-show-subtext="true" data-live-search="true">
+                                        <option value="" selected disabled>Select</option>
+<?php
+foreach($manufacturer_rows as $manufacturer_row){
+    echo "<option>$manufacturer_row->manufacturer_name</option>";
+}
+?>
+                                    </select>                                
+                                </div>
+                                <div class="form-group">
+                                    <label for="brand_global_code">Global Code:</label>
+                                    <input type="text" id="brand_global_code" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="upload-section">
+                                    <p>Upload Image</p>
+                                    <div class="image-upload">
+                                        <label for="file-input-brand-logo">
+                                            <img id="preview-brand-logo" class="text-center"
+                                                src="images\default\system\product\default.jpg" alt="your image" />
+                                        </label>
+                                        <input type='file' id="file-input-brand-logo" onchange="readURL(this);" />
+                                    </div>
+                                    <a id="clear-brand-logo" class="hide" onclick="clearURL(this);">Clear</a>
+                                    <span id="brand_image_error" class="error-popup"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                        <label>* Recognition Level:</label>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="brand_option" id="brand_option" value="brand" selected>
+                                    <label class="form-check-label" for="brand_option">
+                                        Brand
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="product_option" id="product_option" value="product">
+                                    <label class="form-check-label" for="product_option">
+                                        Product
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
