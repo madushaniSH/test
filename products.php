@@ -47,10 +47,6 @@ $stmt->execute();
 $rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
-$sql = 'SELECT manufacturer_name FROM manufacturer';
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$manufacturer_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -88,12 +84,6 @@ $manufacturer_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     </script>
     <script src="scripts/sku_form_image_preview.js"></script>
     <script src="scripts/process_forms.js"></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.10/dist/css/bootstrap-select.min.css">
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.10/dist/js/bootstrap-select.min.js"></script>
-
     <script type="text/javascript">
         // releases the hold on the $ identifier
         $.noConflict();
@@ -185,13 +175,13 @@ $manufacturer_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         Category</a>
                     <a data-toggle="modal" class="dropdown-item" data-target="#suggest_client_sub_category">Suggest
                         Client Sub Category</a>
-                    <a data-toggle="modal" class="dropdown-item" data-target="#suggest_brand">Suggest Brand</a>
+                    <a data-toggle="modal" class="dropdown-item" data-target="#suggest_brand" onclick="get_manufacturer_list();">Suggest Brand</a>
                 </div>
             </div>
         </div>
     </div>
     <div class="modal fade modal-form" id="suggest_manufacturer" tabindex="-1" role="dialog"
-        aria-labelledby="suggest_manufacturer_title" aria-hidden="true">
+        aria-labelledby="suggest_manufacturer_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -218,8 +208,8 @@ $manufacturer_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                                 <input type="text" id="manufacturer_source" class="form-control">
                                 <span id="manufacturer_source_error" class="error-popup"></span>
                             </div>
-                            <div id="manu_results">
                             <span id="manufacturer_image_size_error" class="error-popup"></span>
+                            <div id="manu_results">
                             </div>
                         </div>
                         <div class="col col-md-2">
@@ -248,7 +238,7 @@ $manufacturer_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </div>
     </div>
     <div class="modal fade modal-form" id="suggest_client_category" tabindex="-1" role="dialog"
-        aria-labelledby="suggest_client_category_title" aria-hidden="true">
+        aria-labelledby="suggest_client_category_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -287,7 +277,7 @@ $manufacturer_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </div>
     </div>
     <div class="modal fade modal-form" id="suggest_client_sub_category" tabindex="-1" role="dialog"
-        aria-labelledby="suggest_client_sub_category_title" aria-hidden="true">
+        aria-labelledby="suggest_client_sub_category_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -324,12 +314,12 @@ $manufacturer_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </div>
     </div>
     <div class="modal fade modal-form" id="suggest_brand" tabindex="-1" role="dialog"
-        aria-labelledby="suggest_brand_title" aria-hidden="true">
+        aria-labelledby="suggest_brand_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="suggest_brand_title">Suggest New Brand</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="reset_brand_form()">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -348,15 +338,14 @@ $manufacturer_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                                 </div>
                                 <div class="form-group">
                                     <label for="brand_manufacturer">*Manufacturer:</label>
-                                    <select name="brand_manufacturer" id="brand_manufacturer" class="form-control selectpicker"
-                                        data-show-subtext="true" data-live-search="true">
-                                        <option value="" selected disabled>Select</option>
-<?php
-foreach($manufacturer_rows as $manufacturer_row){
-    echo "<option>$manufacturer_row->manufacturer_name</option>";
-}
-?>
+                                    <select name="brand_manufacturer" id="brand_manufacturer" class="form-control manu-list">
                                     </select>                                
+                                    <span id="brand_manufacturer_error" class="error-popup"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="brand_source">*Source:</label>
+                                    <input type="text" id="brand_source" class="form-control">
+                                    <span id="brand_source_error" class="error-popup"></span>
                                 </div>
                                 <div class="form-group">
                                     <label for="brand_global_code">Global Code:</label>
@@ -378,27 +367,28 @@ foreach($manufacturer_rows as $manufacturer_row){
                                 </div>
                             </div>
                         </div>
-                        <div class="form-row">
-                        <label>* Recognition Level:</label>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="brand_option" id="brand_option" value="brand" selected>
-                                    <label class="form-check-label" for="brand_option">
-                                        Brand
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="product_option" id="product_option" value="product">
-                                    <label class="form-check-label" for="product_option">
-                                        Product
-                                    </label>
-                                </div>
+                        <label>Recognition Level:</label>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="recognition_option" id="brand_option" value="brand" checked>
+                                <label class="form-check-label" for="brand_option">
+                                    Brand
+                                </label>
                             </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="recognition_option" id="product_option" value="product">
+                                <label class="form-check-label" for="product_option">
+                                    Product
+                                </label>
+                            </div>                                
+                        </div>
+                        <span id="brand_image_size_error" class="error-popup"></span>
+                        <div id="brand_results">
                         </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" value="Submit">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reset_brand_form()">Close</button>
+                    <button type="button" class="btn btn-success" value="Submit" onclick="submit_brand_form();">Save changes</button>
                     </form>
                 </div>
             </div>

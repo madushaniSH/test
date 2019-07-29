@@ -1,8 +1,8 @@
 <?php
 /*
-    Filename: process_manufacturer.php
+    Filename: process_brand.php
     Author: Malika Liyanage
-    Created: 26/07/2019
+    Created: 29/07/2019
 */
 
 session_start();
@@ -35,16 +35,15 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT manufacturer_name FROM manufacturer WHERE manufacturer_name = :manufacturer_name';
+$sql = 'SELECT brand_name FROM brand WHERE brand_name = :brand_name';
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['manufacturer_name'=>$_POST['manufacturer_name']]);
+$stmt->execute(['brand_name'=>$_POST['brand_name']]);
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
-if($row_count == 0){
+if ($row_count == 0){
     // the file dir the uploaded image of the user is supposed to be stored in
-    $image_upload_dir = "images/system/projects/$dbname/manufacturer/images/";
-
-    // set the default file extension whitelist
+    $image_upload_dir = "images/system/projects/$dbname/brand/images/";
+  // set the default file extension whitelist
     $whitelist_ext = array('jpeg','jpg','jfif');
 
     // set default file type white list
@@ -55,20 +54,20 @@ if($row_count == 0){
         mkdir($image_upload_dir,0777,true);
     }
 
-    $image_file = $image_upload_dir.basename($_FILES["manu_logo"]["name"]);
+    $image_file = $image_upload_dir.basename($_FILES["brand_logo"]["name"]);
     $valid_upload = true;
     $image_file_type = strtolower(pathinfo($image_file,PATHINFO_EXTENSION));
     $error = '';
     $valid_upload = true;
 
     // check if image file is an actual image
-    $check = getimagesize($_FILES["manu_logo"]["tmp_name"]);
+    $check = getimagesize($_FILES["brand_logo"]["tmp_name"]);
     if($check === false){
         $valid_upload = false;
         $error .= "Please upload a valid image<br>";
     }
 
-    list($width, $height, $type, $attr) = getimagesize($_FILES["manu_logo"]["tmp_name"]);
+    list($width, $height, $type, $attr) = getimagesize($_FILES["brand_logo"]["tmp_name"]);
     if(!(($width >= 300)  && ($height >= 300))){
         $valid_upload = false;
         $error .= "Error, low quality image<br>";
@@ -81,35 +80,36 @@ if($row_count == 0){
     }
 
     //Check that the file is of the right type
-    if (!in_array($_FILES["manu_logo"]["type"], $whitelist_type)) {
+    if (!in_array($_FILES["brand_logo"]["type"], $whitelist_type)) {
         $valid_upload = false;
         $error .= "Invalid file Type<br>";
     }
 
-    if($valid_upload){
-        if(move_uploaded_file($_FILES["manu_logo"]["tmp_name"], $image_file)) {
-            $manufacturer_local_name = $_POST['manufacturer_local_name'];
-            $manufacturer_source = $_POST['manufacturer_source'];
+    if ($valid_upload) {
+        if(move_uploaded_file($_FILES["brand_logo"]["tmp_name"], $image_file)) {
+            $brand_local_name = $_POST['brand_local_name'];
+            $brand_global_code = $_POST['brand_global_code'];
+
+            if ($brand_global_code == '') {
+                $brand_global_code = NULL;
+            }
             
-            if ($manufacturer_local_name == '') {
-                $manufacturer_local_name = NULL;
+            if ($brand_local_name == '') {
+                $brand_local_name = NULL;
             }
 
-            if ($manufacturer_source == '') {
-                $manufacturer_source = NULL;
-            }
-
-            $sql = 'INSERT INTO manufacturer (manufacturer_name, manufacturer_local_name, manufacturer_source, manufacturer_image_location) VALUES (:manufacturer_name, :manufacturer_local_name, :manufacturer_source, :manufacturer_image_location)';
+            $sql = 'INSERT INTO brand (manufacturer_id, brand_name, brand_local_name, brand_source, brand_image_location, brand_recognition_level, brand_global_code) VALUES (:manufacturer_id, :brand_name, :brand_local_name, :brand_source, :brand_image_location, :brand_recognition_level, :brand_global_code)';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['manufacturer_name'=>$_POST['manufacturer_name'], 'manufacturer_local_name'=>$manufacturer_local_name, 'manufacturer_source'=>$manufacturer_source, 'manufacturer_image_location'=>$image_file]);
+            $stmt->execute(['manufacturer_id'=>$_POST['brand_manufacturer'], 'brand_name'=>$_POST['brand_name'], 'brand_local_name'=>$brand_local_name ,'brand_source'=>$_POST['brand_source'], 'brand_image_location'=>$image_file, 'brand_recognition_level'=>$_POST['recognition_value'], 'brand_global_code'=>$brand_global_code]);
             echo "<span class=\"success-popup\">Submitted</span>";
-        }else{
-            echo "<span class=\"error-popup\">Server Error</span>";
+        } else {
+            echo "<span class=\"error-popup\">Server Error</span>"; 
         }
-    }else{
+    } else {
         echo "<span class=\"error-popup\">$error</span>";
     }
-}else{
-    echo "<span class=\"error-popup\">Manufacturer already added</span>";
+} else {
+    echo "<span class=\"error-popup\">Brand already added</span>";
 }
+
 ?>
