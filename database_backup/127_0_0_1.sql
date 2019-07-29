@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 26, 2019 at 02:10 PM
+-- Generation Time: Jul 29, 2019 at 12:40 PM
 -- Server version: 10.3.16-MariaDB
 -- PHP Version: 7.3.7
 
@@ -174,7 +174,7 @@ CREATE TABLE `pma__recent` (
 --
 
 INSERT INTO `pma__recent` (`username`, `tables`) VALUES
-('root', '[{\"db\":\"test_db\",\"table\":\"brand\"},{\"db\":\"test_db\",\"table\":\"manufacturer\"},{\"db\":\"test_db\",\"table\":\"client_sub_category\"},{\"db\":\"test_db\",\"table\":\"client_category\"},{\"db\":\"test_db\",\"table\":\"product\"},{\"db\":\"test_db\",\"table\":\"attribute\"},{\"db\":\"test_db\",\"table\":\"product_attribute\"},{\"db\":\"test_db\",\"table\":\"product_container_type\"},{\"db\":\"test_db\",\"table\":\"product_measurement_unit\"},{\"db\":\"user_db\",\"table\":\"accounts\"}]');
+('root', '[{\"db\":\"test_db\",\"table\":\"manufacturer\"},{\"db\":\"test_db\",\"table\":\"brand\"},{\"db\":\"test_db\",\"table\":\"product\"},{\"db\":\"test_db\",\"table\":\"client_category\"},{\"db\":\"test_db\",\"table\":\"client_sub_category\"},{\"db\":\"test_db\",\"table\":\"attribute\"},{\"db\":\"test_db\",\"table\":\"product_attribute\"},{\"db\":\"test_db\",\"table\":\"product_container_type\"},{\"db\":\"test_db\",\"table\":\"product_measurement_unit\"},{\"db\":\"user_db\",\"table\":\"accounts\"}]');
 
 -- --------------------------------------------------------
 
@@ -255,6 +255,13 @@ CREATE TABLE `pma__table_uiprefs` (
   `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Tables'' UI preferences';
 
+--
+-- Dumping data for table `pma__table_uiprefs`
+--
+
+INSERT INTO `pma__table_uiprefs` (`username`, `db_name`, `table_name`, `prefs`, `last_update`) VALUES
+('root', 'test_db', 'brand', '{\"sorted_col\":\"`brand`.`brand_recognition_level` ASC\"}', '2019-07-29 09:59:53');
+
 -- --------------------------------------------------------
 
 --
@@ -291,7 +298,7 @@ CREATE TABLE `pma__userconfig` (
 --
 
 INSERT INTO `pma__userconfig` (`username`, `timevalue`, `config_data`) VALUES
-('root', '2019-07-26 12:08:43', '{\"Console\\/Mode\":\"collapse\",\"ThemeDefault\":\"fallen\",\"FontSize\":\"75%\"}');
+('root', '2019-07-29 10:34:54', '{\"Console\\/Mode\":\"collapse\",\"ThemeDefault\":\"fallen\",\"FontSize\":\"75%\"}');
 
 -- --------------------------------------------------------
 
@@ -556,18 +563,22 @@ CREATE TABLE `brand` (
   `brand_id` int(11) NOT NULL,
   `manufacturer_id` int(11) NOT NULL,
   `brand_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `brand_local_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `brand_source` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `brand_image_location` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'images\\default\\system\\product\\default.jpg'
+  `brand_image_location` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'images\\default\\system\\product\\default.jpg',
+  `brand_recognition_level` enum('brand','product') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'brand',
+  `brand_global_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `brand`
 --
 
-INSERT INTO `brand` (`brand_id`, `manufacturer_id`, `brand_name`, `brand_source`, `brand_image_location`) VALUES
-(1, 1, 'General', NULL, 'images\\default\\system\\product\\default.jpg'),
-(2, 2, '10 Barrel', NULL, 'images\\default\\system\\product\\default.jpg'),
-(3, 4, 'Starbucks', NULL, 'images\\default\\system\\product\\default.jpg');
+INSERT INTO `brand` (`brand_id`, `manufacturer_id`, `brand_name`, `brand_local_name`, `brand_source`, `brand_image_location`, `brand_recognition_level`, `brand_global_code`) VALUES
+(1, 1, 'General', NULL, NULL, 'images\\default\\system\\product\\default.jpg', 'brand', NULL),
+(2, 2, '10 Barrel', NULL, NULL, 'images\\default\\system\\product\\default.jpg', 'brand', NULL),
+(3, 4, 'Starbucks', NULL, NULL, 'images\\default\\system\\product\\default.jpg', 'brand', NULL),
+(5, 29, 'Carlsberg', 'Carlsberg', 'google.com', 'images/system/projects/test_db/brand/images/Carlsberg Beer Other.jpg', 'product', '1455');
 
 -- --------------------------------------------------------
 
@@ -639,7 +650,11 @@ INSERT INTO `manufacturer` (`manufacturer_id`, `manufacturer_name`, `manufacture
 (1, 'General', NULL, NULL, 'images\\default\\system\\product\\default.jpg'),
 (2, 'Anheuser Busch Inc', NULL, 'https://10barrel.com/', 'images\\default\\system\\product\\default.jpg'),
 (4, 'Nestle Holdings Inc', NULL, NULL, 'images\\default\\system\\product\\default.jpg'),
-(19, 'Elite', 'Elite', 'google.com', 'images/system/projects/test_db/manufacturer/images/Elite Chocolate Other.JPG');
+(22, 'Elite', 'Elite', 'Elite', 'images/system/projects/test_db/manufacturer/images/Elite Chocolate Other.JPG'),
+(23, 'Silver Queen', 'Silver Queen', 'google.com', 'images/system/projects/test_db/manufacturer/images/Silver Queen.JPG'),
+(24, 'Landgarten Chocolate', 'Landgarten Chocolate', 'google.com', 'images/system/projects/test_db/manufacturer/images/Landgarten Chocolate Other.JPG'),
+(25, 'Lacasitos', 'Lacasitos', 'google.com', 'images/system/projects/test_db/manufacturer/images/Lacasitos Chocolate Other.JPG'),
+(29, 'Carlsberg A/s', 'Carlsberg A/S', 'google.com', 'images/system/projects/test_db/manufacturer/images/Carlsberg Group.jpg');
 
 -- --------------------------------------------------------
 
@@ -914,13 +929,13 @@ ALTER TABLE `sub_brand`
 -- AUTO_INCREMENT for table `brand`
 --
 ALTER TABLE `brand`
-  MODIFY `brand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `brand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `client_category`
 --
 ALTER TABLE `client_category`
-  MODIFY `client_category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `client_category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `client_sub_category`
@@ -932,7 +947,7 @@ ALTER TABLE `client_sub_category`
 -- AUTO_INCREMENT for table `manufacturer`
 --
 ALTER TABLE `manufacturer`
-  MODIFY `manufacturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `manufacturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `product`
@@ -1045,9 +1060,9 @@ CREATE TABLE `accounts` (
 --
 
 INSERT INTO `accounts` (`account_id`, `account_gid`, `account_nic`, `account_email`, `account_latest_login_date_time`, `account_current_active`, `account_password`, `account_password_reset_request`, `account_password_reset_identity`, `account_first_name`, `account_last_name`, `account_dob`, `account_user_address`, `account_permanent_address`, `account_home_contact_no`, `account_contact_no`, `account_join_date`, `account_personal_email`, `account_profile_picture_location`) VALUES
-(1, 'G1485', 'N1485', 'g14863.malika@gmail.com', '2019-07-26 12:53:18', 0, '$2y$10$1oASi9Gdgns.3SMQPK7S7ehhIIVRt1eg3Nbix2H3cBVs42c6rNTxK', 0, NULL, 'Mason', 'Jason', '1999-08-30', 'No 54 / 5 Streety Street, Towny Town', NULL, 112254512, 0, '2019-07-17', NULL, 'images/user/1/uploads/profile/c4d.gif'),
+(1, 'G1485', 'N1485', 'g14863.malika@gmail.com', '2019-07-29 12:39:15', 1, '$2y$10$1oASi9Gdgns.3SMQPK7S7ehhIIVRt1eg3Nbix2H3cBVs42c6rNTxK', 0, NULL, 'Mason', 'Jason', '1999-08-30', 'No 54 / 5 Streety Street, Towny Town', NULL, 112254512, 0, '2019-07-17', NULL, 'images/user/1/uploads/profile/c4d.gif'),
 (2, 'G1234', 'N1234', 'g1234.lana@gmail.com', '0000-00-00 00:00:00', 0, '$2y$10$u2BrR2YAKyJ6iVrSGUEjcuBKi9LN/gAtBnsdAH5p1TKLUBg8MRyI2', 0, NULL, 'Lana', 'Banana', '1999-09-29', 'No 1234 Red Street, Blue Town', NULL, 10012151, 0, '2019-07-17', NULL, 'images\\default\\system\\avatar\\default-avatar.jpg'),
-(3, 'G4567', 'N4567', 'g4567.karl@gmail.com', '2019-07-26 12:53:45', 1, '$2y$10$5Fyos2jbesiltKrjfMsT8exsVz.e/fTZOlGEnD8t8S1ie41l9eC/m', 0, NULL, 'Karl', 'Nein', NULL, NULL, NULL, NULL, NULL, '2019-07-17', NULL, 'images/user/3/uploads/profile/104319.jpg'),
+(3, 'G4567', 'N4567', 'g4567.karl@gmail.com', '2019-07-26 12:53:45', 0, '$2y$10$5Fyos2jbesiltKrjfMsT8exsVz.e/fTZOlGEnD8t8S1ie41l9eC/m', 0, NULL, 'Karl', 'Nein', NULL, NULL, NULL, NULL, NULL, '2019-07-17', NULL, 'images/user/3/uploads/profile/104319.jpg'),
 (4, 'G9999', 'N9999', 'g999.flora@gmail.com', '2019-07-25 20:07:19', 0, '$2y$10$ewg16ZSYdtp3ZHsHiwH.C.bAJJgGFhuoI9yaMcdjeqVTFs/vqKPQm', 0, NULL, 'Flora', 'Fauna', NULL, NULL, NULL, NULL, NULL, '2019-07-17', NULL, 'images/user/4/uploads/profile/Flora_content_img.jpg'),
 (5, 'G9809', 'N9809', 'g9809@gmail.com', '2019-07-19 18:15:44', 0, '$2y$10$rVYx7G7MZUYf.25bI/z0TeBp81z/1Tw8E1T.Y6WCsRLdUI0MWvv2a', 0, NULL, 'Trebl', 'Bass', NULL, NULL, NULL, NULL, NULL, '2019-07-17', NULL, 'images/user/5/uploads/profile/61wcEoXVcuL._SX425_.jpg'),
 (6, 'G2312', 'N2312', 'g2312.mary@gmail.com', '0000-00-00 00:00:00', 0, '$2y$10$cpWkESBcOFk8KE41UdCxI.Dr4NRChat1AN5STdbCBM4gOcmbeQOiS', 0, NULL, 'Mary', 'Sad', NULL, NULL, NULL, NULL, NULL, '2019-07-17', NULL, 'images\\default\\system\\avatar\\default-avatar.jpg'),
