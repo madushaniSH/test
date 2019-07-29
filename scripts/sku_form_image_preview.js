@@ -22,7 +22,8 @@ var preview_list = new Map([
     ['file-input-side1-alt', 'preview-side1-alt'],
     ['file-input-side2-alt', 'preview-side2-alt'],
     ['file-input-back-alt', 'preview-back-alt'],
-    ['file-input-manu-logo', 'preview-manu-logo']
+    ['file-input-manu-logo', 'preview-manu-logo'],
+    ['file-input-brand-logo', 'preview-brand-logo']
 ]);
 
 var clear_button_list = new Map ([
@@ -38,7 +39,8 @@ var clear_button_list = new Map ([
     ['file-input-side1-alt', 'clear-side1-alt'],
     ['file-input-side2-alt', 'clear-side2-alt'],
     ['file-input-back-alt', 'clear-back-alt'],
-    ['file-input-manu-logo', 'clear-manu-logo']
+    ['file-input-manu-logo', 'clear-manu-logo'],
+    ['file-input-brand-logo', 'clear-brand-logo']
 ]);
 
 var button_upload_list = new Map ([
@@ -54,7 +56,8 @@ var button_upload_list = new Map ([
     ['clear-side1-alt', 'file-input-side1-alt'],
     ['clear-side2-alt', 'file-input-side2-alt'],
     ['clear-back-alt', 'file-input-back-alt'],
-    ['clear-manu-logo', 'file-input-manu-logo']
+    ['clear-manu-logo', 'file-input-manu-logo'],
+    ['clear-brand-logo', 'file-input-brand-logo']
 ])
 
 /*function for adding the image preview called when an image is uploaded */
