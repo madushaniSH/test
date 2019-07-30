@@ -5,21 +5,16 @@
     Created: 16/07/2019
     Purpose: Sends the user a password reset link to his email
 */
-
 session_start();
-
 // Redirects the user if the username was not set
 if(!isset($_SESSION['id'])){
     header("location: login_auth_one.php");
     exit();
 }
-
 // Current settings to connect to the user account database
 require('user_db_connection.php');
-
 // Setting up the DSN
 $dsn = 'mysql:host='.$host.';dbname='.$dbname;
-
 /*
     Attempts to connect to the databse, if no connection was estabishled
     kills the script
@@ -30,13 +25,11 @@ try{
     // setting the PDO error mode to exception
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 }
-
 catch(PDOException $e){
     // throws error message
     echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
     exit();
 }
-
 if(isset($_SESSION['id'])){
     $display_message = '';
     $sql = 'SELECT account_id, account_email, account_password_reset_request FROM accounts WHERE account_id = :id';
@@ -47,14 +40,11 @@ if(isset($_SESSION['id'])){
     if($user_information->account_password_reset_request == 0){
         //generat unique string
         $uniqidStr = md5(uniqid(mt_rand()));;
-
         $sql = 'UPDATE accounts SET account_password_reset_request = :reset_value, account_password_reset_identity = :reset_identity WHERE account_id = :id';
         $stmt = $pdo->prepare($sql);
         $reset_state = 1;
         $stmt->execute(['reset_value'=>$reset_state,'id'=>$_SESSION['id'], 'reset_identity'=>$uniqidStr]);
-
-        $reset_password_link = 'http://localhost/data_operations_department/reset_password.php?fp_code='.$uniqidStr;
-
+        $reset_password_link = 'http://192.168.63.90/data_operations_department/reset_password.php?fp_code='.$uniqidStr;
         // sending reset password email
         $to = $user_information->account_email;
         $subject = "Password Update Request";
@@ -72,7 +62,6 @@ if(isset($_SESSION['id'])){
         $headers .= 'From: g14863.malika@gmail.com' . "\r\n";
         //send email
         mail($to,$subject,$mail_content,$headers);
-
         $display_message = 'A new reset password link has been sent to your email address '.$user_information->account_email;
     }else{
         $display_message = 'Reset Password link has already been sent to your email address';
@@ -80,7 +69,6 @@ if(isset($_SESSION['id'])){
 }else{
     header('location: login_auth_one.php');
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
