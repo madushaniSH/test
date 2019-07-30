@@ -236,3 +236,10 @@ function submit_brand_form() {
         });
     }
 }
+
+jQuery(document).ready(function() {
+    jQuery('#brand_manufacturer').select2({
+        dropdownParent: $("#suggest_brand"),
+        width: '100%'
+    });
+});

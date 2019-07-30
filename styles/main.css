@@ -274,3 +274,7 @@ body {
 .hide {
     display: none;
 }
+
+.btn-outline-success{
+    margin-left: 2.2vw;
+}

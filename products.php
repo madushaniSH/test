@@ -82,6 +82,8 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
             document.getElementsByTagName('head')[0].appendChild(css);
         })();
     </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
     <script src="scripts/sku_form_image_preview.js"></script>
     <script src="scripts/process_forms.js"></script>
     <script type="text/javascript">
@@ -180,63 +182,6 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
             </div>
         </div>
     </div>
-    <div class="modal fade modal-form" id="suggest_manufacturer" tabindex="-1" role="dialog"
-        aria-labelledby="suggest_manufacturer_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="suggest_manufacturer_title">Suggest New Manufacturer</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="reset_manufacturer_form();">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-row">
-                        <div class="col col-md-6">
-                        <form action="POST" id="new_manufacturer" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label for="manufacturer_name">*Name:</label>
-                                <input type="text" id="manufacturer_name" class="form-control">
-                                <span id="manufacturer_name_error" class="error-popup"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="manufacturer_local_name">Local Name:</label>
-                                <input type="text" id="manufacturer_local_name" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="manufacturer_source">Source:</label>
-                                <input type="text" id="manufacturer_source" class="form-control">
-                                <span id="manufacturer_source_error" class="error-popup"></span>
-                            </div>
-                            <span id="manufacturer_image_size_error" class="error-popup"></span>
-                            <div id="manu_results">
-                            </div>
-                        </div>
-                        <div class="col col-md-2">
-                            <div class="upload-section">
-                                <p>Logo</p>
-                                <div class="image-upload">
-                                    <label for="file-input-manu-logo">
-                                        <img id="preview-manu-logo" class="text-center"
-                                            src="images\default\system\product\default.jpg" alt="your image" />
-                                    </label>
-                                    <input type='file' id="file-input-manu-logo" onchange="readURL(this);" />
-                                </div>
-                                <a id="clear-manu-logo" class="hide" onclick="clearURL(this);">Clear</a>
-                                <span id="manufacturer_image_error" class="error-popup"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reset_manufacturer_form();">Close</button>
-                    <button type="button" class="btn btn-success" onclick="submit_manufacturer_form();"
-                        value="Submit">Save changes</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal fade modal-form" id="suggest_client_category" tabindex="-1" role="dialog"
         aria-labelledby="suggest_client_category_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -313,7 +258,7 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
             </div>
         </div>
     </div>
-    <div class="modal fade modal-form" id="suggest_brand" tabindex="-1" role="dialog"
+    <div class="modal hide fade modal-form" id="suggest_brand" tabindex="-1" role="dialog"
         aria-labelledby="suggest_brand_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -337,9 +282,13 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
                                     <input type="text" id="brand_local_name" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="brand_manufacturer">*Manufacturer:</label>
+                                    <div>
+                                        <label for="brand_manufacturer">*Manufacturer:</label>
+                                        <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" href="#suggest_manufacturer">Add New</button>
+                                    </div>
+                                    <!-- Using select2 jquery library-->
                                     <select name="brand_manufacturer" id="brand_manufacturer" class="form-control manu-list">
-                                    </select>                                
+                                    </select>                                 
                                     <span id="brand_manufacturer_error" class="error-popup"></span>
                                 </div>
                                 <div class="form-group">
@@ -389,6 +338,63 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reset_brand_form()">Close</button>
                     <button type="button" class="btn btn-success" value="Submit" onclick="submit_brand_form();">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal hide fade modal-form" id="suggest_manufacturer" tabindex="-1" role="dialog"
+        aria-labelledby="suggest_manufacturer_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="suggest_manufacturer_title">Suggest New Manufacturer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="reset_manufacturer_form();">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="col col-md-6">
+                        <form action="POST" id="new_manufacturer" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="manufacturer_name">*Name:</label>
+                                <input type="text" id="manufacturer_name" class="form-control">
+                                <span id="manufacturer_name_error" class="error-popup"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="manufacturer_local_name">Local Name:</label>
+                                <input type="text" id="manufacturer_local_name" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="manufacturer_source">Source:</label>
+                                <input type="text" id="manufacturer_source" class="form-control">
+                                <span id="manufacturer_source_error" class="error-popup"></span>
+                            </div>
+                            <span id="manufacturer_image_size_error" class="error-popup"></span>
+                            <div id="manu_results">
+                            </div>
+                        </div>
+                        <div class="col col-md-2">
+                            <div class="upload-section">
+                                <p>Logo</p>
+                                <div class="image-upload">
+                                    <label for="file-input-manu-logo">
+                                        <img id="preview-manu-logo" class="text-center"
+                                            src="images\default\system\product\default.jpg" alt="your image" />
+                                    </label>
+                                    <input type='file' id="file-input-manu-logo" onchange="readURL(this);" />
+                                </div>
+                                <a id="clear-manu-logo" class="hide" onclick="clearURL(this);">Clear</a>
+                                <span id="manufacturer_image_error" class="error-popup"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reset_manufacturer_form();">Close</button>
+                    <button type="button" class="btn btn-success" onclick="submit_manufacturer_form();"
+                        value="Submit">Save changes</button>
                     </form>
                 </div>
             </div>
