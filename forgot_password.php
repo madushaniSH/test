@@ -44,7 +44,9 @@ if(isset($_SESSION['id'])){
         $stmt = $pdo->prepare($sql);
         $reset_state = 1;
         $stmt->execute(['reset_value'=>$reset_state,'id'=>$_SESSION['id'], 'reset_identity'=>$uniqidStr]);
+
         $reset_password_link = 'http://192.168.63.90/data_operations_department/reset_password.php?fp_code='.$uniqidStr;
+
         // sending reset password email
         $to = $user_information->account_email;
         $subject = "Password Update Request";
