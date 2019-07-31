@@ -41,11 +41,6 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $trax_catergorys = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-$sql = 'SELECT brand_name FROM brand';
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$brand_names = $stmt->fetchAll(PDO::FETCH_OBJ);
-
 $sql = 'SELECT client_category_name FROM client_category';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
@@ -86,6 +81,8 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
         </script>
+      <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
     <script src="scripts/transition.js"></script>
@@ -94,6 +91,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
     <script src="scripts/sku_form_image_preview.js"></script>
     <script src="scripts/sku_form_tab_open.js"></script>
     <script src="scripts/process_forms.js"></script>
+    <script src="scripts/sku_form_dropdowns.js"></script>
     <title>Data Operations Department</title>
 </head>
 
@@ -224,14 +222,13 @@ foreach($trax_catergorys as $trax_catergory){
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="brand">*Brand:</label>
-                            <select name="brand" id="brand" class="form-control">
-                                <option value="" selected disabled>Select</option>
-<?php
-foreach($brand_names as $brand_name){
-    echo "<option>$brand_name->brand_name</option>";
-}
-?>                                
+                            <div>
+                                <label for="brand">*Brand:</label>
+                                <button type="button" class="btn btn-outline-success btn-sm btn-sku-form" data-toggle="modal" href="#suggest_brand" onclick="get_manufacturer_list();">Add New</button>
+                                <?php require('brand_modal.php'); ?>
+                                <?php require('manufacturer_modal.php'); ?>
+                            </div>                         
+                            <select name="brand" id="brand" class="form-control brand-list">
                             </select>
                         </div>
                         <div class="form-group">

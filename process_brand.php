@@ -106,6 +106,9 @@ if ($row_count == 0){
             echo "
             <script>
                 jQuery(document).ready(function() {
+                    if (window.location.href.match(\"new_sku_form.php\")) {
+                        get_brand_list();
+                    }
                     document.getElementById('close_suggest_brand').click();
                 });                
             </script>
