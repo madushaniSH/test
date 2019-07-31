@@ -82,6 +82,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
     <script src="scripts/sku_form_tab_open.js"></script>
     <script src="scripts/process_forms.js"></script>
     <script src="scripts/sku_form_dropdowns.js"></script>
+    <script src="scripts/sku_form_validate.js"></script>
     <title>Data Operations Department</title>
 </head>
 
@@ -98,7 +99,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
         <div class="top-section form-group jumbotron">
             <button class="btn btn-primary btn-light" type="button"
                 onclick="window.location.href='products.php'">Cancel</button>
-            <button type="submit" class="btn btn-primary btn-success">Save</button>
+            <button type="submit" class="btn btn-primary btn-success" id="submit_sku_form" disabled>Save</button>
         </div>
         <div class="form-row">
             <div class="form-section col-md-6">
