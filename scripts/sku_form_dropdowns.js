@@ -24,6 +24,16 @@ function get_client_category_list() {
     });
 }
 
+function get_client_sub_category_list() {
+    jQuery.ajax({
+        type: "POST",
+        url: "client_sub_category_list.php",
+        success: function (data) {
+            jQuery(".client-sub-category-list").html(data);
+        }
+    });
+}
+
 
 jQuery(document).ready(function () {
     jQuery('#brand').select2({
@@ -34,4 +44,8 @@ jQuery(document).ready(function () {
         width: '100%'
     });
     get_client_category_list();
+    jQuery('#client_sub_category').select2({
+        width: '100%'
+    });
+    get_client_sub_category_list();
 });
