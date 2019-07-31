@@ -14,7 +14,7 @@ In-house website to be used by the GSS Data Operations Department with CRUD func
 - [x] Link database to modal - Client Sub Category
 - [x] Link database to modal - Manufacturer
 - [x] Link database to modal - Brand
-- [ ] Link database to modal - Product
+- [x] Link database to modal - Product
 
 - [ ] Add read only form after product submission
  
