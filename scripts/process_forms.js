@@ -12,9 +12,9 @@ function submit_client_category_form() {
     } else {
         document.getElementById('client_category_name_error').innerHTML = '';
         jQuery.post("process_client_category.php", {
-                client_category_name,
-                client_category_local_name
-            },
+            client_category_name,
+            client_category_local_name
+        },
             function (data) {
                 $('#results').html(data);
                 $('#new_client_category')[0].reset();
@@ -36,9 +36,9 @@ function submit_client_sub_category_form() {
     } else {
         document.getElementById('client_sub_category_name_error').innerHTML = '';
         jQuery.post("process_client_sub_category.php", {
-                client_sub_category_name,
-                client_sub_category_local_name
-            },
+            client_sub_category_name,
+            client_sub_category_local_name
+        },
             function (data) {
                 $('#sub_results').html(data);
                 $('#new_client_sub_category')[0].reset();
@@ -113,9 +113,9 @@ function submit_manufacturer_form() {
             type: 'POST',
             data: formData,
             success: function (data) {
-                $('#manu_results').html(data);
-                $('#new_manufacturer')[0].reset();
+                jQuery('#new_manufacturer')[0].reset();
                 document.getElementById('clear-manu-logo').click();
+                jQuery('#manu_results').html(data);
             },
             error: function (data) {
                 alert("AJAX error");
@@ -135,7 +135,6 @@ function get_manufacturer_list() {
         url: "manufacturer_list.php",
         success: function (data) {
             jQuery(".manu-list").html(data);
-
         }
     });
 }
@@ -237,9 +236,9 @@ function submit_brand_form() {
     }
 }
 
-jQuery(document).ready(function() {
+jQuery(document).ready(function () {
     jQuery('#brand_manufacturer').select2({
         dropdownParent: $("#suggest_brand"),
         width: '100%'
-    });
+    })
 });

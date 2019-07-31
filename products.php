@@ -260,7 +260,7 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
     </div>
     <div class="modal hide fade modal-form" id="suggest_brand" tabindex="-1" role="dialog"
         aria-labelledby="suggest_brand_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="suggest_brand_title">Suggest New Brand</h5>
@@ -349,7 +349,7 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="suggest_manufacturer_title">Suggest New Manufacturer</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="reset_manufacturer_form();">
+                    <button type="button" class="close" id="close_suggest_manufacturer" data-dismiss="modal" aria-label="Close" onclick="reset_manufacturer_form();">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
