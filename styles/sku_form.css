@@ -70,6 +70,14 @@
     display: none;
 }
 
+#sku_form input , #sku_form select{
+    background-color: #EEEEEE;
+}
+
+.select2-container--default .select2-selection--single{
+    background-color: #EEEEEE;
+}
+
 .hide {
     display: none;
 }
