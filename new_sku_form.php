@@ -86,16 +86,14 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
         </script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
     <script src="scripts/transition.js"></script>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="styles/sku_form.css" />
     <script src="scripts/sku_form_image_preview.js"></script>
     <script src="scripts/sku_form_tab_open.js"></script>
+    <script src="scripts/process_forms.js"></script>
     <title>Data Operations Department</title>
 </head>
 
@@ -216,8 +214,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                         </div>
                         <div class="form-group">
                             <label for="trax_category">Trax Category:</label>
-                            <select name="trax_category" id="trax_category" class="form-control selectpicker"
-                                data-show-subtext="true" data-live-search="true">
+                            <select name="trax_category" id="trax_category" class="form-control">
                                 <option value="" selected disabled>Select</option>
 <?php
 foreach($trax_catergorys as $trax_catergory){
@@ -228,8 +225,7 @@ foreach($trax_catergorys as $trax_catergory){
                         </div>
                         <div class="form-group">
                             <label for="brand">*Brand:</label>
-                            <select name="brand" id="brand" class="form-control selectpicker"
-                                data-show-subtext="true" data-live-search="true">
+                            <select name="brand" id="brand" class="form-control">
                                 <option value="" selected disabled>Select</option>
 <?php
 foreach($brand_names as $brand_name){
@@ -246,8 +242,7 @@ foreach($brand_names as $brand_name){
                             <p class="border-top my-3">Physical Attributes</p>
                             <div class="form-group">
                                 <label for="container_type">*Container Type:</label>
-                                <select name="container_type" id="container_type" class="form-control selectpicker"
-                                    data-show-subtext="true" data-live-search="true">
+                                <select name="container_type" id="container_type" class="form-control">
                                     <option value="" selected disabled>Select</option>
 <?php
 foreach($container_types as $container_type){
@@ -266,8 +261,7 @@ foreach($container_types as $container_type){
                             </div>
                             <div class="form-group">
                                 <label for="measurement_unit">Measurement Unit:</label>
-                                <select name="measurement_unit" id="measurement_unit"class="form-control selectpicker"
-                                    data-show-subtext="true" data-live-search="true">
+                                <select name="measurement_unit" id="measurement_unit"class="form-control">
                                     <option value="" selected disabled>Select</option>
 <?php
 foreach($measurement_units as $measurement_unit){
@@ -336,8 +330,7 @@ foreach($measurement_units as $measurement_unit){
                             <div class="col">
                                 <div class="form-group">
                                     <label for="client_catergory">*Client Category:</label>
-                                    <select name="client_category" id="client_category" class="form-control selectpicker"
-                                        data-show-subtext="true" data-live-search="true">
+                                    <select name="client_category" id="client_category" class="form-control">
                                         <option value="" selected disabled>Select</option>
 <?php
 foreach($client_categorys as $client_category){
@@ -352,8 +345,7 @@ foreach($client_categorys as $client_category){
                             <div class="col col-md-6">
                                 <div class="form-group">
                                     <label for="client_sub_catergory">Client Subcategory:</label>
-                                    <select name="client_sub_category" id="client_sub_category" class="form-control selectpicker"
-                                        data-show-subtext="true" data-live-search="true">
+                                    <select name="client_sub_category" id="client_sub_category" class="form-control">
                                         <option value="" selected disabled>Select</option>
 <?php
 foreach($client_sub_categorys as $client_sub_category){
