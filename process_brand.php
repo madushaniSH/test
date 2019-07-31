@@ -102,6 +102,14 @@ if ($row_count == 0){
             $stmt = $pdo->prepare($sql);
             $stmt->execute(['manufacturer_id'=>$_POST['brand_manufacturer'], 'brand_name'=>$_POST['brand_name'], 'brand_local_name'=>$brand_local_name ,'brand_source'=>$_POST['brand_source'], 'brand_image_location'=>$image_file, 'brand_recognition_level'=>$_POST['recognition_value'], 'brand_global_code'=>$brand_global_code]);
             echo "<span class=\"success-popup\">Submitted</span>";
+            // script for closing modal
+            echo "
+            <script>
+                jQuery(document).ready(function() {
+                    document.getElementById('close_suggest_brand').click();
+                });                
+            </script>
+            ";
         } else {
             echo "<span class=\"error-popup\">Server Error</span>"; 
         }

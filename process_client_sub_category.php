@@ -49,6 +49,14 @@ if ($row_count == 0){
         $stmt->execute(['client_sub_category_name'=>$_POST['client_sub_category_name'], 'client_sub_category_local_name'=>NULL]);
     }
     echo "<span class=\"success-popup\">Submitted</span>";
+    // script for closing modal
+    echo "
+    <script>
+        jQuery(document).ready(function() {
+            document.getElementById('close_suggest_client_sub_category').click();
+        });                
+    </script>
+    ";    
 }else{
     echo "<span class=\"error-popup\">Client Sub Category already added</span>";
 }

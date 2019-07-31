@@ -188,7 +188,7 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="suggest_client_category_title">New Client Category</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    <button type="button" class="close" id="close_suggest_client_category" data-dismiss="modal" aria-label="Close"
                         onclick="reset_client_category_form();">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -227,7 +227,7 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="suggest_client_sub_category_title">New Client Subcategory</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="reset_client_sub_category_form()">
+                    <button type="button" class="close" id="close_suggest_client_sub_category" data-dismiss="modal" aria-label="Close" onclick="reset_client_sub_category_form()">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -264,7 +264,7 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="suggest_brand_title">Suggest New Brand</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="reset_brand_form()">
+                    <button type="button" class="close" id="close_suggest_brand" data-dismiss="modal" aria-label="Close" onclick="reset_brand_form()">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
