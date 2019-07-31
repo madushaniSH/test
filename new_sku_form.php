@@ -41,11 +41,6 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $trax_catergorys = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-$sql = 'SELECT client_category_name FROM client_category';
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$client_categorys = $stmt->fetchAll(PDO::FETCH_OBJ);
-
 $sql = 'SELECT client_sub_category_name FROM client_sub_category';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
@@ -326,14 +321,12 @@ foreach($measurement_units as $measurement_unit){
                             </div>
                             <div class="col">
                                 <div class="form-group">
-                                    <label for="client_catergory">*Client Category:</label>
-                                    <select name="client_category" id="client_category" class="form-control">
-                                        <option value="" selected disabled>Select</option>
-<?php
-foreach($client_categorys as $client_category){
-    echo "<option>$client_category->client_category_name</option>";
-}
-?>
+                                    <div>
+                                        <label for="client_catergory">*Client Category:</label>
+                                        <button type="button" class="btn btn-outline-success btn-sm btn-outline-tab" data-toggle="modal" href="#suggest_client_category" onclick="get_manufacturer_list();">Add New</button>
+                                    </div>
+                                    <?php require('client_category_modal.php'); ?>
+                                    <select name="client_category" id="client_category" class="form-control client-category-list">
                                     </select>
                                 </div>
                             </div>
