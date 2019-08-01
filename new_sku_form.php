@@ -95,11 +95,11 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
         </div>
     </nav>
-    <form action="process_sku_form.php" method="POST" id="sku_form"> 
+    <form method="POST" id="sku_form"> 
         <div class="top-section form-group jumbotron">
             <button class="btn btn-primary btn-light" type="button"
                 onclick="window.location.href='products.php'">Cancel</button>
-            <button type="submit" class="btn btn-primary btn-success" id="submit_sku_form" disabled>Save</button>
+            <button type="submit" class="btn btn-primary btn-success" id="submit_sku_form" disabled onclick="validate_form();">Save</button>
         </div>
         <div class="form-row">
             <div class="form-section col-md-6">
@@ -110,13 +110,14 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <div class="upload-section">
                                 <p>Front</p>
                                 <div class="image-upload">
-                                    <label for="file-input-front">
+                                    <label for="">
                                         <img id="preview-front" class="text-center"
                                             src="images\default\system\product\default.jpg" alt="your image" />
                                     </label>
                                     <input type='file' id="file-input-front" onchange="readURL(this);" />
                                 </div>
                                 <a id="clear-front" class="hide" onclick="clearURL(this);">Clear</a>
+                                <span id="front_image_error" class="error-popup"></span>
                             </div>
                             <div class="upload-section">
                                 <p>Top</p>

@@ -10,6 +10,14 @@ function validate_form(){
     var client_category_error = document.getElementById('client_category_error');
     var product_type_element = document.getElementById('product_type');
     var product_type = product_type_element.options[product_type_element.selectedIndex].value;
+    var front_image = document.getElementById('file-input-front').files[0];
+
+    if (document.getElementById('file-input-front').value == '') {
+        document.getElementById('front_image_error').innerHTML = 'Required';
+        is_valid_form = false;
+    } else {
+        document.getElementById('front_image_error').innerHTML = '';
+    }
 
     if (name == '') { 
         name_error.innerHTML = 'Name is required';
@@ -44,7 +52,13 @@ function validate_form(){
         }
     }
 
-    return is_valid_form;
+    if (is_valid_form) {
+        var formData = new FormData();
+        formData.append('name', name);
+        formData.append('brand', brand);
+        formData.append('client_category', client_category);
+
+    }
 }
 
 function allow_submit_sku_form() {
@@ -59,15 +73,10 @@ function allow_submit_sku_form() {
     }
 }
 
+
 jQuery(document).ready(function () {
     // when a change is made to drop down function is called
     jQuery('#product_type').change(function () {
         allow_submit_sku_form();
-    });
-    // if the current page in the window is new_sku_form.php
-    if (window.location.href.match("new_sku_form.php") != null) {
-        var formElement = document.getElementById("sku_form");
-        // Validates form on submission wont submit to server if errors are detected
-        formElement.onsubmit = validate_form;
-    }
+    });   
 });
