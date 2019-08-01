@@ -346,6 +346,13 @@ foreach($measurement_units as $measurement_unit){
                                 </div>
                             </div>
                         </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <p>Additional Attributes</p>
+                                <button type="button" class="btn btn-outline-dark" data-toggle="modal" href="#edit_brand">EDIT ATTRIBUTES</button>
+                                <?php require('edit_attribute_modal.php'); ?>
+                            </div>
+                        </div>
                     </div>
                     <div id="substitution" class="tabcontent sub_tabcontent">
                         <div class="form-row">
