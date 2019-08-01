@@ -19,6 +19,59 @@
                         <div class="col col-md-6">
                             <button class="btn btn-success" disabled>Create</button>
                         </div>
+                        <div class="panel panel-primary" id="attribute_panel">                       
+                        <div class="panel-body">
+                            <div class="attribute-list">
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 1</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 2</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 1</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 2</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 1</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 2</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 1</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 2</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 1</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 2</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 1</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 2</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 1</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 2</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 1</label>
+                                </div>
+                                <div class="checkbox">
+                                  <label><input type="checkbox" value="">Option 2</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
             </div>
             <div class="modal-footer">

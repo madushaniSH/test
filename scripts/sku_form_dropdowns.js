@@ -34,6 +34,15 @@ function get_client_sub_category_list() {
     });
 }
 
+function get_attribute_list() {
+    jQuery.ajax({
+        type: "POST",
+        url: "attribute_list.php",
+        success: function (data) {
+            jQuery(".attribute-list").html(data);
+        }
+    });
+}
 
 jQuery(document).ready(function () {
     jQuery('#brand').select2({
