@@ -95,7 +95,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
         </div>
     </nav>
-    <form action="#" method="POST" id="sku_form">
+    <form action="process_sku_form.php" method="POST" id="sku_form"> 
         <div class="top-section form-group jumbotron">
             <button class="btn btn-primary btn-light" type="button"
                 onclick="window.location.href='products.php'">Cancel</button>
@@ -183,7 +183,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <p class="border-bottom my-3">Product Propeties</p>
                         <div class="form-group">
                             <label for="name">*Name:</label>
-                            <input type="text" id="name" class="form-control">
+                            <input type="text" id="name" name="name" class="form-control">
                             <span id="name_error" class="error-popup"></span>
                         </div>
                         <div class="form-group">
