@@ -32,6 +32,7 @@ if (!isset($_SESSION['logged_in'])) {
     <script src="scripts/user_registration_validate.js"></script>
     <script src="scripts/transition.js"></script>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="styles/new_user.css" />
     <title>Add New User</title>
 </head>
 <body class="register-page">
@@ -44,51 +45,176 @@ if (!isset($_SESSION['logged_in'])) {
     </div>
 </nav>
 <form action="process_registration.php" method="POST" id="register-form">
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="first_name">First Name</label>
-            <input type="text" class="form-control" placeholder="First Name" id="first_name" name="first_name">
-            <span id="first_name_error" class="error-popup"></span>    
+    <div class="tab">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="first_name">First Name</label>
+                <input type="text" class="form-control" placeholder="First Name" id="first_name" name="first_name">
+                <span id="first_name_error" class="error-popup"></span>    
+            </div>
+            <div class="form-group col-md-6">
+                <label for="last_name">Last Name</label>
+                <input type="text" class="form-control" placeholder="Last Name" id="last_name" name="last_name">
+                <span id="last_name_error" class="error-popup"></span>    
+            </div>
         </div>
-        <div class="form-group col-md-6">
-            <label for="last_name">Last Name</label>
-            <input type="text" class="form-control" placeholder="Last Name" id="last_name" name="last_name">
-            <span id="last_name_error" class="error-popup"></span>    
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="nic">Enter NIC Number</label>
+                <input type="text" class="form-control" placeholder="NIC" id="nic" name="nic">
+                <span id="nic_error" class="error-popup"></span>    
+            </div>
+        </div>
+        <!--Stuff not linked to db -->
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="contact_number">Contact Number</label>
+                <input type="text" class="form-control" placeholder="Contact Number" id="contact_number" name="contact_number">
+                <span id="contact_number_error" class="error-popup"></span>    
+            </div>
+            <div class="form-group col-md-6">
+                <label for="home_contact_number">Home Contact Number</label>
+                <input type="text" class="form-control" placeholder="Home Contact Number" id="home_contact_number" name="home_contact_number">
+                <span id="home_contact_number_error" class="error-popup"></span>    
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="home_address">Home Address</label>
+                <input type="text" class="form-control" placeholder="Home Address" id="home_address" name="home_address">
+                <span id="home_address_error" class="error-popup"></span>    
+            </div>
+            <div class="form-group col-md-6">
+                <label for="present_address">Present Address</label>
+                <input type="text" class="form-control" placeholder="Present Address" id="present_address" name="present_address">
+                <span id="present_address_error" class="error-popup"></span>    
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <lablel for="dob">Date of Birth</lablel>
+                <input type="date" class="form-control" id="gid" placeholder="Date of Birth" name="gid">
+                <span id="gid_error" class="error-popup"></span>    
+            </div>
         </div>
     </div>
-    <div class="form-row">
-        <div class="form-group col-md-4">
-            <lablel for="gid">Enter GID</lablel>
-            <input type="text" class="form-control" id="gid" placeholder="GID" name="gid">
-            <span id="gid_error" class="error-popup"></span>    
+    <div class="tab">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="bank_number">Bank Number</label>
+                <input type="text" class="form-control" placeholder="Bank Number" id="first_name" name="first_name">
+                <span id="first_name_error" class="error-popup"></span>    
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="last_name">Bank Branch</label>
+                <input type="text" class="form-control" placeholder="Bank Branch" id="last_name" name="last_name">
+                <span id="last_name_error" class="error-popup"></span>    
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="nic">Bank Account Number</label>
+                <input type="text" class="form-control" placeholder="Bank Account Number" id="nic" name="nic">
+                <span id="nic_error" class="error-popup"></span>    
+            </div>
         </div>
     </div>
-    <div class="form-row">
-        <div class="form-group col-md-4">
-            <label for="nic">Enter NIC Number</label>
-            <input type="text" class="form-control" placeholder="NIC" id="nic" name="nic">
-            <span id="nic_error" class="error-popup"></span>    
+    <!---->
+    <div class="tab">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <lablel for="gid">Enter GID</lablel>
+                <input type="text" class="form-control" id="gid" placeholder="GID" name="gid">
+                <span id="gid_error" class="error-popup"></span>    
+            </div>
+            <div class="form-group col-md-4">
+                <lablel for="dob">Join Date</lablel>
+                <input type="date" class="form-control" id="gid" placeholder="Join Date" name="gid">
+                <span id="gid_error" class="error-popup"></span>    
+            </div>
+        </div>
+        <div class="form-group">
+            <lablel for="username">Enter work email address (this will be used as your username)</lablel>
+            <input type="email" class="form-control" id="username" placeholder="Work Email" name="username">
+            <span id="username_error" class="error-popup"></span>    
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <lablel for="pwd">Enter Password</lablel>
+                <input type="password" class="form-control" id="pwd" placeholder="Password" name="pwd">
+                <span id="password_error" class="error-popup"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <lablel for="confirm_pwd">Confirm Password</lablel>
+                <input type="password" class="form-control" id="confirm_pwd" placeholder="Confirm Password" name="confirm_pwd">
+                <span id="confirm_password_error" class="error-popup"></span>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success"">Submit</button>
+        <a href="index.php">Back to Dashboard</a>
         </div>
     </div>
-    <div class="form-group">
-        <lablel for="username">Enter work email address (this will be used as your username)</lablel>
-        <input type="email" class="form-control" id="username" placeholder="Work Email" name="username">
-        <span id="username_error" class="error-popup"></span>    
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-4">
-            <lablel for="pwd">Enter Password</lablel>
-            <input type="password" class="form-control" id="pwd" placeholder="Password" name="pwd">
-            <span id="password_error" class="error-popup"></span>
-        </div>
-        <div class="form-group col-md-4">
-            <lablel for="confirm_pwd">Confirm Password</lablel>
-            <input type="password" class="form-control" id="confirm_pwd" placeholder="Confirm Password" name="confirm_pwd">
-            <span id="confirm_password_error" class="error-popup"></span>
+    <div style="overflow:auto;">
+        <div style="float:right;">
+        <button type="button" id="prevBtn"  class="btn btn-danger" onclick="nextPrev(-1)">Previous</button>
+        <button type="button" id="nextBtn"  class="btn btn-primary" onclick="nextPrev(1)">Next</button>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <a href="index.php">Back to Dashboard</a>
+    <!-- Circles which indicates the steps of the form: -->
+    <div style="text-align:center;margin-top:40px;">
+      <span class="step"></span>
+      <span class="step"></span>
+      <span class="step"></span>
+    </div>
+<script>
+var currentTab = 0; // Current tab is set to be the first tab (0)
+showTab(currentTab); // Display the current tab
+
+function showTab(n) {
+  // This function will display the specified tab of the form ...
+  var x = document.getElementsByClassName("tab");
+  x[n].style.display = "block";
+  // ... and fix the Previous/Next buttons:
+  if (n == 0) {
+    document.getElementById("prevBtn").style.display = "none";
+  } else {
+    document.getElementById("prevBtn").style.display = "inline";
+  }
+  if (n == (x.length - 1)) {
+    document.getElementById("nextBtn").style.display = "none";
+  } else {
+    document.getElementById("nextBtn").style.display = "inline";
+    document.getElementById("nextBtn").innerHTML = "Next";
+  }
+  // ... and run a function that displays the correct step indicator:
+  fixStepIndicator(n)
+}
+
+function nextPrev(n) {
+  // This function will figure out which tab to display
+  var x = document.getElementsByClassName("tab");
+  // Exit the function if any field in the current tab is invalid:
+  // Hide the current tab:
+  x[currentTab].style.display = "none";
+  // Increase or decrease the current tab by 1:
+  currentTab = currentTab + n;
+  // Otherwise, display the correct tab:
+  showTab(currentTab);
+}
+
+
+function fixStepIndicator(n) {
+  // This function removes the "active" class of all steps...
+  var i, x = document.getElementsByClassName("step");
+  for (i = 0; i < x.length; i++) {
+    x[i].className = x[i].className.replace(" active", "");
+  }
+  //... and adds the "active" class to the current step:
+  x[n].className += " active";
+}
+</script>
 </form>
 </body>
 </html>

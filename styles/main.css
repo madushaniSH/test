@@ -112,14 +112,6 @@ body {
     border-width: 0.1vw;
 }
 
-#register-form button {
-    background-color: #011627;
-}
-
-#register-form button:hover {
-    background-color: red;
-    color: white;
-}
 
 #register-form a {
     color: #011627;
