@@ -184,6 +184,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <div class="form-group">
                             <label for="name">*Name:</label>
                             <input type="text" id="name" class="form-control">
+                            <span id="name_error" class="error-popup"></span>
                         </div>
                         <div class="form-group">
                             <label for="item_code">Item Code:</label>
@@ -221,6 +222,7 @@ foreach($trax_catergorys as $trax_catergory){
                             </div>                         
                             <select name="brand" id="brand" class="form-control brand-list">
                             </select>
+                            <span id="brand_error" class="error-popup"></span>
                         </div>
                         <div class="form-group">
                             <label for="global_code">Global Code:</label>
@@ -324,6 +326,7 @@ foreach($measurement_units as $measurement_unit){
                                     <?php require('client_category_modal.php'); ?>
                                     <select name="client_category" id="client_category" class="form-control client-category-list">
                                     </select>
+                                    <span id="client_category_error" class="error-popup"></span>
                                 </div>
                             </div>
                         </div>
