@@ -240,6 +240,7 @@ foreach($container_types as $container_type){
 }
 ?>
                                 </select>
+                                <span id="container_type_error" class="error-popup"></span>
                             </div>
                             <div class="form-group">
                                 <label for="size">Size(#):</label>

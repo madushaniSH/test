@@ -8,6 +8,8 @@ function validate_form(){
     var client_category_element = document.getElementById('client_category');
     var client_category = client_category_element.options[client_category_element.selectedIndex].value;
     var client_category_error = document.getElementById('client_category_error');
+    var product_type_element = document.getElementById('product_type');
+    var product_type = product_type_element.options[product_type_element.selectedIndex].value;
 
     if (name == '') { 
         name_error.innerHTML = 'Name is required';
@@ -28,6 +30,18 @@ function validate_form(){
         is_valid_form = false;
     } else {
         client_category_error.innerHTML = '';
+    }
+
+    if (product_type == 'sku') {
+        var container_type_element = document.getElementById('container_type');
+        var container_type = container_type_element.options[container_type_element.selectedIndex].value;
+        var container_type_error = document.getElementById('container_type_error');
+        if (container_type == '') {
+            container_type_error.innerHTML = 'Container Type is required';
+            is_valid_form = false;
+        } else {
+            container_type_error.innerHTML = '';
+        }
     }
 
     return is_valid_form;
