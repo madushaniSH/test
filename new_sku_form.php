@@ -41,7 +41,7 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $trax_catergorys = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-$sql = 'SELECT product_container_type_name FROM product_container_type';
+$sql = 'SELECT product_container_type_id, product_container_type_name FROM product_container_type';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $container_types = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -95,11 +95,11 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
         </div>
     </nav>
-    <form method="POST" id="sku_form"> 
+    <form id="sku_form" enctype="multipart/form-data" method="POST"> 
         <div class="top-section form-group jumbotron">
             <button class="btn btn-primary btn-light" type="button"
                 onclick="window.location.href='products.php'">Cancel</button>
-            <button type="submit" class="btn btn-primary btn-success" id="submit_sku_form" disabled onclick="validate_form();">Save</button>
+            <button class="btn btn-primary btn-success" id="submit_sku_form" disabled onclick="validate_form();">Save</button>
         </div>
         <div class="form-row">
             <div class="form-section col-md-6">
@@ -110,7 +110,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <div class="upload-section">
                                 <p>Front</p>
                                 <div class="image-upload">
-                                    <label for="">
+                                    <label for="file-input-front">
                                         <img id="preview-front" class="text-center"
                                             src="images\default\system\product\default.jpg" alt="your image" />
                                     </label>
@@ -186,6 +186,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <label for="name">*Name:</label>
                             <input type="text" id="name" name="name" class="form-control">
                             <span id="name_error" class="error-popup"></span>
+                            <div id="dupliacte_error"></div>
                         </div>
                         <div class="form-group">
                             <label for="item_code">Item Code:</label>
@@ -237,7 +238,7 @@ foreach($trax_catergorys as $trax_catergory){
                                     <option value="" selected disabled>Select</option>
 <?php
 foreach($container_types as $container_type){
-    echo "<option>$container_type->product_container_type_name</option>";
+    echo "<option value=\"$container_type->product_container_type_id\">$container_type->product_container_type_name</option>";
 }
 ?>
                                 </select>
