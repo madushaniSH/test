@@ -103,12 +103,6 @@ if($row_count == 0){
             $stmt = $pdo->prepare($sql);
             $stmt->execute(['manufacturer_name'=>$_POST['manufacturer_name'], 'manufacturer_local_name'=>$manufacturer_local_name, 'manufacturer_source'=>$manufacturer_source, 'manufacturer_image_location'=>$image_file]);
 
-            $sql = 'SELECT manufacturer_id FROM manufacturer WHERE manufacturer_name = :manufacturer_name';
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute(['manufacturer_name'=>$_POST['manufacturer_name']]);
-            $manufacturer_info = $stmt->fetch(PDO::FETCH_OBJ);
-            $manufacturer_id = strval($manufacturer_info->manufacturer_id);
-
             echo "<span class=\"success-popup\">Submitted</span>";
             // script for closing modal
             echo "

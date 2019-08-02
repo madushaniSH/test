@@ -100,6 +100,29 @@ function allow_submit_sku_form() {
     }
 }
 
+function add_attribute_new() {
+    var new_attribute = document.getElementById('new_attribute').value;
+    if (new_attribute != '') {
+        var formData = new FormData();
+        formData.append('new_attribute', new_attribute);
+        jQuery.ajax({
+            url: 'process_attribute.php',
+            type: 'POST',
+            data: formData,
+            success: function (data) {
+                $('#attribute_error').html(data);
+                $('#edit_attribute')[0].reset();
+            },
+            error: function (data) {
+                alert("AJAX error");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
+
 function allow_create_attribute() {
     var new_attribute = document.getElementById('new_attribute').value;
     
@@ -118,6 +141,9 @@ jQuery(document).ready(function () {
     });
 
     jQuery('#sku_form').on('submit', function(e) {
+        e.preventDefault();
+    });
+    jQuery('#new_attribute_form').on('submit', function(e) {
         e.preventDefault();
     });
     jQuery('#new_attribute').on('keyup', function(){

@@ -17,18 +17,22 @@
                             </div>
                         </div>
                         <div class="col col-md-6">
-                            <button class="btn btn-success" id="add_attribute" disabled>Create</button>
+                            <button class="btn btn-success" id="add_attribute" disabled onclick="add_attribute_new();">Create</button>
+                            <span id="attribute_error"><span>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="panel panel-primary" id="attribute_panel">                       
                         <div class="panel-body">
                             <div class="attribute-list">
                             </div>
                         </div>
+                        </div>
                     </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" value="Submit">Save changes</button>
+                <button type="button" class="btn btn-success">Apply</button>
                     </form>
             </div>
         </div>
