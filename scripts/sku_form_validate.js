@@ -14,6 +14,7 @@ function validate_form() {
     var container_type_element = document.getElementById('container_type');
     var container_type = container_type_element.options[container_type_element.selectedIndex].value;
     var container_type_error = document.getElementById('container_type_error');
+    var smart_caption = document.getElementById('smart_caption').value;
 
     if (document.getElementById('file-input-front').value == '') {
         document.getElementById('front_image_error').innerHTML = 'Required';
@@ -30,6 +31,13 @@ function validate_form() {
         } else {
             document.getElementById('front_image_error').innerHTML = '';
         }
+    }
+
+    if (smart_caption == '') {
+        document.getElementById('smart_caption_error').innerHTML = 'Required';
+        form_ok = false;
+    } else {
+        document.getElementById('smart_caption_error').innerHTML = '';
     }
 
     if (name == '') {

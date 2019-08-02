@@ -516,6 +516,7 @@ foreach($measurement_units as $measurement_unit){
                             <div class="form-group">
                                 <label for="smart_caption">SMART Caption:</label>
                                 <input type="text" name="smart_caption" id="smart_caption" class="form-control">
+                                <span id="smart_caption_error" class="error-popup"></span>
                             </div>
                         </div>
                     </div>
