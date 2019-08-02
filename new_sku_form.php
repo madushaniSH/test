@@ -350,11 +350,13 @@ foreach($measurement_units as $measurement_unit){
                             <div class="col">
                                 <p>Additional Attributes</p>
                                 <button type="button" class="btn btn-outline-dark" data-toggle="modal" href="#edit_attribute" onclick="get_attribute_list();">EDIT ATTRIBUTES</button>
+                                <button type="button" class="btn btn-outline-danger" onclick="clear_attribute_list();" id="clear_attribute" style="display: none;">CLEAR ALL ATTRIBUTES</button>
                                 <?php require('edit_attribute_modal.php'); ?>
                             </div>
                         </div>
                         <div class="form-row" id="new_attribute_entry">
                         </div>
+                        
                     </div>
                     <div id="substitution" class="tabcontent sub_tabcontent">
                         <div class="form-row">

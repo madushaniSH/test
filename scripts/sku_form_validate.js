@@ -1,4 +1,4 @@
-function validate_form(){
+function validate_form() {
     var is_valid_form = true;
     var name = document.getElementById('name').value;
     var name_error = document.getElementById('name_error');
@@ -32,7 +32,7 @@ function validate_form(){
         }
     }
 
-    if (name == '') { 
+    if (name == '') {
         name_error.innerHTML = 'Name is required';
         is_valid_form = false;
     } else {
@@ -125,7 +125,7 @@ function add_attribute_new() {
 
 function allow_create_attribute() {
     var new_attribute = document.getElementById('new_attribute').value;
-    
+
     if (new_attribute != '') {
         document.getElementById('add_attribute').disabled = false;
     } else {
@@ -135,7 +135,7 @@ function allow_create_attribute() {
 
 function apply_attribute_list() {
     var attribute_elements = document.getElementsByClassName('form-check-attribute');
-    document.getElementById('new_attribute_entry').innerHTML = '';
+    //document.getElementById('new_attribute_entry').innerHTML = '';
     for (var i = 0; i < attribute_elements.length; i++) {
         if (attribute_elements[i].checked) {
             const div = document.createElement('div');
@@ -143,15 +143,22 @@ function apply_attribute_list() {
             const form_div = document.createElement('div');
             form_div.className = 'form-group';
             form_div.innerHTML = `
-            <label for="`+attribute_elements[i].value+`">`+attribute_elements[i].name+`</label>
-            <input type="text" id="`+attribute_elements[i].value+`" name="`+attribute_elements[i].value+`" class="form-control">
+            <label for="`+ attribute_elements[i].value + `">` + attribute_elements[i].name + `</label>
+            <input type="text" id="`+ attribute_elements[i].value + `" name="` + attribute_elements[i].value + `" class="form-control">
             `;
             div.appendChild(form_div);
             document.getElementById('new_attribute_entry').appendChild(div);
+            document.getElementById('clear_attribute').style.display = 'inline-block';
         }
     }
+
     reset_attribute_form();
     document.getElementById('close_edit_attribute').click();
+}
+
+function clear_attribute_list() {
+    document.getElementById('new_attribute_entry').innerHTML = '';
+    document.getElementById('clear_attribute').style.display = 'none';
 }
 
 
@@ -161,13 +168,13 @@ jQuery(document).ready(function () {
         allow_submit_sku_form();
     });
 
-    jQuery('#sku_form').on('submit', function(e) {
+    jQuery('#sku_form').on('submit', function (e) {
         e.preventDefault();
     });
-    jQuery('#new_attribute_form').on('submit', function(e) {
+    jQuery('#new_attribute_form').on('submit', function (e) {
         e.preventDefault();
     });
-    jQuery('#new_attribute').on('keyup', function(){
+    jQuery('#new_attribute').on('keyup', function () {
         allow_create_attribute();
     });
 });
