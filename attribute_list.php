@@ -43,7 +43,7 @@ $attribute_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 foreach($attribute_rows as $attribute_row){
     echo "
     <div class=\"form-check\">
-    <input class=\"form-check-input\" type=\"checkbox\" value=\"$attribute_row->attribute_id\" id=\"$attribute_row->attribute_name\">
+    <input class=\"form-check-input form-check-attribute\" type=\"checkbox\" value=\"$attribute_row->attribute_id\" id=\"$attribute_row->attribute_name\" name=\"$attribute_row->attribute_name\">
     <label class=\"form-check-label\" for=\"$attribute_row->attribute_name\">
     $attribute_row->attribute_name
     </label>

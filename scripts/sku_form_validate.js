@@ -133,6 +133,27 @@ function allow_create_attribute() {
     }
 }
 
+function apply_attribute_list() {
+    var attribute_elements = document.getElementsByClassName('form-check-attribute');
+    document.getElementById('new_attribute_entry').innerHTML = '';
+    for (var i = 0; i < attribute_elements.length; i++) {
+        if (attribute_elements[i].checked) {
+            const div = document.createElement('div');
+            div.className = 'col col-md-6';
+            const form_div = document.createElement('div');
+            form_div.className = 'form-group';
+            form_div.innerHTML = `
+            <label for="`+attribute_elements[i].value+`">`+attribute_elements[i].name+`</label>
+            <input type="text" id="`+attribute_elements[i].value+`" name="`+attribute_elements[i].value+`" class="form-control">
+            `;
+            div.appendChild(form_div);
+            document.getElementById('new_attribute_entry').appendChild(div);
+        }
+    }
+    reset_attribute_form();
+    document.getElementById('close_edit_attribute').click();
+}
+
 
 jQuery(document).ready(function () {
     // when a change is made to drop down function is called

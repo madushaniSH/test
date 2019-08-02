@@ -353,6 +353,8 @@ foreach($measurement_units as $measurement_unit){
                                 <?php require('edit_attribute_modal.php'); ?>
                             </div>
                         </div>
+                        <div class="form-row" id="new_attribute_entry">
+                        </div>
                     </div>
                     <div id="substitution" class="tabcontent sub_tabcontent">
                         <div class="form-row">

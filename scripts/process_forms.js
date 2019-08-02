@@ -59,6 +59,7 @@ function reset_manufacturer_form() {
     document.getElementById('manufacturer_image_error').innerHTML = '';
     document.getElementById('manufacturer_image_size_error').innerHTML = '';
     jQuery('#manu_results').empty();
+    document.getElementById('clear-manu-logo').click();
 }
 
 function submit_manufacturer_form() {
@@ -147,6 +148,12 @@ function reset_brand_form() {
     document.getElementById('brand_image_size_error').innerHTML = '';
     document.getElementById('brand_image_error').innerHTML = '';
     jQuery('#brand_results').empty();
+    document.getElementById('clear-brand-logo').click();
+}
+
+function reset_attribute_form() {
+    jQuery('#new_attribute_form')[0].reset();
+    document.getElementById('attribute_error').innerHTML = '';
 }
 
 function submit_brand_form() {

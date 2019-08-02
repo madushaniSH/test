@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="edit_attribute_title">New Additional Attribute</h5>
-                <button type="button" class="close" id="close_suggest_client_sub_category" data-dismiss="modal" aria-label="Close" onclick="reset_client_sub_category_form()">
+                <button type="button" class="close" id="close_edit_attribute" data-dismiss="modal" aria-label="Close" onclick="reset_attribute_form()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -31,8 +31,8 @@
                     </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success">Apply</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reset_attribute_form()">Close</button>
+                <button type="button" class="btn btn-success" onclick="apply_attribute_list();">Apply</button>
                     </form>
             </div>
         </div>
