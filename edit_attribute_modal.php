@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="POST" id="new_attribute">
+                <form method="POST" id="new_attribute_form">
                     <div class="form-row">
                         <div class="col col-md-6">
                             <div class="form-group">
@@ -17,7 +17,7 @@
                             </div>
                         </div>
                         <div class="col col-md-6">
-                            <button class="btn btn-success" disabled>Create</button>
+                            <button class="btn btn-success" id="add_attribute" disabled>Create</button>
                         </div>
                         <div class="panel panel-primary" id="attribute_panel">                       
                         <div class="panel-body">

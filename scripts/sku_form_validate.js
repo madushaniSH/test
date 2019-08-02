@@ -95,9 +95,18 @@ function allow_submit_sku_form() {
 
     if (product_type != '') {
         document.getElementById('submit_sku_form').disabled = false;
-        console.log('false');
     } else {
         document.getElementById('submit_sku_form').disabled = true;
+    }
+}
+
+function allow_create_attribute() {
+    var new_attribute = document.getElementById('new_attribute').value;
+    
+    if (new_attribute != '') {
+        document.getElementById('add_attribute').disabled = false;
+    } else {
+        document.getElementById('add_attribute').disabled = true;
     }
 }
 
@@ -106,8 +115,12 @@ jQuery(document).ready(function () {
     // when a change is made to drop down function is called
     jQuery('#product_type').change(function () {
         allow_submit_sku_form();
-    });   
+    });
+
     jQuery('#sku_form').on('submit', function(e) {
         e.preventDefault();
+    });
+    jQuery('#new_attribute').on('keyup', function(){
+        allow_create_attribute();
     });
 });

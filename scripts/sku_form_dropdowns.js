@@ -40,10 +40,6 @@ function get_attribute_list() {
         url: "attribute_list.php",
         success: function (data) {
             jQuery("#edit_attribute .attribute-list").html(data);
-            // load the url and show modal on success
-            $("#edit_attribute .modal-body").load(target, function () {
-                $("#edit_attribute").modal("show");
-            });
         },
         error: function (data) {
             alert("AJAX error");
