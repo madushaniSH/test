@@ -1,8 +1,8 @@
 <?php
 /*
-    Filename: client_sub_category_list.php
+    Filename: attribute_list.php
     Author: Malika Liyanage
-    Created: 31/07/2019
+    Created: 02/08/2019
 */
 
 session_start();
@@ -35,13 +35,18 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT client_sub_category_id, client_sub_category_name FROM client_sub_category';
+$sql = 'SELECT attribute_id, attribute_name FROM attribute';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
-$client_sub_category_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+$attribute_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-echo "<option value=\"\" selected disabled>Select</option>";
-foreach($client_sub_category_rows as $client_sub_category_info){
-    echo "<option value=\"$client_sub_category_info->client_sub_category_id\">$client_sub_category_info->client_sub_category_name</option>";
+foreach($attribute_rows as $attribute_row){
+    echo "
+    <div class=\"form-check\">
+    <input class=\"form-check-input\" type=\"checkbox\" value=\"$attribute_row->attribute_id\" id=\"$attribute_row->attribute_name\">
+    <label class=\"form-check-label\" for=\"$attribute_row->attribute_name\">
+    $attribute_row->attribute_name
+    </label>
+    </div>";
 }
 ?>

@@ -1,15 +1,15 @@
-<div class="modal fade modal-form" id="edit_brand" tabindex="-1" role="dialog"
-    aria-labelledby="edit_brand_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+<div class="modal fade modal-form" id="edit_attribute" tabindex="-1" role="dialog"
+    aria-labelledby="edit_attribute_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="edit_brand_title">New Additional Attribute</h5>
+                <h5 class="modal-title" id="edit_attribute_title">New Additional Attribute</h5>
                 <button type="button" class="close" id="close_suggest_client_sub_category" data-dismiss="modal" aria-label="Close" onclick="reset_client_sub_category_form()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form action="POST" id="new_attribute">
+                <form method="POST" id="new_attribute">
                     <div class="form-row">
                         <div class="col col-md-6">
                             <div class="form-group">
@@ -22,54 +22,6 @@
                         <div class="panel panel-primary" id="attribute_panel">                       
                         <div class="panel-body">
                             <div class="attribute-list">
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 1</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 2</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 1</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 2</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 1</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 2</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 1</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 2</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 1</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 2</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 1</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 2</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 1</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 2</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 1</label>
-                                </div>
-                                <div class="checkbox">
-                                  <label><input type="checkbox" value="">Option 2</label>
-                                </div>
                             </div>
                         </div>
                     </div>

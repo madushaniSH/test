@@ -39,8 +39,15 @@ function get_attribute_list() {
         type: "POST",
         url: "attribute_list.php",
         success: function (data) {
-            jQuery(".attribute-list").html(data);
-        }
+            jQuery("#edit_attribute .attribute-list").html(data);
+            // load the url and show modal on success
+            $("#edit_attribute .modal-body").load(target, function () {
+                $("#edit_attribute").modal("show");
+            });
+        },
+        error: function (data) {
+            alert("AJAX error");
+        },
     });
 }
 
@@ -57,4 +64,5 @@ jQuery(document).ready(function () {
         width: '100%'
     });
     get_client_sub_category_list();
+    get_attribute_list();
 });

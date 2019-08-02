@@ -324,7 +324,7 @@ foreach($measurement_units as $measurement_unit){
                                 <div class="form-group">
                                     <div>
                                         <label for="client_catergory">*Client Category:</label>
-                                        <button type="button" class="btn btn-outline-success btn-sm btn-outline-tab" data-toggle="modal" href="#suggest_client_category" onclick="get_manufacturer_list();">Add New</button>
+                                        <button type="button" class="btn btn-outline-success btn-sm btn-outline-tab" data-toggle="modal" href="#suggest_client_category">Add New</button>
                                     </div>
                                     <?php require('client_category_modal.php'); ?>
                                     <select name="client_category" id="client_category" class="form-control client-category-list">
@@ -338,7 +338,7 @@ foreach($measurement_units as $measurement_unit){
                                 <div class="form-group">
                                     <div>
                                         <label for="client_sub_catergory">Client Subcategory:</label>
-                                        <button type="button" class="btn btn-outline-success btn-sm btn-outline-tab-one" data-toggle="modal" href="#suggest_client_sub_category" onclick="get_manufacturer_list();">Add New</button>
+                                        <button type="button" class="btn btn-outline-success btn-sm btn-outline-tab-one" data-toggle="modal" href="#suggest_client_sub_category">Add New</button>
                                     </div>
                                     <?php require('client_sub_category_modal.php'); ?>
                                     <select name="client_sub_category" id="client_sub_category" class="form-control client-sub-category-list">                                       
@@ -349,7 +349,7 @@ foreach($measurement_units as $measurement_unit){
                         <div class="form-row">
                             <div class="col">
                                 <p>Additional Attributes</p>
-                                <button type="button" class="btn btn-outline-dark" data-toggle="modal" href="#edit_brand">EDIT ATTRIBUTES</button>
+                                <button type="button" class="btn btn-outline-dark" data-toggle="modal" href="#edit_attribute" onclick="get_attribute_list();">EDIT ATTRIBUTES</button>
                                 <?php require('edit_attribute_modal.php'); ?>
                             </div>
                         </div>
