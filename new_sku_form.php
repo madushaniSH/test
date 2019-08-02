@@ -498,18 +498,24 @@ foreach($measurement_units as $measurement_unit){
                 <div id="palette" class="tabcontent">
                     <p>Palette Properties</p>
                     <div class="form-row">
-                        <div class="col">
+                        <div class="col col-md-6">
                             <div class="form-group">
-                                <label for="">SMART Level 1:</label>
-                                <select name="" id="" class="form-control" disabled>
-                                </select>
+                                <label for="smart_level_one">SMART Level 1:</label>
+                                <input type="text" name="smart_level_one" id="smart_level_one" class="form-control" disabled>
+                                <span id="smart_level_one_error" class="error-popup"></span>
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col col-md-6">
                             <div class="form-group">
-                                <label for="">SMART Level 2:</label>
-                                <select name="" id="" class="form-control" disabled>
-                                </select>
+                                <label for="smart_level_two">SMART Level 2:</label>
+                                <input type="text" name="smart_level_two" id="smart_level_two" class="form-control" disabled>
+                                <span id="smart_level_two_error" class="error-popup"></span>
+                            </div>
+                        </div>
+                        <div class="col col-md-6">
+                            <div class="form-group">
+                                <label for="smart_caption">SMART Caption:</label>
+                                <input type="text" name="smart_caption" id="smart_caption" class="form-control">
                             </div>
                         </div>
                     </div>

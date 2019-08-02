@@ -161,6 +161,18 @@ function clear_attribute_list() {
     document.getElementById('clear_attribute').style.display = 'none';
 }
 
+function check_smart_level() {
+    if (document.getElementById('smart_level_one').value == '') {
+        document.getElementById('smart_level_one_error').innerHTML = 'Please populate Client category';
+    } else {
+        document.getElementById('smart_level_one_error').innerHTML = '';
+    }
+    if (document.getElementById('smart_level_two').value == '') {
+        document.getElementById('smart_level_two_error').innerHTML = 'Please populate Brand';
+    } else {
+        document.getElementById('smart_level_two_error').innerHTML = '';
+    }
+}
 
 jQuery(document).ready(function () {
     // when a change is made to drop down function is called
@@ -176,5 +188,14 @@ jQuery(document).ready(function () {
     });
     jQuery('#new_attribute').on('keyup', function () {
         allow_create_attribute();
+    });
+    check_smart_level();
+    jQuery('#trax_category').change(function (){
+        document.getElementById('smart_level_one').value = document.getElementById('trax_category').options[document.getElementById('trax_category').selectedIndex].text;
+        check_smart_level();
+    });
+    jQuery('#brand').change(function (){
+        document.getElementById('smart_level_two').value = document.getElementById('brand').options[document.getElementById('brand').selectedIndex].text;
+        check_smart_level();
     });
 });
