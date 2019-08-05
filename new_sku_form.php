@@ -36,21 +36,6 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT project_trax_category_name FROM project_trax_category';
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$trax_catergorys = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-$sql = 'SELECT product_container_type_id, product_container_type_name FROM product_container_type';
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$container_types = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-$sql = 'SELECT product_measurement_unit_name FROM product_measurement_unit';
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -201,7 +186,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <label for="product_type">*Product Type:</label>
                             <select name="product_type" id="product_type" class="form-control"
                                 onChange="check_option();">
-                                <option value=""></option>
+                                <option value=""selected disabled>Select</option>
                                 <option value="empty">Empty</option>
                                 <option value="irrelevant">Irrelevant</option>
                                 <option value="other">Other</option>
@@ -211,13 +196,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                         </div>
                         <div class="form-group">
                             <label for="trax_category">Trax Category:</label>
-                            <select name="trax_category" id="trax_category" class="form-control">
-                                <option value="" selected disabled>Select</option>
-<?php
-foreach($trax_catergorys as $trax_catergory){
-    echo "<option>$trax_catergory->project_trax_category_name</option>";
-}
-?>
+                            <select name="trax_category" id="trax_category" class="form-control trax-category-list">
                             </select>
                         </div>
                         <div class="form-group">
@@ -239,13 +218,7 @@ foreach($trax_catergorys as $trax_catergory){
                             <p class="border-top my-3">Physical Attributes</p>
                             <div class="form-group">
                                 <label for="container_type">*Container Type:</label>
-                                <select name="container_type" id="container_type" class="form-control">
-                                    <option value="" selected disabled>Select</option>
-<?php
-foreach($container_types as $container_type){
-    echo "<option value=\"$container_type->product_container_type_id\">$container_type->product_container_type_name</option>";
-}
-?>
+                                <select name="container_type" id="container_type" class="form-control container-type-list">
                                 </select>
                                 <span id="container_type_error" class="error-popup"></span>
                             </div>
@@ -259,13 +232,7 @@ foreach($container_types as $container_type){
                             </div>
                             <div class="form-group">
                                 <label for="measurement_unit">Measurement Unit:</label>
-                                <select name="measurement_unit" id="measurement_unit"class="form-control">
-                                    <option value="" selected disabled>Select</option>
-<?php
-foreach($measurement_units as $measurement_unit){
-    echo "<option>$measurement_unit->product_measurement_unit_name</option>";
-}
-?>                                    
+                                <select name="measurement_unit" id="measurement_unit"class="form-control measurement-unit-list">                                   
                                 </select>
                             </div>
                             <div class="form-group">

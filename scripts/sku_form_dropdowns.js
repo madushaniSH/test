@@ -34,6 +34,36 @@ function get_client_sub_category_list() {
     });
 }
 
+function get_trax_category_list() {
+    jQuery.ajax({
+        type: "POST",
+        url: "trax_category_list.php",
+        success: function (data) {
+            jQuery(".trax-category-list").html(data);
+        }
+    });
+}
+
+function  get_container_type_list() {
+    jQuery.ajax({
+        type: "POST",
+        url: "container_type_list.php",
+        success: function (data) {
+            jQuery(".container-type-list").html(data);
+        }
+    });
+}
+
+function get_measurement_unit() {
+    jQuery.ajax({
+        type: "POST",
+        url: "measurement_unit_list.php",
+        success: function (data) {
+            jQuery(".measurement-unit-list").html(data);
+        }
+    });
+}
+
 function get_attribute_list() {
     jQuery.ajax({
         type: "POST",
@@ -60,5 +90,20 @@ jQuery(document).ready(function () {
         width: '100%'
     });
     get_client_sub_category_list();
+    jQuery('#trax_category').select2({
+        width: '100%'
+    })
+    get_trax_category_list();
+    jQuery('#product_type').select2({
+        width: '100%'
+    })
+    jQuery('#container_type').select2({
+        width: '100%'
+    })
+    get_container_type_list();
+    jQuery('#measurement_unit').select2({
+        width: '100%'
+    })
+    get_measurement_unit();
     get_attribute_list();
 });
