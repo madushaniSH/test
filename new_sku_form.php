@@ -198,6 +198,7 @@ catch(PDOException $e){
                             <label for="trax_category">Trax Category:</label>
                             <select name="trax_category" id="trax_category" class="form-control trax-category-list">
                             </select>
+                            <span id="trax_category_error" class="error-popup"></span>
                         </div>
                         <div class="form-group">
                             <div>
@@ -227,8 +228,8 @@ catch(PDOException $e){
                                 <input type="text" id="size" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="size">Sub-packages(#):</label>
-                                <input type="text" id="size" class="form-control">
+                                <label for="sub_packages">Sub-packages(#):</label>
+                                <input type="text" id="sub_packages" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="measurement_unit">Measurement Unit:</label>
@@ -236,20 +237,20 @@ catch(PDOException $e){
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="size">Units(#):</label>
-                                <input type="text" id="size" class="form-control">
+                                <label for="unit">Units(#):</label>
+                                <input type="text" id="unit" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="size">Height(mm):</label>
-                                <input type="text" id="size" class="form-control">
+                                <label for="height">Height(mm):</label>
+                                <input type="text" id="height" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="size">Width(mm):</label>
-                                <input type="text" id="size" class="form-control">
+                                <label for="width">Width(mm):</label>
+                                <input type="text" id="width" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="size">Depth(mm):</label>
-                                <input type="text" id="size" class="form-control">
+                                <label for="depth">Depth(mm):</label>
+                                <input type="text" id="depth" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -309,7 +310,7 @@ catch(PDOException $e){
                             <div class="col col-md-6">
                                 <div class="form-group">
                                     <div>
-                                        <label for="client_sub_catergory">Client Subcategory:</label>
+                                        <label for="client_sub_category">Client Subcategory:</label>
                                         <button type="button" class="btn btn-outline-success btn-sm btn-outline-tab-one" data-toggle="modal" href="#suggest_client_sub_category">Add New</button>
                                     </div>
                                     <?php require('client_sub_category_modal.php'); ?>

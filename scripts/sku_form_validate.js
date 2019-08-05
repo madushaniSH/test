@@ -42,12 +42,13 @@ function check_file_uploaded(file_name) {
     if (document.getElementById(file_name).value != '') {
         return true;
     }
-    return false; s
+    return false;
 }
 
 
 // function is used to validate the sku form
 function validate_form() {
+    var formData = new FormData();
     var is_valid_form = true;
     var name = document.getElementById('name').value;
     var name_error = document.getElementById('name_error');
@@ -63,24 +64,44 @@ function validate_form() {
     var container_type = container_type_element.options[container_type_element.selectedIndex].value;
     var container_type_error = document.getElementById('container_type_error');
     var smart_caption = document.getElementById('smart_caption').value;
+    var item_code = document.getElementById('item_code').value;
+    var global_code = document.getElementById('global_code').value;
+    var sub_packages = document.getElementById('sub_packages').value;
+    var size = document.getElementById('size').value;
+    var unit = document.getElementById('unit').value;
+    var height = document.getElementById('height').value;
+    var width = document.getElementById('width').value;
+    var depth = document.getElementById('depth').value;
+    var measurement_unit_element = document.getElementById('measurement_unit');
+    var measurement_unit = measurement_unit_element.options[measurement_unit_element.selectedIndex].value;
+    var trax_category_element = document.getElementById('trax_category');
+    var trax_category = trax_category_element.options[trax_category_element.selectedIndex].value;
+    var short_name = document.getElementById('short_name').value;
+    var local_name = document.getElementById('local_name').value;
+    var ean = document.getElementById('ean').value;
+    var client_sub_catergory_element = document.getElementById('client_sub_category');
+    var client_sub_catergory = client_sub_catergory_element.options[client_sub_catergory_element.selectedIndex].value;
+
 
     if (check_file_uploaded('file-input-front')) {
         document.getElementById('front_image_error').innerHTML = '';
         if (check_image_upload('file-input-front', 'front_image_error')) {
             document.getElementById('front_image_error').innerHTML = '';
+            formData.append('file-input-front', document.getElementById('file-input-front').files[0]);
         } else {
-            form_ok = false;
+            is_valid_form = false;
         }
     } else {
         document.getElementById('front_image_error').innerHTML = '<br>Required';
-        form_ok = false;
+        is_valid_form = false;
     }
 
     if (check_file_uploaded('file-input-top')) {
         if (check_image_upload('file-input-top', 'top_image_error')) {
             document.getElementById('top_image_error').innerHTML = '';
+            formData.append('file-input-top', document.getElementById('file-input-top').files[0]);
         } else {
-            form_ok = false;
+            is_valid_form = false;
         }
     } else {
         document.getElementById('top_image_error').innerHTML = '';
@@ -89,8 +110,9 @@ function validate_form() {
     if (check_file_uploaded('file-input-back')) {
         if (check_image_upload('file-input-back', 'back_image_error')) {
             document.getElementById('back_image_error').innerHTML = '';
+            formData.append('file-input-back', document.getElementById('file-input-back').files[0]);
         } else {
-            form_ok = false;
+            is_valid_form = false;
         }
     } else {
         document.getElementById('back_image_error').innerHTML = '';
@@ -99,8 +121,9 @@ function validate_form() {
     if (check_file_uploaded('file-input-bottom')) {
         if (check_image_upload('file-input-bottom', 'bottom_image_error')) {
             document.getElementById('bottom_image_error').innerHTML = '';
+            formData.append('file-input-bottom', document.getElementById('file-input-bottom').files[0]);
         } else {
-            form_ok = false;
+            is_valid_form = false;
         }
     } else {
         document.getElementById('bottom_image_error').innerHTML = '';
@@ -109,8 +132,9 @@ function validate_form() {
     if (check_file_uploaded('file-input-side1')) {
         if (check_image_upload('file-input-side1', 'side1_image_error')) {
             document.getElementById('side1_image_error').innerHTML = '';
+            formData.append('file-input-side1', document.getElementById('file-input-side1').files[0]);
         } else {
-            form_ok = false;
+            is_valid_form = false;
         }
     } else {
         document.getElementById('side1_image_error').innerHTML = '';
@@ -119,8 +143,9 @@ function validate_form() {
     if (check_file_uploaded('file-input-side2')) {
         if (check_image_upload('file-input-side2', 'side2_image_error')) {
             document.getElementById('side2_image_error').innerHTML = '';
+            formData.append('file-input-side2', document.getElementById('file-input-side2').files[0]);
         } else {
-            form_ok = false;
+            is_valid_form = false;
         }
     } else {
         document.getElementById('side2_image_error').innerHTML = '';
@@ -128,7 +153,7 @@ function validate_form() {
 
     if (smart_caption == '') {
         document.getElementById('smart_caption_error').innerHTML = 'Required';
-        form_ok = false;
+        is_valid_form = false;
     } else {
         document.getElementById('smart_caption_error').innerHTML = '';
     }
@@ -160,17 +185,62 @@ function validate_form() {
             is_valid_form = false;
         } else {
             container_type_error.innerHTML = '';
+            formData.append('container_type_id', trim(container_type));
         }
+    }
+
+    if (trax_category == '') {
+        document.getElementById('trax_category_error').innerHTML = 'Trax Category is required';
+        is_valid_form = false;
+    } else {
+        document.getElementById('trax_category_error').innerHTML = '';
     }
 
     // if valid form submits it to the php file for processing
     if (is_valid_form) {
-        var formData = new FormData();
-        formData.append('name', name);
-        formData.append('client_category_id', client_category);
-        formData.append('brand_id', brand);
-        formData.append('container_type_id', container_type);
-        formData.append('front_image', front_image)
+        formData.append('name', trim(name));
+        formData.append('client_category_id', trim(client_category));
+        formData.append('brand_id', trim(brand);
+        formData.append('trax_category', trim(trax_category));
+        if (item_code != '') {
+            formData.append('item_code', trim(item_code));
+        }
+        if (global_code != '') {
+            formData.append('global_code', trim(global_code));
+        }
+        if (size != '') {
+            formData.append('size', trim(size));
+        }
+        if (sub_packages != '') {
+            formData.append('sub_packages', trim(sub_packages));
+        }
+        if (measurement_unit != '') {
+            formData.append('measurement_unit', trim(measurement_unit));
+        }
+        if (unit != '') {
+            formData.append('unit', trim(unit));
+        }
+        if (height != '') {
+            formData.append('height', trim(height));
+        }
+        if (width != '') {
+            formData.append('width', trim(width));
+        }
+        if (depth != '') {
+            formData.append('depth', trim(depth));
+        }
+        if (short_name != '') {
+            formData.append('short_name', trim(short_name));
+        }
+        if (local_name != '') {
+            formData.append('local_name', trim(local_name));
+        }
+        if (ean != '') {
+            formData.append('ean', trim(ean));
+        }
+        if (client_sub_catergory != '') {
+            formData.append('client_sub_catergory', trim(client_sub_catergory));
+        }
 
         jQuery.ajax({
             url: 'process_sku_form.php',
@@ -178,7 +248,6 @@ function validate_form() {
             data: formData,
             success: function (data) {
                 $('#dupliacte_error').html(data);
-                $('#sku_form')[0].reset();
             },
             error: function (data) {
                 alert("AJAX error");
