@@ -122,3 +122,8 @@
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
 }
+
+.error-popup-image {
+    font-size: 12px;
+    color: darkred;
+}

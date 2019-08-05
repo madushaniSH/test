@@ -117,7 +117,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                                     <input type='file' id="file-input-front" onchange="readURL(this);" />
                                 </div>
                                 <a id="clear-front" class="hide" onclick="clearURL(this);">Clear</a>
-                                <span id="front_image_error" class="error-popup"></span>
+                                <span id="front_image_error" class="error-popup-image warning"></span>
                             </div>
                             <div class="upload-section">
                                 <p>Top</p>
@@ -129,6 +129,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                                     <input type='file' id="file-input-top" onchange="readURL(this);" />
                                 </div>
                                 <a id="clear-top" class="hide" onclick="clearURL(this);">Clear</a>
+                                <span id="top_image_error" class="error-popup-image warning"></span>
                             </div>
                         </div>
                         <div class="form-row">
@@ -142,6 +143,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                                     <input type='file' id="file-input-back" onchange="readURL(this);" />
                                 </div>
                                 <a id="clear-back" class="hide" onclick="clearURL(this);">Clear</a>
+                                <span id="back_image_error" class="error-popup-image warning"></span>
                             </div>
                             <div class="upload-section">
                                 <p>Bottom</p>
@@ -153,6 +155,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                                     <input type='file' id="file-input-bottom" onchange="readURL(this);" />
                                 </div>
                                 <a id="clear-bottom" class="hide" onclick="clearURL(this);">Clear</a>
+                                <span id="bottom_image_error" class="error-popup-image warning"></span>
                             </div>
                         </div>
                         <div class="form-row">
@@ -166,6 +169,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                                     <input type='file' id="file-input-side1" onchange="readURL(this);" />
                                 </div>
                                 <a id="clear-side1" class="hide" onclick="clearURL(this);">Clear</a>
+                                <span id="side1_image_error" class="error-popup-image warning"></span>
                             </div>
                             <div class="upload-section">
                                 <p>Side2</p>
@@ -177,6 +181,7 @@ $measurement_units = $stmt->fetchAll(PDO::FETCH_OBJ);
                                     <input type='file' id="file-input-side2" onchange="readURL(this);" />
                                 </div>
                                 <a id="clear-side2" class="hide" onclick="clearURL(this);">Clear</a>
+                                <span id="side2_image_error" class="error-popup-image warning"></span>
                             </div>
                         </div>
                     </div>

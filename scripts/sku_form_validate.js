@@ -1,3 +1,52 @@
+function get_extension(file_path) {
+    var parts = file_path.split('.');
+    return parts[parts.length - 1];
+}
+
+function is_image(file_path) {
+    var ext = get_extension(file_path);
+    switch (ext.toLowerCase()) {
+        case 'jpg':
+            return true;
+    }
+    return false;
+}
+
+function check_image_upload(file_name, error_message_name) {
+    var file = document.getElementById(file_name).files[0];
+    var file_path = document.getElementById(file_name).value;
+    var error_message_element = document.getElementById(error_message_name);
+    var is_image_ok = true;
+    error_message_element.innerHTML = '';
+    if (is_image(file_path)) {
+        // new image object
+        var image = new Image();
+        image.src = image.src = window.URL.createObjectURL(file);
+        image.onload = function () {
+            if (image.height < 300 || image.width < 300) {
+                error_message_element.innerHTML = '<br>Must be at least be 300 x 300';
+                is_image_ok = false;
+            }
+            if ((file.size / 1024 / 1024) > 3) {
+                error_message_element.innerHTML = '<br>Must be smaller than 3 MB';
+            }
+        }
+    } else {
+        error_message_element.innerHTML = '<br>File must be of type jpg';
+        is_image_ok = false;
+    }
+    return is_image_ok;
+}
+
+function check_file_uploaded(file_name) {
+    if (document.getElementById(file_name).value != '') {
+        return true;
+    }
+    return false; s
+}
+
+
+// function is used to validate the sku form
 function validate_form() {
     var is_valid_form = true;
     var name = document.getElementById('name').value;
@@ -10,27 +59,71 @@ function validate_form() {
     var client_category_error = document.getElementById('client_category_error');
     var product_type_element = document.getElementById('product_type');
     var product_type = product_type_element.options[product_type_element.selectedIndex].value;
-    var front_image = document.getElementById('file-input-front').files[0];
     var container_type_element = document.getElementById('container_type');
     var container_type = container_type_element.options[container_type_element.selectedIndex].value;
     var container_type_error = document.getElementById('container_type_error');
     var smart_caption = document.getElementById('smart_caption').value;
 
-    if (document.getElementById('file-input-front').value == '') {
-        document.getElementById('front_image_error').innerHTML = 'Required';
-        is_valid_form = false;
-    } else {
+    if (check_file_uploaded('file-input-front')) {
         document.getElementById('front_image_error').innerHTML = '';
-        document.getElementById('front_image_error').innerHTML = '';
-        // gets the image size in mega bytes
-        var image_size_mb = document.getElementById('file-input-front').files[0].size / 1024 / 1024;
-        // checks if the image is large than 3 MB
-        if (image_size_mb > 3) {
-            document.getElementById('front_image_error').innerHTML = 'Image Size cannot exceed 3 MB';
-            form_ok = false;
-        } else {
+        if (check_image_upload('file-input-front', 'front_image_error')) {
             document.getElementById('front_image_error').innerHTML = '';
+        } else {
+            form_ok = false;
         }
+    } else {
+        document.getElementById('front_image_error').innerHTML = '<br>Required';
+        form_ok = false;
+    }
+
+    if (check_file_uploaded('file-input-top')) {
+        if (check_image_upload('file-input-top', 'top_image_error')) {
+            document.getElementById('top_image_error').innerHTML = '';
+        } else {
+            form_ok = false;
+        }
+    } else {
+        document.getElementById('top_image_error').innerHTML = '';
+    }
+
+    if (check_file_uploaded('file-input-back')) {
+        if (check_image_upload('file-input-back', 'back_image_error')) {
+            document.getElementById('back_image_error').innerHTML = '';
+        } else {
+            form_ok = false;
+        }
+    } else {
+        document.getElementById('back_image_error').innerHTML = '';
+    }
+
+    if (check_file_uploaded('file-input-bottom')) {
+        if (check_image_upload('file-input-bottom', 'bottom_image_error')) {
+            document.getElementById('bottom_image_error').innerHTML = '';
+        } else {
+            form_ok = false;
+        }
+    } else {
+        document.getElementById('bottom_image_error').innerHTML = '';
+    }
+
+    if (check_file_uploaded('file-input-side1')) {
+        if (check_image_upload('file-input-side1', 'side1_image_error')) {
+            document.getElementById('side1_image_error').innerHTML = '';
+        } else {
+            form_ok = false;
+        }
+    } else {
+        document.getElementById('side1_image_error').innerHTML = '';
+    }
+
+    if (check_file_uploaded('file-input-side2')) {
+        if (check_image_upload('file-input-side2', 'side2_image_error')) {
+            document.getElementById('side2_image_error').innerHTML = '';
+        } else {
+            form_ok = false;
+        }
+    } else {
+        document.getElementById('side2_image_error').innerHTML = '';
     }
 
     if (smart_caption == '') {
@@ -70,6 +163,7 @@ function validate_form() {
         }
     }
 
+    // if valid form submits it to the php file for processing
     if (is_valid_form) {
         var formData = new FormData();
         formData.append('name', name);
@@ -187,7 +281,6 @@ jQuery(document).ready(function () {
     jQuery('#product_type').change(function () {
         allow_submit_sku_form();
     });
-
     jQuery('#sku_form').on('submit', function (e) {
         e.preventDefault();
     });
@@ -198,11 +291,11 @@ jQuery(document).ready(function () {
         allow_create_attribute();
     });
     check_smart_level();
-    jQuery('#trax_category').change(function (){
+    jQuery('#trax_category').change(function () {
         document.getElementById('smart_level_one').value = document.getElementById('trax_category').options[document.getElementById('trax_category').selectedIndex].text;
         check_smart_level();
     });
-    jQuery('#brand').change(function (){
+    jQuery('#brand').change(function () {
         document.getElementById('smart_level_two').value = document.getElementById('brand').options[document.getElementById('brand').selectedIndex].text;
         check_smart_level();
     });

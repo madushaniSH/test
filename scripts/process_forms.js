@@ -141,7 +141,6 @@ function get_manufacturer_list() {
 }
 
 function reset_brand_form() {
-    jQuery('#new_brand')[0].reset();
     document.getElementById('brand_name_error').innerHTML = '';
     document.getElementById('brand_manufacturer_error').innerHTML = '';
     document.getElementById('brand_source_error').innerHTML = '';
@@ -149,6 +148,7 @@ function reset_brand_form() {
     document.getElementById('brand_image_error').innerHTML = '';
     jQuery('#brand_results').empty();
     document.getElementById('clear-brand-logo').click();
+    jQuery('#new_brand')[0].reset();
 }
 
 function reset_attribute_form() {

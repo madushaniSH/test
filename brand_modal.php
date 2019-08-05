@@ -76,7 +76,7 @@
                     </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reset_brand_form()">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reset_brand_form();">Close</button>
                 <button type="button" class="btn btn-success" value="Submit" onclick="submit_brand_form();">Save changes</button>
                 </form>
             </div>
