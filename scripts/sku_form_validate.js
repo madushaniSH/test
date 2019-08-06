@@ -185,7 +185,7 @@ function validate_form() {
             is_valid_form = false;
         } else {
             container_type_error.innerHTML = '';
-            formData.append('container_type_id', trim(container_type));
+            formData.append('container_type_id', container_type);
         }
     }
 
@@ -198,48 +198,48 @@ function validate_form() {
 
     // if valid form submits it to the php file for processing
     if (is_valid_form) {
-        formData.append('name', trim(name));
-        formData.append('client_category_id', trim(client_category));
-        formData.append('brand_id', trim(brand);
-        formData.append('trax_category', trim(trax_category));
+        formData.append('name',name);
+        formData.append('client_category_id', client_category);
+        formData.append('brand_id', brand);
+        formData.append('trax_category', trax_category);
         if (item_code != '') {
-            formData.append('item_code', trim(item_code));
+            formData.append('item_code',item_code);
         }
         if (global_code != '') {
-            formData.append('global_code', trim(global_code));
+            formData.append('global_code', global_code);
         }
         if (size != '') {
-            formData.append('size', trim(size));
+            formData.append('size', size);
         }
         if (sub_packages != '') {
-            formData.append('sub_packages', trim(sub_packages));
+            formData.append('sub_packages', sub_packages);
         }
         if (measurement_unit != '') {
-            formData.append('measurement_unit', trim(measurement_unit));
+            formData.append('measurement_unit',measurement_unit);
         }
         if (unit != '') {
-            formData.append('unit', trim(unit));
+            formData.append('unit', unit);
         }
         if (height != '') {
-            formData.append('height', trim(height));
+            formData.append('height', height);
         }
         if (width != '') {
-            formData.append('width', trim(width));
+            formData.append('width', width);
         }
         if (depth != '') {
-            formData.append('depth', trim(depth));
+            formData.append('depth', depth);
         }
         if (short_name != '') {
-            formData.append('short_name', trim(short_name));
+            formData.append('short_name', short_name);
         }
         if (local_name != '') {
-            formData.append('local_name', trim(local_name));
+            formData.append('local_name', local_name);
         }
         if (ean != '') {
-            formData.append('ean', trim(ean));
+            formData.append('ean', ean);
         }
         if (client_sub_catergory != '') {
-            formData.append('client_sub_catergory', trim(client_sub_catergory));
+            formData.append('client_sub_catergory', client_sub_catergory);
         }
 
         jQuery.ajax({
