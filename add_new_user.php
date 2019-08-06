@@ -17,6 +17,29 @@ if (!isset($_SESSION['logged_in'])) {
 	    exit();
     }
 }
+
+// Current settings to connect to the user account database
+require('user_db_connection.php');
+
+// Setting up the DSN
+$dsn = 'mysql:host='.$host.';dbname='.$dbname;
+
+/*
+    Attempts to connect to the databse, if no connection was estabishled
+    kills the script
+*/
+try{
+    // Creating a new PDO instance
+    $pdo = new PDO($dsn, $user, $pwd);
+    // setting the PDO error mode to exception
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+
+catch(PDOException $e){
+    // throws error message
+    echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,19 +71,19 @@ if (!isset($_SESSION['logged_in'])) {
     <div class="tab">
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="first_name">First Name</label>
+                <label for="first_name">*First Name</label>
                 <input type="text" class="form-control" placeholder="First Name" id="first_name" name="first_name">
                 <span id="first_name_error" class="error-popup"></span>    
             </div>
             <div class="form-group col-md-6">
-                <label for="last_name">Last Name</label>
+                <label for="last_name">*Last Name</label>
                 <input type="text" class="form-control" placeholder="Last Name" id="last_name" name="last_name">
                 <span id="last_name_error" class="error-popup"></span>    
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
-                <label for="nic">Enter NIC Number</label>
+                <label for="nic">*Enter NIC Number</label>
                 <input type="text" class="form-control" placeholder="NIC" id="nic" name="nic">
                 <span id="nic_error" class="error-popup"></span>    
             </div>
@@ -68,19 +91,18 @@ if (!isset($_SESSION['logged_in'])) {
         <!--Stuff not linked to db -->
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="contact_number">Contact Number</label>
+                <label for="contact_number">*Contact Number</label>
                 <input type="text" class="form-control" placeholder="Contact Number" id="contact_number" name="contact_number">
                 <span id="contact_number_error" class="error-popup"></span>    
             </div>
             <div class="form-group col-md-6">
                 <label for="home_contact_number">Home Contact Number</label>
                 <input type="text" class="form-control" placeholder="Home Contact Number" id="home_contact_number" name="home_contact_number">
-                <span id="home_contact_number_error" class="error-popup"></span>    
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="home_address">Home Address</label>
+                <label for="home_address">*Home Address</label>
                 <input type="text" class="form-control" placeholder="Home Address" id="home_address" name="home_address">
                 <span id="home_address_error" class="error-popup"></span>    
             </div>
@@ -92,9 +114,39 @@ if (!isset($_SESSION['logged_in'])) {
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
-                <lablel for="dob">Date of Birth</lablel>
-                <input type="date" class="form-control" id="gid" placeholder="Date of Birth" name="gid">
-                <span id="gid_error" class="error-popup"></span>    
+                <label for="dob">*Date of Birth</label>
+                <input type="date" class="form-control" id="dob" placeholder="Date of Birth" name="dob">
+                <span id="dob_error" class="error-popup"></span>    
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <p>Transport Method</p>
+                <div class="radio">
+                  <label><input type="radio" name="transport_method" value="Own" checked>Own</label>
+                </div>
+                <div class="radio">
+                  <label><input type="radio" name="transport_method" value="Office Transport">Office Transport</label>
+                </div>        
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="designation">*Designation:</label>
+                <select name="designation" id="designation" class="form-control">
+                    <option value=""selected disabled>Select</option>
+<?php
+$sql = 'SELECT designation_id, designation_name FROM designations WHERE designation_id != 1';
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$designation_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+foreach($designation_rows as $designation_row){
+    echo "<option value=\"$designation_row->designation_id\">$designation_row->designation_name</option>";
+}
+?>                    
+                </select> 
+                <span id="designation_error" class="error-popup"></span>    
             </div>
         </div>
     </div>
@@ -125,29 +177,29 @@ if (!isset($_SESSION['logged_in'])) {
     <div class="tab">
         <div class="form-row">
             <div class="form-group col-md-4">
-                <lablel for="gid">Enter GID</lablel>
+                <label for="gid">*Enter GID</label>
                 <input type="text" class="form-control" id="gid" placeholder="GID" name="gid">
-                <span id="gid_error" class="error-popup"></span>    
-            </div>
-            <div class="form-group col-md-4">
-                <lablel for="dob">Join Date</lablel>
-                <input type="date" class="form-control" id="gid" placeholder="Join Date" name="gid">
                 <span id="gid_error" class="error-popup"></span>    
             </div>
         </div>
         <div class="form-group">
-            <lablel for="username">Enter work email address (this will be used as your username)</lablel>
+            <label for="personal_email">Personal Email</label>
+            <input type="email" class="form-control" id="personal_email" placeholder="Personal Email" name="personal_email">
+            <span id="personal_email_error" class="error-popup"></span>    
+        </div>
+        <div class="form-group">
+            <label for="username">*Enter work email address (this will be used as your username)</label>
             <input type="email" class="form-control" id="username" placeholder="Work Email" name="username">
             <span id="username_error" class="error-popup"></span>    
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
-                <lablel for="pwd">Enter Password</lablel>
+                <label for="pwd">Enter Password</label>
                 <input type="password" class="form-control" id="pwd" placeholder="Password" name="pwd">
                 <span id="password_error" class="error-popup"></span>
             </div>
             <div class="form-group col-md-4">
-                <lablel for="confirm_pwd">Confirm Password</lablel>
+                <label for="confirm_pwd">Confirm Password</label>
                 <input type="password" class="form-control" id="confirm_pwd" placeholder="Confirm Password" name="confirm_pwd">
                 <span id="confirm_password_error" class="error-popup"></span>
             </div>

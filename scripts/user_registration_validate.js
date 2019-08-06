@@ -34,6 +34,11 @@ function validate_form() {
         var username = document.getElementById("username").value;
         var password = document.getElementById("pwd").value;
         var confirm_password = document.getElementById("confirm_pwd").value;
+        var dob = document.getElementById('dob').value;
+        var contact_number = document.getElementById('contact_number').value;
+        var home_address = document.getElementById('home_address').value;
+        var designation_element = document.getElementById('designation');
+        var designation = designation_element.options[designation_element.selectedIndex].value;
 
         var first_name_error = document.getElementById("first_name_error");
         var first_name_error = document.getElementById("first_name_error");
@@ -42,6 +47,38 @@ function validate_form() {
         var username_error = document.getElementById("username_error");
         var password_error = document.getElementById("password_error");
         var confirm_password_error = document.getElementById("confirm_password_error");
+        var dob_error = document.getElementById('dob_error');
+        var contact_number_error = document.getElementById('contact_number_error');
+        var home_address_error = document.getElementById('home_address_error');
+        var designation_error = document.getElementById('designation_error');
+
+        if (dob == '') {
+            dob_error.innerHTML = 'Date of Birth cannot be empty';
+            is_valid_form = false;
+        } else {
+            dob_error.innerHTML = '';
+        }
+
+        if (home_address == '') {
+            home_address_error.innerHTML = 'Home Address cannot be empty';
+            is_valid_form = false;
+        } else {
+            home_address_error.innerHTML = '';
+        }
+
+        if (designation == '') {
+            designation_error.innerHTML = 'Designation must be selected';
+            is_valid_form = false;
+        } else {
+            designation_error.innerHTML = '';
+        }
+ 
+        if (contact_number == '') {
+            contact_number_error.innerHTML = 'Contact number cannot be empty';
+            is_valid_form = false;
+        } else {
+            contact_number_error.innerHTML = '';
+        }
 
         /*Performs validation on the first name */
         if (is_empty(first_name)) {
