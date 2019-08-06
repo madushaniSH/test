@@ -16,7 +16,13 @@ if (!isset($_SESSION['logged_in'])) {
         header('Location: index.php');
 	    exit();
     }
+    if(!(isset($_POST['first_name']))){
+        header('Location: index.php');
+	    exit();
+    }
 }
+
+
 
 // Current settings to connect to the user account database
 require('user_db_connection.php');
@@ -123,10 +129,45 @@ if($error_message == ''){
     if($row_count != 0){
         $error_message .= '<p>GID : <strong><em>'.$gid.'</strong></em> already exists in the database</p>';
     }else{
+        if ($_POST['personal_email'] == '') {
+            $personal_email = NULL;
+        } else {
+            $personal_email = $_POST['personal_email'];
+        }
+        if ($_POST['home_contact_number'] == '') {
+            $home_contact_number = NULL;
+        } else {
+            $home_contact_number = $_POST['home_contact_number'];
+        }
+
+        if ($_POST['present_address'] == '') {
+            $present_address = NULL;
+        } else {
+            $present_address = $_POST['present_address'];
+        }
+
+        if ($_POST['bank_name'] == '') {
+            $bank_name = NULL;
+        } else {
+            $bank_name = $_POST['bank_name'];
+        }
+
+        if ($_POST['bank_branch'] == '') {
+            $bank_branch = NULL;
+        } else {
+            $bank_branch = $_POST['bank_branch'];
+        }
+
+        if ($_POST['bank_account_number'] == '') {
+            $bank_account_number = NULL;
+        } else {
+            $bank_account_number = $_POST['bank_account_number'];
+        }
+
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $sql = 'INSERT INTO accounts (account_gid, account_nic, account_email, account_password, account_first_name, account_last_name) VALUES (:gid, :nic, :email, :user_password, :first_name, :last_name)';
+        $sql = 'INSERT INTO accounts (account_gid, account_nic, account_email, account_password, account_first_name, account_last_name, account_contact_no, account_home_contact_no, account_transport_method, account_dob, account_bank_name, account_bank_branch, account_bank_account_number, account_personal_email ) VALUES (:gid, :nic, :email, :user_password, :first_name, :last_name, :account_contact_no, :account_home_contact_no, :account_transport_method, :account_dob, :account_bank_name, :account_bank_branch, :account_bank_account_number, :account_personal_email )';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['gid'=>$gid, 'nic'=>$nic, 'email'=>$username, 'user_password'=>$hashed_password, 'first_name'=>$first_name, 'last_name'=>$last_name]);
+        $stmt->execute(['gid'=>$gid, 'nic'=>$nic, 'email'=>$username, 'user_password'=>$hashed_password, 'first_name'=>$first_name, 'last_name'=>$last_name, 'account_contact_no'=>$_POST['contact_number'], 'account_home_contact_no'=>$home_contact_number, 'account_transport_method'=>$_POST['account_transport_method'],'account_dob'=>$_POST['dob'], 'account_bank_name'=>$bank_name, 'account_bank_branch'=>$bank_branch, 'account_bank_account_number'=>$bank_account_number, 'account_personal_email'=>$personal_email]);
         $success_message .= '<p class='.'"alert alert-success text-center"'.'>Account Successfully Created</p>';
     }
 }

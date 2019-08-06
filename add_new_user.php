@@ -123,10 +123,10 @@ catch(PDOException $e){
             <div class="form-group col-md-4">
                 <p>Transport Method</p>
                 <div class="radio">
-                  <label><input type="radio" name="transport_method" value="Own" checked>Own</label>
+                  <label><input type="radio" name="account_transport_method" value="own" checked>Own</label>
                 </div>
                 <div class="radio">
-                  <label><input type="radio" name="transport_method" value="Office Transport">Office Transport</label>
+                  <label><input type="radio" name="account_transport_method" value="office">Office Transport</label>
                 </div>        
             </div>
         </div>
@@ -153,23 +153,20 @@ foreach($designation_rows as $designation_row){
     <div class="tab">
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="bank_number">Bank Number</label>
-                <input type="text" class="form-control" placeholder="Bank Number" id="first_name" name="first_name">
-                <span id="first_name_error" class="error-popup"></span>    
+                <label for="bank_name">Bank Name</label>
+                <input type="text" class="form-control" placeholder="Bank Name" id="bank_name" name="bank_name">   
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="last_name">Bank Branch</label>
-                <input type="text" class="form-control" placeholder="Bank Branch" id="last_name" name="last_name">
-                <span id="last_name_error" class="error-popup"></span>    
+                <label for="bank_branch">Bank Branch</label>
+                <input type="text" class="form-control" placeholder="Bank Branch" id="bank_branch" name="bank_branch">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="nic">Bank Account Number</label>
-                <input type="text" class="form-control" placeholder="Bank Account Number" id="nic" name="nic">
-                <span id="nic_error" class="error-popup"></span>    
+                <label for="bank_account_number">Bank Account Number</label>
+                <input type="text" class="form-control" placeholder="Bank Account Number" id="bank_account_number" name="bank_account_number">  
             </div>
         </div>
     </div>
