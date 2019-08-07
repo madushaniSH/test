@@ -165,10 +165,30 @@ if($error_message == ''){
         }
 
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $sql = 'INSERT INTO accounts (account_gid, account_nic, account_email, account_password, account_first_name, account_last_name, account_contact_no, account_home_contact_no, account_transport_method, account_dob, account_bank_name, account_bank_branch, account_bank_account_number, account_personal_email ) VALUES (:gid, :nic, :email, :user_password, :first_name, :last_name, :account_contact_no, :account_home_contact_no, :account_transport_method, :account_dob, :account_bank_name, :account_bank_branch, :account_bank_account_number, :account_personal_email )';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['gid'=>$gid, 'nic'=>$nic, 'email'=>$username, 'user_password'=>$hashed_password, 'first_name'=>$first_name, 'last_name'=>$last_name, 'account_contact_no'=>$_POST['contact_number'], 'account_home_contact_no'=>$home_contact_number, 'account_transport_method'=>$_POST['account_transport_method'],'account_dob'=>$_POST['dob'], 'account_bank_name'=>$bank_name, 'account_bank_branch'=>$bank_branch, 'account_bank_account_number'=>$bank_account_number, 'account_personal_email'=>$personal_email]);
-        $success_message .= '<p class='.'"alert alert-success text-center"'.'>Account Successfully Created</p>';
+        try
+        { 
+            $sql = 'INSERT INTO accounts (account_gid, account_nic, account_email, account_password, account_first_name, account_last_name, account_contact_no, account_home_contact_no, account_transport_method, account_dob, account_bank_name, account_bank_branch, account_bank_account_number, account_personal_email ) VALUES (:gid, :nic, :email, :user_password, :first_name, :last_name, :account_contact_no, :account_home_contact_no, :account_transport_method, :account_dob, :account_bank_name, :account_bank_branch, :account_bank_account_number, :account_personal_email )';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['gid'=>$gid, 'nic'=>$nic, 'email'=>$username, 'user_password'=>$hashed_password, 'first_name'=>$first_name, 'last_name'=>$last_name, 'account_contact_no'=>$_POST['contact_number'], 'account_home_contact_no'=>$home_contact_number, 'account_transport_method'=>$_POST['account_transport_method'],'account_dob'=>$_POST['dob'], 'account_bank_name'=>$bank_name, 'account_bank_branch'=>$bank_branch, 'account_bank_account_number'=>$bank_account_number, 'account_personal_email'=>$personal_email]);
+
+            $sql = 'SELECT account_id FROM accounts WHERE account_gid = :account_gid';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['account_gid'=>$gid]);
+            $account_info = $stmt->fetch(PDO::FETCH_OBJ);
+            $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
+
+            if ($row_count != 0) {
+                $sql = 'INSERT INTO account_designations (account_id, designation_id) VALUES (:account_id, :designation_id)';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['account_id'=>$account_info->account_id, 'designation_id'=>$_POST['designation']]);
+            }
+            $success_message .= '<p class='.'"alert alert-success text-center"'.'>Account Successfully Created</p>';
+        }
+        catch(PDOException $e)
+        {
+            $error_message .= $e->getMessage();
+        }
+        
     }
 }
 

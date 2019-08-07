@@ -186,6 +186,7 @@ $total_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
     <?php require('client_sub_category_modal.php'); ?>
     <?php require('brand_modal.php'); ?>
     <?php require('manufacturer_modal.php'); ?>
+    <div class="tableFixHead">
     <table class="table table-bordered" id="product_table">
         <thead class="thead-dark">
             <tr>
@@ -236,6 +237,7 @@ foreach($rows as $row){
 ?>
         </tbody>
     </table>
+    </div>
 </body>
 
 </html>

@@ -123,10 +123,10 @@ catch(PDOException $e){
             <div class="form-group col-md-4">
                 <p>Transport Method</p>
                 <div class="radio">
-                  <label><input type="radio" name="account_transport_method" value="own" checked>Own</label>
+                  <label><input type="radio" name="account_transport_method" id="account_transport_method" value="own" checked>Own</label>
                 </div>
                 <div class="radio">
-                  <label><input type="radio" name="account_transport_method" value="office">Office Transport</label>
+                  <label><input type="radio" name="account_transport_method" id="account_transport_method" value="office">Office Transport</label>
                 </div>        
             </div>
         </div>

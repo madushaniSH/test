@@ -267,21 +267,31 @@ body {
     display: none;
 }
 
-.btn-outline-success{
+.btn-outline-success {
     margin-left: 10vw;
 }
 
-.btn-sku-form{
+.btn-sku-form {
     margin-left: 0vw;
     margin-left: 16.6vw;
 }
 
-.btn-outline-tab{
+.btn-outline-tab {
     margin-left: 0;
     margin-left: 8.9vw;
 }
 
-.btn-outline-tab-one{
+.btn-outline-tab-one {
     margin-left: 0;
     margin-left: 8vw;
+}
+
+.tableFixHead {
+    overflow-y: auto;
+    height: 850px;
+}
+
+.tableFixHead thead {
+    position: sticky;
+    top: 0;
 }
