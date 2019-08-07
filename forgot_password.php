@@ -61,7 +61,7 @@ if(isset($_SESSION['id'])){
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         //additional headers
-        $headers .= 'From: g14863.malika@gmail.com' . "\r\n";
+        $headers .= 'From: Data Operations Department<gssdataoperationsdeparment@gmail.com>' . "\r\n";
         //send email
         mail($to,$subject,$mail_content,$headers);
         $display_message = 'A new reset password link has been sent to your email address '.$user_information->account_email;

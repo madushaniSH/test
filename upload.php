@@ -43,7 +43,7 @@ $default_image_dir = 'images\default\system\avatar\default-avatar.jpg';
 $image_upload_dir = 'images/user/'.$_SESSION['id'].'/uploads/profile/';
 
 // max allowed file size
-$max_size = 500000;
+$max_size = 1000000;
 
 // set the default file extension whitelist
 $whitelist_ext = array('jpeg','jpg','png','gif');
@@ -91,10 +91,10 @@ if(file_exists($image_file)){
     $out['error'][] = "Image with that name already exists";
 }
 
-// check file size error if size is greater than 500kb
+// check file size error if size is greater than 1 MB
 if($_FILES["file_to_upload"]["size"] > $max_size){
     $valid_upload = false;
-    $out['error'][] = "Image cannot be larger than 500KB";
+    $out['error'][] = "Image cannot be larger than 1MB";
 }
 
 if($valid_upload){
