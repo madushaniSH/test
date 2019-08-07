@@ -291,7 +291,7 @@ body {
     height: 850px;
 }
 
-.tableFixHead thead {
+.tableFixHead thead th{
     position: sticky;
     top: 0;
 }
