@@ -68,6 +68,7 @@ function submit_manufacturer_form() {
     var manufacturer_source = document.getElementById('manufacturer_source').value;
     var manu_logo = document.getElementById('file-input-manu-logo').files[0];
     var form_ok = true;
+    var is_image_set = false;
 
     // checks if manufacturer name is not empty
     if (manufacturer_name == '') {
@@ -86,10 +87,7 @@ function submit_manufacturer_form() {
     }
 
     // checks if a manufacturer image was uploaded
-    if (document.getElementById('file-input-manu-logo').value == '') {
-        document.getElementById('manufacturer_image_error').innerHTML = 'Required';
-        form_ok = false;
-    } else {
+    if (document.getElementById('file-input-manu-logo').value != '') {
         document.getElementById('manufacturer_image_error').innerHTML = '';
         // gets the image size in mega bytes
         var image_size_mb = document.getElementById('file-input-manu-logo').files[0].size / 1024 / 1024;
@@ -99,6 +97,7 @@ function submit_manufacturer_form() {
             form_ok = false;
         } else {
             document.getElementById('manufacturer_image_size_error').innerHTML = '';
+            is_image_set = true;
         }
     }
 
@@ -107,7 +106,10 @@ function submit_manufacturer_form() {
         formData.append('manufacturer_name', manufacturer_name);
         formData.append('manufacturer_local_name', manufacturer_local_name);
         formData.append('manufacturer_source', manufacturer_source);
-        formData.append('manu_logo', manu_logo);
+        formData.append('is_image_set', is_image_set);
+        if (is_image_set) {
+            formData.append('manu_logo', manu_logo);
+        }
 
         jQuery.ajax({
             url: 'process_manufacturer.php',
