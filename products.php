@@ -228,8 +228,8 @@ foreach($rows as $row){
             <td>$row->product_name</td>
             <td>$row->product_item_code</td>
             <td>$client_catergory_information->client_category_name</td>
-            <td>$brand_information->brand_name</td>
             <td>$manufacturer_information->manufacturer_name</td>
+            <td>$brand_information->brand_name</td>
             <td>$row->product_global_status</td>
         </tr>
     ";
