@@ -25,7 +25,9 @@ if (!isset($_SESSION['logged_in'])) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="scripts/transition.js"></script>
     <script src="scripts/papaparse.min.js"></script>
+    <script src="scripts/validate_upload_probe.js"></script>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.1.0/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
     <script>
   var data;
  
@@ -58,5 +60,10 @@ if (!isset($_SESSION['logged_in'])) {
         </div>
     </div>
 </nav>
-<input type="file" id="csv-file" name="files"/>
+<div class="jumbotron" id="probe-upload">
+    <div id="probe-upload-container">
+        <label for="csv-file"><i class="fas fa-upload"><span> Upload Probe CSV file</span></i></label>
+        <input type="file" id="csv-file" name="files"/>
+    </div>
+</div>
 </body>

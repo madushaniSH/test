@@ -295,3 +295,20 @@ body {
     position: sticky;
     top: 0;
 }
+
+#probe-upload {
+    font-size: 1vw;
+    text-align: center;
+}
+
+#proprobe-upload #probe-upload-container{
+    width: 25%;
+}
+
+#probe-upload input{
+    display: none;
+}
+
+#probe-upload i:hover{
+    color: #7D6B91;
+}
