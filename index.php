@@ -67,6 +67,12 @@ echo "
     </span>
     Add new user
 </a>
+<a href=\"upload_probe.php\" class=\"btn btn-lg dashboard-btn\">
+    <span>
+        <i class=\"fas fa-file-import fa-2x\"></i>
+    </span>
+    Upload Probes
+</a>
 ";
 }
 ?>
