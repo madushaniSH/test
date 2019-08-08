@@ -42,7 +42,9 @@ $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
 if($row_count == 0){
     $valid_upload = true;
-    if ($_POST['is_image_set']) {
+    $image_file = '';
+    $is_image_set = $_POST['is_image_set'];
+    if ($is_image_set === true) {
         // the file dir the uploaded image of the user is supposed to be stored in
         $image_upload_dir = "images/system/projects/$dbname/manufacturer/images/";
 
@@ -86,18 +88,16 @@ if($row_count == 0){
             $valid_upload = false;
             $error .= "Invalid file Type<br>";
         }
-        if(!move_uploaded_file($_FILES["manu_logo"]["tmp_name"], $image_file)) {
-            $valid_upload = false;
-            echo "<span class=\"error-popup\">Server Error</span>";
+        if(!(move_uploaded_file($_FILES["manu_logo"]["tmp_name"], $image_file))) {
+            echo "<span class=\"error-popup\">Server Error</span><br>";
         }
+    } else {
+        $image_file = 'images\default\system\product\default.jpg';
     }
 
     if($valid_upload){
         $manufacturer_local_name = $_POST['manufacturer_local_name'];
         $manufacturer_source = $_POST['manufacturer_source'];
-        if (!$_POST['is_image_set']) {
-            $image_file = 'images\default\system\product\default.jpg';
-        }
         
         if ($manufacturer_local_name == '') {
             $manufacturer_local_name = NULL;
