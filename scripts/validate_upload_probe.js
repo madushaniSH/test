@@ -30,7 +30,7 @@ function handleFileSelect(evt) {
                             url: 'process_probe.php',
                             type: 'POST',
                             data: formData,
-                            async: false,
+                            async: true,
                             success: function (data) {
                                 $('#probe_upload_success').html(data);
                             },

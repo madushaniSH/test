@@ -95,6 +95,5 @@ for ($i = 0; $i < count($probe_list); $i++) {
 
 $current_count = $_POST['current_count'];
 $total_count = $_POST['total_count'];
-$percentage = (int)($current_count / $total_count * 100);
-echo "Processing : $percentage% ($current_count rows out of $total_count)";
+echo "Processing : Row $current_count out of $total_count";
 ?>
