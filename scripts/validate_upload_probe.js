@@ -8,6 +8,7 @@ function handleFileSelect(evt) {
         jQuery('#probe_upload_success').html('');
         jQuery('#probe_upload_error').html('Error. Only CSV files can be uploaded');
     } else {
+        jQuery('#probe_upload_error').html('');
         Papa.parse(file, {
             header: true,
             dynamicTyping: true,
@@ -23,12 +24,15 @@ function handleFileSelect(evt) {
                         formData.append('brand', brand);
                         formData.append('category', category);
                         formData.append('probe_list', probe_list);
+                        formData.append('current_count', i);
+                        formData.append('total_count', results.data.length);
                         jQuery.ajax({
                             url: 'process_probe.php',
                             type: 'POST',
                             data: formData,
+                            async: false,
                             success: function (data) {
-                                $('#probe_server_error').html(data);
+                                $('#probe_upload_success').html(data);
                             },
                             error: function (data) {
                                 alert("AJAX error");
@@ -39,10 +43,9 @@ function handleFileSelect(evt) {
                         });
                     }
                 }
+                jQuery('#probe_upload_success').html('Processed: ' + file_name);
             }
         });
-        jQuery('#probe_upload_success').html('Processed ' + file_name);
-        jQuery('#probe_upload_error').html('');
     }
 }
 

@@ -50,7 +50,5 @@ if (!isset($_SESSION['logged_in'])) {
     </div>
     <span id="probe_upload_error" class="error-popup"></span>
     <span id="probe_upload_success" class="success-popup"></span>
-    <span id="probe_percentage" class="success-popup"></span>
-    <span id="probe_server_error" class="success-popup"></span>
 </div>
 </body>

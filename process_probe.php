@@ -92,4 +92,9 @@ for ($i = 0; $i < count($probe_list); $i++) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['brand_id'=>$brand_id, 'client_category_id'=>$category_id, 'probe_id'=>$probe_list[$i], 'probe_added_user_id'=>$_SESSION['id']]);
 }
+
+$current_count = $_POST['current_count'];
+$total_count = $_POST['total_count'];
+$percentage = (int)($current_count / $total_count * 100);
+echo "Processing : $percentage% ($current_count rows out of $total_count)";
 ?>
