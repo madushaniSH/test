@@ -53,7 +53,7 @@ for ($i = 0; $i < $total_count; $i++) {
         $category = $csvAsArray[$i]["category"];
         $probe_list = explode (",", $csvAsArray[$i]["probes_with_high_other_percent"]);
         
-        if ($brand != 'null') {
+        if ($brand != '') {
             $sql = 'SELECT brand_id FROM brand WHERE brand_name = :brand_name';
             $stmt = $pdo->prepare($sql);
             $stmt->execute(['brand_name'=>$brand]);
@@ -74,7 +74,7 @@ for ($i = 0; $i < $total_count; $i++) {
             $brand_id = null;
         }
 
-        if ($category != 'null') {
+        if ($category != '') {
             $sql = 'SELECT client_category_id FROM client_category WHERE client_category_name = :client_category_name';
             $stmt = $pdo->prepare($sql);
             $stmt->execute(['client_category_name'=>$category]);
