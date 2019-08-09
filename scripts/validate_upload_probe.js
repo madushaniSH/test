@@ -38,7 +38,6 @@ function handleFileSelect(evt) {
                             processData: false
                         });
                     }
-                    probe_percentage.innerHTML = 'Uploaded Percentage : ' + ((i + 1) / results.data.length) * 100 + '%';
                 }
             }
         });
