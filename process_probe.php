@@ -39,61 +39,69 @@ catch(PDOException $e){
     exit();
 }
 
-$probe_list = explode (",", $_POST['probe_list']);  
-$brand = $_POST['brand'];
-$category = $_POST['category'];
+$tmpName = $_FILES['csv']['tmp_name'];
+$csvAsArray = array_map('str_getcsv', file($tmpName,FILE_SKIP_EMPTY_LINES));
+$keys = array_shift($csvAsArray);
+foreach ($csvAsArray as $i=>$row) {
+    $csvAsArray[$i] = array_combine($keys, $row);
+}
 
-if ($brand != 'null') {
-    $sql = 'SELECT brand_id FROM brand WHERE brand_name = :brand_name';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['brand_name'=>$brand]);
-    $brand_info = $stmt->fetch(PDO::FETCH_OBJ);
-    $brand_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
-    if ($brand_row_count == 0) {
-        $sql = 'INSERT INTO brand (brand_name) VALUES (:brand_name)';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['brand_name'=>$brand]);
+$total_count = count($csvAsArray);
+for ($i = 0; $i < $total_count; $i++) {
+    if ($csvAsArray[$i]["probes_with_high_other_percent"] != '') {
+        $brand = $csvAsArray[$i]["brand"];
+        $category = $csvAsArray[$i]["category"];
+        $probe_list = explode (",", $csvAsArray[$i]["probes_with_high_other_percent"]);
+        
+        if ($brand != 'null') {
+            $sql = 'SELECT brand_id FROM brand WHERE brand_name = :brand_name';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['brand_name'=>$brand]);
+            $brand_info = $stmt->fetch(PDO::FETCH_OBJ);
+            $brand_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
+            if ($brand_row_count == 0) {
+                $sql = 'INSERT INTO brand (brand_name) VALUES (:brand_name)';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['brand_name'=>$brand]);
 
-        $sql = 'SELECT brand_id FROM brand WHERE brand_name = :brand_name';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['brand_name'=>$brand]);
-        $brand_info = $stmt->fetch(PDO::FETCH_OBJ);
+                $sql = 'SELECT brand_id FROM brand WHERE brand_name = :brand_name';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['brand_name'=>$brand]);
+                $brand_info = $stmt->fetch(PDO::FETCH_OBJ);
+            }
+            $brand_id = $brand_info->brand_id;
+        } else {
+            $brand_id = null;
+        }
+
+        if ($category != 'null') {
+            $sql = 'SELECT client_category_id FROM client_category WHERE client_category_name = :client_category_name';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['client_category_name'=>$category]);
+            $category_info = $stmt->fetch(PDO::FETCH_OBJ);
+            $category_row_cout = $stmt->rowCount(PDO::FETCH_OBJ);
+
+            if ($category_row_cout == 0) {
+                $sql = 'INSERT INTO client_category (client_category_name) VALUES (:client_category_name)';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['client_category_name'=>$category]);
+
+                $sql = 'SELECT client_category_id FROM client_category WHERE client_category_id = :client_category_id';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['client_category_id'=>$category]);
+                $category_info = $stmt->fetch(PDO::FETCH_OBJ);
+            }
+            $category_id = $category_info->client_category_id;
+        } else {
+            $category_id = null;
+        }
+
+
+        for ($j = 0; $j < count($probe_list); $j++) {
+            $sql = 'INSERT INTO probe (brand_id, client_category_id, probe_id, probe_added_user_id) VALUES (:brand_id, :client_category_id, :probe_id, :probe_added_user_id)';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['brand_id'=>$brand_id, 'client_category_id'=>$category_id, 'probe_id'=>$probe_list[$j], 'probe_added_user_id'=>$_SESSION['id']]);
+        }
     }
-    $brand_id = $brand_info->brand_id;
-} else {
-    $brand_id = null;
 }
-
-if ($category != 'null') {
-    $sql = 'SELECT client_category_id FROM client_category WHERE client_category_name = :client_category_name';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['client_category_name'=>$category]);
-    $category_info = $stmt->fetch(PDO::FETCH_OBJ);
-    $category_row_cout = $stmt->rowCount(PDO::FETCH_OBJ);
-
-    if ($category_row_cout == 0) {
-        $sql = 'INSERT INTO client_category (client_category_name) VALUES (:client_category_name)';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['client_category_name'=>$category]);
-
-        $sql = 'SELECT client_category_id FROM client_category WHERE client_category_id = :client_category_id';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['client_category_id'=>$category]);
-        $category_info = $stmt->fetch(PDO::FETCH_OBJ);
-    }
-    $category_id = $category_info->client_category_id;
-} else {
-    $category_id = null;
-}
-
-
-for ($i = 0; $i < count($probe_list); $i++) {
-    $sql = 'INSERT INTO probe (brand_id, client_category_id, probe_id, probe_added_user_id) VALUES (:brand_id, :client_category_id, :probe_id, :probe_added_user_id)';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['brand_id'=>$brand_id, 'client_category_id'=>$category_id, 'probe_id'=>$probe_list[$i], 'probe_added_user_id'=>$_SESSION['id']]);
-}
-
-$current_count = $_POST['current_count'];
-$total_count = $_POST['total_count'];
-echo "Processing : Row $current_count out of $total_count";
 ?>

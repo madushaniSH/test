@@ -48,7 +48,12 @@ if (!isset($_SESSION['logged_in'])) {
         <label for="csv-file"><i class="fas fa-upload"><span> Upload Probe CSV file</span></i></label>
         <input type="file" id="csv-file" name="files"/>
     </div>
+    <div class="text-center">
     <span id="probe_upload_error" class="error-popup"></span>
     <span id="probe_upload_success" class="success-popup"></span>
+        <div class="spinner-border text-success" role="status" id="loading-spinner">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
 </div>
 </body>

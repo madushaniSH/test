@@ -9,42 +9,25 @@ function handleFileSelect(evt) {
         jQuery('#probe_upload_error').html('Error. Only CSV files can be uploaded');
     } else {
         jQuery('#probe_upload_error').html('');
-        Papa.parse(file, {
-            header: true,
-            dynamicTyping: true,
-            complete: function (results) {
-                var formData = new FormData();
-                var probe_percentage = document.getElementById('probe_percentage');
-                for (var i = 0; i < results.data.length; i++) {
-                    var brand = results.data[i].brand;
-                    var category = results.data[i].category;
-                    var probe_list = results.data[i].probes_with_high_other_percent;
-                    if (probe_list != null) {
-                        var formData = new FormData();
-                        formData.append('brand', brand);
-                        formData.append('category', category);
-                        formData.append('probe_list', probe_list);
-                        formData.append('current_count', i);
-                        formData.append('total_count', results.data.length);
-                        jQuery.ajax({
-                            url: 'process_probe.php',
-                            type: 'POST',
-                            data: formData,
-                            async: true,
-                            success: function (data) {
-                                $('#probe_upload_success').html(data);
-                            },
-                            error: function (data) {
-                                alert("AJAX error");
-                            },
-                            cache: false,
-                            contentType: false,
-                            processData: false
-                        });
-                    }
-                }
-                jQuery('#probe_upload_success').html('Processed: ' + file_name);
-            }
+        var formData = new FormData();
+        formData.append('csv', file);
+        jQuery('#probe_upload_success').html('Please wait' + file_name + 'is now being processed.<br>');
+        jQuery('#loading-spinner').css("display", "inline-block");
+        jQuery('#loading-spinner').css("text-align", "center");
+        jQuery.ajax({
+            url: 'process_probe.php',
+            type: 'POST',
+            data: formData,
+            success: function (data) {
+                jQuery('#loading-spinner').css("display", "none");
+                jQuery('#probe_upload_success').html('Processed: '+ file_name);
+            },
+            error: function (data) {
+                alert("AJAX error");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
         });
     }
 }

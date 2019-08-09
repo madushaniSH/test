@@ -291,7 +291,7 @@ body {
     height: 850px;
 }
 
-.tableFixHead thead th{
+.tableFixHead thead th {
     position: sticky;
     top: 0;
 }
@@ -301,14 +301,20 @@ body {
     text-align: center;
 }
 
-#proprobe-upload #probe-upload-container{
+#proprobe-upload #probe-upload-container {
     width: 25%;
 }
 
-#probe-upload input{
+#probe-upload input {
     display: none;
 }
 
-#probe-upload i:hover{
+#probe-upload i:hover {
     color: #7D6B91;
+}
+
+#loading-spinner {
+    display: none;
+    width: 4rem;
+    height: 4rem;
 }
