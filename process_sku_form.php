@@ -158,9 +158,9 @@ if ($row_count == 0) {
     
 
    if($valid_upload){
-        $sql = 'INSERT INTO product (product_name, brand_id, client_category_id, product_image_id) VALUES (:product_name, :brand_id, :client_category_id, :product_image_id)';
+        $sql = 'INSERT INTO product (product_name, account_id, brand_id, client_category_id, product_image_id) VALUES (:product_name, :account_id, :brand_id, :client_category_id, :product_image_id)';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['product_name'=>$_POST['name'], 'brand_id'=>$_POST['brand_id'], 'client_category_id'=>$_POST['client_category_id'], 'product_image_id'=>$image_info->product_image_id]);
+        $stmt->execute(['product_name'=>$_POST['name'], 'account_id'=>$_SESSION['id'], 'brand_id'=>$_POST['brand_id'], 'client_category_id'=>$_POST['client_category_id'], 'product_image_id'=>$image_info->product_image_id]);
 
         $sql = 'SELECT product_id FROM product WHERE product_name = :product_name';
         $stmt = $pdo->prepare($sql);

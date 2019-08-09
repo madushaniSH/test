@@ -98,9 +98,9 @@ if ($row_count == 0){
                 $brand_local_name = NULL;
             }
 
-            $sql = 'INSERT INTO brand (manufacturer_id, brand_name, brand_local_name, brand_source, brand_image_location, brand_recognition_level, brand_global_code) VALUES (:manufacturer_id, :brand_name, :brand_local_name, :brand_source, :brand_image_location, :brand_recognition_level, :brand_global_code)';
+            $sql = 'INSERT INTO brand (manufacturer_id, account_id, brand_name, brand_local_name, brand_source, brand_image_location, brand_recognition_level, brand_global_code) VALUES (:manufacturer_id, :account_id, :brand_name, :brand_local_name, :brand_source, :brand_image_location, :brand_recognition_level, :brand_global_code)';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['manufacturer_id'=>$_POST['brand_manufacturer'], 'brand_name'=>$_POST['brand_name'], 'brand_local_name'=>$brand_local_name ,'brand_source'=>$_POST['brand_source'], 'brand_image_location'=>$image_file, 'brand_recognition_level'=>$_POST['recognition_value'], 'brand_global_code'=>$brand_global_code]);
+            $stmt->execute(['manufacturer_id'=>$_POST['brand_manufacturer'], 'account_id'=>$_SESSION['id'],'brand_name'=>$_POST['brand_name'], 'brand_local_name'=>$brand_local_name ,'brand_source'=>$_POST['brand_source'], 'brand_image_location'=>$image_file, 'brand_recognition_level'=>$_POST['recognition_value'], 'brand_global_code'=>$brand_global_code]);
             echo "<span class=\"success-popup\">Submitted</span>";
             // script for closing modal
             echo "

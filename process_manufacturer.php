@@ -105,9 +105,9 @@ if($row_count == 0){
         if ($manufacturer_source == '') {
             $manufacturer_source = NULL;
         }
-        $sql = 'INSERT INTO manufacturer (manufacturer_name, manufacturer_local_name, manufacturer_source, manufacturer_image_location) VALUES (:manufacturer_name, :manufacturer_local_name, :manufacturer_source, :manufacturer_image_location)';
+        $sql = 'INSERT INTO manufacturer (manufacturer_name, account_id, manufacturer_local_name, manufacturer_source, manufacturer_image_location) VALUES (:manufacturer_name, :account_id, :manufacturer_local_name, :manufacturer_source, :manufacturer_image_location)';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['manufacturer_name'=>$_POST['manufacturer_name'], 'manufacturer_local_name'=>$manufacturer_local_name, 'manufacturer_source'=>$manufacturer_source, 'manufacturer_image_location'=>$image_file]);
+        $stmt->execute(['manufacturer_name'=>$_POST['manufacturer_name'], 'account_id'=>$_SESSION['id'], 'manufacturer_local_name'=>$manufacturer_local_name, 'manufacturer_source'=>$manufacturer_source, 'manufacturer_image_location'=>$image_file]);
         echo "<span class=\"success-popup\">Submitted</span>";
         // script for closing modal
         echo "

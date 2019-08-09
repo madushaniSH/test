@@ -41,12 +41,12 @@ $stmt->execute(['client_category_name'=>$_POST['client_category_name']]);
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
 if ($row_count == 0){
-    $sql = 'INSERT INTO client_category (client_category_name, client_category_local_name) VALUES (:client_category_name, :client_category_local_name)';
+    $sql = 'INSERT INTO client_category (client_category_name, account_id, client_category_local_name) VALUES (:client_category_name, :account_id, :client_category_local_name)';
     $stmt = $pdo->prepare($sql);
     if($_POST['client_category_local_name'] != ''){
-        $stmt->execute(['client_category_name'=>$_POST['client_category_name'], 'client_category_local_name'=>$_POST['client_category_local_name']]);
+        $stmt->execute(['client_category_name'=>$_POST['client_category_name'], 'account_id'=>$_SESSION['id'], 'client_category_local_name'=>$_POST['client_category_local_name']]);
     }else{
-        $stmt->execute(['client_category_name'=>$_POST['client_category_name'], 'client_category_local_name'=>NULL]);
+        $stmt->execute(['client_category_name'=>$_POST['client_category_name'], 'account_id'=>$_SESSION['id'], 'client_category_local_name'=>NULL]);
     }
     echo "<span class=\"success-popup\">Submitted</span>";
     // script for closing modal
