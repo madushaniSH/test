@@ -11,7 +11,7 @@ function handleFileSelect(evt) {
         jQuery('#probe_upload_error').html('');
         var formData = new FormData();
         formData.append('csv', file);
-        jQuery('#probe_upload_success').html('Please wait' + file_name + 'is now being processed.<br>');
+        jQuery('#probe_upload_success').html('Please wait ' + file_name + 'is now being processed.<br>');
         jQuery('#loading-spinner').css("display", "inline-block");
         jQuery('#loading-spinner').css("text-align", "center");
         jQuery.ajax({
