@@ -1,6 +1,6 @@
 <?php
 /*
-    Filename: product_hunt.php
+    Filename: new_project.php
     Author: Malika Liyanage
 */
 
@@ -33,10 +33,11 @@ if(isset($_SESSION['out'])){
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="styles/new_project.css" />
     <script src="scripts/transition.js"></script>
     <!-- Prerenders font awesome-->
     <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.10.0/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
-    <title>Product Hunt</title>
+    <title>New Project</title>
 </head>
 <body>
 <svg id="fader"></svg>
@@ -55,16 +56,4 @@ if(isset($_SESSION['out'])){
         </ul>
     </div>
 </nav>
-<a href="new_project.php" class="btn btn-lg dashboard-btn">
-    <span>
-        <i class="fas fa-meteor fa-2x"></i>   
-    </span>
-    Create New Project
-</a>
-<a href="upload_probe.php" class="btn btn-lg dashboard-btn">
-    <span>
-        <i class="fas fa-rocket fa-2x"></i>
-    </span>
-    Upload Probes
-</a>
 </body>

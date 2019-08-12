@@ -9,6 +9,11 @@ session_start();
 if (!isset($_SESSION['logged_in'])) {
 	header('Location: login_auth_one.php');
 	exit();
+} else {
+    if(!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor')){
+        header('Location: index.php');
+	    exit();
+    }
 }
 
 ?>
