@@ -32,7 +32,7 @@ if(isset($_SESSION['out'])){
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <script src="scripts/transition.js"></script>
     <!-- Prerenders font awesome-->
-    <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.1.0/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
+    <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.10.1/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
     <title>Landing Page</title>
 </head>
 <body>
@@ -67,11 +67,11 @@ echo "
     </span>
     Add new user
 </a>
-<a href=\"upload_probe.php\" class=\"btn btn-lg dashboard-btn\">
+<a href=\"product_hunt.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
-        <i class=\"fas fa-file-import fa-2x\"></i>
+        <i class=\"fas fa-dragon fa-2x\"></i>
     </span>
-    Upload Probes
+    Product Hunt
 </a>
 ";
 }
