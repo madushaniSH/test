@@ -36,6 +36,7 @@ if (!isset($_SESSION['logged_in'])) {
     <script src="scripts/papaparse.min.js"></script>
     <script src="scripts/validate_upload_probe.js"></script>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="styles/probe_upload.css" />
     <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.1.0/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
     <title>Upload Probe</title>
 </head>
@@ -48,7 +49,15 @@ if (!isset($_SESSION['logged_in'])) {
         </div>
     </div>
 </nav>
-<div class="jumbotron" id="probe-upload">
+<div id="probe_upload_section">
+<div class="col">
+    <label for="project_name">Select Project Name</label>
+    <select name="project_name" id="project_name" class="form-control">
+    <option value=""selected disabled>Select</option>
+    </select>
+    <span id="project_name_error" class="error-popup"></span>    
+</div>
+<div id="probe-upload">
     <div id="probe-upload-container">
         <label for="csv-file"><i class="fas fa-upload"><span> Upload Probe CSV file</span></i></label>
         <input type="file" id="csv-file" name="files"/>
@@ -60,5 +69,6 @@ if (!isset($_SESSION['logged_in'])) {
             <span class="sr-only">Loading...</span>
         </div>
     </div>
+</div>
 </div>
 </body>

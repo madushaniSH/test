@@ -1,0 +1,11 @@
+#probe_upload_section {
+    width: 50%;
+    margin: 0 auto;
+    background-color: white;
+    margin-top: 4vw;
+    padding: 2vw;
+}
+
+#probe_upload_section #project_name {
+    margin-bottom: 1vw;
+}
