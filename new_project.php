@@ -29,12 +29,13 @@ if(isset($_SESSION['out'])){
     <link rel='icon' href='favicon.ico' type='image/x-icon' />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="styles/new_project.css" />
     <script src="scripts/transition.js"></script>
+    <script src="scripts/validate_new_project.js"></script>
     <!-- Prerenders font awesome-->
     <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.10.0/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
     <title>New Project</title>
@@ -56,4 +57,26 @@ if(isset($_SESSION['out'])){
         </ul>
     </div>
 </nav>
+<form method="POST" id="create-project-form">
+    <div class="form-row">
+        <img src="images/sisters-of-battle.svg" class="form-thumbnail" alt="">
+    </div>
+    <div class="form-row">
+        <div class="form-group col">
+            <label for="project_name">*Project Name</label>
+            <input type="text" class="form-control" id="project_name" placeholder="Project Name" name="project_name">
+            <span id="project_name_error" class="error-popup"></span>    
+            <div class="server-results"></div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col">
+            <label for="project_region">*Project Region</label>
+            <input type="text" class="form-control" id="project_region" placeholder="Project Region" name="project_region">
+            <span id="project_region_error" class="error-popup"></span>    
+        </div>
+    </div>
+    <button type="button" class="btn btn-success" onclick="validate_project_form();">Submit</button>
+    <a href="product_hunt.php" class="btn btn-outline-dark">Back to Product Hunt</a>
+</form>
 </body>

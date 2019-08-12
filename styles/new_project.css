@@ -1,0 +1,14 @@
+#create-project-form {
+    width: 50%;
+    margin: 0 auto;
+    background-color: white;
+    padding: 2vw;
+    margin-top: 2vw;
+}
+
+.form-thumbnail {
+    height: 4vw;
+    width: auto;
+    margin: 0 auto;
+    margin-bottom: 1vw;
+}

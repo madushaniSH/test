@@ -88,7 +88,6 @@ catch(PDOException $e){
                 <span id="nic_error" class="error-popup"></span>    
             </div>
         </div>
-        <!--Stuff not linked to db -->
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="contact_number">*Contact Number</label>
