@@ -3,7 +3,8 @@ function validate_project_form() {
     var is_valid_form = true;
     var project_name = document.getElementById('project_name').value;
     var project_name_error = document.getElementById('project_name_error');
-    var project_region = document.getElementById('project_region').value;
+    var project_region_element = document.getElementById('project_region');
+    var project_region = project_region_element.options[project_region_element.selectedIndex].value;
     var project_region_error = document.getElementById('project_region_error');
     var project_database_name;
 
@@ -34,6 +35,7 @@ function validate_project_form() {
             success: function (data) {
                 $('.server-results').empty();
                 $('.server-results').html(data);
+                $('#project_region').val('').trigger('change');
                 $('#create-project-form')[0].reset();
             },
             error: function (data) {

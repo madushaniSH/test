@@ -34,8 +34,17 @@ if(isset($_SESSION['out'])){
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="styles/new_project.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
     <script src="scripts/transition.js"></script>
     <script src="scripts/validate_new_project.js"></script>
+    <script>
+    jQuery(document).ready(function () {
+        jQuery('#project_region').select2({
+            width: '100%'
+        });
+    });
+    </script>
     <!-- Prerenders font awesome-->
     <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.10.0/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
     <title>New Project</title>
@@ -72,7 +81,13 @@ if(isset($_SESSION['out'])){
     <div class="form-row">
         <div class="form-group col">
             <label for="project_region">*Project Region</label>
-            <input type="text" class="form-control" id="project_region" placeholder="Project Region" name="project_region">
+            <select name="project_region" id="project_region" class="form-control">
+            <option value=""selected disabled>Select</option>
+            <option value="APAC">APAC</option>
+            <option value="EMEA">EMEA</option>
+            <option value="DPG">DPG</option>
+            <option value="AMER">AMER</option>
+            </select>
             <span id="project_region_error" class="error-popup"></span>    
         </div>
     </div>
