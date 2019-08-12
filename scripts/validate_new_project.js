@@ -12,7 +12,7 @@ function validate_project_form() {
         is_valid_form = false;
     } else {
         project_name_error.innerHTML = '';
-        project_database_name = project_name + '_db';
+        project_database_name = project_name;
     }
 
     if (project_region == '') {
