@@ -43,14 +43,10 @@ $sql = 'SELECT probe_queue_id FROM probe_queue  WHERE probe_being_handled = 0 AN
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id'=>$_SESSION['id']]);
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
+$probe_info = $stmt->fetch(PDO::FETCH_OBJ);
+$last_id = $probe_info->probe_queue_id;
 
 if ($row_count == 0) {
-    $sql = 'SELECT probe_queue_id FROM probe_queue WHERE probe_being_handled = 0';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
-    $last_id = $probe_info->probe_queue_id;
-
     $sql = 'UPDATE probe_queue SET account_id = :account_id WHERE probe_queue_id = :probe_queue_id';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$_SESSION['id'],'probe_queue_id'=>$last_id]);
