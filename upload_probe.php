@@ -16,6 +16,35 @@ if (!isset($_SESSION['logged_in'])) {
     }
 }
 
+// Current settings to connect to the user account database
+require('product_connection.php');
+$dbname = 'project_db';
+// Setting up the DSN
+$dsn = 'mysql:host='.$host.';dbname='.$dbname;
+
+/*
+    Attempts to connect to the databse, if no connection was estabishled
+    kills the script
+*/
+try{
+    // Creating a new PDO instance
+    $pdo = new PDO($dsn, $user, $pwd);
+    // setting the PDO error mode to exception
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+
+catch(PDOException $e){
+    // throws error message
+    echo "<p>Connection to $dbname database failed<br>Reason: ".$e->getMessage().'</p>';
+    exit();
+}
+
+$sql = 'SELECT project_name, project_region, project_db_name FROM projects';
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,6 +66,8 @@ if (!isset($_SESSION['logged_in'])) {
     <script src="scripts/validate_upload_probe.js"></script>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="styles/probe_upload.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
     <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.1.0/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
     <title>Upload Probe</title>
 </head>
@@ -54,10 +85,15 @@ if (!isset($_SESSION['logged_in'])) {
     <label for="project_name">Select Project Name</label>
     <select name="project_name" id="project_name" class="form-control">
     <option value=""selected disabled>Select</option>
+<?php
+foreach($project_rows as $project_row){
+    echo "<option value=\"$project_row->project_db_name\">$project_row->project_name ($project_row->project_region)</option>";
+}
+?>
     </select>
     <span id="project_name_error" class="error-popup"></span>    
 </div>
-<div id="probe-upload">
+<div id="probe-upload" class="hide">
     <div id="probe-upload-container">
         <label for="csv-file"><i class="fas fa-upload"><span> Upload Probe CSV file</span></i></label>
         <input type="file" id="csv-file" name="files"/>

@@ -18,7 +18,7 @@ if (!isset($_SESSION['logged_in'])) {
 
 // Current settings to connect to the user account database
 require('user_db_connection.php');
-$dbname = 'GMI_US';
+$dbname = $_POST['project_name'];
 // Setting up the DSN
 $dsn = 'mysql:host='.$host.';dbname='.$dbname;
 

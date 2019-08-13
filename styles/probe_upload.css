@@ -9,3 +9,7 @@
 #probe_upload_section #project_name {
     margin-bottom: 1vw;
 }
+
+#probe_upload_section #probe-upload {
+    margin-top: 2vw;
+}

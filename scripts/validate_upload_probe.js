@@ -1,6 +1,8 @@
 
 function handleFileSelect(evt) {
     var file = evt.target.files[0];
+    var project_name_element = document.getElementById('project_name');
+    var project_name = project_name_element.options[project_name_element.selectedIndex].value;
     var file_name = jQuery(this).val();
     var file_name = file_name.split('\\').pop();
     var extension = file_name.split('.').pop();
@@ -11,6 +13,7 @@ function handleFileSelect(evt) {
         jQuery('#probe_upload_error').html('');
         var formData = new FormData();
         formData.append('csv', file);
+        formData.append('db_name', project_name);
         jQuery('#probe_upload_success').html('Please wait ' + file_name + ' is now being processed.<br>');
         jQuery('#loading-spinner').css("display", "inline-block");
         jQuery('#loading-spinner').css("text-align", "center");
@@ -32,7 +35,25 @@ function handleFileSelect(evt) {
     }
 }
 
+function validate_project_name () {
+    var project_name_element = document.getElementById('project_name');
+    var project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    var project_name_error = document.getElementById('project_name_error');
+    var upload_div = document.getElementById('probe-upload');
+    if (project_name == '') {
+        project_name_error.innerHTML = 'Project Name required for upload';
+        upload_div.classList.add('hide');
+    } else {
+        project_name_error.innerHTML = '';
+        upload_div.classList.remove('hide');
+    }
+}
+
 
 jQuery(document).ready(function () {
+    jQuery('#project_name').select2({
+        width: '100%',     
+    });
+    jQuery('#project_name').change(validate_project_name);
     jQuery("#csv-file").change(handleFileSelect);
 });
