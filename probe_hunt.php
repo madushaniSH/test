@@ -39,13 +39,13 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT probe_queue_id FROM probe_queue  WHERE probe_being_handled = 0 AND probe_processed = 0 AND account_id = :account_id';
+$sql = 'SELECT probe_queue_id FROM probe_queue WHERE account_id = :account_id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id'=>$_SESSION['id']]);
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
 if ($row_count == 0) {
-    $sql = 'SELECT probe_queue_id FROM probe_queue WHERE probe_being_handled = 0 LIMIT 1';
+    $sql = 'SELECT probe_queue_id FROM probe_queue WHERE probe_being_handled = 0 FOR UPDATE';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
