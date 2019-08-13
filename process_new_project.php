@@ -90,6 +90,18 @@ if ($row_count == 0) {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
+
+    $sql = 'CREATE TABLE `probe_queue` (
+        `probe_queue_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        `probe_key_id` int(11) NOT NULL,
+        `account_id` int(11) DEFAULT NULL,
+        `probe_being_handled` tinyint(1) NOT NULL DEFAULT 0,
+        `probe_processed` tinyint(1) NOT NULL DEFAULT 0,
+         CONSTRAINT '.$dbname.'_ACCOUNT_ID FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`),
+         CONSTRAINT '.$dbname.'_PROBE_KEY_ID FOREIGN KEY (`probe_key_id`) REFERENCES `probe` (`probe_key_id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
     echo "<span class=\"success-popup\">Project Created</span>    ";
 } else {
     echo "<span class=\"error-popup\">Project with that name already exists</span>    ";

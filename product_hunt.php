@@ -61,10 +61,18 @@ if(isset($_SESSION['out'])){
     </span>
     Create New Project
 </a>
+
 <a href="upload_probe.php" class="btn btn-lg dashboard-btn">
     <span>
         <i class="fas fa-rocket fa-2x"></i>
     </span>
     Upload Probes
+</a>
+
+<a href="probe_hunt.php" class="btn btn-lg dashboard-btn">
+    <span>
+        <i class="fas fa-th-list fa-2x"></i>
+    </span>
+    Probe Hunt
 </a>
 </body>
