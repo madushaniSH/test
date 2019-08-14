@@ -9,7 +9,6 @@ function validate_project_name() {
         project_name_error.innerHTML = 'Project Name required for upload';
         probe_hunt_options.classList.add('hide');
         probe_hunt_counter.classList.add('hide');
-        p_name = '';
     } else {
         project_name_error.innerHTML = '';
         probe_hunt_options.classList.remove('hide');
@@ -51,6 +50,7 @@ function get_probe_info() {
 }
 
 function update_project_count() {
+    console.log(p_name);
     if (p_name != '') {
         var formData = new FormData();
         formData.append('project_name', p_name);
