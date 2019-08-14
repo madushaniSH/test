@@ -69,6 +69,9 @@ function update_project_count() {
                             document.getElementById('continue_btn').classList.add('hide');
                     } else {
                         document.getElementById('continue_btn').classList.remove('hide');
+                        if (probe_count == 1) {
+                            document.getElementById('probe_message').classList.remove('hide');
+                        }
                     }
                 } else {
                     $('#current_probe_count').html('XX');
