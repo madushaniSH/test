@@ -1,4 +1,5 @@
-var is_project_name_set = false;
+var count = 0;
+var request;
 function validate_project_name() {
     var project_name_element = document.getElementById('project_name');
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
@@ -14,7 +15,7 @@ function validate_project_name() {
         probe_hunt_options.classList.remove('hide');
         probe_hunt_counter.classList.remove('hide');
         is_project_name_set = true;
-        setInterval(function(){update_project_count(project_name);}, 2000);
+        request = setInterval(function(){update_project_count(project_name);}, 2000);
     }
 }
 
@@ -61,9 +62,9 @@ function update_project_count (project_name) {
         success: function (data) {
             var output_count;
             if (data[0].number_of_rows != null) {
+                $('#current_probe_count').empty();
                 $('#current_probe_count').html(data[0].number_of_rows);
                 var count = parseInt(data[0].number_of_rows, 10);
-                console.log(count);
                 if (count == 0) {
                     document.getElementById('continue_btn').add('hide');
                 }
@@ -73,6 +74,7 @@ function update_project_count (project_name) {
         },
         error: function (data) {
             alert("Error fetching probe information. Please refresh");
+            clearInterval(request);
         },
         cache: false,
         contentType: false,
@@ -84,5 +86,11 @@ jQuery(document).ready(function () {
     jQuery('#project_name').select2({
         width: '100%',
     });
-    jQuery('#project_name').change(validate_project_name);  
+    jQuery('#project_name').change( function(){
+        validate_project_name();
+        if (count > 0) {
+            clearInterval(request);
+        }
+        count++;
+    });  
 });
