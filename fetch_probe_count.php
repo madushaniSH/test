@@ -37,7 +37,7 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = "SELECT count(*) FROM probe_queue"; 
+$sql = "SELECT count(*) FROM probe_queue WHERE probe_being_handled = 0"; 
 $stmt = $pdo->prepare($sql);
 $stmt->execute(); 
 $number_of_rows = $stmt->fetchColumn(); 
