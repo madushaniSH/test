@@ -22,6 +22,7 @@ function get_probe_info() {
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
     var formData = new FormData();
     formData.append('project_name', project_name);
+    formData.append('user_id', $_SESSION['id']);
     jQuery.ajax({
         url: 'assign_probe.php',
         type: 'POST',
@@ -50,7 +51,6 @@ function get_probe_info() {
 }
 
 function update_project_count() {
-    console.log(p_name);
     if (p_name != '') {
         var formData = new FormData();
         formData.append('project_name', p_name);
@@ -65,8 +65,9 @@ function update_project_count() {
                     $('#current_probe_count').empty();
                     $('#current_probe_count').html(data[0].number_of_rows);
                     var count = parseInt(data[0].number_of_rows, 10);
-                    if (count == 0) {
-                        document.getElementById('continue_btn').classList.add('hide');
+                    var probe_count = parseInt(data[0].processing_probe_row, 10);
+                    if (count == 0 && probe_count == 0) {
+                            document.getElementById('continue_btn').classList.add('hide');
                     } else {
                         document.getElementById('continue_btn').classList.remove('hide');
                     }

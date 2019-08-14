@@ -41,6 +41,13 @@ $sql = "SELECT count(*) FROM probe_queue WHERE probe_being_handled = 0";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(); 
 $number_of_rows = $stmt->fetchColumn(); 
-$return_arr[] = array("number_of_rows" => $number_of_rows);
+
+
+$sql = 'SELECT probe_queue_id FROM probe_queue WHERE account_id = :account_id';
+$stmt = $pdo->prepare($sql);
+$stmt->execute(['account_id'=>$_POST['user_id']]);
+$row_count = $stmt->rowCount(PDO::FETCH_OBJ);
+
+$return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count);
 echo json_encode($return_arr);
 ?>
