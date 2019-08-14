@@ -90,6 +90,7 @@ jQuery(document).ready(function () {
         validate_project_name();
         if (count > 0) {
             clearInterval(request);
+            count = 0;
         }
         count++;
     });  
