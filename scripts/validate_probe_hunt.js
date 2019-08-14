@@ -66,7 +66,7 @@ function update_project_count() {
                     $('#current_probe_count').html(data[0].number_of_rows);
                     var count = parseInt(data[0].number_of_rows, 10);
                     if (count == 0) {
-                        document.getElementById('continue_btn').add('hide');
+                        document.getElementById('continue_btn').classList.add('hide');
                     }
                 } else {
                     $('#current_probe_count').html('XX');
