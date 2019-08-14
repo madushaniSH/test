@@ -45,7 +45,7 @@ $number_of_rows = $stmt->fetchColumn();
 
 $sql = 'SELECT probe_queue_id FROM probe_queue WHERE account_id = :account_id';
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['account_id'=>$_POST['user_id']]);
+$stmt->execute(['account_id'=>$_SESSION['id']]);
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
 $return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count);

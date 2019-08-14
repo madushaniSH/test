@@ -22,7 +22,6 @@ function get_probe_info() {
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
     var formData = new FormData();
     formData.append('project_name', project_name);
-    formData.append('user_id', $_SESSION['id']);
     jQuery.ajax({
         url: 'assign_probe.php',
         type: 'POST',
