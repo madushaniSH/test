@@ -11,7 +11,7 @@
 }
 
 #probe_hunt_section #probe_hunt_options {
-    margin-top: 2vw;
+    margin-top: 1vw;
     text-align: center;
 }
 
@@ -39,3 +39,36 @@
     color: white;
 }
 
+#probe_hunt_counter {
+    margin-top: 1vw;
+    text-align: center;
+}
+
+.counter {
+    background-color:#f5f5f5;
+    padding: 20px 0;
+    border-radius: 5px;
+}
+
+.count-title {
+    font-size: 40px;
+    font-weight: normal;
+    margin-top: 10px;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.count-text {
+    font-size: 13px;
+    font-weight: normal;
+    margin-top: 10px;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.fa-2x {
+    margin: 0 auto;
+    float: none;
+    display: table;
+    color: #4ad1e5;
+}

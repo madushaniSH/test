@@ -108,6 +108,23 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     </div>
 </div>
 <div class="row">
+    <div  id="probe_hunt_counter" class="col hide">
+	    <div class="row text-center">
+	        <div class="col">
+	            <div class="counter">
+                  <i class="far fa-lightbulb fa-2x"></i>
+                  <h2 id="current_probe_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Remaining Probes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
     <div id="probe_hunt_options" class="col hide">
     <button class="btn" id="exit_btn" onclick="window.location.href='product_hunt.php'"><i class="fas fa-chevron-circle-left fa-3x"></i><br>Exit</i></button>
     <button class="btn" id="continue_btn" data-toggle="modal" data-target="#add_probe" onclick="get_probe_info()"><i class="fas fa-chevron-circle-right fa-3x"></i><br>Continue</button>
