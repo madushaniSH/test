@@ -55,7 +55,7 @@ if ($row_count == 0) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$_SESSION['id'],'probe_queue_id'=>$last_id, 'probe_being_handled'=>1]);
 }
-$sql = 'SELECT brand.brand_name, client_category.client_category_name, probe.probe_id FROM  probe_queue INNER JOIN probe ON probe_queue.probe_key_id = probe.probe_key_id INNER JOIN brand ON probe.brand_id = brand.brand_id INNER JOIN client_category ON probe.client_category_id  = client_category.client_category_id WHERE probe_queue_id = :probe_queue_id';
+$sql = 'SELECT brand.brand_name, client_category.client_category_name, probe.probe_id FROM  probe_queue LEFT JOIN probe ON probe_queue.probe_key_id = probe.probe_key_id INNER JOIN brand ON probe.brand_id = brand.brand_id LEFT JOIN client_category ON probe.client_category_id  = client_category.client_category_id WHERE probe_queue_id = :probe_queue_id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['probe_queue_id'=>$last_id]);
 $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
