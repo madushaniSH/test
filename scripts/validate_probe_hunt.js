@@ -62,10 +62,10 @@ function update_project_count (project_name) {
             var output_count;
             if (data[0].number_of_rows != null) {
                 $('#current_probe_count').html(data[0].number_of_rows);
-                if (data[0].number_of_rows == 0) {
+                var count = parseInt(data[0].number_of_rows, 10);
+                console.log(count);
+                if (count == 0) {
                     document.getElementById('continue_btn').add('hide');
-                } else {
-                    document.getElementById('continue_btn').remove('hide');
                 }
             } else {
                 $('#current_probe_count').html('XX');
