@@ -1,0 +1,41 @@
+#probe_hunt_section {
+    width: 50%;
+    margin: 0 auto;
+    background-color: white;
+    margin-top: 4vw;
+    padding: 2vw;
+}
+
+#probe_hunt_section #project_name {
+    margin-bottom: 1vw;
+}
+
+#probe_hunt_section #probe_hunt_options {
+    margin-top: 2vw;
+    text-align: center;
+}
+
+#probe_hunt_section #probe_hunt_options button{
+    padding: 0.5vw 2vw;
+    cursor: pointer; /* Mouse pointer on hover */
+}
+
+#exit_btn i, #exit_btn  {
+    color: orangered;
+}
+
+#exit_btn:hover {
+    background-color: black;
+    color: white;
+}
+
+
+#continue_btn i, #continue_btn {
+    color: royalblue;
+}
+
+#continue_btn:hover {
+    background-color: black;
+    color: white;
+}
+
