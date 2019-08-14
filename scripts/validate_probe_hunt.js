@@ -1,5 +1,4 @@
-var count = 0;
-var request;
+var p_name = '';
 function validate_project_name() {
     var project_name_element = document.getElementById('project_name');
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
@@ -10,12 +9,12 @@ function validate_project_name() {
         project_name_error.innerHTML = 'Project Name required for upload';
         probe_hunt_options.classList.add('hide');
         probe_hunt_counter.classList.add('hide');
+        p_name = '';
     } else {
         project_name_error.innerHTML = '';
         probe_hunt_options.classList.remove('hide');
         probe_hunt_counter.classList.remove('hide');
-        is_project_name_set = true;
-        request = setInterval(function(){update_project_count(project_name);}, 2000);
+        p_name = project_name;
     }
 }
 
@@ -51,47 +50,45 @@ function get_probe_info() {
     });
 }
 
-function update_project_count (project_name) {
-    var formData = new FormData();
-    formData.append('project_name', project_name);
-    jQuery.ajax({
-        url: 'fetch_probe_count.php',
-        type: 'POST',
-        data: formData,
-        dataType: 'JSON',
-        success: function (data) {
-            var output_count;
-            if (data[0].number_of_rows != null) {
-                $('#current_probe_count').empty();
-                $('#current_probe_count').html(data[0].number_of_rows);
-                var count = parseInt(data[0].number_of_rows, 10);
-                if (count == 0) {
-                    document.getElementById('continue_btn').add('hide');
+function update_project_count() {
+    if (p_name != '') {
+        var formData = new FormData();
+        formData.append('project_name', p_name);
+        jQuery.ajax({
+            url: 'fetch_probe_count.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: function (data) {
+                var output_count;
+                if (data[0].number_of_rows != null) {
+                    $('#current_probe_count').empty();
+                    $('#current_probe_count').html(data[0].number_of_rows);
+                    var count = parseInt(data[0].number_of_rows, 10);
+                    if (count == 0) {
+                        document.getElementById('continue_btn').add('hide');
+                    }
+                } else {
+                    $('#current_probe_count').html('XX');
                 }
-            } else {
-                $('#current_probe_count').html('XX');
-            }
-        },
-        error: function (data) {
-            alert("Error fetching probe information. Please refresh");
-            clearInterval(request);
-        },
-        cache: false,
-        contentType: false,
-        processData: false
-    });
+            },
+            error: function (data) {
+                alert("Error fetching probe information. Please refresh");
+                clearInterval(request);
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
 }
 
 jQuery(document).ready(function () {
     jQuery('#project_name').select2({
         width: '100%',
     });
-    jQuery('#project_name').change( function(){
+    jQuery('#project_name').change(function () {
         validate_project_name();
-        if (count > 0) {
-            clearInterval(request);
-            count = 0;
-        }
-        count++;
-    });  
+    });
+    setInterval(function () { update_project_count(); }, 2000);
 });
