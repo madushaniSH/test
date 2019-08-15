@@ -145,10 +145,22 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <div class="modal-body">
             <form action="POST" id="probe_form">
             <div class="row">
-                <div class="form-group col">
+                <div class="form-group col-md-5">
                     <label for="status">*Status:</label>
                     <input type="text" id="status" class="form-control">
                     <span id="status_error" class="error-popup"></span>
+                </div>
+                <div class="form-group col-md-7">
+                    <label for="comment">Comment:</label>
+                    <input type="text" id="comment" class="form-control">
+                    <span id="comment_error" class="error-popup"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-5">
+                    <label for="remark">Remark:</label>
+                    <input type="text" id="remark" class="form-control">
+                    <span id="remark_error" class="error-popup"></span>
                 </div>
             </div>
             </div>
