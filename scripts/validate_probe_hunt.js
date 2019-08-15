@@ -28,15 +28,15 @@ function get_probe_info() {
         data: formData,
         dataType: 'JSON',
         success: function (data) {
-            var title_string = project_name;
+            var title_string = '<span id="project_title">' + project_name  + '</span>';
             if (data[0].brand_name != null) {
-                title_string += ' ' + data[0].brand_name;
+                title_string += ' <span id="brand_title">' + data[0].brand_name + '</span>';
             }
             if (data[0].client_category_name != null) {
-                title_string += ' ' + data[0].client_category_name;
+                title_string += ' <span id="client_category_title">' + data[0].client_category_name + '</span>';
             }
             if (data[0].probe_id != null) {
-                title_string += ' ' + data[0].probe_id;
+                title_string += ' <span id="probe_id_title">' + data[0].probe_id;
             }
             jQuery('#add_probe_title').html(title_string);
         },

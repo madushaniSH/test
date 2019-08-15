@@ -143,9 +143,18 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                 </button>
             </div>
             <div class="modal-body">
+            <form action="POST" id="probe_form">
+            <div class="row">
+                <div class="form-group col">
+                    <label for="status">*Status:</label>
+                    <input type="text" id="status" class="form-control">
+                    <span id="status_error" class="error-popup"></span>
+                </div>
+            </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-success" value="Submit">Save changes</button>
+                </form>
             </div>
         </div>
     </div>

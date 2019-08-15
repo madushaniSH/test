@@ -72,3 +72,19 @@
     display: table;
     color: #4ad1e5;
 }
+
+#project_title {
+    color: green;
+}
+
+#brand_title {
+    color: royalblue;
+}
+
+#client_category_title {
+    color: orangered;
+}
+
+#probe_id_title {
+    color: purple;
+}
