@@ -106,8 +106,11 @@ function update_project_count() {
 function reset_probe_modal(){
     $('#add_probe').modal('hide');
     $("#probe_form").trigger('reset');
-    $("#status").val('').trigger('change')
-    $("#product_type").val('').trigger('change')
+    $("#status").val('').trigger('change');
+    $("#product_type").val('').trigger('change');
+    document.getElementById('status').disabled = false;
+    document.getElementById('comment').disabled = false;
+    document.getElementById('remark').disabled = false;
 }
 
 function validate_probe_submission() {
