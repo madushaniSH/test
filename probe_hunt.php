@@ -138,14 +138,14 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="add_probe_title"></h5>
-                <button type="button" class="close hide" id="close_suggest_brand" data-dismiss="modal" aria-label="Close" onclick="reset_brand_form()">
+                <button type="button" class="close hide" id="close_probe_title" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" value="Submit" onclick="submit_brand_form();">Save changes</button>
+                <button type="button" class="btn btn-success" value="Submit">Save changes</button>
             </div>
         </div>
     </div>

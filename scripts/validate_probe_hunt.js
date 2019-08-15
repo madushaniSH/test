@@ -67,6 +67,9 @@ function update_project_count() {
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {
                             document.getElementById('continue_btn').classList.add('hide');
+                            if ($('#add_probe').is(':visible')) {
+                                $('#close_probe_title').click();
+                            }
                     } else {
                         document.getElementById('continue_btn').classList.remove('hide');
                         if (probe_count == 1) {
