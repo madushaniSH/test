@@ -142,6 +142,8 @@ function add_probe_product() {
     var product_type_error = document.getElementById('product_type_error');
     var alt_design_name = document.getElementById('alt_design_name').value;
     var alt_design_name_error = document.getElementById('alt_design_name_error');
+    var project_name_element = document.getElementById('project_name');
+    var project_name = project_name_element.options[project_name_element.selectedIndex].value;
 
     if (product_name == '') {
         product_name_error.innerHTML = 'Product Name required';
@@ -167,6 +169,12 @@ function add_probe_product() {
         formData.append('alt_design_name', alt_design_name)
     }
 
+    if (project_name != '') {
+        formData.append('project_name', project_name);
+    } else {
+        is_valid_form = false;
+    }
+
     if (is_valid_form) {
         document.getElementById('status').disabled = true;
         document.getElementById('comment').disabled = true;
@@ -177,7 +185,22 @@ function add_probe_product() {
             data: formData,
             dataType: 'JSON',
             success: function (data) {
-                
+                if (data[0].product_row_count != 0 && data[0].product_type != 'dvc') {
+                    product_name_error.innerHTML = 'Dupliacte product';
+                } else {
+                    product_name_error.innerHTML = '';
+                }
+                if (data[0].success != '') {
+                    server_success.innerHTML = data[0].success;
+                } else {
+                    server_success.innerHTML = '';
+                }
+
+                if (data[0].error != '') {
+                    server_error.innerHTML = data[0].error;
+                } else {
+                    server_error.innerHTML = '';
+                }
             },
             error: function (data) {
                 alert("Error fetching probe information. Please refresh");

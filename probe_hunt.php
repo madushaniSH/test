@@ -220,8 +220,12 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <span id="alt_design_name_error" class="error-popup"></span>
                     </div>
                 </div>
-                <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
-                <button type="button" class="btn btn-outline-danger hide" id="cancel_product">Cancel</button>
+                <div>
+                    <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
+                    <button type="button" class="btn btn-outline-danger hide" id="cancel_product">Cancel</button>
+                </div>
+                <span id="server_error" class="error-popup"></span>
+                <span id="server_success" class="success-popup"></span>
             </div>
             </div>
             <div class="modal-footer">
