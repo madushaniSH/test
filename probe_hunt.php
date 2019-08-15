@@ -222,14 +222,14 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                 </div>
                 <div>
                     <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
-                    <button type="button" class="btn btn-outline-danger hide" id="cancel_product">Cancel</button>
+                    <button type="button" class="btn btn-outline-danger hide" id="cancel_product" onclick="cancel_product_button();">Cancel</button>
                 </div>
                 <span id="server_error" class="error-popup"></span>
                 <span id="server_success" class="success-popup"></span>
             </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" value="Submit" onclick="validate_probe_submission();">Save changes</button>
+                <button type="button" class="btn btn-success" value="Submit" onclick="validate_probe_submission();" id="submit_probe">Save changes</button>
                 </form>
             </div>
         </div>

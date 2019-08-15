@@ -92,7 +92,8 @@ if ($row_count == 0) {
         `probe_status_id` int(11) DEFAULT NULL,
          CONSTRAINT  '.$dbname.'_BRAND_ID FOREIGN KEY (`brand_id`) REFERENCES `brand` (`brand_id`),
          CONSTRAINT  '.$dbname.'_CLIENT_CATEGORY_ID FOREIGN KEY (`client_category_id`) REFERENCES `client_category` (`client_category_id`),
-         CONSTRAINT  '.$dbname.'_PROBE_HUNTER_ACCOUNT_ID FOREIGN KEY (`probe_processed_hunter_id`) REFERENCES `user_db`.`accounts` (`account_id`)
+         CONSTRAINT  '.$dbname.'_PROBE_HUNTER_ACCOUNT_ID FOREIGN KEY (`probe_processed_hunter_id`) REFERENCES `user_db`.`accounts` (`account_id`),
+         CONSTRAINT  '.$dbname.'_STATUS_ID FOREIGN KEY (`probe_status_id`) REFERENCES `probe_status` (`probe_status_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
