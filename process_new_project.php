@@ -78,6 +78,22 @@ if ($row_count == 0) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 
+    $sql = 'CREATE TABLE `probe_status` (
+        `probe_status_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        `probe_status_name` varchar(255) NOT NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+
+    $sql = 'INSERT INTO `probe_status` (`probe_status_id`, `probe_status_name`) VALUES
+    (1, \'Already Added\'),
+    (2, \'Hunted\'),
+    (3, \'Irrelevant\'),
+    (4, \'Recognition Level Issue\'),
+    (5, \'Validation Error\')';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+
     $sql = 'CREATE TABLE `probe` (
         `probe_key_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `brand_id` int(11) DEFAULT NULL,
@@ -93,7 +109,7 @@ if ($row_count == 0) {
          CONSTRAINT  '.$dbname.'_BRAND_ID FOREIGN KEY (`brand_id`) REFERENCES `brand` (`brand_id`),
          CONSTRAINT  '.$dbname.'_CLIENT_CATEGORY_ID FOREIGN KEY (`client_category_id`) REFERENCES `client_category` (`client_category_id`),
          CONSTRAINT  '.$dbname.'_PROBE_HUNTER_ACCOUNT_ID FOREIGN KEY (`probe_processed_hunter_id`) REFERENCES `user_db`.`accounts` (`account_id`),
-         CONSTRAINT  '.$dbname.'_STATUS_ID FOREIGN KEY (`probe_status_id`) REFERENCES `probe_status` (`probe_status_id`)
+         CONSTRAINT '.$dbname.'_PROBE_STATUS FOREIGN KEY (`probe_status_id`) REFERENCES `probe_status` (`probe_status_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
@@ -107,22 +123,6 @@ if ($row_count == 0) {
          CONSTRAINT '.$dbname.'_ACCOUNT_ID FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`),
          CONSTRAINT '.$dbname.'_PROBE_KEY_ID FOREIGN KEY (`probe_key_id`) REFERENCES `probe` (`probe_key_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-
-    $sql = 'CREATE TABLE `probe_status` (
-        `probe_status_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        `probe_status_name` varchar(255) NOT NULL
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-
-    $sql = 'INSERT INTO `probe_status` (`probe_status_id`, `probe_status_name`) VALUES
-    (1, \'Already Added\'),
-    (2, \'Hunted\'),
-    (3, \'Irrelevant\'),
-    (4, \'Recognition Level Issue\'),
-    (5, \'Validation Error\')';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 
