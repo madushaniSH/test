@@ -118,7 +118,18 @@ if ($row_count == 0) {
     (5, \'Validation Error\')';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
-    
+
+    $sql = 'CREATE TABLE `products` (
+        `product_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        `product_name` varchar(255) NOT NULL,
+        `product_type` enum(\'brand\',\'sku\',\'dvc\') NOT NULL,
+        `product_alt_design_name` varchar(255) DEFAULT NULL,
+        `product_creation_time` datetime NOT NULL DEFAULT current_timestamp(),
+        `account_id` int(11) NOT NULL,
+         CONSTRAINT `PRODUCT_ACCOUNT_ID` FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
     echo "<span class=\"success-popup\">Project Created</span>    ";
 } else {
     echo "<span class=\"error-popup\">Project with that name already exists</span>    ";

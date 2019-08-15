@@ -110,7 +110,7 @@ function show_additional_options(){
     var status_element = document.getElementById('status');
     var status = status_element.options[status_element.selectedIndex].value;
     var hunt_information = document.getElementById('hunt_information');
-    if (status === '2') {
+    if (status === '2' || status === '1') {
         hunt_information.classList.remove('hide');
     } else {
         hunt_information.classList.add('hide');
