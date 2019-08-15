@@ -203,7 +203,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <span id="product_name_error" class="error-popup"></span>
                     </div>
                     <div class="form-group col-md-5">
-                        <label for="product_type">Product Type:</label>
+                        <label for="product_type">*Product Type:</label>
                         <select name="product_type" id="product_type" class="form-control">
                             <option value=""selected disabled>Select</option>
                             <option value="brand">Brand</option>
@@ -220,7 +220,8 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <span id="alt_design_name_error" class="error-popup"></span>
                     </div>
                 </div>
-                <button type="button" class="btn btn-outline-primary">+ Product</button>
+                <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
+                <button type="button" class="btn btn-outline-danger hide" id="cancel_product">Cancel</button>
             </div>
             </div>
             <div class="modal-footer">

@@ -1,4 +1,5 @@
 var p_name = '';
+var product_count = 0;
 function validate_project_name() {
     var project_name_element = document.getElementById('project_name');
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
@@ -129,6 +130,71 @@ function show_dvc_options() {
     } else {
         alt_design_info.classList.add('hide');
     }
+}
+
+function add_probe_product() {
+    var is_valid_form = true;
+    var formData = new FormData();
+    var product_name = document.getElementById('product_name').value;
+    var product_name_error = document.getElementById('product_name_error');
+    var product_type_element = document.getElementById('product_type');
+    var product_type = product_type_element.options[product_type_element.selectedIndex].value;
+    var product_type_error = document.getElementById('product_type_error');
+    var alt_design_name = document.getElementById('alt_design_name').value;
+    var alt_design_name_error = document.getElementById('alt_design_name_error');
+
+    if (product_name == '') {
+        product_name_error.innerHTML = 'Product Name required';
+        is_valid_form = false;
+    } else {
+        product_name_error.innerHTML = '';
+        formData.append('product_name', product_name);
+    }
+
+    if (product_type == '') {
+        product_type_error.innerHTML = 'Product Type required';
+        is_valid_form = false;
+    } else {
+        product_type_error.innerHTML = '';
+        formData.append('product_type', product_type);
+    }
+
+    if (product_type === 'dvc' && alt_design_name == '') {
+        alt_design_name_error.innerHTML = 'Alternative Name Required';
+        is_valid_form = false;
+    } else {
+        alt_design_name_error.innerHTML = '';
+        formData.append('alt_design_name', alt_design_name)
+    }
+
+    if (is_valid_form) {
+        document.getElementById('status').disabled = true;
+        document.getElementById('comment').disabled = true;
+        document.getElementById('remark').disabled = true;
+        jQuery.ajax({
+            url: 'add_probe_product.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: function (data) {
+                
+            },
+            error: function (data) {
+                alert("Error fetching probe information. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+        product_count++;
+    }
+
+    if (product_count > 0) {
+        document.getElementById('cancel_product').classList.remove('hide');
+    } else {
+        document.getElementById('cancel_product').classList.add('hide');
+    }
+
 }
 
 jQuery(document).ready(function () {
