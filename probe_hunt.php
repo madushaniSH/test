@@ -128,7 +128,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <div id="probe_hunt_options" class="col hide">
     <button class="btn" id="exit_btn" onclick="window.location.href='product_hunt.php'"><i class="fas fa-chevron-circle-left fa-3x"></i><br>Exit</i></button>
     <button class="btn hide" id="continue_btn" data-toggle="modal" data-target="#add_probe" onclick="get_probe_info()"><i class="fas fa-chevron-circle-right fa-3x"></i><br>Continue</button>
-    <p class="error-popup hide" id="probe_message">Probe Assigned. Please press Continue</p>
+    <p class="error-popup" id="probe_message"></p>
     </div>
 </div>
 </div>

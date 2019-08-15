@@ -67,15 +67,14 @@ function update_project_count() {
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {
                             document.getElementById('continue_btn').classList.add('hide');
+                            document.getElementById('probe_message').innerHTML = '';
                             if ($('#add_probe').is(':visible')) {
                                 $('#close_probe_title').click();
                             }
                     } else {
                         document.getElementById('continue_btn').classList.remove('hide');
-                        if (probe_count == 1) {
-                            document.getElementById('probe_message').classList.remove('hide');
-                        } else {
-                            document.getElementById('probe_message').classList.add('hide');
+                        if (probe_count === 1) {
+                            document.getElementById('probe_message').innerHTML = 'Probe Assigned. Please press Continue';
                         }
                     }
                 } else {
@@ -100,5 +99,5 @@ jQuery(document).ready(function () {
     jQuery('#project_name').change(function () {
         validate_project_name();
     });
-    setInterval(function () { update_project_count(); }, 1000);
+    setInterval(function () { update_project_count(); }, 2000);
 });
