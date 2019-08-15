@@ -97,5 +97,5 @@ jQuery(document).ready(function () {
     jQuery('#project_name').change(function () {
         validate_project_name();
     });
-    setInterval(function () { update_project_count(); }, 2000);
+    setInterval(function () { update_project_count(); }, 1000);
 });
