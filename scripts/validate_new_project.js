@@ -13,7 +13,7 @@ function validate_project_form() {
         is_valid_form = false;
     } else {
         project_name_error.innerHTML = '';
-        project_database_name = project_name;
+        project_database_name = project_name.replace(/\s/g,'');
     }
 
     if (project_region == '') {
