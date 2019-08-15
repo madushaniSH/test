@@ -49,6 +49,7 @@ $sql = 'SELECT project_name, project_region, project_db_name FROM projects';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+
 ?>
 
 <!DOCTYPE html>
@@ -147,7 +148,37 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <div class="row">
                 <div class="form-group col-md-5">
                     <label for="status">*Status:</label>
-                    <input type="text" id="status" class="form-control">
+                    <select name="status" id="status" class="form-control">
+                        <option value=""selected disabled>Select</option>
+                    <?php
+
+                    $dsn = 'mysql:host='.$host.';dbname='.$_SESSION['current_database'];
+                    
+                    /*
+                        Attempts to connect to the databse, if no connection was estabishled
+                        kills the script
+                    */
+                    try{
+                        // Creating a new PDO instance
+                        $pdo = new PDO($dsn, $user, $pwd);
+                        // setting the PDO error mode to exception
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                    }
+                    
+                    catch(PDOException $e){
+                        // throws error message
+                        echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
+                        exit();
+                    }
+                    $sql = 'SELECT probe_status_id, probe_status_name FROM probe_status';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute();
+                    $probe_status_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+                    foreach($probe_status_rows as $probe_status_row){
+                        echo "<option value=\"$probe_status_row->probe_status_id\">$probe_status_row->probe_status_name</option>";
+                    }
+                    ?>
+                    </select>
                     <span id="status_error" class="error-popup"></span>
                 </div>
                 <div class="form-group col-md-7">
@@ -163,9 +194,36 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <span id="remark_error" class="error-popup"></span>
                 </div>
             </div>
+            <div id="hunt_information" class="hide">
+                <p class="border-bottom my-3">Additional Information</p>
+                <div class="row">
+                    <div class="form-group col-md-5">
+                        <label for="product_name">*Product Name:</label>
+                        <input type="text" id="product_name" class="form-control">
+                        <span id="product_name_error" class="error-popup"></span>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="product_type">Product Type:</label>
+                        <select name="product_type" id="product_type" class="form-control">
+                            <option value=""selected disabled>Select</option>
+                            <option value="brand">Brand</option>
+                            <option value="sku">SKU</option>
+                            <option value="dvc">DVC</option>
+                        </select>
+                        <span id="product_type_error" class="error-popup"></span>
+                    </div>
+                </div>
+                <div class="row hide" id="alt_design_info">
+                    <div class="form-group col-md-5">
+                        <label for="alt_design_name">*Alternative Design Name:</label>
+                        <input type="text" id="alt_design_name" class="form-control">
+                        <span id="alt_design_name_error" class="error-popup"></span>
+                    </div>
+                </div>
+            </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" value="Submit">Save changes</button>
+                <button type="button" class="btn btn-success" value="Submit" onclick="validate_probe_submission();">Save changes</button>
                 </form>
             </div>
         </div>

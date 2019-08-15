@@ -102,6 +102,23 @@ if ($row_count == 0) {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
+
+    $sql = 'CREATE TABLE `probe_status` (
+        `probe_status_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        `probe_status_name` varchar(255) NOT NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+
+    $sql = 'INSERT INTO `probe_status` (`probe_status_id`, `probe_status_name`) VALUES
+    (1, \'Already Added\'),
+    (2, \'Hunted\'),
+    (3, \'Irrelevant\'),
+    (4, \'Recognition Level Issue\'),
+    (5, \'Validation Error\')';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    
     echo "<span class=\"success-popup\">Project Created</span>    ";
 } else {
     echo "<span class=\"error-popup\">Project with that name already exists</span>    ";

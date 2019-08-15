@@ -92,12 +92,65 @@ function update_project_count() {
     }
 }
 
+function validate_probe_submission() {
+    var is_valid_form = true;
+    var status_element = document.getElementById('status');
+    var status = status_element.options[status_element.selectedIndex].value;
+    var status_error = document.getElementById('status_error');
+    var hunt_information = document.getElementById('hunt_information');
+    if (status == '') {
+        is_valid_form = false;
+        status_error.innerHTML = 'Status must be selected';
+    } else {
+        status_error.innerHTML = '';
+    }
+}
+
+function show_additional_options(){
+    var status_element = document.getElementById('status');
+    var status = status_element.options[status_element.selectedIndex].value;
+    var hunt_information = document.getElementById('hunt_information');
+    if (status === '2') {
+        hunt_information.classList.remove('hide');
+    } else {
+        hunt_information.classList.add('hide');
+    }
+}
+
+function show_dvc_options() {
+    var status_element = document.getElementById('status');
+    var status = status_element.options[status_element.selectedIndex].value;
+    var hunt_information = document.getElementById('hunt_information');
+    var product_type_element = document.getElementById('product_type');
+    var product_type = product_type_element.options[product_type_element.selectedIndex].value;
+    var alt_design_info = document.getElementById('alt_design_info');
+    if (status != '' && product_type === 'dvc') {
+        alt_design_info.classList.remove('hide');
+    } else {
+        alt_design_info.classList.add('hide');
+    }
+}
+
 jQuery(document).ready(function () {
     jQuery('#project_name').select2({
         width: '100%',
     });
+    jQuery('#status').select2({
+        dropdownParent: $("#add_probe"),
+        width: '100%',
+    });
+    jQuery('#product_type').select2({
+        dropdownParent: $("#add_probe"),
+        width: '100%',
+    });
     jQuery('#project_name').change(function () {
         validate_project_name();
+    });
+    jQuery('#status').change(function () {
+        show_additional_options();
+    });
+    jQuery('#product_type').change(function () {
+        show_dvc_options();
     });
     setInterval(function () { update_project_count(); }, 2000);
 });
