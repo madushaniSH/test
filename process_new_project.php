@@ -85,9 +85,15 @@ if ($row_count == 0) {
         `probe_id` int(11) NOT NULL,
         `probe_added_date` datetime NOT NULL DEFAULT current_timestamp(),
         `probe_added_user_id` int(11) NOT NULL,
-        CONSTRAINT '.$dbname.'_BRAND_ID FOREIGN KEY (`brand_id`) REFERENCES `brand` (`brand_id`),
-        CONSTRAINT '.$dbname.'_CLIENT_CATEGORY_ID FOREIGN KEY (`client_category_id`) REFERENCES `client_category` (`client_category_id`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+        `probe_hunter_processed_time` datetime DEFAULT NULL,
+        `probe_process_comment` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+        `probe_processed_hunter_id` int(11) DEFAULT NULL,
+        `probe_process_remark` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+        `probe_status_id` int(11) DEFAULT NULL,
+         CONSTRAINT  '.$dbname.'_BRAND_ID FOREIGN KEY (`brand_id`) REFERENCES `brand` (`brand_id`),
+         CONSTRAINT  '.$dbname.'_CLIENT_CATEGORY_ID FOREIGN KEY (`client_category_id`) REFERENCES `client_category` (`client_category_id`),
+         CONSTRAINT  '.$dbname.'_PROBE_HUNTER_ACCOUNT_ID FOREIGN KEY (`probe_processed_hunter_id`) REFERENCES `user_db`.`accounts` (`account_id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 
@@ -126,7 +132,7 @@ if ($row_count == 0) {
         `product_alt_design_name` varchar(255) DEFAULT NULL,
         `product_creation_time` datetime NOT NULL DEFAULT current_timestamp(),
         `account_id` int(11) NOT NULL,
-         CONSTRAINT `PRODUCT_ACCOUNT_ID` FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`)
+         CONSTRAINT  '.$dbname.'_PRODUCT_ACCOUNT_ID FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
