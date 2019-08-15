@@ -136,6 +136,19 @@ if ($row_count == 0) {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
+
+    $sql = 'CREATE TABLE `probe_product_info` (
+        `probe_product_info_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        `probe_product_info_key_id` int(11) NOT NULL,
+        `probe_product_info_product_id` int(11) NOT NULL,
+        `probe_product_info_creation_time` datetime NOT NULL DEFAULT current_timestamp(),
+        `probe_product_info_account_id` int(11) NOT NULL,
+         CONSTRAINT '.$dbname.'_probe_product_info_account_id FOREIGN KEY (`probe_product_info_account_id`) REFERENCES `user_db`.`accounts` (`account_id`),
+         CONSTRAINT '.$dbname.'_probe_product_info_key_id FOREIGN KEY (`probe_product_info_key_id`) REFERENCES `probe` (`probe_key_id`),
+         CONSTRAINT '.$dbname.'_probe_product_info_product_id FOREIGN KEY (`probe_product_info_product_id`) REFERENCES `products` (`product_id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
     echo "<span class=\"success-popup\">Project Created</span>    ";
 } else {
     echo "<span class=\"error-popup\">Project with that name already exists</span>    ";
