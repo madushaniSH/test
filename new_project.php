@@ -52,6 +52,7 @@ if(isset($_SESSION['out'])){
 <body>
 <svg id="fader"></svg>
 <nav class="navbar navbar-expand-md">
+    <a href="product_hunt.php" class="btn btn-light nav-back"><i class="fas fa-arrow-circle-left"></i></a>
     <div class="mx-auto order-0">
         <a class="navbar-brand mx-auto" href="index.php">Data Operations</a>
     </div>

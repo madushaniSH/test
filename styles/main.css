@@ -318,3 +318,7 @@ body {
     width: 4rem;
     height: 4rem;
 }
+
+.nav-back {
+    margin-right: 1vw;
+}

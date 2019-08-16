@@ -74,6 +74,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 <body >
 <svg id="fader"></svg>
 <nav class="navbar">
+    <a href="product_hunt.php" class="btn btn-light nav-back"><i class="fas fa-arrow-circle-left"></i></a>
     <div class="container-fluid">
         <div class="navbar-header">
             <a href="index.php" class="navbar-brand">Data Operations</a>
