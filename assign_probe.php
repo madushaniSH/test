@@ -46,7 +46,7 @@ $last_id = $probe_info->probe_queue_id;
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
 if ($row_count == 0) {
-    $sql = 'SELECT probe_queue_id FROM probe_queue WHERE probe_being_handled = 0 FOR UPDATE';
+    $sql = 'SELECT probe_queue_id FROM probe_queue WHERE probe_being_handled = 0 FOR UPDATE  SKIP LOCKED';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
