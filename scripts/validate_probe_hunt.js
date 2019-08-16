@@ -215,6 +215,7 @@ function validate_probe_submission() {
             });
         }
         product_count = 0;
+        skip_check = false;
     }
     if (product_count > 0) {
         document.getElementById('cancel_product').classList.remove('hide');
