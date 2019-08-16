@@ -128,7 +128,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 <div class="row">
     <div id="probe_hunt_options" class="col hide">
     <button class="btn" id="exit_btn" onclick="window.location.href='product_hunt.php'"><i class="fas fa-chevron-circle-left fa-3x"></i><br>Exit</i></button>
-    <button class="btn hide" id="continue_btn" data-toggle="modal" data-target="#add_probe" onclick="get_probe_info()"><i class="fas fa-chevron-circle-right fa-3x"></i><br>Continue</button>
+    <button class="btn hide" id="continue_btn" onclick="get_probe_info()"><i class="fas fa-chevron-circle-right fa-3x"></i><br>Continue</button>
     <p class="error-popup" id="probe_message"></p>
     </div>
 </div>
@@ -149,35 +149,6 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                 <div class="form-group col-md-5">
                     <label for="status">*Status:</label>
                     <select name="status" id="status" class="form-control">
-                        <option value=""selected disabled>Select</option>
-                    <?php
-
-                    $dsn = 'mysql:host='.$host.';dbname='.$_SESSION['current_database'];
-                    
-                    /*
-                        Attempts to connect to the databse, if no connection was estabishled
-                        kills the script
-                    */
-                    try{
-                        // Creating a new PDO instance
-                        $pdo = new PDO($dsn, $user, $pwd);
-                        // setting the PDO error mode to exception
-                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                    }
-                    
-                    catch(PDOException $e){
-                        // throws error message
-                        echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
-                        exit();
-                    }
-                    $sql = 'SELECT probe_status_id, probe_status_name FROM probe_status';
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute();
-                    $probe_status_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
-                    foreach($probe_status_rows as $probe_status_row){
-                        echo "<option value=\"$probe_status_row->probe_status_id\">$probe_status_row->probe_status_name</option>";
-                    }
-                    ?>
                     </select>
                     <span id="status_error" class="error-popup"></span>
                 </div>

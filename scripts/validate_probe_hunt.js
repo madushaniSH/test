@@ -47,6 +47,23 @@ function get_probe_info() {
                 title_string += ' <span id="probe_id_title">' + data[0].probe_id;
             }
             jQuery('#add_probe_title').html(title_string);
+            var formData = new FormData();
+            formData.append('project_name', project_name);
+            jQuery.ajax({
+                url: 'get_project_status.php',
+                type: 'POST',
+                data: formData,
+                success: function (data) {
+                    $('#status').html(data);
+                    console.log(data);
+                },
+                error: function (data) {
+                    alert("Error assigning probe. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
@@ -55,6 +72,7 @@ function get_probe_info() {
         contentType: false,
         processData: false
     });
+    $('#add_probe').modal('show');
 }
 
 function update_project_count() {
@@ -103,7 +121,7 @@ function update_project_count() {
     }
 }
 
-function reset_probe_modal(){
+function reset_probe_modal() {
     $('#add_probe').modal('hide');
     $("#probe_form").trigger('reset');
     $("#status").val('').trigger('change');
@@ -147,7 +165,7 @@ function validate_probe_submission() {
     }
 
     if (is_valid_form) {
-        if ((status === '2' || status === '1') && !skip_check)  {
+        if ((status === '2' || status === '1') && !skip_check) {
             if (add_probe_product()) {
                 jQuery.ajax({
                     url: 'update_probe_queue.php',
