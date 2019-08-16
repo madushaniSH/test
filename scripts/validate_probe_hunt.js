@@ -358,7 +358,7 @@ jQuery(document).ready(function () {
     jQuery('#product_type').change(function () {
         show_dvc_options();
     });
-    setInterval(function () { update_project_count(); }, 2000);
+    setInterval(function () { update_project_count(); }, 1000);
     if (product_count > 0) {
         document.getElementById('cancel_product').classList.remove('hide');
         document.getElementById('submit_probe').classList.add('hide');
