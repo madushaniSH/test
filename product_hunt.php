@@ -10,7 +10,7 @@ if (!isset($_SESSION['logged_in'])) {
 	header('Location: login_auth_one.php');
 	exit();
 } else {
-    if(!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor')){
+    if(!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT')){
         header('Location: index.php');
 	    exit();
     }
@@ -55,24 +55,31 @@ if(isset($_SESSION['out'])){
         </ul>
     </div>
 </nav>
-<a href="new_project.php" class="btn btn-lg dashboard-btn">
+<?php
+if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor'){
+    echo"
+    <a href=\"new_project.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
-        <i class="fas fa-meteor fa-2x"></i>   
+        <i class=\"fas fa-meteor fa-2x\"></i>   
     </span>
     Create New Project
 </a>
 
-<a href="upload_probe.php" class="btn btn-lg dashboard-btn">
+<a href=\"upload_probe.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
-        <i class="fas fa-rocket fa-2x"></i>
+        <i class=\"fas fa-rocket fa-2x\"></i>
     </span>
     Upload Probes
-</a>
-
-<a href="probe_hunt.php" class="btn btn-lg dashboard-btn">
+</a>";
+}
+if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT'){
+    echo"
+<a href=\"probe_hunt.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
-        <i class="fas fa-th-list fa-2x"></i>
+        <i class=\"fas fa-th-list fa-2x\"></i>
     </span>
     Probe Hunt
-</a>
+</a>";
+}
+?>
 </body>

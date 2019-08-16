@@ -52,21 +52,27 @@ if(isset($_SESSION['out'])){
         </ul>
     </div>
 </nav>
-<a href="products.php" class="btn btn-lg dashboard-btn">
+<?php
+if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'Training') {
+    echo "
+<a href=\"products.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
-        <i class="fas fa-glass-martini-alt fa-2x"></i>
+        <i class=\"fas fa-glass-martini-alt fa-2x\"></i>
     </span>
     Products and Brands
-</a>
-<?php
-if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor'){
-echo "
+</a>";
+}
+if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor') {
+    echo "
 <a href=\"add_new_user.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
         <i class=\"fas fa-user-plus fa-2x\"></i>
     </span>
     Add new user
-</a>
+</a>";
+}
+if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT'){
+    echo"
 <a href=\"product_hunt.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
         <i class=\"fas fa-dragon fa-2x\"></i>
