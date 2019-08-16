@@ -5,6 +5,7 @@ var skip_check = false;
 function cancel_product_button() {
     skip_check = true;
     validate_probe_submission();
+    product_count = 0;
 }
 
 function validate_project_name() {
@@ -55,7 +56,6 @@ function get_probe_info() {
                 data: formData,
                 success: function (data) {
                     $('#status').html(data);
-                    console.log(data);
                 },
                 error: function (data) {
                     alert("Error assigning probe. Please refresh");
@@ -129,6 +129,16 @@ function reset_probe_modal() {
     document.getElementById('status').disabled = false;
     document.getElementById('comment').disabled = false;
     document.getElementById('remark').disabled = false;
+    $('#server_error').html('');
+    $('#server_success').html('');
+    product_count = 0;
+}
+
+function reset_hunt_information() {
+    $("#product_type").val('').trigger('change');
+    document.getElementById('product_name').value = '';
+    document.getElementById('alt_design_name').value = '';
+
 }
 
 function validate_probe_submission() {
@@ -165,7 +175,7 @@ function validate_probe_submission() {
     }
 
     if (is_valid_form) {
-        if ((status === '2' || status === '1') && !skip_check) {
+        if ((status === '2' || status === '1') && !skip_check && product_count <= 1) {
             if (add_probe_product()) {
                 jQuery.ajax({
                     url: 'update_probe_queue.php',
@@ -175,6 +185,7 @@ function validate_probe_submission() {
                     success: function (data) {
                         if (data[0].success != '') {
                             reset_probe_modal();
+                            product_count = 0;
                         }
                     },
                     error: function (data) {
@@ -193,6 +204,7 @@ function validate_probe_submission() {
                 dataType: 'JSON',
                 success: function (data) {
                     reset_probe_modal();
+                    product_count = 0;
                 },
                 error: function (data) {
                     alert("Error fetching probe information. Please refresh");
@@ -202,6 +214,14 @@ function validate_probe_submission() {
                 processData: false
             });
         }
+        product_count = 0;
+    }
+    if (product_count > 0) {
+        document.getElementById('cancel_product').classList.remove('hide');
+        document.getElementById('submit_probe').classList.add('hide');
+    } else {
+        document.getElementById('cancel_product').classList.add('hide');
+        document.getElementById('submit_probe').classList.remove('hide');
     }
 }
 
@@ -287,6 +307,7 @@ function add_probe_product() {
                     server_success.innerHTML = data[0].success;
                 } else {
                     server_success.innerHTML = '';
+                    reset_hunt_information();
                 }
 
                 if (data[0].error != '') {
@@ -302,13 +323,16 @@ function add_probe_product() {
             contentType: false,
             processData: false
         });
+        reset_hunt_information();
         product_count++;
     }
 
     if (product_count > 0) {
         document.getElementById('cancel_product').classList.remove('hide');
+        document.getElementById('submit_probe').classList.add('hide');
     } else {
         document.getElementById('cancel_product').classList.add('hide');
+        document.getElementById('submit_probe').classList.remove('hide');
     }
     return is_valid_form;
 }
@@ -335,4 +359,11 @@ jQuery(document).ready(function () {
         show_dvc_options();
     });
     setInterval(function () { update_project_count(); }, 2000);
+    if (product_count > 0) {
+        document.getElementById('cancel_product').classList.remove('hide');
+        document.getElementById('submit_probe').classList.add('hide');
+    } else {
+        document.getElementById('cancel_product').classList.add('hide');
+        document.getElementById('submit_probe').classList.remove('hide');
+    }
 });

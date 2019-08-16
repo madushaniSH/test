@@ -193,7 +193,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                 </div>
                 <div>
                     <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
-                    <button type="button" class="btn btn-outline-danger hide" id="cancel_product" onclick="cancel_product_button();">Cancel</button>
+                    <button type="button" class="btn btn-outline-danger hide" id="cancel_product" onclick="cancel_product_button();">Save Changes</button>
                 </div>
                 <span id="server_error" class="error-popup"></span>
                 <span id="server_success" class="success-popup"></span>
