@@ -1,0 +1,14 @@
+#probe_qa_counter{
+    margin-top: 1vw;
+    text-align: center;
+}
+
+#probe_qa_options {
+    margin-top: 1vw;
+    text-align: center;
+}
+
+#probe_qa_options button{
+    padding: 0.5vw 2vw;
+    cursor: pointer; /* Mouse pointer on hover */
+}
