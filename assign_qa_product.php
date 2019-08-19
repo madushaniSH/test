@@ -47,6 +47,7 @@ $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
 if ($row_count == 0) {
     $this_count = 0;
+    $iterations = 0;
     do {
         $sql = 'UPDATE probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id SET probe_qa_queue.account_id = :account_id, probe_qa_queue.probe_being_handled = 1 WHERE probe_qa_queue.probe_being_handled = 0 AND probe_qa_queue.account_id IS NULL AND products.product_type = :product_type LIMIT 1';
         $stmt = $pdo->prepare($sql);
@@ -58,8 +59,8 @@ if ($row_count == 0) {
         $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
         $last_id = $probe_info->probe_qa_queue_id;
         $this_count = $stmt->rowCount(PDO::FETCH_OBJ);
-
-    } while ($this_count == 0);
+        $iterations++;
+    } while ($this_count == 0 && $iterations < 10);
 }
 $sql = 'SELECT brand.brand_name, client_category.client_category_name, products.product_type FROM  probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON products.product_id = probe_product_info.probe_product_info_product_id LEFT JOIN probe ON probe.probe_key_id = probe_product_info.probe_product_info_key_id LEFT JOIN client_category ON client_category.client_category_id = probe.client_category_id LEFT JOIN brand ON brand.brand_id = probe.brand_id WHERE probe_qa_queue.probe_qa_queue_id = :probe_qa_queue_id';
 $stmt = $pdo->prepare($sql);

@@ -175,7 +175,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <div id="probe_qa_counter" class="col hide">
                 <div class="row text-center">
                     <div class="col">
-                        <button type="button" class="btn qa_button" onclick="assign_brand();">
+                        <button type="button" id="brand_qa_button" class="btn qa_button" onclick="assign_brand();">
                         <div class="counter">
                             <i class="far fa-copyright fa-2x"></i>
                             <h2 id="current_brand_count" class="timer count-title count-number">
@@ -189,7 +189,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     </div>
 
                     <div class="col">
-                        <button type="button" class="btn qa_button" onclick="assign_sku();">
+                        <button type="button" id="sku_qa_button" class="btn qa_button" onclick="assign_sku();">
                         <div class="counter">
                             <i class="fas fa-boxes fa-2x"></i>
                             <h2 id="current_sku_count" class="timer count-title count-number">
@@ -203,7 +203,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     </div>
 
                     <div class="col">
-                        <button type="button" class="btn qa_button" onclick="assign_dvc();">
+                        <button type="button" id="dvc_qa_button" class="btn qa_button" onclick="assign_dvc();">
                         <div class="counter">
                             <i class="fas fa-eye fa-2x"></i>
                             <h2 id="current_dvc_count" class="timer count-title count-number">

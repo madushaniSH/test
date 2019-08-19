@@ -47,6 +47,7 @@ $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
 if ($row_count == 0) {
     $this_count = 0;
+    $iterations = 0;
     do {
         $sql = 'UPDATE probe_queue SET account_id = :account_id, probe_being_handled = 1 WHERE probe_being_handled = 0 AND account_id IS NULL LIMIT 1';
         $stmt = $pdo->prepare($sql);
@@ -58,8 +59,8 @@ if ($row_count == 0) {
         $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
         $last_id = $probe_info->probe_queue_id;
         $this_count = $stmt->rowCount(PDO::FETCH_OBJ);
-
-    } while ($this_count == 0);
+        $iterations++;
+    } while ($this_count == 0  && $iterations < 10);
 }
 $sql = 'SELECT brand.brand_name, client_category.client_category_name, probe.probe_id FROM  probe_queue LEFT JOIN probe ON probe_queue.probe_key_id = probe.probe_key_id LEFT JOIN brand ON probe.brand_id = brand.brand_id LEFT JOIN client_category ON probe.client_category_id  = client_category.client_category_id WHERE probe_queue_id = :probe_queue_id';
 $stmt = $pdo->prepare($sql);
