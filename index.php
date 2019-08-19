@@ -71,7 +71,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor') {
     Add new user
 </a>";
 }
-if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT'){
+if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT' || $_SESSION['role'] === 'SRT Analyst'){
     echo"
 <a href=\"product_hunt.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
