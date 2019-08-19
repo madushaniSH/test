@@ -68,13 +68,6 @@ if ($row_count == 1) {
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['probe_key_id'=>$probe_info->probe_key_id, 'account_id'=>$_SESSION['id']]);
         $success = 'Success';
-
-        // if probe_status is 'Hunted' adds it to the probe_qa_queue
-        if ($_POST['status'] == 2) {
-            $sql = 'INSERT INTO probe_qa_queue (probe_key_id) VALUES (:probe_key_id)';
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute(['probe_key_id'=>$probe_info->probe_key_id]);
-        }
     }
     catch(PDOException $e) {
         $error =$e->getMessage();

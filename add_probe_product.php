@@ -47,9 +47,9 @@ if (isset($_POST['alt_design_name']) && $_POST['alt_design_name'] != '') {
     $alt_design_name = NULL;
 }
 try {
-    $sql = 'INSERT INTO products (product_name, product_type, product_alt_design_name, account_id) VALUES (:product_name, :product_type, :product_alt_design_name, :account_id)';
+    $sql = 'INSERT INTO products (product_name, product_type, product_status, product_alt_design_name, account_id) VALUES (:product_name, :product_type, :product_status, :product_alt_design_name, :account_id)';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['product_name'=>$_POST['product_name'], 'product_type'=>$_POST['product_type'], 'product_alt_design_name'=>$alt_design_name, 'account_id'=>$_SESSION['id']]);
+    $stmt->execute(['product_name'=>$_POST['product_name'], 'product_type'=>$_POST['product_type'], 'product_status'=>$_POST['status'],'product_alt_design_name'=>$alt_design_name, 'account_id'=>$_SESSION['id']]);
     $last_id = (int)$pdo->lastInsertId();
     $sql = 'SELECT probe_key_id FROM probe_queue WHERE account_id = :account_id';
     $stmt = $pdo->prepare($sql);
@@ -59,6 +59,12 @@ try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['probe_product_info_key_id'=>$probe_info->probe_key_id, 'probe_product_info_product_id'=>$last_id, 'probe_product_info_account_id'=>$_SESSION['id']]);
     $success = 'Product Saved';
+
+    if ($_POST['status'] == 2) {
+        $sql = 'INSERT INTO probe_qa_queue (product_id) VALUES (:product_id)';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['product_id'=>$last_id]);
+    }
 }
 catch(PDOException $e) {
     $error =$e->getMessage();

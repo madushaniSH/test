@@ -175,42 +175,45 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <div id="probe_qa_counter" class="col hide">
                 <div class="row text-center">
                     <div class="col">
+                        <button type="button" class="btn qa_button">
                         <div class="counter">
                             <i class="far fa-copyright fa-2x"></i>
-                            <h2 id="current_probe_count" class="timer count-title count-number">
-                                45
-                                <!--<div class="spinner-border text-success" role="status">
-                    <span class="sr-only">Loading...</span>
-                  </div>-->
+                            <h2 id="current_brand_count" class="timer count-title count-number">
+                                <div class="spinner-border text-success" role="status">
+                                <span class="sr-only">Loading...</span>
+                                </div>
                             </h2>
                             <p class="count-text ">Remaining Brands</p>
                         </div>
+                        </button>
                     </div>
 
                     <div class="col">
+                        <button type="button" class="btn qa_button">
                         <div class="counter">
                             <i class="fas fa-boxes fa-2x"></i>
-                            <h2 id="current_probe_count" class="timer count-title count-number">
-                                32
-                                <!--<div class="spinner-border text-success" role="status">
-                    <span class="sr-only">Loading...</span>
-                  </div>-->
+                            <h2 id="current_sku_count" class="timer count-title count-number">
+                                <div class="spinner-border text-success" role="status">
+                                <span class="sr-only">Loading...</span>
+                                </div>
                             </h2>
                             <p class="count-text ">Remaining SKU</p>
                         </div>
+                        </button>
                     </div>
 
                     <div class="col">
+                        <button type="button" class="btn qa_button">
                         <div class="counter">
                             <i class="fas fa-eye fa-2x"></i>
-                            <h2 id="current_probe_count" class="timer count-title count-number">
-                                27
-                                <!--<div class="spinner-border text-success" role="status">
-                    <span class="sr-only">Loading...</span>
-                  </div>-->
+                            <h2 id="current_dvc_count" class="timer count-title count-number">
+                                <div class="spinner-border text-success" role="status">
+                                <span class="sr-only">Loading...</span>
+                                </div>
                             </h2>
                             <p class="count-text ">Remaining DVC</p>
                         </div>
+                        </button>
                     </div>
                 </div>
             </div>

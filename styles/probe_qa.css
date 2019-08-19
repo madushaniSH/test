@@ -12,3 +12,15 @@
     padding: 0.5vw 2vw;
     cursor: pointer; /* Mouse pointer on hover */
 }
+
+.qa_button{
+    padding: 0;
+    background-color:#f5f5f5;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.qa_button :hover {
+    background-color: black;
+    color: white;
+}

@@ -129,10 +129,12 @@ if ($row_count == 0) {
         `product_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `product_name` varchar(255) NOT NULL,
         `product_type` enum(\'brand\',\'sku\',\'dvc\') NOT NULL,
+        `product_status` int(11) DEFAULT NULL,
         `product_alt_design_name` varchar(255) DEFAULT NULL,
         `product_creation_time` datetime NOT NULL DEFAULT current_timestamp(),
         `account_id` int(11) NOT NULL,
-         CONSTRAINT  '.$dbname.'_PRODUCT_ACCOUNT_ID FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`)
+         CONSTRAINT  '.$dbname.'_PRODUCT_ACCOUNT_ID FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`),
+         CONSTRAINT '.$dbname.'_PRODUCT_STATUS FOREIGN KEY (`product_status`) REFERENCES `probe_status` (`probe_status_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
@@ -152,10 +154,10 @@ if ($row_count == 0) {
     
     $sql = 'CREATE TABLE `probe_qa_queue` (
         `probe_qa_queue_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        `probe_key_id` int(11) NOT NULL,
+        `product_id` int(11) NOT NULL,
         `account_id` int(11) DEFAULT NULL,
         `probe_being_handeled` tinyint(1) NOT NULL DEFAULT 0,
-         CONSTRAINT '.$dbname.'_PROBE_QA_PROBE_KEY_ID FOREIGN KEY (`probe_key_id`) REFERENCES `probe` (`probe_key_id`)
+        CONSTRAINT '.$dbname.'_PROBE_QA_PRODUCT_ID FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();  

@@ -263,6 +263,8 @@ function add_probe_product() {
     var alt_design_name_error = document.getElementById('alt_design_name_error');
     var project_name_element = document.getElementById('project_name');
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    var status_element = document.getElementById('status');
+    var status = status_element.options[status_element.selectedIndex].value;
 
     if (product_name == '') {
         product_name_error.innerHTML = 'Product Name required';
@@ -290,6 +292,12 @@ function add_probe_product() {
 
     if (project_name != '') {
         formData.append('project_name', project_name);
+    } else {
+        is_valid_form = false;
+    }
+
+    if (status != '') {
+        formData.append('status', status);
     } else {
         is_valid_form = false;
     }
