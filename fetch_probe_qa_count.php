@@ -53,11 +53,12 @@ $stmt->execute();
 $dvc_count = $stmt->fetchColumn(); 
 
 
-$sql = 'SELECT probe_qa_queue_id FROM probe_qa_queue WHERE account_id = :account_id';
+$sql = 'SELECT probe_qa_queue.probe_qa_queue_id, products.product_type FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE probe_qa_queue.account_id = :account_id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id'=>$_SESSION['id']]);
+$probe_info = $stmt->fetch(PDO::FETCH_OBJ);
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
-$return_arr[] = array("brand_count" => $brand_count, "sku_count" => $sku_count, "dvc_count" => $dvc_count,"processing_probe_row" => $row_count);
+$return_arr[] = array("brand_count" => $brand_count, "sku_count" => $sku_count, "dvc_count" => $dvc_count,"processing_probe_row" => $row_count, "product_type" => $probe_info->product_type);
 echo json_encode($return_arr);
 ?>

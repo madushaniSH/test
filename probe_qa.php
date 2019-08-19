@@ -175,7 +175,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <div id="probe_qa_counter" class="col hide">
                 <div class="row text-center">
                     <div class="col">
-                        <button type="button" class="btn qa_button">
+                        <button type="button" class="btn qa_button" onclick="assign_brand();">
                         <div class="counter">
                             <i class="far fa-copyright fa-2x"></i>
                             <h2 id="current_brand_count" class="timer count-title count-number">
@@ -189,7 +189,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     </div>
 
                     <div class="col">
-                        <button type="button" class="btn qa_button">
+                        <button type="button" class="btn qa_button" onclick="assign_sku();">
                         <div class="counter">
                             <i class="fas fa-boxes fa-2x"></i>
                             <h2 id="current_sku_count" class="timer count-title count-number">
@@ -203,7 +203,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     </div>
 
                     <div class="col">
-                        <button type="button" class="btn qa_button">
+                        <button type="button" class="btn qa_button" onclick="assign_dvc();">
                         <div class="counter">
                             <i class="fas fa-eye fa-2x"></i>
                             <h2 id="current_dvc_count" class="timer count-title count-number">
@@ -220,9 +220,27 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </div>
         <div class="row">
             <div id="probe_qa_options" class="col hide">
+            <p class="error-popup" id="probe_qa_message"></p>
                 <button class="btn" id="exit_btn" onclick="window.location.href='product_hunt.php'"><i
                         class="fas fa-chevron-circle-left fa-3x"></i><br>Exit</i></button>
-                <p class="error-popup" id="probe_message"></p>
             </div>
         </div>
+<div class="modal hide fade modal-form" id="qa_probe" tabindex="-1" role="dialog"
+    aria-labelledby="qa_probe_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qa_probe_title"></h5>
+                <button type="button" class="close hide" id="close_probe_title" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" value="Submit">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>        
 </body>

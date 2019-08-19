@@ -156,7 +156,7 @@ if ($row_count == 0) {
         `probe_qa_queue_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `product_id` int(11) NOT NULL,
         `account_id` int(11) DEFAULT NULL,
-        `probe_being_handeled` tinyint(1) NOT NULL DEFAULT 0,
+        `probe_being_handled` tinyint(1) NOT NULL DEFAULT 0,
         CONSTRAINT '.$dbname.'_PROBE_QA_PRODUCT_ID FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
