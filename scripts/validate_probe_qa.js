@@ -107,7 +107,7 @@ function update_project_qa_count() {
                     $('#current_dvc_count').empty();
                     $('#current_dvc_count').html(data[0].dvc_count);
                     var dvc_count = parseInt(data[0].dvc_count, 10);
-                    if (dvc_count == 0 && product_type != 'sku') {
+                    if (dvc_count == 0 && product_type != 'dvc') {
                         document.getElementById('dvc_qa_button').disabled = true;
                     } 
                 } else {
