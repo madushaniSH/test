@@ -66,24 +66,31 @@ function update_project_qa_count() {
                     var total_count = 0;
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     var product_type = data[0].product_type;
+                    var display_message = '';
 
                     if (product_type == 'brand' && probe_count == 1) {
                         document.getElementById('dvc_qa_button').disabled = true;
                         document.getElementById('sku_qa_button').disabled = true;
                         document.getElementById('brand_qa_button').disabled = false;
+                        display_message = product_type.toUpperCase() + ' already assigned';
                     } else if (product_type == 'sku' && probe_count == 1) {
                         document.getElementById('dvc_qa_button').disabled = true;
                         document.getElementById('sku_qa_button').disabled = false;
                         document.getElementById('brand_qa_button').disabled = true;
+                        display_message = product_type.toUpperCase() + ' already assigned';
                     } else if (product_type == 'dvc' && probe_count == 1) {
                         document.getElementById('dvc_qa_button').disabled = false;
                         document.getElementById('sku_qa_button').disabled = true;
                         document.getElementById('brand_qa_button').disabled = true;
+                        display_message = product_type.toUpperCase() + ' already assigned';
                     } else {
                         document.getElementById('sku_qa_button').disabled = false;
                         document.getElementById('dvc_qa_button').disabled = false;
                         document.getElementById('brand_qa_button').disabled = false;
+                        display_message = '';
                     }
+
+                    $('#probe_qa_message').html(display_message);
 
                     $('#current_brand_count').empty();
                     $('#current_brand_count').html(data[0].brand_count);
