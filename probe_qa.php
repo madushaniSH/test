@@ -212,28 +212,16 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         <div class="col">
         </div>
         <div class="col">
-            <label for="project_name">Select Brand Name</label>
-            <select name="project_name" id="project_name" class="form-control">
-                <option value="" selected disabled>Select</option>
-                <?php
-                    foreach ($project_rows as $project_row) {
-                        echo "<option value=\"$project_row->project_db_name\">$project_row->project_name ($project_row->project_region)</option>";
-                    }
-                ?>
+            <label for="brand_name">Select Brand Name</label>
+            <select name="brand_name" id="brand_name" class="form-control">
             </select>
-            <span id="project_name_error" class="error-popup"></span>
+            <span id="brand_name_error" class="error-popup"></span>
         </div>
         <div class="col">
-            <label for="project_name">Select Brand Name</label>
-            <select name="project_name" id="project_name" class="form-control">
-                <option value="" selected disabled>Select</option>
-                <?php
-                    foreach ($project_rows as $project_row) {
-                        echo "<option value=\"$project_row->project_db_name\">$project_row->project_name ($project_row->project_region)</option>";
-                    }
-                ?>
+            <label for="dvc_name">Select Brand Name</label>
+            <select name="dvc_name" id="dvc_name" class="form-control" onclick="get_brand_list('dvc', 'dvc_name');">
             </select>
-            <span id="project_name_error" class="error-popup"></span>
+            <span id="dvc_name_error" class="error-popup"></span>
         </div>
     </div>
         <div class="row">                        
