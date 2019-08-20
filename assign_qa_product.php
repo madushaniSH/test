@@ -49,7 +49,7 @@ if ($row_count == 0) {
     $this_count = 0;
     $iterations = 0;
     do {
-        $sql = 'UPDATE probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id SET probe_qa_queue.account_id = :account_id, probe_qa_queue.probe_being_handled = 1 WHERE probe_qa_queue.probe_being_handled = 0 AND probe_qa_queue.account_id IS NULL AND products.product_type = :product_type LIMIT 1';
+        $sql = 'UPDATE probe_qa_queue AS upd INNER JOIN (SELECT t1.product_id FROM probe_qa_queue AS t1 INNER JOIN products AS t2 ON t2.product_id = t1.product_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.product_type = :product_type LIMIT 1 ) AS sel ON sel.product_id = upd.product_id SET upd.account_id = :account_id, upd.probe_being_handled = 1';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['account_id'=>$_SESSION['id'], 'product_type'=>$_POST['product_type']]);
 
