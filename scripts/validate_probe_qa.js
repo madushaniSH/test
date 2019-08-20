@@ -97,6 +97,8 @@ function get_probe_qa_info() {
 
 
 function update_project_qa_count() {
+    var brand_name_element = document.getElementById('brand_name');
+    var brand_name = brand_name_element.options[brand_name_element.selectedIndex].value;
     if (p_name != '') {
         get_brand_list('sku', 'brand_name');
         get_brand_list('dvc', 'dvc_name');

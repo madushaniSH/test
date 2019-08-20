@@ -48,58 +48,6 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 ?>
-<?php
-/*
-    Filename: probe_hunt.php
-    Author: Malika Liyanage
-*/
-
-session_start();
-// If the user is not logged in redirect to the login page...
-if (!isset($_SESSION['logged_in'])) {
-    header('Location: login_auth_one.php');
-    exit();
-} else {
-    if (!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT')) {
-        header('Location: index.php');
-        exit();
-    }
-}
-
-// unset the variable out from session. out is used to store error messages from details.php
-if (isset($_SESSION['out'])) {
-    unset($_SESSION['out']);
-}
-
-// Current settings to connect to the user account database
-require('user_db_connection.php');
-$dbname = 'project_db';
-// Setting up the DSN
-$dsn = 'mysql:host='.$host.';dbname='.$dbname;
-
-/*
-    Attempts to connect to the databse, if no connection was estabishled
-    kills the script
-*/
-try {
-    // Creating a new PDO instance
-    $pdo = new PDO($dsn, $user, $pwd);
-    // setting the PDO error mode to exception
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    // throws error message
-    echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
-    exit();
-}
-
-
-$sql = 'SELECT project_name, project_region, project_db_name FROM projects';
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -175,34 +123,34 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <div class="col">
                 <div class="counter overall-counter">
                     <i class="fas fa-boxes fa-2x"></i>
-                    <h2 id="" class="timer count-title count-number">
+                    <h2 id="current_brand_count" class="timer count-title count-number">
                         <div class="spinner-border text-success" role="status">
                         <span class="sr-only">Loading...</span>
                         </div>
                     </h2>
-                    <p class="count-text ">Remaining SKU</p>
+                    <p class="count-text ">Pending Brand Count</p>
                 </div>
             </div>
             <div class="col">
                 <div class="counter overall-counter">
                     <i class="fas fa-boxes fa-2x"></i>
-                    <h2 id="" class="timer count-title count-number">
+                    <h2 id="current_sku_count" class="timer count-title count-number">
                         <div class="spinner-border text-success" role="status">
                         <span class="sr-only">Loading...</span>
                         </div>
                     </h2>
-                    <p class="count-text ">Remaining Brand</p>
+                    <p class="count-text ">Pending SKU Count</p>
                 </div>
             </div>
             <div class="col">
                 <div class="counter overall-counter">
                     <i class="fas fa-boxes fa-2x"></i>
-                    <h2 id="" class="timer count-title count-number">
+                    <h2 id="current_dvc_count" class="timer count-title count-number">
                         <div class="spinner-border text-success" role="status">
                         <span class="sr-only">Loading...</span>
                         </div>
                     </h2>
-                    <p class="count-text ">Remaining DVC</p>
+                    <p class="count-text ">Pending DVC Count</p>
                 </div>
             </div>
         </div>
@@ -231,7 +179,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <button type="button" id="brand_qa_button" class="btn qa_button" onclick="assign_brand();">
                         <div class="counter">
                             <i class="far fa-copyright fa-2x"></i>
-                            <h2 id="current_brand_count" class="timer count-title count-number">
+                            <h2 id="current_brand_count_2" class="timer count-title count-number">
                                 <div class="spinner-border text-success" role="status">
                                 <span class="sr-only">Loading...</span>
                                 </div>
@@ -245,7 +193,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <button type="button" id="sku_qa_button" class="btn qa_button" onclick="assign_sku();">
                         <div class="counter">
                             <i class="fas fa-boxes fa-2x"></i>
-                            <h2 id="current_sku_count" class="timer count-title count-number">
+                            <h2 id="" class="timer count-title count-number">
                                 <div class="spinner-border text-success" role="status">
                                 <span class="sr-only">Loading...</span>
                                 </div>
@@ -259,7 +207,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <button type="button" id="dvc_qa_button" class="btn qa_button" onclick="assign_dvc();">
                         <div class="counter">
                             <i class="fas fa-eye fa-2x"></i>
-                            <h2 id="current_dvc_count" class="timer count-title count-number">
+                            <h2 id="" class="timer count-title count-number">
                                 <div class="spinner-border text-success" role="status">
                                 <span class="sr-only">Loading...</span>
                                 </div>
