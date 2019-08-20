@@ -156,7 +156,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </ul>
         </div>
     </nav>
-    <div id="probe_hunt_section">
+    <div id="over_counter_section">
         <div class="row">
             <div class="col">
                 <label for="project_name">Select Project Name</label>
@@ -171,8 +171,73 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                 <span id="project_name_error" class="error-popup"></span>
             </div>
         </div>
-        <div class="row">
-            <div id="probe_qa_counter" class="col hide">
+        <div class="row text-center hide" id="counters">
+            <div class="col">
+                <div class="counter overall-counter">
+                    <i class="fas fa-boxes fa-2x"></i>
+                    <h2 id="" class="timer count-title count-number">
+                        <div class="spinner-border text-success" role="status">
+                        <span class="sr-only">Loading...</span>
+                        </div>
+                    </h2>
+                    <p class="count-text ">Remaining SKU</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="counter overall-counter">
+                    <i class="fas fa-boxes fa-2x"></i>
+                    <h2 id="" class="timer count-title count-number">
+                        <div class="spinner-border text-success" role="status">
+                        <span class="sr-only">Loading...</span>
+                        </div>
+                    </h2>
+                    <p class="count-text ">Remaining Brand</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="counter overall-counter">
+                    <i class="fas fa-boxes fa-2x"></i>
+                    <h2 id="" class="timer count-title count-number">
+                        <div class="spinner-border text-success" role="status">
+                        <span class="sr-only">Loading...</span>
+                        </div>
+                    </h2>
+                    <p class="count-text ">Remaining DVC</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="probe_hunt_section" class="hide">
+    <div class="row">
+        <div class="col">
+        </div>
+        <div class="col">
+            <label for="project_name">Select Brand Name</label>
+            <select name="project_name" id="project_name" class="form-control">
+                <option value="" selected disabled>Select</option>
+                <?php
+                    foreach ($project_rows as $project_row) {
+                        echo "<option value=\"$project_row->project_db_name\">$project_row->project_name ($project_row->project_region)</option>";
+                    }
+                ?>
+            </select>
+            <span id="project_name_error" class="error-popup"></span>
+        </div>
+        <div class="col">
+            <label for="project_name">Select Brand Name</label>
+            <select name="project_name" id="project_name" class="form-control">
+                <option value="" selected disabled>Select</option>
+                <?php
+                    foreach ($project_rows as $project_row) {
+                        echo "<option value=\"$project_row->project_db_name\">$project_row->project_name ($project_row->project_region)</option>";
+                    }
+                ?>
+            </select>
+            <span id="project_name_error" class="error-popup"></span>
+        </div>
+    </div>
+        <div class="row">                        
+            <div id="probe_qa_counter" class="col">
                 <div class="row text-center">
                     <div class="col">
                         <button type="button" id="brand_qa_button" class="btn qa_button" onclick="assign_brand();">
