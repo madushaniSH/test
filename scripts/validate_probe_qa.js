@@ -31,25 +31,69 @@ function get_brand_list(product_type, select_element) {
                 for (var i = 0; i < data[0].brand_rows.length; i++) {
                     if (!($('#' + select_element).find("option[value='" + data[0].brand_rows[i].name + "']").length)) {
                         // Append it to the select
-                        $('#' + select_element).append('<option value="'+data[0].brand_rows[i].name+'">'+data[0].brand_rows[i].name+'</option>');
+                        $('#' + select_element).append('<option value="' + data[0].brand_rows[i].name + '">' + data[0].brand_rows[i].name + '</option>');
                     }
                 }
 
                 var element = document.getElementById(select_element).options;
                 var found = true;
-                for (var i = 0; i < element.length; i++){
+                for (var i = 0; i < element.length; i++) {
                     found = false;
-                    for(var j = 0; j < data[0].brand_rows.length; j++) {
+                    for (var j = 0; j < data[0].brand_rows.length; j++) {
                         if (data[0].brand_rows[j].name == element[i].value) {
                             found = true;
                             break;
                         }
                     }
-                    if(!found) {
+                    if (!found) {
                         document.getElementById(select_element).remove(document.getElementById(select_element)[i]);
                     }
                 }
-                
+
+            },
+            error: function (data) {
+                alert("Error assigning probe. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
+
+function get_error_list() {
+    if (p_name != '') {
+        var formData = new FormData();
+        formData.append('project_name', p_name);
+        jQuery.ajax({
+            url: 'get_qa_error_list.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: function (data) {
+                // adding missing options
+                for (var i = 0; i < data[0].error_rows.length; i++) {
+                    if (!($('#error_qa').find("option[value='" + data[0].error_rows[i].project_error_name + "']").length)) {
+                        // Append it to the select
+                        $('#error_qa').append('<option value="' + data[0].error_rows[i].project_error_name + '">' + data[0].error_rows[i].project_error_name + '</option>');
+                    }
+                }
+
+                var element = document.getElementById('error_qa').options;
+                var found = true;
+                for (var i = 0; i < element.length; i++) {
+                    found = false;
+                    for (var j = 0; j < data[0].error_rows.length; j++) {
+                        if (data[0].error_rows[j].project_error_name == element[i].value) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        document.getElementById('error_qa').remove(document.getElementById('error_qa')[i]);
+                    }
+                }
+
             },
             error: function (data) {
                 alert("Error assigning probe. Please refresh");
@@ -99,7 +143,7 @@ function get_probe_qa_info() {
     $('#qa_probe').modal('show');
 }
 
-function unassign_probe(){
+function unassign_probe() {
     if (p_name != '') {
         var formData = new FormData();
         formData.append('project_name', p_name);
@@ -108,7 +152,7 @@ function unassign_probe(){
             type: 'POST',
             data: formData,
             success: function (data) {
-        
+
             },
             error: function (data) {
                 alert("Error fetching probe information. Please refresh");
@@ -126,6 +170,7 @@ function update_project_qa_count() {
     if (p_name != '') {
         get_brand_list('sku', 'brand_name');
         get_brand_list('dvc', 'dvc_name');
+        get_error_list();
         var sku_brand_name = $('#brand_name').val();
         var sku_dvc_name = $('#dvc_name').val();
         var formData = new FormData();
@@ -254,11 +299,11 @@ jQuery(document).ready(function () {
         width: '100%',
     });
     jQuery("#error_images").fileinput({
-        'showCancel':false,
+        'showCancel': false,
         'showUpload': false,
         'maxFileCount': 4,
         allowedFileExtensions: ["jpg", "jpeg"],
-        layoutTemplates: {footer: ''},
+        layoutTemplates: { footer: '' },
     });
     setInterval(function () { update_project_qa_count(); }, 1000);
 });

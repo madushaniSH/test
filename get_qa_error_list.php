@@ -1,6 +1,6 @@
 <?php
 /*
-    Filename: get_qa_brand_list.php
+    Filename: get_qa_error_list.php
     Author: Malika Liyanage
 */
 session_start();
@@ -37,11 +37,11 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT SUBSTRING_INDEX(products.product_name, \' \', 1 ) as name FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = :product_type AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) ';
+$sql = 'SELECT project_error_name FROM project_errors';
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['product_type'=>$_POST['product_type'], 'account_id' =>$_SESSION['id']]);
-$brand_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+$stmt->execute();
+$error_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-$return_arr[] = array("brand_rows"=>$brand_rows);
+$return_arr[] = array("error_rows"=>$error_rows);
 echo json_encode($return_arr);
 ?>

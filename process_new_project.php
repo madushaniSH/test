@@ -161,6 +161,30 @@ if ($row_count == 0) {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();  
+
+    $sql = 'CREATE TABLE `project_errors` (
+        `project_error_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        `project_error_name` varchar(255) NOT NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();  
+
+    $sql = "INSERT INTO `project_errors` (`project_error_id`, `project_error_name`) VALUES
+    (1, 'Poor Image Quality'),
+    (2, 'Duplicate SKU'),
+    (3, 'Incorrect Image Added'),
+    (4, 'Facing Added As SKU'),
+    (5, 'DVC Product Added as SKU'),
+    (6, 'Wrong Facing Added'),
+    (7, 'SKU Not In PNB'),
+    (8, 'Duplicate DVC'),
+    (9, 'Incorrect DVC Added'),
+    (10, 'SKU Product Added as DVC'),
+    (11, 'Brand Image Empty'),
+    (12, 'Incorrect Brand Added'),
+    (13, 'Incorrect Manufacturer')";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();  
     echo "<span class=\"success-popup\">Project Created</span>    ";
 } else {
     echo "<span class=\"error-popup\">Project with that name already exists</span>    ";

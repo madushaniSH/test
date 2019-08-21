@@ -278,9 +278,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <div class="form-group">
                             <p>Error Type</p>
                             <select name="error_qa" id="error_qa" name="error_qa[]" class="form-control" multiple="multiple">
-                                <option value="error_1">Error 1</option>    
-                                <option value="error_2">Error 2</option>    
-                                <option value="error_3">Error 3</option>
+                                
                             </select>
                             </div>
                         </div>
