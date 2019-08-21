@@ -64,9 +64,13 @@ function get_brand_list(product_type, select_element) {
 function get_probe_qa_info() {
     var project_name_element = document.getElementById('project_name');
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    var sku_brand_name = $('#brand_name').val();
+    var sku_dvc_name = $('#dvc_name').val();
     var formData = new FormData();
     formData.append('project_name', project_name);
     formData.append('product_type', product_type);
+    formData.append('sku_brand_name', sku_brand_name);
+    formData.append('sku_dvc_name', sku_dvc_name);
     jQuery.ajax({
         url: 'assign_qa_product.php',
         type: 'POST',
