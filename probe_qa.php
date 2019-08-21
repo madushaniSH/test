@@ -167,7 +167,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </div>
         <div class="col">
             <label for="dvc_name">Select Brand Name</label>
-            <select name="dvc_name" id="dvc_name" class="form-control" onclick="get_brand_list('dvc', 'dvc_name');">
+            <select name="dvc_name" id="dvc_name" class="form-control">
             </select>
             <span id="dvc_name_error" class="error-popup"></span>
         </div>
@@ -193,7 +193,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <button type="button" id="sku_qa_button" class="btn qa_button" onclick="assign_sku();">
                         <div class="counter">
                             <i class="fas fa-boxes fa-2x"></i>
-                            <h2 id="" class="timer count-title count-number">
+                            <h2 id="current_sku_count_2" class="timer count-title count-number">
                                 <div class="spinner-border text-success" role="status">
                                 <span class="sr-only">Loading...</span>
                                 </div>
@@ -207,7 +207,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <button type="button" id="dvc_qa_button" class="btn qa_button" onclick="assign_dvc();">
                         <div class="counter">
                             <i class="fas fa-eye fa-2x"></i>
-                            <h2 id="" class="timer count-title count-number">
+                            <h2 id="current_dvc_count_2" class="timer count-title count-number">
                                 <div class="spinner-border text-success" role="status">
                                 <span class="sr-only">Loading...</span>
                                 </div>

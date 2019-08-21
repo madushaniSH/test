@@ -97,13 +97,17 @@ function get_probe_qa_info() {
 
 
 function update_project_qa_count() {
-    var brand_name_element = document.getElementById('brand_name');
-    var brand_name = brand_name_element.options[brand_name_element.selectedIndex].value;
     if (p_name != '') {
         get_brand_list('sku', 'brand_name');
         get_brand_list('dvc', 'dvc_name');
+        var brand_name_element = document.getElementById('brand_name');
+        var sku_brand_name = brand_name_element.options[brand_name_element.selectedIndex].value;
+        var dvc_name_element = document.getElementById('dvc_name');
+        var sku_dvc_name = dvc_name_element.options[dvc_name_element.selectedIndex].value;
         var formData = new FormData();
         formData.append('project_name', p_name);
+        formData.append('sku_brand_name', sku_brand_name);
+        formData.append('sku_dvc_name', sku_dvc_name);
         jQuery.ajax({
             url: 'fetch_probe_qa_count.php',
             type: 'POST',
@@ -159,6 +163,15 @@ function update_project_qa_count() {
                     if (dvc_count == 0 && product_type != 'dvc') {
                         document.getElementById('dvc_qa_button').disabled = true;
                     }
+                    $('#current_brand_count_2').empty();
+                    $('#current_brand_count_2').html(data[0].brand_count);
+
+                    $('#current_sku_count_2').empty();
+                    $('#current_sku_count_2').html(data[0].brand_sku_count);
+
+
+                    $('#current_dvc_count_2').empty();
+                    $('#current_dvc_count_2').html(data[0].brand_dvc_count);
                 } else {
                     $('#current_brand_count').html('XX');
                     $('#current_sku_count').html('XX');
@@ -206,11 +219,11 @@ jQuery(document).ready(function () {
     jQuery('#project_name').change(function () {
         validate_project_name();
     });
-    setInterval(function () { update_project_qa_count(); }, 1000);
     jQuery('#brand_name').select2({
         width: '100%'
     });
     jQuery('#dvc_name').select2({
         width: '100%'
     });
+    setInterval(function () { update_project_qa_count(); }, 1000);
 });

@@ -52,6 +52,18 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute(); 
 $dvc_count = $stmt->fetchColumn(); 
 
+$search_item = $_POST['sku_brand_name'].' %';
+$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'sku' AND products.product_name LIKE :search_item";
+$stmt = $pdo->prepare($sql);
+$stmt->execute(['search_item'=>$search_item]);
+$brand_sku_count = $stmt->fetchColumn();
+
+$search_item = $_POST['sku_dvc_name'].' %';
+$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'dvc' AND products.product_name LIKE :search_item";
+$stmt = $pdo->prepare($sql);
+$stmt->execute(['search_item'=>$search_item]);
+$dvc_sku_count = $stmt->fetchColumn();
+
 
 $sql = 'SELECT probe_qa_queue.probe_qa_queue_id, products.product_type FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE probe_qa_queue.account_id = :account_id';
 $stmt = $pdo->prepare($sql);
@@ -59,6 +71,6 @@ $stmt->execute(['account_id'=>$_SESSION['id']]);
 $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
-$return_arr[] = array("brand_count" => $brand_count, "sku_count" => $sku_count, "dvc_count" => $dvc_count,"processing_probe_row" => $row_count, "product_type" => $probe_info->product_type);
+$return_arr[] = array("brand_count" => $brand_count, "sku_count" => $sku_count, "dvc_count" => $dvc_count,"processing_probe_row" => $row_count, "product_type" => $probe_info->product_type, "brand_sku_count"=>$brand_sku_count, "dvc_sku_count"=>$dvc_sku_count);
 echo json_encode($return_arr);
 ?>
