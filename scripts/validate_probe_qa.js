@@ -99,6 +99,28 @@ function get_probe_qa_info() {
     $('#qa_probe').modal('show');
 }
 
+function unassign_probe(){
+    if (p_name != '') {
+        var formData = new FormData();
+        formData.append('project_name', p_name);
+        jQuery.ajax({
+            url: 'unassign_qa.php',
+            type: 'POST',
+            data: formData,
+            success: function (data) {
+        
+            },
+            error: function (data) {
+                alert("Error fetching probe information. Please refresh");
+                clearInterval(request);
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
+
 
 function update_project_qa_count() {
     if (p_name != '') {
@@ -234,6 +256,9 @@ jQuery(document).ready(function () {
     jQuery("#error_images").fileinput({
         'showCancel':false,
         'showUpload': false,
+        'maxFileCount': 4,
+        allowedFileExtensions: ["jpg", "jpeg"],
+        layoutTemplates: {footer: ''},
     });
     setInterval(function () { update_project_qa_count(); }, 1000);
 });

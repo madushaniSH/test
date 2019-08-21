@@ -234,7 +234,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="qa_probe_title"></h5>
-                <button type="button" class="close hide" id="close_probe_title" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" id="close_probe_title" data-dismiss="modal" aria-label="Close" onclick="unassign_probe();">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -310,6 +310,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="unassign_probe();">Cancel</button>
                 <button type="button" class="btn btn-success" value="Submit">Save changes</button>
                 </form>
             </div>
