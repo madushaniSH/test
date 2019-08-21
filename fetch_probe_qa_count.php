@@ -71,6 +71,6 @@ $stmt->execute(['account_id'=>$_SESSION['id']]);
 $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
-$return_arr[] = array("brand_count" => $brand_count, "sku_count" => $sku_count, "dvc_count" => $dvc_count,"processing_probe_row" => $row_count, "product_type" => $probe_info->product_type, "brand_sku_count"=>$brand_sku_count, "dvc_sku_count"=>$dvc_sku_count);
+$return_arr[] = array("brand_count" => $brand_count, "sku_count" => $sku_count, "dvc_count" => $dvc_count,"processing_probe_row" => $row_count, "product_type" => $probe_info->product_type, "brand_sku_count"=>$brand_sku_count, "brand_dvc_count"=>$dvc_sku_count);
 echo json_encode($return_arr);
 ?>

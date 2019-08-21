@@ -100,10 +100,8 @@ function update_project_qa_count() {
     if (p_name != '') {
         get_brand_list('sku', 'brand_name');
         get_brand_list('dvc', 'dvc_name');
-        var brand_name_element = document.getElementById('brand_name');
-        var sku_brand_name = brand_name_element.options[brand_name_element.selectedIndex].value;
-        var dvc_name_element = document.getElementById('dvc_name');
-        var sku_dvc_name = dvc_name_element.options[dvc_name_element.selectedIndex].value;
+        var sku_brand_name = $('#brand_name').val();
+        var sku_dvc_name = $('#dvc_name').val();
         var formData = new FormData();
         formData.append('project_name', p_name);
         formData.append('sku_brand_name', sku_brand_name);
