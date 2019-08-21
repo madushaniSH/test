@@ -227,5 +227,13 @@ jQuery(document).ready(function () {
     jQuery('#dvc_name').select2({
         width: '100%'
     });
+    jQuery('#error_qa').select2({
+        dropdownParent: $("#qa_probe"),
+        width: '100%',
+    });
+    jQuery("#error_images").fileinput({
+        'showCancel':false,
+        'showUpload': false,
+    });
     setInterval(function () { update_project_qa_count(); }, 1000);
 });

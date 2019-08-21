@@ -55,6 +55,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel='icon' href='favicon.ico' type='image/x-icon' />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -83,6 +84,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         document.getElementsByTagName('head')[0].appendChild(css);
     })();
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/js/fileinput.min.js"></script>
     <title>Product Hunt</title>
 </head>
 
@@ -228,7 +230,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </div>
 <div class="modal hide fade modal-form" id="qa_probe" tabindex="-1" role="dialog"
     aria-labelledby="qa_probe_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="qa_probe_title"></h5>
@@ -237,9 +239,79 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                 </button>
             </div>
             <div class="modal-body">
+            <form action="POST" id="new_brand">
+                    <div class="form-row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="product_name">Product Name:</label>
+                                <input type="text" id="product_name" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="alt_name">Alternative Design Name:</label>
+                                <input type="text" id="alt_name" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="border-bottom my-3">QA Information</p>
+                    <div class="form-row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="product_rename">Product Re-Name:</label>
+                                <input type="text" id="product_rename" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="product_alt_rename">Product Alternative Re-Name:</label>
+                                <input type="text" id="product_alt_rename" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col col-md-7">
+                            <div class="form-group">
+                            <p>Error Type</p>
+                            <select name="error_qa" id="error_qa" name="error_qa[]" class="form-control" multiple="multiple">
+                                <option value="error_1">Error 1</option>    
+                                <option value="error_2">Error 2</option>    
+                                <option value="error_3">Error 3</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="col col-md-4">
+                            <p>Status</p> 
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="approve_status" id="approve" value="approve">
+                              <label class="form-check-label" for="approve">Approve</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="approve_status" id="disapprove" value="disapprove">
+                              <label class="form-check-label" for="disapprove">Disapprove</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                    <div class="col">
+                        <label class="colcontrol-label">
+                            Image Attachment(s)
+                        </label>
+                        <div class="col">
+                            <span class="btn btn-default btn-file">
+                                <input id="error_images" name="error_images[]" type="file" class="file" multiple data-show-caption="true">
+                            </span>
+                        </div>
+                    </div>
+                    </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-success" value="Submit">Save changes</button>
+                </form>
             </div>
         </div>
     </div>
