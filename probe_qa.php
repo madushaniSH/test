@@ -276,21 +276,27 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <div class="form-row">
                         <div class="col col-md-7">
                             <div class="form-group">
-                            <p>Error Type</p>
+                            <p>Error Type  <button type="button" class="btn btn-outline-danger add-error">Add Error</button></p>
                             <select name="error_qa" id="error_qa" name="error_qa[]" class="form-control" multiple="multiple">
                                 
                             </select>
                             </div>
                         </div>
                         <div class="col col-md-4">
-                            <p>Status</p> 
+                            <p>Status</p>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="approve_status" id="approve" value="approve">
-                              <label class="form-check-label" for="approve">Approve</label>
+                                <label class="btn btn-success">
+                                    <input class="form-check-input" type="radio" name="approve_status" id="approve" value="approve">
+                                    <i class="fas fa-check-square"></i>
+                                    <label class="form-check-label" for="approve">Approved</label>
+                                </label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="approve_status" id="disapprove" value="disapprove">
-                              <label class="form-check-label" for="disapprove">Disapprove</label>
+                                <label class="btn btn-danger">
+                                    <input class="form-check-input" type="radio" name="approve_status" id="disapprove" value="disapprove">
+                                    <i class="fas fa-times-circle"></i>
+                                    <label class="form-check-label" for="disapprove">Disapproved</label>
+                                </label>
                             </div>
                         </div>
                     </div>
