@@ -276,7 +276,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <div class="form-row">
                         <div class="col col-md-7">
                             <div class="form-group">
-                            <p>Error Type  <button type="button" class="btn btn-outline-danger add-error">Add Error</button></p>
+                            <p>Error Type  <button type="button" class="btn btn-outline-danger add-error"  data-toggle="modal" data-target="#qa_error">Add Error</button></p>
                             <select name="error_qa" id="error_qa" name="error_qa[]" class="form-control" multiple="multiple">
                                 
                             </select>
@@ -301,16 +301,16 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         </div>
                     </div>
                     <div class="form-row">
-                    <div class="col">
-                        <label class="colcontrol-label">
-                            Image Attachment(s)
-                        </label>
                         <div class="col">
-                            <span class="btn btn-default btn-file">
-                                <input id="error_images" name="error_images[]" type="file" class="file" multiple data-show-caption="true">
-                            </span>
+                            <label class="colcontrol-label">
+                                Image Attachment(s)
+                            </label>
+                            <div class="col">
+                                <span class="btn btn-default btn-file">
+                                    <input id="error_images" name="error_images[]" type="file" class="file" multiple data-show-caption="true">
+                                </span>
+                            </div>
                         </div>
-                    </div>
                     </div>
             </div>
             <div class="modal-footer">
@@ -320,5 +320,34 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
         </div>
     </div>
-</div>        
+</div>    
+<div class="modal hide fade modal-form" id="qa_error" tabindex="-1" role="dialog"
+    aria-labelledby="qa_error_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qa_error_title">Add New Error Type</h5>
+                <button type="button" class="close" id="close_probe_title" data-dismiss="modal" aria-label="Close"">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="new_error_form">
+                    <div class="form-row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="error_new_name">New Error Type:</label>
+                                <input type="text" id="error_new_name" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" value="Submit">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>    
 </body>

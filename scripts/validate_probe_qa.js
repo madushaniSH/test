@@ -303,7 +303,6 @@ jQuery(document).ready(function () {
         'showUpload': false,
         'maxFileCount': 4,
         allowedFileExtensions: ["jpg", "jpeg"],
-        layoutTemplates: { footer: '' },
     });
     setInterval(function () { update_project_qa_count(); }, 1000);
 });
