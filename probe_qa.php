@@ -124,7 +124,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         <div class="row text-center hide" id="counters">
             <div class="col">
                 <div class="counter overall-counter">
-                    <i class="fas fa-boxes fa-2x"></i>
+                    <i class="fas fa-clipboard-list fa-2x"></i>
                     <h2 id="current_brand_count" class="timer count-title count-number">
                         <div class="spinner-border text-success" role="status">
                         <span class="sr-only">Loading...</span>
@@ -135,7 +135,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="col">
                 <div class="counter overall-counter">
-                    <i class="fas fa-boxes fa-2x"></i>
+                    <i class="fas fa-clipboard-list fa-2x"></i>
                     <h2 id="current_sku_count" class="timer count-title count-number">
                         <div class="spinner-border text-success" role="status">
                         <span class="sr-only">Loading...</span>
@@ -146,7 +146,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="col">
                 <div class="counter overall-counter">
-                    <i class="fas fa-boxes fa-2x"></i>
+                    <i class="fas fa-clipboard-list fa-2x"></i>
                     <h2 id="current_dvc_count" class="timer count-title count-number">
                         <div class="spinner-border text-success" role="status">
                         <span class="sr-only">Loading...</span>
@@ -286,16 +286,16 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <p>Status</p>
                             <div class="form-check form-check-inline">
                                 <label class="btn btn-success">
-                                    <input class="form-check-input" type="radio" name="approve_status" id="approve" value="approve">
-                                    <i class="fas fa-check-square"></i>
+                                    <input class="form-check-input" type="radio" name="approve_status" id="approve" value="approve">                                   
                                     <label class="form-check-label" for="approve">Approved</label>
+                                    <i class="fas fa-check-square"></i>
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <label class="btn btn-danger">
-                                    <input class="form-check-input" type="radio" name="approve_status" id="disapprove" value="disapprove">
-                                    <i class="fas fa-times-circle"></i>
+                                    <input class="form-check-input" type="radio" name="approve_status" id="disapprove" value="disapprove">                                   
                                     <label class="form-check-label" for="disapprove">Disapproved</label>
+                                    <i class="fas fa-times-circle"></i>
                                 </label>
                             </div>
                         </div>
