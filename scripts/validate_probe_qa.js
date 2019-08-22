@@ -16,12 +16,12 @@ function assign_dvc() {
     get_probe_qa_info();
 }
 
-function clear_error_form(){
+function clear_error_form() {
     document.getElementById('error_new_name').value = '';
     document.getElementById('error_new_error').innerHTML = '';
 }
 
-function validate_new_error_type(){
+function validate_new_error_type() {
     var is_valid_form = true;
     var error_new_name = document.getElementById('error_new_name').value.trim();
 
@@ -152,14 +152,14 @@ function get_error_list() {
 function display_qa_probe(product_type) {
     if (document.getElementById('product_name').value != '') {
         $('#qa_probe').modal('show');
-        if (document.getElementById('alt_name').value == ''){
+        if (document.getElementById('alt_name').value == '') {
             document.getElementById('alt_name_section').classList.add('hide');
             document.getElementById('alt_rename_section').classList.add('hide');
         } else {
             document.getElementById('alt_name_section').classList.remove('hide');
             document.getElementById('alt_rename_section').classList.remove('hide');
         }
-        if(product_type != 'dvc'){
+        if (product_type != 'dvc') {
             document.getElementById('rename_section').classList.remove('hide');
         } else {
             document.getElementById('rename_section').classList.add('hide');
@@ -227,6 +227,13 @@ function unassign_probe() {
             processData: false
         });
     }
+    document.getElementById('qa_form').reset();
+    $('#error_qa').val('').trigger('change');
+    document.getElementById('product_rename_error').innerHTML = '';
+    document.getElementById('product_alt_rename_error').innerHTML = '';
+    document.getElementById('status_error').innerHTML = '';
+    document.getElementById('error_qa_error').innerHTML = '';
+    document.getElementById('image_error').innerHTML = '';
 }
 
 
@@ -346,7 +353,7 @@ function validate_project_name() {
 }
 
 
-function validate_qa_form(){
+function validate_qa_form() {
     var is_valid_form = true;
     var product_rename = document.getElementById('product_rename').value.trim();
     var product_alt_rename = document.getElementById('product_alt_rename').value.trim();
@@ -359,19 +366,19 @@ function validate_qa_form(){
             document.getElementById('product_rename_error').innerHTML = 'Cannot be empty';
             is_valid_form = false;
         } else {
-            document.getElementById('product_rename_error').innerHTML = '';   
+            document.getElementById('product_rename_error').innerHTML = '';
         }
     } else if (product_type == 'dvc') {
         if (product_alt_rename == '') {
             document.getElementById('product_alt_rename_error').innerHTML = 'Cannot be empty';
             is_valid_form = false;
         } else {
-            document.getElementById('product_alt_rename_error').innerHTML = '';   
+            document.getElementById('product_alt_rename_error').innerHTML = '';
         }
     } else {
         is_valid_form = false;
     }
-    if (!approve_button.checked && !disapprove_button.checked)  {
+    if (!approve_button.checked && !disapprove_button.checked) {
         document.getElementById('status_error').innerHTML = 'Status must be selected';
         is_valid_form = false;
     } else {

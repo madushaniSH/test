@@ -240,7 +240,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                 </button>
             </div>
             <div class="modal-body">
-            <form action="POST" id="new_brand">
+            <form action="POST" id="qa_form">
                     <div class="form-row">
                         <div class="col">
                             <div class="form-group">
