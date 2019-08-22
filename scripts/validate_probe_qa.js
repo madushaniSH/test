@@ -347,6 +347,8 @@ function validate_project_name() {
 
 
 function validate_qa_form(){
+    var product_rename = document.getElementById('product_rename').value.trim();
+    var product_alt_rename = document.getElementById('product_alt_rename').value.trim();
 }
 
 jQuery(document).ready(function () {

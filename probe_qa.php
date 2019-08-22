@@ -108,7 +108,6 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </div>
     </nav>
     <div id="over_counter_section">
-    <h1 id="anal_title">SRT Analyst Dashboard</h1>
         <div class="row">
             <div class="col">
                 <label for="project_name">Select Project Name</label>
