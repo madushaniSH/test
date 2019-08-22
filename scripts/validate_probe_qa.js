@@ -352,6 +352,14 @@ function validate_project_name() {
     }
 }
 
+function show_error_image_section(){
+    var error_qa = $('#error_qa').val();
+    if (error_qa.length == 0) {
+        document.getElementById('error_image_section').classList.add('hide');
+    } else {
+        document.getElementById('error_image_section').classList.remove('hide');
+    }
+}
 
 function validate_qa_form() {
     var is_valid_form = true;
@@ -421,6 +429,9 @@ jQuery(document).ready(function () {
         'showUpload': false,
         'maxFileCount': 4,
         allowedFileExtensions: ["jpg", "jpeg"],
+    });
+    $('#error_qa').on('change', function (e) {
+        show_error_image_section();
     });
     setInterval(function () { update_project_qa_count(); }, 1000);
 });

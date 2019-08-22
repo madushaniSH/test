@@ -307,7 +307,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <span id="status_error" class="error-popup"></span>
                         </div>
                     </div>
-                    <div class="form-row">
+                    <div class="form-row hide" id="error_image_section">
                         <div class="col">
                             <label class="colcontrol-label">
                                 Image Attachment(s)
