@@ -291,14 +291,14 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <div class="form-check form-check-inline">
                                 <label class="btn btn-success">
                                     <input class="form-check-input" type="radio" name="approve_status" id="approve" value="approve">                                   
-                                    <label class="form-check-label" for="approve">Approved</label>
+                                    <label class="form-check-label" for="approved">Approved</label>
                                     <i class="fas fa-check-square"></i>
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <label class="btn btn-danger">
                                     <input class="form-check-input" type="radio" name="approve_status" id="disapprove" value="disapprove">                                   
-                                    <label class="form-check-label" for="disapprove">Disapproved</label>
+                                    <label class="form-check-label" for="disapproved">Disapproved</label>
                                     <i class="fas fa-times-circle"></i>
                                 </label>
                             </div>
