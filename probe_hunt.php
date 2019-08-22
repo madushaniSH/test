@@ -114,13 +114,24 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 	    <div class="row text-center">
 	        <div class="col">
 	            <div class="counter">
-                  <i class="far fa-lightbulb fa-2x"></i>
+                  <i class="fas fa-clipboard-list fa-2x"></i>
                   <h2 id="current_probe_count" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
                   </div>
                 </h2>
-                    <p class="count-text ">Remaining Probes</p>
+                    <p class="count-text ">Unassigned Probes</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i class="far fa-lightbulb fa-2x"></i>
+                  <h2 id="current_probe_handle_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Probes Currently Being Handled</p>
                 </div>
             </div>
         </div>

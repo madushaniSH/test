@@ -89,6 +89,8 @@ function update_project_count() {
                 if (data[0].number_of_rows != null) {
                     $('#current_probe_count').empty();
                     $('#current_probe_count').html(data[0].number_of_rows);
+                    $('#current_probe_handle_count').empty();
+                    $('#current_probe_handle_count').html(data[0].number_of_handled_rows);
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {
@@ -367,7 +369,7 @@ jQuery(document).ready(function () {
     jQuery('#product_type').change(function () {
         show_dvc_options();
     });
-    setInterval(function () { update_project_count(); }, 1000);
+    setInterval(function () { update_project_count(); }, 500);
     if (product_count > 0) {
         document.getElementById('cancel_product').classList.remove('hide');
         document.getElementById('submit_probe').classList.add('hide');

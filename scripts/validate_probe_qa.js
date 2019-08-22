@@ -280,24 +280,24 @@ function update_project_qa_count() {
 
                     $('#current_brand_count').empty();
                     $('#current_brand_count').html(data[0].brand_count);
-                    var brand_count = parseInt(data[0].brand_count, 10);
+                    var brand_count = parseInt(data[0].brand_user_count, 10);
                     if (brand_count == 0 && product_type != 'brand') {
                         document.getElementById('brand_qa_button').disabled = true;
                     }
                     $('#current_sku_count').empty();
                     $('#current_sku_count').html(data[0].sku_count);
-                    var sku_count = parseInt(data[0].sku_count, 10);
+                    var sku_count = parseInt(data[0].brand_sku_count, 10);
                     if (sku_count == 0 && product_type != 'sku') {
                         document.getElementById('sku_qa_button').disabled = true;
                     }
                     $('#current_dvc_count').empty();
                     $('#current_dvc_count').html(data[0].dvc_count);
-                    var dvc_count = parseInt(data[0].dvc_count, 10);
+                    var dvc_count = parseInt(data[0].brand_dvc_count, 10);
                     if (dvc_count == 0 && product_type != 'dvc') {
                         document.getElementById('dvc_qa_button').disabled = true;
                     }
                     $('#current_brand_count_2').empty();
-                    $('#current_brand_count_2').html(data[0].brand_count);
+                    $('#current_brand_count_2').html(data[0].brand_user_count);
 
                     $('#current_sku_count_2').empty();
                     $('#current_sku_count_2').html(data[0].brand_sku_count);
