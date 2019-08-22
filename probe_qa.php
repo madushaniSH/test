@@ -259,7 +259,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         </div>
                     </div>
                     <p class="border-bottom my-3">QA Information</p>
-                    <div class="form-row">
+                    <div class="form-row" id="rename_section">
                         <div class="col">
                             <div class="form-group">
                                 <label for="product_rename">Product Re-Name:</label>
@@ -284,7 +284,9 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             </select>
                             </div>
                         </div>
-                        <div class="col col-md-4">
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
                             <p>Status</p>
                             <div class="form-check form-check-inline">
                                 <label class="btn btn-success">

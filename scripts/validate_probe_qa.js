@@ -148,14 +148,21 @@ function get_error_list() {
     }
 }
 
-function display_qa_probe() {
-    $('#qa_probe').modal('show');
-    if (document.getElementById('alt_name').value == ''){
-        document.getElementById('alt_name_section').classList.add('hide');
-        document.getElementById('alt_rename_section').classList.add('hide');
-    } else {
-        document.getElementById('alt_name_section').classList.remove('hide');
-        document.getElementById('alt_rename_section').classList.remove('hide');
+function display_qa_probe(product_type) {
+    if (document.getElementById('product_name').value != '') {
+        $('#qa_probe').modal('show');
+        if (document.getElementById('alt_name').value == ''){
+            document.getElementById('alt_name_section').classList.add('hide');
+            document.getElementById('alt_rename_section').classList.add('hide');
+        } else {
+            document.getElementById('alt_name_section').classList.remove('hide');
+            document.getElementById('alt_rename_section').classList.remove('hide');
+        }
+        if(product_type != 'dvc'){
+            document.getElementById('rename_section').classList.remove('hide');
+        } else {
+            document.getElementById('rename_section').classList.add('hide');
+        }
     }
 }
 
@@ -188,7 +195,7 @@ function get_probe_qa_info() {
             jQuery('#qa_probe_title').html(title_string);
             jQuery('#product_name').val(data[0].product_name);
             jQuery('#alt_name').val(data[0].product_alt_design_name);
-            display_qa_probe();
+            display_qa_probe(product_type);
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
