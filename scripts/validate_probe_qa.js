@@ -27,6 +27,7 @@ function validate_new_error_type(){
 
     if (error_new_name == '') {
         document.getElementById('error_new_error').innerHTML = 'Cannot be empty';
+        is_valid_form = false;
     } else {
         document.getElementById('error_new_error').innerHTML = '';
     }
