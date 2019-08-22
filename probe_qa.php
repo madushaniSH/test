@@ -108,7 +108,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </div>
     </nav>
     <div id="over_counter_section">
-    <img src="images/pepe.png" class="rounded mx-auto d-block" alt="Pepe the frog" id="qa_logo">
+    <h1 id="anal_title">SRT Analyst Dashboard</h1>
         <div class="row">
             <div class="col">
                 <label for="project_name">Select Project Name</label>

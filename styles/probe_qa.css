@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Fredericka+the+Great&display=swap');
+
 #probe_qa_counter {
     margin-top: 1vw;
     text-align: center;
@@ -43,8 +45,19 @@
     margin-top: 1vw;
 }
 
-.modal { overflow: auto !important; }
+.modal {
+    overflow: auto !important;
+}
 
-#qa_logo{
+#qa_logo {
     width: 4%;
+}
+
+#anal_title {
+    color: #111;
+    font-family: 'Fredericka the Great', sans-serif;
+    font-size: 4em;
+    letter-spacing: -1px;
+    line-height: 1;
+    text-align: center;
 }
