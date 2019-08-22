@@ -263,6 +263,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <div class="form-group">
                                 <label for="product_rename">Product Re-Name:</label>
                                 <input type="text" id="product_rename" class="form-control">
+                                <span id="product_rename_error" class="error-popup"></span>
                             </div>
                         </div>
                     </div>
@@ -271,6 +272,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <div class="form-group hide" id="alt_rename_section">
                                 <label for="product_alt_rename">Product Alternative Re-Name:</label>
                                 <input type="text" id="product_alt_rename" class="form-control">
+                                <span id="product_alt_rename_error" class="error-popup"></span>
                             </div>
                         </div>
                     </div>
@@ -281,6 +283,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <select name="error_qa" id="error_qa" name="error_qa[]" class="form-control" multiple="multiple">
                                 
                             </select>
+                            <span id="error_qa_error" class="error-popup"></span>
                             </div>
                         </div>
                     </div>
@@ -290,17 +293,18 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <div class="form-check form-check-inline">
                                 <label class="btn btn-success">
                                     <input class="form-check-input" type="radio" name="approve_status" id="approve" value="approve">                                   
-                                    <label class="form-check-label" for="approved">Approved</label>
+                                    <label class="form-check-label" for="approve_status">Approved</label>
                                     <i class="fas fa-check-square"></i>
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <label class="btn btn-danger">
                                     <input class="form-check-input" type="radio" name="approve_status" id="disapprove" value="disapprove">                                   
-                                    <label class="form-check-label" for="disapproved">Disapproved</label>
+                                    <label class="form-check-label" for="approve_status">Disapproved</label>
                                     <i class="fas fa-times-circle"></i>
                                 </label>
                             </div>
+                            <span id="status_error" class="error-popup"></span>
                         </div>
                     </div>
                     <div class="form-row">
@@ -313,6 +317,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                                     <input id="error_images" name="error_images[]" type="file" class="file" multiple data-show-caption="true">
                                 </span>
                             </div>
+                            <span id="image_error" class="error-popup"></span>
                         </div>
                     </div>
             </div>

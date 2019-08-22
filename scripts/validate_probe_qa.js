@@ -347,8 +347,49 @@ function validate_project_name() {
 
 
 function validate_qa_form(){
+    var is_valid_form = true;
     var product_rename = document.getElementById('product_rename').value.trim();
     var product_alt_rename = document.getElementById('product_alt_rename').value.trim();
+    var error_qa = $('#error_qa').val();
+    var approve_button = document.getElementById('approve');
+    var disapprove_button = document.getElementById('disapprove');
+    var error_images = document.getElementById('error_images').files;
+    if (product_type == 'brand' || product_type == 'sku') {
+        if (product_rename == '') {
+            document.getElementById('product_rename_error').innerHTML = 'Cannot be empty';
+            is_valid_form = false;
+        } else {
+            document.getElementById('product_rename_error').innerHTML = '';   
+        }
+    } else if (product_type == 'dvc') {
+        if (product_alt_rename == '') {
+            document.getElementById('product_alt_rename_error').innerHTML = 'Cannot be empty';
+            is_valid_form = false;
+        } else {
+            document.getElementById('product_alt_rename_error').innerHTML = '';   
+        }
+    } else {
+        is_valid_form = false;
+    }
+    if (!approve_button.checked && !disapprove_button.checked)  {
+        document.getElementById('status_error').innerHTML = 'Status must be selected';
+        is_valid_form = false;
+    } else {
+        document.getElementById('status_error').innerHTML = '';
+    }
+    if (disapprove_button.checked && error_qa.length == 0) {
+        document.getElementById('error_qa_error').innerHTML = 'Error Type must be selected';
+        is_valid_form = false;
+    } else {
+        document.getElementById('error_qa_error').innerHTML = '';
+    }
+
+    if (disapprove_button.checked && error_images.length == 0) {
+        document.getElementById('image_error').innerHTML = 'At least one image must be selected for upload';
+        is_valid_form = false;
+    } else {
+        document.getElementById('image_error').innerHTML = '';
+    }
 }
 
 jQuery(document).ready(function () {
