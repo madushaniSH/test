@@ -44,3 +44,7 @@
 }
 
 .modal { overflow: auto !important; }
+
+#qa_logo{
+    width: 4%;
+}

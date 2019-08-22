@@ -107,6 +107,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </div>
     </nav>
     <div id="over_counter_section">
+    <img src="images/pepe.png" class="rounded mx-auto d-block" alt="Pepe the frog" id="qa_logo">
         <div class="row">
             <div class="col">
                 <label for="project_name">Select Project Name</label>
@@ -327,7 +328,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="qa_error_title">Add New Error Type</h5>
-                <button type="button" class="close" id="close_probe_title" data-dismiss="modal" aria-label="Close"">
+                <button type="button" class="close" id="close_error_form" data-dismiss="modal" aria-label="Close" onclick="clear_error_form()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -338,13 +339,14 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <div class="form-group">
                                 <label for="error_new_name">New Error Type:</label>
                                 <input type="text" id="error_new_name" class="form-control">
+                                <span id="error_new_error" class="error-popup"></span>
                             </div>
                         </div>
                     </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-success" value="Submit">Save changes</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="clear_error_form()">Cancel</button>
+                <button type="button" class="btn btn-success" value="Submit" onclick="validate_new_error_type();">Save changes</button>
                 </form>
             </div>
         </div>

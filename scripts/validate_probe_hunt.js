@@ -148,8 +148,8 @@ function validate_probe_submission() {
     var status = status_element.options[status_element.selectedIndex].value;
     var status_error = document.getElementById('status_error');
     var hunt_information = document.getElementById('hunt_information');
-    var comment = document.getElementById('comment').value;
-    var remark = document.getElementById('remark').value;
+    var comment = document.getElementById('comment').value.trim();
+    var remark = document.getElementById('remark').value.trim();
     var project_name_element = document.getElementById('project_name');
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
     if (status == '') {
@@ -254,7 +254,7 @@ function show_dvc_options() {
 function add_probe_product() {
     var is_valid_form = true;
     var formData = new FormData();
-    var product_name = document.getElementById('product_name').value;
+    var product_name = document.getElementById('product_name').value.trim();
     var product_name_error = document.getElementById('product_name_error');
     var product_type_element = document.getElementById('product_type');
     var product_type = product_type_element.options[product_type_element.selectedIndex].value;

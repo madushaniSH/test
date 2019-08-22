@@ -16,6 +16,49 @@ function assign_dvc() {
     get_probe_qa_info();
 }
 
+function clear_error_form(){
+    document.getElementById('error_new_name').value = '';
+    document.getElementById('error_new_error').innerHTML = '';
+}
+
+function validate_new_error_type(){
+    var is_valid_form = true;
+    var error_new_name = document.getElementById('error_new_name').value.trim();
+
+    if (error_new_name == '') {
+        document.getElementById('error_new_error').innerHTML = 'Cannot be empty';
+    } else {
+        document.getElementById('error_new_error').innerHTML = '';
+    }
+
+    if (is_valid_form) {
+        var formData = new FormData();
+        formData.append('error_new_name', error_new_name);
+        formData.append('project_name', p_name);
+        jQuery.ajax({
+            url: 'add_new_error.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data[0].error != '') {
+                    document.getElementById('error_new_error').innerHTML = data[0].error;
+                } else {
+                    document.getElementById('error_new_error').innerHTML = '';
+                    get_error_list();
+                    document.getElementById('close_error_form').click();
+                }
+            },
+            error: function (data) {
+                alert("Error assigning probe. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
+
 function get_brand_list(product_type, select_element) {
     if (p_name != '') {
         var formData = new FormData();
@@ -279,6 +322,11 @@ function validate_project_name() {
         get_brand_list('sku', 'brand_name');
         get_brand_list('dvc', 'dvc_name');
     }
+}
+
+
+function validate_qa_form(){
+    
 }
 
 jQuery(document).ready(function () {
