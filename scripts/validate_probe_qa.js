@@ -148,6 +148,17 @@ function get_error_list() {
     }
 }
 
+function display_qa_probe() {
+    $('#qa_probe').modal('show');
+    if (document.getElementById('alt_name').value == ''){
+        document.getElementById('alt_name_section').classList.add('hide');
+        document.getElementById('alt_rename_section').classList.add('hide');
+    } else {
+        document.getElementById('alt_name_section').classList.remove('hide');
+        document.getElementById('alt_rename_section').classList.remove('hide');
+    }
+}
+
 function get_probe_qa_info() {
     var project_name_element = document.getElementById('project_name');
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
@@ -175,6 +186,9 @@ function get_probe_qa_info() {
                 title_string += ' <span id="probe_id_title">' + data[0].product_type.toUpperCase();
             }
             jQuery('#qa_probe_title').html(title_string);
+            jQuery('#product_name').val(data[0].product_name);
+            jQuery('#alt_name').val(data[0].product_alt_design_name);
+            display_qa_probe();
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
@@ -183,7 +197,6 @@ function get_probe_qa_info() {
         contentType: false,
         processData: false
     });
-    $('#qa_probe').modal('show');
 }
 
 function unassign_probe() {
@@ -326,7 +339,6 @@ function validate_project_name() {
 
 
 function validate_qa_form(){
-    
 }
 
 jQuery(document).ready(function () {

@@ -84,6 +84,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         document.getElementsByTagName('head')[0].appendChild(css);
     })();
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/js/plugins/piexif.min.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/js/fileinput.min.js"></script>
     <title>Product Hunt</title>
 </head>
@@ -251,7 +252,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     </div>
                     <div class="form-row">
                         <div class="col">
-                            <div class="form-group">
+                            <div class="form-group hide" id="alt_name_section">
                                 <label for="alt_name">Alternative Design Name:</label>
                                 <input type="text" id="alt_name" class="form-control" readonly>
                             </div>
@@ -268,7 +269,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     </div>
                     <div class="form-row">
                         <div class="col">
-                            <div class="form-group">
+                            <div class="form-group hide" id="alt_rename_section">
                                 <label for="product_alt_rename">Product Alternative Re-Name:</label>
                                 <input type="text" id="product_alt_rename" class="form-control">
                             </div>
@@ -316,7 +317,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="unassign_probe();">Cancel</button>
-                <button type="button" class="btn btn-success" value="Submit">Save changes</button>
+                <button type="button" class="btn btn-success" value="Submit" onclick="validate_qa_form();">Save changes</button>
                 </form>
             </div>
         </div>
