@@ -452,15 +452,20 @@ function validate_qa_form() {
         var formData = new FormData();
         formData.append("project_name", p_name);
         formData.append("product_type", product_type);
+        formData.append("product_rename", product_rename);
+        if (disapprove_button.checked) {
+            formData.append('status', 'disapproved');
+        } else {
+            formData.append('status', 'approved');
+        }
         jQuery.ajax({
             url: "process_qa.php",
             type: "POST",
             data: formData,
-            dataType: "JSON",
-            success: function (data) { },
+            success: function (data) {
+            },
             error: function (data) {
                 alert("Error fetching probe information. Please refresh");
-                clearInterval(request);
             },
             cache: false,
             contentType: false,
