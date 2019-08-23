@@ -37,7 +37,7 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT project_error_name FROM project_errors';
+$sql = 'SELECT project_error_id, project_error_name FROM project_errors';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $error_rows = $stmt->fetchAll(PDO::FETCH_OBJ);

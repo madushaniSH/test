@@ -130,13 +130,13 @@ function get_error_list() {
                 for (var i = 0; i < data[0].error_rows.length; i++) {
                     if (
                         !$("#error_qa").find(
-                            "option[value='" + data[0].error_rows[i].project_error_name + "']"
+                            "option[value='" + data[0].error_rows[i].project_error_id + "']"
                         ).length
                     ) {
                         // Append it to the select
                         $("#error_qa").append(
                             '<option value="' +
-                            data[0].error_rows[i].project_error_name +
+                            data[0].error_rows[i].project_error_id +
                             '">' +
                             data[0].error_rows[i].project_error_name +
                             "</option>"
@@ -148,16 +148,15 @@ function get_error_list() {
                 var found = true;
                 for (var i = 0; i < element.length; i++) {
                     found = false;
+                    console.log(element[i].value);
                     for (var j = 0; j < data[0].error_rows.length; j++) {
-                        if (data[0].error_rows[j].project_error_name == element[i].value) {
+                        if (data[0].error_rows[j].project_error_id == element[i].value) {
                             found = true;
                             break;
                         }
                     }
                     if (!found) {
-                        document
-                            .getElementById("error_qa")
-                            .remove(document.getElementById("error_qa")[i]);
+                        document.getElementById("error_qa").remove(document.getElementById("error_qa")[i]);
                     }
                 }
             },
