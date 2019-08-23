@@ -264,6 +264,9 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                                 <label for="product_rename">Product Re-Name:</label>
                                 <input type="text" id="product_rename" class="form-control">
                                 <span id="product_rename_error" class="error-popup"></span>
+                                <div class="alert alert-warning fade show hide" role="alert" id="rename_alert" >
+                                    <strong>Warning!</strong> This will overwrite the existing Product Name
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -273,6 +276,9 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                                 <label for="product_alt_rename">Product Alternative Re-Name:</label>
                                 <input type="text" id="product_alt_rename" class="form-control">
                                 <span id="product_alt_rename_error" class="error-popup"></span>
+                                <div class="alert alert-warning fade show hide" role="alert" id="dvc_rename_alert" >                            
+                                    <strong>Warning!</strong> This will overwrite the existing Alternative Design Name
+                                </div>
                             </div>
                         </div>
                     </div>

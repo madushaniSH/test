@@ -46,3 +46,11 @@
 .modal {
     overflow: auto !important;
 }
+
+#rename_alert {
+    margin-top: 1vw;
+}
+
+#dvc_rename_alert {
+    margin-top: 1vw;
+}
