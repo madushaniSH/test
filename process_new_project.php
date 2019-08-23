@@ -204,8 +204,10 @@ if ($row_count == 0) {
 
     $sql = 'CREATE TABLE `project_error_images` (
       `project_error_image_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-      `project_error_image_location` varchar(255) NOT NULL
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+      `product_id` int(11) NOT NULL,
+      `project_error_image_location` varchar(255) NOT NULL,
+       CONSTRAINT '.$dbname.'_ERROR_IMAGE_PRODUCT_ID FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(); 
     echo "<span class=\"success-popup\">Project Created</span>";

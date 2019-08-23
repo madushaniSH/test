@@ -80,9 +80,9 @@ for ($i = 0; $i < $error_image_count; $i++){
     $image_file = $image_upload_dir.$filename;
     echo $image_name;
     if(move_uploaded_file($_FILES[$image_name]["tmp_name"],$image_file)){
-        $sql = 'INSERT INTO project_error_images (project_error_image_location) VALUES (:image_location)';
+        $sql = 'INSERT INTO project_error_images (product_id, project_error_image_location) VALUES (:product_id, :image_location)';
         $sql = $pdo->prepare($sql);
-        $sql->execute(['image_location'=>$image_file]);
+        $sql->execute(['product_id'=>$product_info->product_id,'image_location'=>$image_file]);
     }
 }
 
