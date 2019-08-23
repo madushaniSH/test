@@ -38,17 +38,20 @@ catch(PDOException $e){
     exit();
 }
 
+$product_name = '';
 $sql = "SELECT products.product_id, products.product_name FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE probe_qa_queue.account_id = :account_id AND probe_qa_queue.probe_being_handled = 1";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id'=>$_SESSION['id']]);
 $product_info = $stmt->fetch(PDO::FETCH_OBJ);
 $row_count = $stmt->rowCount();
+$product_name = $product_info->product_name;
 
 if ($row_count == 1 && $_POST['product_type'] == 'brand') {
     if (trim($product_info->product_name) != trim($_POST['product_rename'])) {
         $sql = "UPDATE products SET product_name = :product_name, product_previous = :product_previous WHERE product_id = :product_id";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['product_name'=>trim($_POST['product_rename']), 'product_previous'=>trim($product_info->product_name), 'product_id'=>$product_info->product_id]);
+        $product_name = trim($_POST['product_rename']);
     }
 }
 
@@ -65,7 +68,7 @@ $error_image_count = $_POST['error_image_count'];
 for ($i = 0; $i < $error_image_count; $i++){
     $image_name = 'error_images'.$i;
     // the file dir the uploaded image of the user is supposed to be stored in
-    $image_upload_dir = "images/system/projects/".$_POST['project_name']."/QA/".preg_replace('/\s+/', '', $product_info->product_name)."/error_images/";
+    $image_upload_dir = "images/system/projects/".$_POST['project_name']."/QA/".preg_replace('/\s+/', '', $product_name)."/error_images/";
     // checks if file path exists if not creates it
     if (!file_exists($image_upload_dir)){
         mkdir($image_upload_dir,0777,true);
