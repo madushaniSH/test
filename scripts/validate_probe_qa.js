@@ -148,7 +148,6 @@ function get_error_list() {
                 var found = true;
                 for (var i = 0; i < element.length; i++) {
                     found = false;
-                    console.log(element[i].value);
                     for (var j = 0; j < data[0].error_rows.length; j++) {
                         if (data[0].error_rows[j].project_error_id == element[i].value) {
                             found = true;
@@ -452,6 +451,11 @@ function validate_qa_form() {
         formData.append("project_name", p_name);
         formData.append("product_type", product_type);
         formData.append("product_rename", product_rename);
+        formData.append("error_qa", error_qa);
+        formData.append("error_image_count", error_images.length);
+        for (var i = 0; i < error_images.length; i++) {
+            formData.append("error_images"+i, document.getElementById('error_images').files[i]);
+        }
         if (disapprove_button.checked) {
             formData.append('status', 'disapproved');
         } else {
@@ -462,6 +466,18 @@ function validate_qa_form() {
             type: "POST",
             data: formData,
             success: function (data) {
+                $("#qa_probe").modal("hide"); 
+                document.getElementById("qa_form").reset();
+                $("#error_qa")
+                    .val("")
+                    .trigger("change");
+                document.getElementById("product_rename_error").innerHTML = "";
+                document.getElementById("product_alt_rename_error").innerHTML = "";
+                document.getElementById("status_error").innerHTML = "";
+                document.getElementById("error_qa_error").innerHTML = "";
+                document.getElementById("image_error").innerHTML = "";
+                rename_alert.classList.add("hide");
+                dvc_rename_alert.classList.add("hide");
             },
             error: function (data) {
                 alert("Error fetching probe information. Please refresh");
@@ -519,6 +535,7 @@ jQuery(document).ready(function () {
         width: "100%"
     });
     jQuery("#error_images").fileinput({
+        maxFileSize: '1024',
         showCancel: false,
         showUpload: false,
         maxFileCount: 4,

@@ -286,7 +286,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <div class="col col-md-7">
                             <div class="form-group">
                             <p>Error Type  <button type="button" class="btn btn-outline-danger add-error"  data-toggle="modal" data-target="#qa_error">Add Error</button></p>
-                            <select name="error_qa" id="error_qa" name="error_qa[]" class="form-control" multiple="multiple">
+                            <select name="error_qa" id="error_qa" class="form-control" multiple="multiple">
                                 
                             </select>
                             <span id="error_qa_error" class="error-popup"></span>
@@ -320,7 +320,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             </label>
                             <div class="col">
                                 <span class="btn btn-default btn-file">
-                                    <input id="error_images" name="error_images[]" type="file" class="file" multiple data-show-caption="true">
+                                    <input id="error_images" name="error_images" type="file" class="file" multiple data-show-caption="true">
                                 </span>
                             </div>
                             <span id="image_error" class="error-popup"></span>

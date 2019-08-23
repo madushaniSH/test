@@ -191,7 +191,24 @@ if ($row_count == 0) {
     (13, 'Incorrect Manufacturer')";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();  
-    echo "<span class=\"success-popup\">Project Created</span>    ";
+
+    $sql = 'CREATE TABLE `product_qa_errors` (
+        `product_qa_error_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        `product_id` int(11) NOT NULL,
+        `error_id` int(11) NOT NULL,
+        CONSTRAINT '.$dbname.'_QA_ERROR_ID FOREIGN KEY (`error_id`) REFERENCES `project_errors` (`project_error_id`),
+        CONSTRAINT '.$dbname.'_QA_ERROR_PR_ID FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(); 
+
+    $sql = 'CREATE TABLE `project_error_images` (
+      `project_error_image_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+      `project_error_image_location` varchar(255) NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(); 
+    echo "<span class=\"success-popup\">Project Created</span>";
 } else {
     echo "<span class=\"error-popup\">Project with that name already exists</span>    ";
 }
