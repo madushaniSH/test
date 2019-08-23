@@ -38,4 +38,5 @@ catch(PDOException $e){
     exit();
 }
 
+$sql = "SELECT products.product_name FROM ";
 ?>

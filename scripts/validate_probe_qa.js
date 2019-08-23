@@ -219,8 +219,14 @@ function get_probe_qa_info() {
             }
             if (data[0].product_type != null) {
                 title_string +=
-                    ' <span id="probe_id_title">' + data[0].product_type.toUpperCase();
+                    ' <span id="probe_id_title">' + data[0].product_type.toUpperCase() + '</span>'; 
             }
+            
+            if (data[0].probe_id != null) {
+                title_string +=
+                    ' <span>' + data[0].probe_id + '</span>';
+            }
+
             jQuery("#qa_probe_title").html(title_string);
             jQuery("#product_name").val(data[0].product_name);
             jQuery("#alt_name").val(data[0].product_alt_design_name);
