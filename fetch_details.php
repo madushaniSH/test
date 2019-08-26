@@ -37,7 +37,7 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT products.product_id, probe.probe_id AS "Probe ID", brand.brand_name AS "Brand", products.product_alt_design_name AS "Alternative Design Name", products.product_name AS "English Product Name" , products.product_type AS "Product Type", products.product_creation_time AS "Product Creation Time", client_category.client_category_name AS "Category", products.account_id AS "hunter_gid", products.product_qa_account_id AS "qa_gid", products.product_qa_datetime, products.product_qa_status AS "Product Status"
+$sql = 'SELECT products.product_id, probe.probe_id AS "Probe ID", brand.brand_name AS "Brand", products.product_alt_design_name AS "Alternative Design Name", products.product_name AS "English Product Name" , products.product_type AS "Product Type", products.product_creation_time AS "Product Creation Time", client_category.client_category_name AS "Category", products.account_id AS "hunter_gid", products.product_qa_account_id AS "qa_gid", products.product_qa_datetime AS "QA Time", products.product_qa_status AS "Product Status"
 FROM products
 INNER JOIN probe_product_info
 ON products.product_id = probe_product_info.probe_product_info_product_id
@@ -55,6 +55,12 @@ $hunted_product_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
 for ($i = 0; $i < count($hunted_product_info); $i++){
     if ($hunted_product_info[$i]["Alternative Design Name"] == null) {
         $hunted_product_info[$i]["Alternative Design Name"] = '';
+    }
+    if ($hunted_product_info[$i]["Brand"] == null) {
+        $hunted_product_info[$i]["Brand"] = '';
+    }
+    if ($hunted_product_info[$i]["Category"] == null) {
+        $hunted_product_info[$i]["Category"] = '';
     }
     $sql = 'SELECT b.account_gid FROM products INNER JOIN user_db.accounts b ON products.account_id = b.account_id WHERE b.account_id = :account_id AND products.product_id = :product_id';
     $stmt = $pdo->prepare($sql);
@@ -99,8 +105,28 @@ for ($i = 0; $i < count($hunted_product_info); $i++){
     unset($hunted_product_info[$i][product_id]);
 }
 
-//$sql = 'SELECT probe.probe_id, ';
+$sql = 'SELECT probe.probe_id AS "Probe ID", probe.probe_process_comment AS "Comment", probe_status.probe_status_name AS "Probe Status", a.account_gid AS "Hunter GID"
+FROM probe
+LEFT JOIN probe_status
+ON probe.probe_status_id = probe_status.probe_status_id
+LEFT JOIN user_db.accounts a
+ON probe.probe_processed_hunter_id = a.account_id';
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$probe_details = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$return_arr[] = array("hunted_product_info"=>$hunted_product_info);
+for ($i = 0; $i < count($probe_details); $i++){
+    if ($probe_details[$i]["Comment"] == null) {
+        $probe_details[$i]["Comment"] = '';
+    }
+    if ($probe_details[$i]["Hunter GID"] == null) {
+        $probe_details[$i]["Hunter GID"] = '';
+    }
+    if ($probe_details[$i]["Probe Status"] == null) {
+        $probe_details[$i]["Probe Status"] = '';
+    }
+}
+
+$return_arr[] = array("hunted_product_info"=>$hunted_product_info, "probe_details"=>$probe_details);
 echo json_encode($return_arr);
 ?>
