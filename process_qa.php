@@ -45,6 +45,7 @@ $stmt->execute(['account_id'=>$_SESSION['id']]);
 $product_info = $stmt->fetch(PDO::FETCH_OBJ);
 $row_count = $stmt->rowCount();
 $current_product_name = trim($product_info->product_name);
+$product_name = trim($product_info->product_name);
 $search_string = '';
 
 
