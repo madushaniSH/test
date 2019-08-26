@@ -83,7 +83,7 @@ function fetch_details(){
         data: formData,
         dataType: 'JSON',
         success: function (data) {
-            JSONToCSVConvertor(data[0].probe_id, project_name +" Export", true);
+            JSONToCSVConvertor(data[0].hunted_product_info, project_name +" Hunted Products", true);
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");

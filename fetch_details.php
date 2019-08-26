@@ -53,6 +53,9 @@ $stmt->execute();
 $hunted_product_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 for ($i = 0; $i < count($hunted_product_info); $i++){
+    if ($hunted_product_info[$i]["Alternative Design Name"] == null) {
+        $hunted_product_info[$i]["Alternative Design Name"] = '';
+    }
     $sql = 'SELECT b.account_gid FROM products INNER JOIN user_db.accounts b ON products.account_id = b.account_id WHERE b.account_id = :account_id AND products.product_id = :product_id';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$hunted_product_info[$i][hunter_gid], 'product_id'=>$hunted_product_info[$i][product_id]]);
@@ -77,9 +80,8 @@ for ($i = 0; $i < count($hunted_product_info); $i++){
     }
     if ($error_string != '') {
         $error_string = rtrim($error_string, ",");
-    } else {
-        $error_string = null;
-    }
+    } 
+
     $hunted_product_info[$i]['QA Errors'] = $error_string;
     
     $sql = 'SELECT project_error_image_location FROM project_error_images WHERE product_id = :product_id LIMIT 1';
@@ -92,13 +94,13 @@ for ($i = 0; $i < count($hunted_product_info); $i++){
     if ($row_count != 0) {
         $error_image_path = substr($file_info->project_error_image_location, 0, strrpos($file_info->project_error_image_location, '/') );
     } 
-    if ($error_image_path == '') {
-        $error_image_path = null;
-    }
+
     $hunted_product_info[$i]['Error Image Location'] = $error_image_path;
     unset($hunted_product_info[$i][product_id]);
 }
 
-$return_arr[] = array("probe_id"=>$hunted_product_info);
+//$sql = 'SELECT probe.probe_id, ';
+
+$return_arr[] = array("hunted_product_info"=>$hunted_product_info);
 echo json_encode($return_arr);
 ?>
