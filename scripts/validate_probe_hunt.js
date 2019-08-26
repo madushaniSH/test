@@ -3,7 +3,12 @@ var product_count = 0;
 var skip_check = false;
 
 function cancel_product_button() {
-    skip_check = true;
+    var product_name = document.getElementById('product_name').value.trim();
+    if (product_name == '') {
+        skip_check = true;
+    } else {
+        skip_check = false; 
+    }
     validate_probe_submission();
     product_count = 0;
 }
@@ -177,7 +182,7 @@ function validate_probe_submission() {
     }
 
     if (is_valid_form) {
-        if ((status === '2' || status === '1') && !skip_check && product_count <= 1) {
+        if ((status === '2' || status === '1') && !skip_check) {
             if (add_probe_product()) {
                 jQuery.ajax({
                     url: 'update_probe_queue.php',
