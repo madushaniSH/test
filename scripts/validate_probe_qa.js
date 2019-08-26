@@ -228,6 +228,9 @@ function get_probe_qa_info() {
             jQuery("#qa_probe_title").html(title_string);
             jQuery("#product_name").val(data[0].product_name);
             jQuery("#alt_name").val(data[0].product_alt_design_name);
+            if (data[0].product_alt_design_previous != null){
+                jQuery('#alt_name_error').html('Orginal name was overwritten by an Analyst');
+            }
             display_qa_probe(product_type);
         },
         error: function (data) {
@@ -266,6 +269,7 @@ function unassign_probe() {
     document.getElementById("status_error").innerHTML = "";
     document.getElementById("error_qa_error").innerHTML = "";
     document.getElementById("image_error").innerHTML = "";
+    document.getElementById("alt_name_error").innerHTML = "";
     rename_alert.classList.add("hide");
     dvc_rename_alert.classList.add("hide");
 }
@@ -451,7 +455,6 @@ function validate_qa_form() {
         formData.append("project_name", p_name);
         formData.append("product_type", product_type);
         formData.append("product_rename", product_rename);
-        formData.append("error_qa", error_qa);
         formData.append("error_image_count", error_images.length);
         for (var i = 0; i < error_images.length; i++) {
             formData.append("error_images"+i, document.getElementById('error_images').files[i]);
@@ -466,6 +469,7 @@ function validate_qa_form() {
             type: "POST",
             data: formData,
             success: function (data) {
+                $('#brand_name_error').html(data);
                 $("#qa_probe").modal("hide"); 
                 document.getElementById("qa_form").reset();
                 $("#error_qa")
@@ -476,6 +480,7 @@ function validate_qa_form() {
                 document.getElementById("status_error").innerHTML = "";
                 document.getElementById("error_qa_error").innerHTML = "";
                 document.getElementById("image_error").innerHTML = "";
+                document.getElementById("alt_name_error").innerHTML = "";
                 rename_alert.classList.add("hide");
                 dvc_rename_alert.classList.add("hide");
             },
@@ -540,6 +545,15 @@ jQuery(document).ready(function () {
         showUpload: false,
         maxFileCount: 4,
         allowedFileExtensions: ["jpg", "jpeg"]
+    });
+
+    jQuery('#brand_name').on("change", function (e) {
+        jQuery('#current_sku_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('sku_qa_button').disabled = true;
+    });
+    jQuery('#dvc_name').on("change", function (e) {
+        jQuery('#current_dvc_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('dvc_qa_button').disabled = true;
     });
     $("#error_qa").on("change", function (e) {
         show_error_image_section();
