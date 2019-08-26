@@ -246,6 +246,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <div class="form-group">
                                 <label for="product_name">Product Name:</label>
                                 <input type="text" id="product_name" class="form-control" readonly>
+                                <span id="name_error" class="error-popup"></span>
                             </div>
                         </div>
                     </div>
@@ -254,7 +255,6 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <div class="form-group hide" id="alt_name_section">
                                 <label for="alt_name">Alternative Design Name:</label>
                                 <input type="text" id="alt_name" class="form-control" readonly>
-                                <span id="alt_name_error" class="error-popup"></span>
                             </div>
                         </div>
                     </div>
