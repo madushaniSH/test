@@ -83,7 +83,6 @@ function fetch_details(){
         data: formData,
         dataType: 'JSON',
         success: function (data) {
-            console.log(data[0].probe_id);
             JSONToCSVConvertor(data[0].probe_id, project_name +" Export", true);
         },
         error: function (data) {

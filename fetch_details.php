@@ -58,12 +58,14 @@ for ($i = 0; $i < count($hunted_product_info); $i++){
     $stmt->execute(['account_id'=>$hunted_product_info[$i][hunter_gid], 'product_id'=>$hunted_product_info[$i][product_id]]);
     $hunter_gid = $stmt->fetch(PDO::FETCH_OBJ);
     $hunted_product_info[$i]['Hunter GID'] = $hunter_gid->account_gid;
+    unset($hunted_product_info[$i][hunter_gid]);
 
     $sql = 'SELECT b.account_gid FROM products INNER JOIN user_db.accounts b ON products.product_qa_account_id = b.account_id WHERE b.account_id = :account_id AND products.product_id = :product_id';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$hunted_product_info[$i][qa_gid], 'product_id'=>$hunted_product_info[$i][product_id]]);
     $qa_gid = $stmt->fetch(PDO::FETCH_OBJ);
     $hunted_product_info[$i]['QA GID'] = $qa_gid->account_gid;
+    unset($hunted_product_info[$i][qa_gid]);
 
     $sql = 'SELECT a.project_error_name FROM product_qa_errors b INNER JOIN project_errors a ON b.error_id = a.project_error_id WHERE b.product_id = :product_id';
     $stmt = $pdo->prepare($sql);
