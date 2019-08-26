@@ -105,7 +105,7 @@ for ($i = 0; $i < count($hunted_product_info); $i++){
     unset($hunted_product_info[$i][product_id]);
 }
 
-$sql = 'SELECT probe.probe_id AS "Probe ID", probe.probe_process_comment AS "Comment", probe_status.probe_status_name AS "Probe Status", a.account_gid AS "Hunter GID"
+$sql = 'SELECT probe.probe_id AS "Probe ID", probe.probe_process_comment AS "Comment", probe_status.probe_status_name AS "Probe Status", probe.probe_hunter_processed_time  AS "Probe Processed Time",a.account_gid AS "Hunter GID"
 FROM probe
 LEFT JOIN probe_status
 ON probe.probe_status_id = probe_status.probe_status_id
@@ -125,8 +125,49 @@ for ($i = 0; $i < count($probe_details); $i++){
     if ($probe_details[$i]["Probe Status"] == null) {
         $probe_details[$i]["Probe Status"] = '';
     }
+    if ($probe_details[$i]["Probe Processed Time"] == null) {
+        $probe_details[$i]["Probe Processed Time"] = '';
+    }
 }
 
-$return_arr[] = array("hunted_product_info"=>$hunted_product_info, "probe_details"=>$probe_details);
+$sql = 'SELECT DISTINCT probe.probe_processed_hunter_id, a.account_gid FROM probe INNER JOIN user_db.accounts a ON probe.probe_processed_hunter_id = a.account_id';
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$hunter_summary = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+for ($i = 0; $i < count($hunter_summary); $i++){
+    $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="brand" AND account_id = :account_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id]]);
+    $brand_count = $stmt->fetchColumn();
+    $hunter_summary[$i]["Brand Hunted"] = $brand_count;
+
+    $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="sku" AND account_id = :account_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id]]);
+    $sku_count = $stmt->fetchColumn();
+    $hunter_summary[$i]["SKU Hunted"] = $sku_count;
+
+    $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="dvc" AND account_id = :account_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id]]);
+    $dvc_count = $stmt->fetchColumn();
+    $hunter_summary[$i]["DVC Hunted"] = $dvc_count;
+
+    $sql = 'SELECT COUNT(*) FROM probe WHERE probe.probe_processed_hunter_id = :account_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id]]);
+    $checked_count = $stmt->fetchColumn();
+    $hunter_summary[$i]["Checked Probe Count"] = $checked_count;
+
+    $sql = 'SELECT COUNT(*) FROM products WHERE products.account_id = :account_id AND product_qa_status = "disapproved"';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id]]);
+    $error_count = $stmt->fetchColumn();
+    $hunter_summary[$i]["Error Count"] = $error_count;
+    unset($hunter_summary[$i][probe_processed_hunter_id]);
+}
+
+$return_arr[] = array("hunted_product_info"=>$hunted_product_info, "probe_details"=>$probe_details, "hunter_summary"=>$hunter_summary);
 echo json_encode($return_arr);
 ?>

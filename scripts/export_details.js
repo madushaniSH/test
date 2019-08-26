@@ -85,6 +85,7 @@ function fetch_details(){
         success: function (data) {
             JSONToCSVConvertor(data[0].hunted_product_info, project_name +" Hunted Products", true);
             JSONToCSVConvertor(data[0].probe_details, project_name +" Probe Details", true);
+            JSONToCSVConvertor(data[0].hunter_summary, project_name +" Hunter Summary", true);
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
