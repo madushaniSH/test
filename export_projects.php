@@ -65,6 +65,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
     </script>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="styles/export_projects.css" />
     <script src="scripts/transition.js"></script>
     <script src="scripts/export_details.js"></script>
     <!-- Prerenders font awesome-->
@@ -94,7 +95,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     </div>
 </nav>
 <div id="fetch_project_section">
-    <div class="row">
+    <div class="row" id="project_select">
         <div class="col">
             <label for="project_name">Select Project Name</label>
             <select name="project_name" id="project_name" class="form-control">
@@ -109,8 +110,10 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </div>
     </div>
     <div id="generate_csv_section" class="hide">
-        <input id="datetime_filter" type="text" name="datetimes"  value=""/>
-        <button class="btn btn-primary hide" id="export_button" onclick="fetch_details()">Generate</button>
+        <div>
+            <input id="datetime_filter" type="text" name="datetimes"  value=""/>
+            <button class="btn btn-primary hide" id="export_button" onclick="fetch_details()">Generate</button>
+        </div>
     </div>
 </div>
 </body>

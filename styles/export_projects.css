@@ -1,0 +1,15 @@
+#fetch_project_section {
+    width: 50%;
+    margin: 0 auto;
+    background-color: white;
+    margin-top: 4vw;
+    padding: 2vw;
+}
+
+#fetch_project_section #project_select {
+    margin-bottom: 1vw;
+}
+
+#datetime_filter {
+    width: 60%;
+}
