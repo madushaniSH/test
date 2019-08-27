@@ -47,9 +47,12 @@ LEFT JOIN brand
 ON probe.brand_id = brand.brand_id
 LEFT JOIN client_category
 ON probe.client_category_id = client_category.client_category_id
-WHERE products.product_status = 2';
+WHERE
+products.product_status = 2
+AND
+(products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime)';
 $stmt = $pdo->prepare($sql);
-$stmt->execute();
+$stmt->execute(['start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
 $hunted_product_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 for ($i = 0; $i < count($hunted_product_info); $i++){
@@ -110,9 +113,11 @@ FROM probe
 LEFT JOIN probe_status
 ON probe.probe_status_id = probe_status.probe_status_id
 LEFT JOIN user_db.accounts a
-ON probe.probe_processed_hunter_id = a.account_id';
+ON probe.probe_processed_hunter_id = a.account_id
+WHERE
+(probe.probe_hunter_processed_time >= :start_datetime AND probe.probe_hunter_processed_time <= :end_datetime) OR probe.probe_hunter_processed_time IS NULL';
 $stmt = $pdo->prepare($sql);
-$stmt->execute();
+$stmt->execute(['start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
 $probe_details = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 for ($i = 0; $i < count($probe_details); $i++){
@@ -136,33 +141,33 @@ $stmt->execute();
 $hunter_summary = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 for ($i = 0; $i < count($hunter_summary); $i++){
-    $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="brand" AND account_id = :account_id';
+    $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="brand" AND account_id = :account_id AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime)';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id]]);
+    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
     $brand_count = $stmt->fetchColumn();
     $hunter_summary[$i]["Brand Hunted"] = $brand_count;
 
-    $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="sku" AND account_id = :account_id';
+    $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="sku" AND account_id = :account_id AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime)';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id]]);
+    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
     $sku_count = $stmt->fetchColumn();
     $hunter_summary[$i]["SKU Hunted"] = $sku_count;
 
-    $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="dvc" AND account_id = :account_id';
+    $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="dvc" AND account_id = :account_id AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime)';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id]]);
+    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
     $dvc_count = $stmt->fetchColumn();
     $hunter_summary[$i]["DVC Hunted"] = $dvc_count;
 
-    $sql = 'SELECT COUNT(*) FROM probe WHERE probe.probe_processed_hunter_id = :account_id';
+    $sql = 'SELECT COUNT(*) FROM probe WHERE probe.probe_processed_hunter_id = :account_id AND (probe.probe_hunter_processed_time >= :start_datetime AND probe.probe_hunter_processed_time <= :end_datetime)';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id]]);
+    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
     $checked_count = $stmt->fetchColumn();
     $hunter_summary[$i]["Checked Probe Count"] = $checked_count;
 
-    $sql = 'SELECT COUNT(*) FROM products WHERE products.account_id = :account_id AND product_qa_status = "disapproved"';
+    $sql = 'SELECT COUNT(*) FROM products WHERE products.account_id = :account_id AND product_qa_status = "disapproved" AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime)';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id]]);
+    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
     $error_count = $stmt->fetchColumn();
     $hunter_summary[$i]["Error Count"] = $error_count;
     unset($hunter_summary[$i][probe_processed_hunter_id]);
