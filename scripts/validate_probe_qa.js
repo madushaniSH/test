@@ -470,7 +470,6 @@ function validate_qa_form() {
             type: "POST",
             data: formData,
             success: function (data) {
-                $('#brand_name_error').html(data);
                 $("#qa_probe").modal("hide"); 
                 document.getElementById("qa_form").reset();
                 $("#error_qa")

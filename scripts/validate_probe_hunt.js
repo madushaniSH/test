@@ -4,13 +4,18 @@ var skip_check = false;
 
 function cancel_product_button() {
     var product_name = document.getElementById('product_name').value.trim();
-    if (product_name == '') {
-        skip_check = true;
-    } else {
-        skip_check = false; 
+    var flag = true;
+    if (product_name != '') {
+
+        if (!add_probe_product()) {
+            flag = false;
+        }
     }
-    validate_probe_submission();
-    product_count = 0;
+    if (flag) {
+        skip_check = true;
+        validate_probe_submission();
+        product_count = 0;
+    }
 }
 
 function validate_project_name() {
@@ -182,7 +187,7 @@ function validate_probe_submission() {
     }
 
     if (is_valid_form) {
-        if ((status === '2' || status === '1') && !skip_check) {
+        if ((status === '2' || status === '1') && !skip_check && product_count <= 1) {
             if (add_probe_product()) {
                 jQuery.ajax({
                     url: 'update_probe_queue.php',

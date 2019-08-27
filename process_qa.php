@@ -117,7 +117,6 @@ if ($row_count == 1){
             if (!file_exists($image_upload_dir.$filename)) break;
         }
         $image_file = $image_upload_dir.$filename;
-        echo $image_name;
         if(move_uploaded_file($_FILES[$image_name]["tmp_name"],$image_file)){
             $sql = 'INSERT INTO project_error_images (product_id, project_error_image_location) VALUES (:product_id, :image_location)';
             $sql = $pdo->prepare($sql);
