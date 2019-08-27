@@ -457,6 +457,7 @@ function validate_qa_form() {
         formData.append("product_rename", product_rename);
         formData.append("error_image_count", error_images.length);
         formData.append("product_alt_rename", product_alt_rename);
+        formData.append("error_qa", error_qa);
         for (var i = 0; i < error_images.length; i++) {
             formData.append("error_images"+i, document.getElementById('error_images').files[i]);
         }
