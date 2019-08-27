@@ -187,7 +187,7 @@ function validate_probe_submission() {
     }
 
     if (is_valid_form) {
-        if ((status === '2' || status === '1') && !skip_check && product_count <= 1) {
+        if (status === '2' && !skip_check && product_count <= 1) {
             if (add_probe_product()) {
                 jQuery.ajax({
                     url: 'update_probe_queue.php',
@@ -242,7 +242,7 @@ function show_additional_options() {
     var status_element = document.getElementById('status');
     var status = status_element.options[status_element.selectedIndex].value;
     var hunt_information = document.getElementById('hunt_information');
-    if (status === '2' || status === '1') {
+    if (status === '2') {
         hunt_information.classList.remove('hide');
     } else {
         hunt_information.classList.add('hide');

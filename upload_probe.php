@@ -62,7 +62,6 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 			  crossorigin="anonymous"></script>
     <script src="scripts/transition.js"></script>
-    <script src="scripts/papaparse.min.js"></script>
     <script src="scripts/validate_upload_probe.js"></script>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="styles/probe_upload.css" />
@@ -74,9 +73,9 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 <body >
 <svg id="fader"></svg>
 <nav class="navbar">
-    <a href="product_hunt.php" class="btn btn-light nav-back"><i class="fas fa-arrow-circle-left"></i></a>
     <div class="container-fluid">
         <div class="navbar-header">
+            <a href="product_hunt.php" class="btn btn-light nav-back"><i class="fas fa-arrow-circle-left"></i></a>
             <a href="index.php" class="navbar-brand">Data Operations</a>
         </div>
     </div>
@@ -95,15 +94,28 @@ foreach($project_rows as $project_row){
     <span id="project_name_error" class="error-popup"></span>    
 </div>
 <div id="probe-upload" class="hide">
-    <div id="probe-upload-container">
+    <button class="btn btn-secondary" onclick="show_upload_options_probe()" id="option1">Probe Upload</button>
+    <button class="btn btn-secondary" onclick="show_upload_options_reference()" id="option2">Reference Upload</button>
+    <div id="probe-upload-container" class="hide">
         <label for="csv-file"><i class="fas fa-upload"><span> Upload Probe CSV file</span></i></label>
         <input type="file" id="csv-file" name="files"/>
+        <div class="text-center">
+        <span id="probe_upload_error" class="error-popup"></span>
+        <span id="probe_upload_success" class="success-popup"></span>
+            <div class="spinner-border text-success" role="status" id="loading-spinner">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
     </div>
-    <div class="text-center">
-    <span id="probe_upload_error" class="error-popup"></span>
-    <span id="probe_upload_success" class="success-popup"></span>
-        <div class="spinner-border text-success" role="status" id="loading-spinner">
-            <span class="sr-only">Loading...</span>
+    <div id="ref-upload-container" class="hide">
+        <label for="ref-csv-file"><i class="fas fa-upload"><span> Upload Reference CSV file</span></i></label>
+        <input type="file" id="ref-csv-file" name="files"/>
+        <div class="text-center">
+        <span id="ref_upload_error" class="error-popup"></span>
+        <span id="ref_upload_success" class="success-popup"></span>
+            <div class="spinner-border text-success" role="status" id="loading-spinner-ref">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
     </div>
 </div>

@@ -13,3 +13,20 @@
 #probe_upload_section #probe-upload {
     margin-top: 2vw;
 }
+
+#ref-upload-container {
+    margin-top: 1vw;
+}
+
+#probe-upload-container {
+    margin-top: 1vw;
+}
+
+.active_btn{
+    background-color: black;
+    color: white;
+}
+
+#loading-spinner-ref{
+    display: none;
+}
