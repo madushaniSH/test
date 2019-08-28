@@ -342,7 +342,22 @@ function add_probe_product() {
                     server_error.innerHTML = '';
                 }
                 if (data[0].duplicate_error != '') {
-                    alert(data[0].duplicate_error);
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut",
+                        "timeOut": "0",
+                        "extendedTimeOut": "0",
+                    }
+                    toastr.error(data[0].duplicate_error);
                 }
             },
             error: function (data) {

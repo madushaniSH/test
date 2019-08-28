@@ -102,13 +102,13 @@ try {
         if ($fetched_info[$insert_index][product_creation_time] != $min_date_time || $fetched_info[$insert_index][product_id] != $min_product_id){
             if ($fetched_info[$insert_index][product_type] == 'brand') {
                 $error_id = 14;
-                $duplicate_error = 'Duplicate BRAND';
+                $duplicate_error = 'Duplicate BRAND, Error Count Increased';
             } else if ($fetched_info[$insert_index][product_type] == 'sku') {
                 $error_id = 2;
-                $duplicate_error = 'Duplicate SKU';
+                $duplicate_error = 'Duplicate SKU, Error Count Increased';
             } else if ($fetched_info[$insert_index][product_type] == 'dvc') {
                 $error_id = 8;
-                $duplicate_error = 'Duplicate DVC';
+                $duplicate_error = 'Duplicate DVC, Error Count Increased';
             }
             $is_duplicate = true;
             $sql = 'UPDATE products SET product_qa_status = "disapproved" WHERE product_id = :product_id';
