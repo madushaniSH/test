@@ -249,6 +249,11 @@ function show_additional_options() {
     }
 }
 
+function add_rec_comment() {
+    document.getElementById('comment').value = "Recongnition Issue";
+    return false;
+}
+
 function show_dvc_options() {
     var status_element = document.getElementById('status');
     var status = status_element.options[status_element.selectedIndex].value;

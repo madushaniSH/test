@@ -176,6 +176,9 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <input type="text" id="remark" class="form-control">
                     <span id="remark_error" class="error-popup"></span>
                 </div>
+                <div class="form-group col-md-5">
+                    <button role="button" class="btn btn-outline-danger" onclick="return add_rec_comment();">Recongnition Issue Recongnized</button>
+                </div>
             </div>
             <div id="hunt_information" class="hide">
                 <p class="border-bottom my-3">Additional Information</p>
