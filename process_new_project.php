@@ -188,7 +188,8 @@ if ($row_count == 0) {
     (10, 'SKU Product Added as DVC'),
     (11, 'Brand Image Empty'),
     (12, 'Incorrect Brand Added'),
-    (13, 'Incorrect Manufacturer')";
+    (13, 'Incorrect Manufacturer'),
+    (14, 'Duplicate Brand')";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();  
 

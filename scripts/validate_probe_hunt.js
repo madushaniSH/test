@@ -341,6 +341,9 @@ function add_probe_product() {
                 } else {
                     server_error.innerHTML = '';
                 }
+                if (data[0].duplicate_error != '') {
+                    alert(data[0].duplicate_error);
+                }
             },
             error: function (data) {
                 alert("Error fetching probe information. Please refresh");

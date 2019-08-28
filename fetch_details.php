@@ -165,11 +165,17 @@ for ($i = 0; $i < count($hunter_summary); $i++){
     $checked_count = $stmt->fetchColumn();
     $hunter_summary[$i]["Checked Probe Count"] = $checked_count;
 
-    $sql = 'SELECT COUNT(*) FROM products WHERE products.account_id = :account_id AND product_qa_status = "disapproved" AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime) AND products.product_status = 2';
+    $sql = 'SELECT COUNT(*) FROM products WHERE products.account_id = :account_id AND product_qa_status = "disapproved" AND products.product_qa_account_id IS NOT NULL AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime) AND products.product_status = 2';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
     $error_count = $stmt->fetchColumn();
     $hunter_summary[$i]["Error Count"] = $error_count;
+    
+    $sql = 'SELECT COUNT(*) FROM products WHERE products.account_id = :account_id AND product_qa_status = "disapproved" AND products.product_qa_account_id IS NULL AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime) AND products.product_status = 2';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
+    $error_count = $stmt->fetchColumn();
+    $hunter_summary[$i]["System Error Count"] = $error_count;
     unset($hunter_summary[$i][probe_processed_hunter_id]);
 }
 
