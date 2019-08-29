@@ -98,7 +98,7 @@ if ($row_count == 0) {
         `probe_key_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `brand_id` int(11) DEFAULT NULL,
         `client_category_id` int(11) DEFAULT NULL,
-        `probe_id` int(11) NOT NULL,
+        `probe_id` varchar(255) NOT NULL,
         `probe_added_date` datetime NOT NULL DEFAULT current_timestamp(),
         `probe_added_user_id` int(11) NOT NULL,
         `probe_hunter_processed_time` datetime DEFAULT NULL,

@@ -45,5 +45,5 @@ $keys = array_shift($csvAsArray);
 foreach ($csvAsArray as $i=>$row) {
     $csvAsArray[$i] = array_combine($keys, $row);
 }
-echo $csvAsArray;
+print_r($csvAsArray);
 ?>
