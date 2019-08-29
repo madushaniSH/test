@@ -59,8 +59,8 @@ function handleFileSelect_ref(evt) {
             data: formData,
             success: function (data) {
                 jQuery('#loading-spinner-ref').css("display", "none");
-                // jQuery('#ref_upload_success').html('Processed: ' + file_name);
-                jQuery('#ref_upload_success').html(data);
+                jQuery('#ref_upload_success').html('Processed: ' + file_name);
+                //jQuery('#ref_upload_success').html(data);
             },
             error: function (data) {
                 alert("AJAX error");
