@@ -24,14 +24,17 @@ function validate_project_name() {
     var project_name_error = document.getElementById('project_name_error');
     var probe_hunt_options = document.getElementById('probe_hunt_options');
     var probe_hunt_counter = document.getElementById('probe_hunt_counter');
+    var hunter_counter = document.getElementById('hunter_counter');
     if (project_name == '') {
         project_name_error.innerHTML = 'Project Name required for upload';
         probe_hunt_options.classList.add('hide');
         probe_hunt_counter.classList.add('hide');
+        hunter_counter.classList.add('hide')
     } else {
         project_name_error.innerHTML = '';
         probe_hunt_options.classList.remove('hide');
         probe_hunt_counter.classList.remove('hide');
+        hunter_counter.classList.remove('hide')
         p_name = project_name;
     }
 }
@@ -101,6 +104,18 @@ function update_project_count() {
                     $('#current_probe_count').html(data[0].number_of_rows);
                     $('#current_probe_handle_count').empty();
                     $('#current_probe_handle_count').html(data[0].number_of_handled_rows);
+                    $('#brand_count').empty();
+                    $('#brand_count').html(data[0].brand_count);
+                    $('#sku_count').empty();
+                    $('#sku_count').html(data[0].sku_count);
+                    $('#dvc_count').empty();
+                    $('#dvc_count').html(data[0].dvc_count);
+                    $('#checked_probe_count').empty();
+                    $('#checked_probe_count').html(data[0].checked_count);
+                    $('#qa_error_count').empty();
+                    $('#qa_error_count').html(data[0].error_count);
+                    $('#system_error_count').empty();
+                    $('#system_error_count').html(data[0].system_error_count);
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {

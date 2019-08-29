@@ -6,6 +6,13 @@
     padding: 2vw;
 }
 
+#hunter_counter {
+    width: 80%;
+    margin: 0 auto;
+    background-color: white;
+    padding: 2vw;
+}
+
 #probe_hunt_section #project_name {
     margin-bottom: 1vw;
 }

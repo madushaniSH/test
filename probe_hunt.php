@@ -96,6 +96,78 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </ul>
     </div>
 </nav>
+<div class="row">
+    <div  id="hunter_counter" class="col hide">
+	    <div class="row text-center">
+	        <div class="col">
+	            <div class="counter">
+                  <i class="fas fa-clipboard-list fa-2x"></i>
+                  <h2 id="brand_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Hunted Brand Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i class="far fa-lightbulb fa-2x"></i>
+                  <h2 id="sku_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Hunted SKU Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i class="far fa-lightbulb fa-2x"></i>
+                  <h2 id="dvc_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Hunted DVC Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i class="far fa-lightbulb fa-2x"></i>
+                  <h2 id="checked_probe_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Checked Probe Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i class="far fa-lightbulb fa-2x"></i>
+                  <h2 id="qa_error_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">QA Error Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i class="far fa-lightbulb fa-2x"></i>
+                  <h2 id="system_error_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">System Error Count</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="probe_hunt_section">
 <div class="row">
     <div class="col">
