@@ -1,15 +1,21 @@
+html, body {margin: 0; height: 100%; overflow: hidden}
+
+body {
+    background-image: url('images/wallpaper.jpeg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 #probe_hunt_section {
     width: 50%;
     margin: 0 auto;
     background-color: white;
+    opacity: 0.8;
     margin-top: 3vw;
     padding: 2vw;
 }
 
 #hunter_counter {
-    width: 80%;
-    margin: 0 auto;
-    background-color: white;
     padding: 2vw;
 }
 
