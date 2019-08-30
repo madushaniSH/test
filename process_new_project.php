@@ -129,7 +129,7 @@ if ($row_count == 0) {
         `product_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `product_name` varchar(255) NOT NULL,
         `product_previous` varchar(255) DEFAULT NULL,
-        `product_type` enum(\'brand\',\'sku\',\'dvc\') NOT NULL,
+        `product_type` enum(\'brand\',\'sku\',\'dvc\', \'facing\') NOT NULL,
         `product_status` int(11) DEFAULT NULL,
         `product_alt_design_name` varchar(255) DEFAULT NULL,
         `product_alt_design_previous` varchar(255) DEFAULT NULL,
