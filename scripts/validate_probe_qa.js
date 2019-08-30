@@ -81,7 +81,7 @@ function get_brand_list(product_type, select_element) {
                 for (var i = 0; i < data[0].brand_rows.length; i++) {
                     if (
                         !$("#" + select_element).find(
-                            "option[value='" + data[0].brand_rows[i].name + "']"
+                            'option[value="' + data[0].brand_rows[i].name + '"]'
                         ).length
                     ) {
                         // Append it to the select
@@ -136,7 +136,7 @@ function get_error_list() {
                 for (var i = 0; i < data[0].error_rows.length; i++) {
                     if (
                         !$("#error_qa").find(
-                            "option[value='" + data[0].error_rows[i].project_error_id + "']"
+                            'option[value="' + data[0].error_rows[i].project_error_id + '"]'
                         ).length
                     ) {
                         // Append it to the select

@@ -37,22 +37,22 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'brand' AND products.product_qa_status = 'pending'";
+$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'brand'";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(); 
 $brand_count = $stmt->fetchColumn(); 
 
-$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'sku' AND products.product_qa_status = 'pending'"; 
+$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'sku'"; 
 $stmt = $pdo->prepare($sql);
 $stmt->execute(); 
 $sku_count = $stmt->fetchColumn(); 
 
-$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'dvc' AND products.product_qa_status = 'pending'"; 
+$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'dvc'"; 
 $stmt = $pdo->prepare($sql);
 $stmt->execute(); 
 $dvc_count = $stmt->fetchColumn(); 
 
-$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'facing' AND products.product_qa_status = 'pending'"; 
+$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'facing'"; 
 $stmt = $pdo->prepare($sql);
 $stmt->execute(); 
 $facing_count = $stmt->fetchColumn(); 
