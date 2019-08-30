@@ -167,7 +167,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="col">
 	            <div class="counter">
-                  <i id ="system_error" class="far fa-lightbulb fa-2x fas fa-laptop-code"></i>
+                  <i id ="system_error" class="fa-2x fas fa-laptop-code"></i>
                   <h2 id="system_error_count" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
