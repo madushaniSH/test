@@ -101,7 +101,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 	    <div class="row text-center">
 	        <div class="col">
 	            <div class="counter">
-                  <i class="fas fa-clipboard-list fa-2x"></i>
+                  <i class="fas far fa-copyright fa-2x green_icon"></i>
                   <h2 id="brand_count" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
@@ -112,7 +112,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="col">
 	            <div class="counter">
-                  <i class="far fa-lightbulb fa-2x"></i>
+                  <i class="fas fa-boxes fa-2x green_icon"></i>
                   <h2 id="sku_count" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
@@ -123,7 +123,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="col">
 	            <div class="counter">
-                  <i class="far fa-lightbulb fa-2x"></i>
+                  <i class="fas fa-eye fa-2x green_icon"></i>
                   <h2 id="dvc_count" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
@@ -134,7 +134,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="col">
 	            <div class="counter">
-                  <i class="far fa-lightbulb fa-2x"></i>
+                  <i class="far fa-lightbulb fa-2x green_icon"></i>
                   <h2 id="facing_count" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
@@ -145,7 +145,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="col">
 	            <div class="counter">
-                  <i class="far fa-lightbulb fa-2x"></i>
+                  <i class="fas fa-clipboard-list fa-2x green_icon"></i>
                   <h2 id="checked_probe_count" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
@@ -156,7 +156,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="col">
 	            <div class="counter">
-                  <i class="far fa-lightbulb fa-2x"></i>
+                  <i id ="qa_error" class="fas fa-skull-crossbones fa-2x"></i>
                   <h2 id="qa_error_count" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
@@ -167,7 +167,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="col">
 	            <div class="counter">
-                  <i class="far fa-lightbulb fa-2x"></i>
+                  <i id ="system_error" class="far fa-lightbulb fa-2x fas fa-laptop-code"></i>
                   <h2 id="system_error_count" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
