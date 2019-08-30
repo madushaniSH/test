@@ -22,12 +22,14 @@
     text-align: center;
 }
 
-#probe_hunt_section #probe_hunt_options button{
+#probe_hunt_section #probe_hunt_options button {
     padding: 0.5vw 2vw;
-    cursor: pointer; /* Mouse pointer on hover */
+    cursor: pointer;
+    /* Mouse pointer on hover */
 }
 
-#exit_btn i, #exit_btn  {
+#exit_btn i,
+#exit_btn {
     color: orangered;
 }
 
@@ -36,8 +38,8 @@
     color: white;
 }
 
-
-#continue_btn i, #continue_btn {
+#continue_btn i,
+#continue_btn {
     color: royalblue;
 }
 
@@ -52,7 +54,7 @@
 }
 
 .counter {
-    background-color:#f5f5f5;
+    background-color: #f5f5f5;
     padding: 20px 0;
     border-radius: 5px;
 }
@@ -98,4 +100,45 @@
 
 #hunt_information {
     margin-top: 2vw;
+}
+
+.slidecontainer {
+    width: 100%;
+    /* Width of the outside container */
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: 0.2s;
+    transition: opacity 0.2s;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4caf50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4caf50;
+    cursor: pointer;
+}
+
+#output {
+    color: purple;
+    font-weight: bolder;
+    font-size: 1vw;
 }

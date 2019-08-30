@@ -293,7 +293,25 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <span id="error_qa_error" class="error-popup"></span>
                             </div>
                         </div>
+                        <div class="col col-md-4">
+                            <div class="form-group">
+                                <label for="num_facings">Number of Facings: <span id="output"></span></label>
+                                <div class="slidecontainer">
+                                    <input type="range" min="0" max="5" value="0" class="slider" id="num_facings">
+                                </div>
+                            </div>
+                        </div>
                     </div>
+<script>
+var slider = document.getElementById("num_facings");
+var output = document.getElementById("output");
+output.innerHTML = slider.value; // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function() {
+  output.innerHTML = this.value;
+}
+</script>                    
                     <div class="form-row">
                         <div class="col">
                             <p>Status</p>

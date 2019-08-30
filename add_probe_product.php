@@ -47,9 +47,9 @@ if (isset($_POST['alt_design_name']) && $_POST['alt_design_name'] != '') {
     $alt_design_name = NULL;
 }
 try {
-    $sql = 'INSERT INTO products (product_name, product_type, product_status, product_alt_design_name, account_id) VALUES (:product_name, :product_type, :product_status, :product_alt_design_name, :account_id)';
+    $sql = 'INSERT INTO products (product_name, product_type, product_status, product_alt_design_name, product_facing_count, account_id) VALUES (:product_name, :product_type, :product_status, :product_alt_design_name, :product_facing_count, :account_id)';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['product_name'=>trim($_POST['product_name']), 'product_type'=>$_POST['product_type'], 'product_status'=>$_POST['status'],'product_alt_design_name'=>$alt_design_name, 'account_id'=>$_SESSION['id']]);
+    $stmt->execute(['product_name'=>trim($_POST['product_name']), 'product_type'=>$_POST['product_type'], 'product_status'=>$_POST['status'],'product_alt_design_name'=>$alt_design_name, 'product_facing_count'=>$_POST['facings'], 'account_id'=>$_SESSION['id']]);
     $last_id = (int)$pdo->lastInsertId();
     $sql = 'SELECT probe_key_id FROM probe_queue WHERE account_id = :account_id';
     $stmt = $pdo->prepare($sql);

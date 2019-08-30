@@ -70,10 +70,10 @@ if ($row_count == 0) {
         $iterations++;
     } while ($this_count == 0 && $iterations < 10);
 }
-$sql = 'SELECT probe.probe_id, brand.brand_name, client_category.client_category_name, products.product_type, products.product_name, products.product_alt_design_name, products.product_alt_design_previous FROM  probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON products.product_id = probe_product_info.probe_product_info_product_id LEFT JOIN probe ON probe.probe_key_id = probe_product_info.probe_product_info_key_id LEFT JOIN client_category ON client_category.client_category_id = probe.client_category_id LEFT JOIN brand ON brand.brand_id = probe.brand_id WHERE probe_qa_queue.probe_qa_queue_id = :probe_qa_queue_id';
+$sql = 'SELECT probe.probe_id, brand.brand_name, client_category.client_category_name, products.product_type, products.product_name, products.product_alt_design_name, products.product_alt_design_previous, products.product_facing_count  FROM  probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON products.product_id = probe_product_info.probe_product_info_product_id LEFT JOIN probe ON probe.probe_key_id = probe_product_info.probe_product_info_key_id LEFT JOIN client_category ON client_category.client_category_id = probe.client_category_id LEFT JOIN brand ON brand.brand_id = probe.brand_id WHERE probe_qa_queue.probe_qa_queue_id = :probe_qa_queue_id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['probe_qa_queue_id'=>$last_id]);
 $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
-$return_arr[] = array("brand_name" => $probe_info->brand_name, "client_category_name" => $probe_info->client_category_name , "product_type"=>$probe_info->product_type, "product_name"=>$probe_info->product_name, "product_alt_design_name"=>$probe_info->product_alt_design_name, "product_alt_design_previous"=>$probe_info->product_alt_design_previous, "probe_id" => $probe_info->probe_id);
+$return_arr[] = array("brand_name" => $probe_info->brand_name, "client_category_name" => $probe_info->client_category_name , "product_type"=>$probe_info->product_type, "product_name"=>$probe_info->product_name, "product_alt_design_name"=>$probe_info->product_alt_design_name, "product_alt_design_previous"=>$probe_info->product_alt_design_previous, "probe_id" => $probe_info->probe_id, "product_facing_count" => $probe_info->product_facing_count);
 echo json_encode($return_arr);
 ?>

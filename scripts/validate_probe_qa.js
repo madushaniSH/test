@@ -223,6 +223,8 @@ function get_probe_qa_info() {
             jQuery("#qa_probe_title").html(title_string);
             jQuery("#product_name").val(data[0].product_name);
             jQuery("#alt_name").val(data[0].product_alt_design_name);
+            document.getElementById("num_facings").value = data[0].product_facing_count;
+            document.getElementById("output").innerHTML = document.getElementById("num_facings").value;
             if (data[0].product_alt_design_previous != null){
                 jQuery('#name_error').html('Orignal name was overwritten by an Analyst');
             }
@@ -265,6 +267,8 @@ function unassign_probe() {
     document.getElementById("error_qa_error").innerHTML = "";
     document.getElementById("image_error").innerHTML = "";
     document.getElementById("name_error").innerHTML = "";
+    document.getElementById("num_facings").value = 0;
+    document.getElementById("output").innerHTML = 0;
     rename_alert.classList.add("hide");
     dvc_rename_alert.classList.add("hide");
 }
@@ -458,6 +462,7 @@ function validate_qa_form() {
         formData.append("error_image_count", error_images.length);
         formData.append("product_alt_rename", product_alt_rename);
         formData.append("error_qa", error_qa);
+        formData.append("num_facings",document.getElementById("num_facings").value)
         for (var i = 0; i < error_images.length; i++) {
             formData.append("error_images"+i, document.getElementById('error_images').files[i]);
         }

@@ -116,6 +116,8 @@ function update_project_count() {
                     $('#qa_error_count').html(data[0].error_count);
                     $('#system_error_count').empty();
                     $('#system_error_count').html(data[0].system_error_count);
+                    $('#facing_count').empty();
+                    $('#facing_count').html(data[0].facing_count);
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {
@@ -159,12 +161,18 @@ function reset_probe_modal() {
     $('#server_error').html('');
     $('#server_success').html('');
     product_count = 0;
+    reset_hunt_information();
 }
 
 function reset_hunt_information() {
     $("#product_type").val('').trigger('change');
     document.getElementById('product_name').value = '';
     document.getElementById('alt_design_name').value = '';
+    document.getElementById("num_facings").value = 0;
+    document.getElementById("output").innerHTML = 0;
+    document.getElementById('product_name_error').innerHTML = '';
+    document.getElementById('alt_design_name_error').innerHTML = '';
+    document.getElementById('product_type_error').innerHTML = '';
 
 }
 
@@ -269,6 +277,11 @@ function add_rec_comment() {
     return false;
 }
 
+function add_cant_find_comment(){
+    document.getElementById('comment').value = "Some Products in Probe could not be found";
+    return false;
+}
+
 function show_dvc_options() {
     var status_element = document.getElementById('status');
     var status = status_element.options[status_element.selectedIndex].value;
@@ -297,6 +310,7 @@ function add_probe_product() {
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
     var status_element = document.getElementById('status');
     var status = status_element.options[status_element.selectedIndex].value;
+    var facings = document.getElementById("num_facings").value;
 
     if (product_name == '') {
         product_name_error.innerHTML = 'Product Name required';
@@ -333,6 +347,8 @@ function add_probe_product() {
     } else {
         is_valid_form = false;
     }
+
+    formData.append('facings', facings);
 
     if (is_valid_form) {
         document.getElementById('status').disabled = true;

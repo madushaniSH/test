@@ -135,6 +135,17 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <div class="col">
 	            <div class="counter">
                   <i class="far fa-lightbulb fa-2x"></i>
+                  <h2 id="facing_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Hunted Facing Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i class="far fa-lightbulb fa-2x"></i>
                   <h2 id="checked_probe_count" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
@@ -252,6 +263,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                 </div>
                 <div class="form-group col-md-5">
                     <button role="button" class="btn btn-outline-danger" onclick="return add_rec_comment();">Recongnition Issue Recongnized</button>
+                    <button role="button" class="btn btn-outline-primary" onclick="return add_cant_find_comment();">Some Products Not Found</button>
                 </div>
             </div>
             <div id="hunt_information" class="hide">
@@ -280,6 +292,24 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <span id="alt_design_name_error" class="error-popup"></span>
                     </div>
                 </div>
+                <div class="row" id="facing_count">
+                    <div class="form-group col-md-5">
+                        <label for="num_facings">Number of Facings: <span id="output"></span></label>
+                        <div class="slidecontainer">
+                            <input type="range" min="0" max="5" value="0" class="slider" id="num_facings">
+                        </div>
+                    </div>
+                </div>
+<script>
+var slider = document.getElementById("num_facings");
+var output = document.getElementById("output");
+output.innerHTML = slider.value; // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function() {
+  output.innerHTML = this.value;
+}
+</script>
                 <div>
                     <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
                     <button type="button" class="btn btn-outline-danger hide" id="cancel_product" onclick="cancel_product_button();">Save Changes</button>

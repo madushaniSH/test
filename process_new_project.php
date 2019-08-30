@@ -133,6 +133,7 @@ if ($row_count == 0) {
         `product_status` int(11) DEFAULT NULL,
         `product_alt_design_name` varchar(255) DEFAULT NULL,
         `product_alt_design_previous` varchar(255) DEFAULT NULL,
+        `product_facing_count` int(11) NOT NULL DEFAULT 0,
         `product_creation_time` datetime NOT NULL DEFAULT current_timestamp(),
         `account_id` int(11) NOT NULL,
         `product_qa_account_id` int(11) DEFAULT NULL,

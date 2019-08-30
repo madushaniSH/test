@@ -37,7 +37,7 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT products.product_id, probe.probe_id AS "Probe ID", brand.brand_name AS "Brand", products.product_alt_design_name AS "Alternative Design Name", products.product_name AS "English Product Name" , products.product_type AS "Product Type", products.product_creation_time AS "Product Creation Time", client_category.client_category_name AS "Category", products.account_id AS "hunter_gid", products.product_qa_account_id AS "qa_gid", products.product_qa_datetime AS "QA Time", products.product_qa_status AS "Product Status"
+$sql = 'SELECT products.product_id, probe.probe_id AS "Probe ID", brand.brand_name AS "Brand", products.product_alt_design_name AS "Alternative Design Name", products.product_name AS "English Product Name" , products.product_type AS "Product Type", products.product_creation_time AS "Product Creation Time", client_category.client_category_name AS "Category", products.product_facing_count AS "Facing Count",products.account_id AS "hunter_gid", products.product_qa_account_id AS "qa_gid", products.product_qa_datetime AS "QA Time", products.product_qa_status AS "Product Status"
 FROM products
 INNER JOIN probe_product_info
 ON products.product_id = probe_product_info.probe_product_info_product_id
@@ -158,6 +158,15 @@ for ($i = 0; $i < count($hunter_summary); $i++){
     $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
     $dvc_count = $stmt->fetchColumn();
     $hunter_summary[$i]["DVC Hunted"] = $dvc_count;
+
+    $sql = 'SELECT SUM(product_facing_count) FROM products WHERE account_id = :account_id AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime) AND products.product_status = 2';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
+    $facing_count = $stmt->fetchColumn();
+    if ($facing_count == NULL) {
+        $facing_count = 0;
+    }
+    $hunter_summary[$i]["Hunted Facing Count"] = $facing_count;
 
     $sql = 'SELECT COUNT(*) FROM probe WHERE probe.probe_processed_hunter_id = :account_id AND (probe.probe_hunter_processed_time >= :start_datetime AND probe.probe_hunter_processed_time <= :end_datetime)';
     $stmt = $pdo->prepare($sql);
