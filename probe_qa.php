@@ -156,6 +156,17 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <p class="count-text ">Pending DVC Count</p>
                 </div>
             </div>
+            <div class="col">
+                <div class="counter overall-counter">
+                    <i class="fas fa-clipboard-list fa-2x"></i>
+                    <h2 id="current_facing_count" class="timer count-title count-number">
+                        <div class="spinner-border text-success" role="status">
+                        <span class="sr-only">Loading...</span>
+                        </div>
+                    </h2>
+                    <p class="count-text ">Pending Facing Count</p>
+                </div>
+            </div>
         </div>
     </div>
     <div id="probe_hunt_section" class="hide">
@@ -173,6 +184,12 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <select name="dvc_name" id="dvc_name" class="form-control">
             </select>
             <span id="dvc_name_error" class="error-popup"></span>
+        </div>
+        <div class="col">
+            <label for="facing_name">Select Brand Name</label>
+            <select name="facing_name" id="facing_name" class="form-control">
+            </select>
+            <span id="facing_name_error" class="error-popup"></span>
         </div>
     </div>
         <div class="row">                        
@@ -216,6 +233,21 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                                 </div>
                             </h2>
                             <p class="count-text ">Remaining DVC</p>
+                        </div>
+                        </button>
+                    </div>
+
+
+                    <div class="col">
+                        <button type="button" id="facing_qa_button" class="btn qa_button" onclick="assign_facing();">
+                        <div class="counter">
+                            <i class="fas fa-eye fa-2x"></i>
+                            <h2 id="current_facing_count_2" class="timer count-title count-number">
+                                <div class="spinner-border text-success" role="status">
+                                <span class="sr-only">Loading...</span>
+                                </div>
+                            </h2>
+                            <p class="count-text ">Remaining Facings</p>
                         </div>
                         </button>
                     </div>

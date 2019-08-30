@@ -55,6 +55,9 @@ if ($row_count == 0) {
     if ($_POST['product_type'] == 'dvc') {
         $search_term .=  $_POST['sku_dvc_name'].' ';
     }
+    if ($_POST['product_type'] == 'facing') {
+        $search_term .=  $_POST['sku_facing_name'].' ';
+    }
     $search_term .= '%';
     do {
         $sql = 'UPDATE probe_qa_queue AS upd INNER JOIN (SELECT t1.product_id FROM probe_qa_queue AS t1 INNER JOIN products AS t2 ON t2.product_id = t1.product_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.product_type = :product_type AND t2.product_name LIKE :search_term LIMIT 1 ) AS sel ON sel.product_id = upd.product_id SET upd.account_id = :account_id, upd.probe_being_handled = 1';

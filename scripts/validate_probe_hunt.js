@@ -173,6 +173,7 @@ function reset_hunt_information() {
     document.getElementById('product_name_error').innerHTML = '';
     document.getElementById('alt_design_name_error').innerHTML = '';
     document.getElementById('product_type_error').innerHTML = '';
+    document.getElementById('facing_error').innerHTML = '';
 
 }
 
@@ -289,10 +290,16 @@ function show_dvc_options() {
     var product_type_element = document.getElementById('product_type');
     var product_type = product_type_element.options[product_type_element.selectedIndex].value;
     var alt_design_info = document.getElementById('alt_design_info');
-    if (status != '' && product_type === 'dvc') {
+    if (status != '' && (product_type === 'dvc' || product_type === 'facing')) {
         alt_design_info.classList.remove('hide');
     } else {
         alt_design_info.classList.add('hide');
+    }
+
+    if (product_type === 'facing') {
+        document.getElementById('alt_name_label').innerHTML = 'Alternative Design Name:';
+    } else {
+        document.getElementById('alt_name_label').innerHTML = '*Alternative Design Name:';
     }
 }
 
@@ -311,6 +318,8 @@ function add_probe_product() {
     var status_element = document.getElementById('status');
     var status = status_element.options[status_element.selectedIndex].value;
     var facings = document.getElementById("num_facings").value;
+    var facing_error = document.getElementById('facing_error');
+    formData.append('facings', facings);
 
     if (product_name == '') {
         product_name_error.innerHTML = 'Product Name required';
@@ -336,6 +345,14 @@ function add_probe_product() {
         formData.append('alt_design_name', alt_design_name)
     }
 
+    if (product_type === 'facing' && facings == 0) {
+        facing_error.innerHTML = 'Number of facings cannot be 0';
+        is_valid_form = false;
+    } else {
+        facing_error.innerHTML = '';
+        formData.append('facings', facings);
+    }
+
     if (project_name != '') {
         formData.append('project_name', project_name);
     } else {
@@ -348,7 +365,6 @@ function add_probe_product() {
         is_valid_form = false;
     }
 
-    formData.append('facings', facings);
 
     if (is_valid_form) {
         document.getElementById('status').disabled = true;

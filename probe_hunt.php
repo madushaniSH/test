@@ -281,13 +281,14 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             <option value="brand">Brand</option>
                             <option value="sku">SKU</option>
                             <option value="dvc">DVC</option>
+                            <option value="facing">Facing</option>
                         </select>
                         <span id="product_type_error" class="error-popup"></span>
                     </div>
                 </div>
                 <div class="row hide" id="alt_design_info">
                     <div class="form-group col-md-5">
-                        <label for="alt_design_name">*Alternative Design Name:</label>
+                        <label for="alt_design_name" id="alt_name_label">*Alternative Design Name:</label>
                         <input type="text" id="alt_design_name" class="form-control">
                         <span id="alt_design_name_error" class="error-popup"></span>
                     </div>
@@ -297,6 +298,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <label for="num_facings">Number of Facings: <span id="output"></span></label>
                         <div class="slidecontainer">
                             <input type="range" min="0" max="5" value="0" class="slider" id="num_facings">
+                            <span id="facing_error" class="error-popup"></span>
                         </div>
                     </div>
                 </div>

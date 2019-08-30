@@ -1,5 +1,6 @@
 var p_name = "";
 var product_type = "";
+var facing_num = 0;
 
 function assign_brand() {
     product_type = "brand";
@@ -13,6 +14,11 @@ function assign_sku() {
 
 function assign_dvc() {
     product_type = "dvc";
+    get_probe_qa_info();
+}
+
+function assign_facing() {
+    product_type = "facing";
     get_probe_qa_info();
 }
 
@@ -169,15 +175,24 @@ function get_error_list() {
     }
 }
 
-function display_qa_probe(product_type) {
+function display_qa_probe() {
     if (document.getElementById("product_name").value != "") {
         $("#qa_probe").modal("show");
+        if (product_type == 'facing') {
+            document.getElementById('rename_section').classList.add("hide");
+            document.getElementById("alt_rename_section").classList.add("hide");
+        } else {
+            document.getElementById('rename_section').classList.remove("hide");
+            document.getElementById("alt_rename_section").classList.remove("hide");
+        }
         if (document.getElementById("alt_name").value == "") {
             document.getElementById("alt_name_section").classList.add("hide");
             document.getElementById("alt_rename_section").classList.add("hide");
         } else {
             document.getElementById("alt_name_section").classList.remove("hide");
-            document.getElementById("alt_rename_section").classList.remove("hide");
+            if (product_type != 'facing') {
+                document.getElementById("alt_rename_section").classList.remove("hide");
+            }
         }
     }
 }
@@ -188,11 +203,13 @@ function get_probe_qa_info() {
         project_name_element.options[project_name_element.selectedIndex].value;
     var sku_brand_name = $("#brand_name").val();
     var sku_dvc_name = $("#dvc_name").val();
+    var sku_facing_name = $("#facing_name").val();
     var formData = new FormData();
     formData.append("project_name", project_name);
     formData.append("product_type", product_type);
     formData.append("sku_brand_name", sku_brand_name);
     formData.append("sku_dvc_name", sku_dvc_name);
+    formData.append("sku_facing_name", sku_facing_name);
     jQuery.ajax({
         url: "assign_qa_product.php",
         type: "POST",
@@ -212,9 +229,9 @@ function get_probe_qa_info() {
             }
             if (data[0].product_type != null) {
                 title_string +=
-                    ' <span id="probe_id_title">' + data[0].product_type.toUpperCase() + '</span>'; 
+                    ' <span id="probe_id_title">' + data[0].product_type.toUpperCase() + '</span>';
             }
-            
+
             if (data[0].probe_id != null) {
                 title_string +=
                     ' <span>' + data[0].probe_id + '</span>';
@@ -224,11 +241,12 @@ function get_probe_qa_info() {
             jQuery("#product_name").val(data[0].product_name);
             jQuery("#alt_name").val(data[0].product_alt_design_name);
             document.getElementById("num_facings").value = data[0].product_facing_count;
+            facing_num = data[0].product_facing_count;
             document.getElementById("output").innerHTML = document.getElementById("num_facings").value;
-            if (data[0].product_alt_design_previous != null){
+            if (data[0].product_alt_design_previous != null) {
                 jQuery('#name_error').html('Orignal name was overwritten by an Analyst');
             }
-            display_qa_probe(product_type);
+            display_qa_probe();
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
@@ -271,19 +289,23 @@ function unassign_probe() {
     document.getElementById("output").innerHTML = 0;
     rename_alert.classList.add("hide");
     dvc_rename_alert.classList.add("hide");
+    facing_num = 0;
 }
 
 function update_project_qa_count() {
     if (p_name != "") {
         get_brand_list("sku", "brand_name");
         get_brand_list("dvc", "dvc_name");
+        get_brand_list("facing", "facing_name");
         get_error_list();
         var sku_brand_name = $("#brand_name").val();
         var sku_dvc_name = $("#dvc_name").val();
+        var sku_facing_name = $('#facing_name').val();
         var formData = new FormData();
         formData.append("project_name", p_name);
         formData.append("sku_brand_name", sku_brand_name);
         formData.append("sku_dvc_name", sku_dvc_name);
+        formData.append("sku_facing_name", sku_facing_name);
         jQuery.ajax({
             url: "fetch_probe_qa_count.php",
             type: "POST",
@@ -301,21 +323,32 @@ function update_project_qa_count() {
                         document.getElementById("dvc_qa_button").disabled = true;
                         document.getElementById("sku_qa_button").disabled = true;
                         document.getElementById("brand_qa_button").disabled = false;
+                        document.getElementById("facing_qa_button").disabled = true;
                         display_message = product_type.toUpperCase() + " already assigned";
                     } else if (product_type == "sku" && probe_count == 1) {
                         document.getElementById("dvc_qa_button").disabled = true;
                         document.getElementById("sku_qa_button").disabled = false;
                         document.getElementById("brand_qa_button").disabled = true;
+                        document.getElementById("facing_qa_button").disabled = true;
                         display_message = product_type.toUpperCase() + " already assigned";
                     } else if (product_type == "dvc" && probe_count == 1) {
                         document.getElementById("dvc_qa_button").disabled = false;
                         document.getElementById("sku_qa_button").disabled = true;
                         document.getElementById("brand_qa_button").disabled = true;
+                        document.getElementById("facing_qa_button").disabled = true;
                         display_message = product_type.toUpperCase() + " already assigned";
-                    } else {
+                    } else if (product_type == "facing" && probe_count == 1) {
+                        document.getElementById("dvc_qa_button").disabled = true;
+                        document.getElementById("sku_qa_button").disabled = true;
+                        document.getElementById("brand_qa_button").disabled = true;
+                        document.getElementById("facing_qa_button").disabled = false;
+                        display_message = product_type.toUpperCase() + " already assigned";
+                    }
+                    else {
                         document.getElementById("sku_qa_button").disabled = false;
                         document.getElementById("dvc_qa_button").disabled = false;
                         document.getElementById("brand_qa_button").disabled = false;
+                        document.getElementById("facing_qa_button").disabled = false;
                         display_message = "";
                     }
 
@@ -339,6 +372,14 @@ function update_project_qa_count() {
                     if (dvc_count == 0 && product_type != "dvc") {
                         document.getElementById("dvc_qa_button").disabled = true;
                     }
+
+                    $("#current_facing_count").empty();
+                    $("#current_facing_count").html(data[0].facing_count);
+                    var facing_count = parseInt(data[0].facing_sku_count, 10);
+                    if (facing_count == 0 && product_type != "facing") {
+                        document.getElementById("facing_qa_button").disabled = true;
+                    }
+
                     $("#current_brand_count_2").empty();
                     $("#current_brand_count_2").html(data[0].brand_user_count);
 
@@ -347,6 +388,10 @@ function update_project_qa_count() {
 
                     $("#current_dvc_count_2").empty();
                     $("#current_dvc_count_2").html(data[0].brand_dvc_count);
+
+
+                    $("#current_facing_count_2").empty();
+                    $("#current_facing_count_2").html(data[0].facing_sku_count);
                 } else {
                     $("#current_brand_count").html("XX");
                     $("#current_sku_count").html("XX");
@@ -385,6 +430,7 @@ function validate_project_name() {
         p_name = project_name;
         get_brand_list("sku", "brand_name");
         get_brand_list("dvc", "dvc_name");
+        get_brand_list("facing", "facing_name");
     }
 }
 
@@ -428,7 +474,7 @@ function validate_qa_form() {
         } else {
             document.getElementById("product_alt_rename_error").innerHTML = "";
         }
-    } else {
+    } else if (product_type != "facing") {
         is_valid_form = false;
     }
     if (!approve_button.checked && !disapprove_button.checked) {
@@ -446,6 +492,15 @@ function validate_qa_form() {
         document.getElementById("error_qa_error").innerHTML = "";
     }
 
+    if (facing_num != document.getElementById("num_facings").value) {
+        document.getElementById("error_qa_error").innerHTML =
+            "Facing Number Changed.Error Type must be selected";
+        is_valid_form = false;
+    } else {
+        document.getElementById("error_qa_error").innerHTML = "";
+    }
+
+
     if (disapprove_button.checked && error_images.length == 0) {
         document.getElementById("image_error").innerHTML =
             "At least one image must be selected for upload";
@@ -462,9 +517,9 @@ function validate_qa_form() {
         formData.append("error_image_count", error_images.length);
         formData.append("product_alt_rename", product_alt_rename);
         formData.append("error_qa", error_qa);
-        formData.append("num_facings",document.getElementById("num_facings").value)
+        formData.append("num_facings", document.getElementById("num_facings").value)
         for (var i = 0; i < error_images.length; i++) {
-            formData.append("error_images"+i, document.getElementById('error_images').files[i]);
+            formData.append("error_images" + i, document.getElementById('error_images').files[i]);
         }
         if (disapprove_button.checked) {
             formData.append('status', 'disapproved');
@@ -476,7 +531,7 @@ function validate_qa_form() {
             type: "POST",
             data: formData,
             success: function (data) {
-                $("#qa_probe").modal("hide"); 
+                $("#qa_probe").modal("hide");
                 document.getElementById("qa_form").reset();
                 $("#error_qa")
                     .val("")
@@ -497,6 +552,7 @@ function validate_qa_form() {
             contentType: false,
             processData: false
         });
+        facing_num = 0;
     }
 }
 
@@ -541,6 +597,9 @@ jQuery(document).ready(function () {
     jQuery("#dvc_name").select2({
         width: "100%"
     });
+    jQuery("#facing_name").select2({
+        width: "100%"
+    })
     jQuery("#error_qa").select2({
         dropdownParent: $("#qa_probe"),
         width: "100%"
@@ -560,6 +619,10 @@ jQuery(document).ready(function () {
     jQuery('#dvc_name').on("change", function (e) {
         jQuery('#current_dvc_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
         document.getElementById('dvc_qa_button').disabled = true;
+    });
+    jQuery('#facing_name').on("change", function (e) {
+        jQuery('#current_facing_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('facing_qa_button').disabled = true;
     });
     $("#error_qa").on("change", function (e) {
         show_error_image_section();
