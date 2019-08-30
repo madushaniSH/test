@@ -3,6 +3,11 @@
     text-align: center;
 }
 
+#probe_hunt_section {
+    opacity: 1;
+}
+
+
 #probe_qa_options {
     margin-top: 1vw;
     text-align: center;
