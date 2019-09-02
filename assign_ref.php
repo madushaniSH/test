@@ -48,10 +48,12 @@ $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 if ($row_count == 0) {
     $this_count = 0;
     $iterations = 0;
+    $search_term = $_POST['sku_brand_name'];
+
     do {
-        $sql = 'UPDATE reference_queue SET account_id = :account_id, reference_being_handled = 1 WHERE reference_being_handled = 0 AND account_id IS NULL LIMIT 1';
+        $sql = 'UPDATE reference_queue AS upd INNER JOIN (SELECT t1.reference_info_key_id FROM reference_queue AS t1 INNER JOIN reference_info AS t2 ON t2.reference_info_id = t1.reference_info_key_id WHERE t1.reference_being_handled = 0 AND t1.account_id IS NULL AND t2.reference_brand = :search_term LIMIT 1 ) AS sel ON sel.reference_info_key_id = upd.reference_info_key_id SET upd.account_id = :account_id, upd.reference_being_handled = 1';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['account_id'=>$_SESSION['id']]);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'search_term'=>$search_term]);
 
         $sql = 'SELECT reference_queue_id FROM reference_queue WHERE account_id = :account_id';
         $stmt = $pdo->prepare($sql);

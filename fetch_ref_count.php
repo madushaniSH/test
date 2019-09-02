@@ -50,8 +50,25 @@ $number_of_handled_rows = $stmt->fetchColumn();
 $sql = 'SELECT reference_queue_id FROM reference_queue WHERE account_id = :account_id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id'=>$_SESSION['id']]);
+$ref_queue_info = $stmt->fetch(PDO::FETCH_OBJ);
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
-$return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows);
+$brand_name = '';
+
+if ($row_count == 1) {
+    $sql = 'SELECT a.reference_brand FROM reference_queue b INNER JOIN reference_info a ON a.reference_info_id = b.reference_info_key_id WHERE b.reference_queue_id = :reference_queue_id AND b.account_id = :account_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['reference_queue_id' =>$ref_queue_info->reference_queue_id,'account_id'=>$_SESSION['id']]);
+    $brand_info = $stmt->fetch(PDO::FETCH_OBJ);
+    $brand_name = $brand_info->reference_brand;
+}
+
+$search_item = $_POST['sku_brand_name'].'';
+$sql = "SELECT count(*) FROM reference_queue b INNER JOIN reference_info a ON a.reference_info_id = b.reference_info_key_id WHERE (b.reference_being_handled = 0 OR b.account_id = :account_id) AND a.reference_brand = :search_item";
+$stmt = $pdo->prepare($sql);
+$stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id']]);
+$ref_brand_count = $stmt->fetchColumn();
+
+$return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "ref_brand_count"=>$ref_brand_count, "brand_name"=>$brand_name);
 echo json_encode($return_arr);
 ?>
