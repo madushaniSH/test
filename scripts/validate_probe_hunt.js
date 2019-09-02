@@ -98,7 +98,6 @@ function update_project_count() {
             data: formData,
             dataType: 'JSON',
             success: function (data) {
-                var output_count;
                 if (data[0].number_of_rows != null) {
                     $('#current_probe_count').empty();
                     $('#current_probe_count').html(data[0].number_of_rows);

@@ -1,0 +1,15 @@
+#ref_hunt_options {
+    margin-top: 1vw;
+    text-align: center;
+}
+
+#ref_hunt_options button {
+    padding: 0.5vw 2vw;
+    cursor: pointer;
+    /* Mouse pointer on hover */
+}
+
+#ref_hunt_counter {
+    margin-top: 1vw;
+    text-align: center;
+}

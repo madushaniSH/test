@@ -47,7 +47,11 @@ foreach ($csvAsArray as $i=>$row) {
 }
 
 $total_count = count($csvAsArray);
+$skipped_count = 0;
+$proccessed_rows = 0;
 for ($i = 0; $i < $total_count; $i++) {
+    $brand_missing = false;
+    $ean_missing = false;
     $null_count = 0;
     $user_id = $_SESSION['id'];
 
@@ -61,6 +65,7 @@ for ($i = 0; $i < $total_count; $i++) {
     if ($csvAsArray[$i]["EAN"] != ''){
         $ean = $csvAsArray[$i]["EAN"];
     } else {
+        $ean_missing = true;
         $ean = NULL;
         $null_count++;
     }
@@ -89,6 +94,7 @@ for ($i = 0; $i < $total_count; $i++) {
     if ($csvAsArray[$i]["Brand"] != ''){
         $brand = $csvAsArray[$i]["Brand"];
     } else {
+        $brand_missing = true;
         $brand = NULL;
         $null_count++;
     }
@@ -177,7 +183,7 @@ for ($i = 0; $i < $total_count; $i++) {
         $null_count++;
     }
 
-    if ($null_count != 18) {
+    if ($null_count != 18 AND !$brand_missing AND !$ean_missing) {
         $sql = "INSERT INTO `reference_info`(reference_recognition_level, reference_ean, reference_short_name, reference_category, reference_sub_category, reference_brand, reference_sub_brand, reference_manufacturer, reference_base_size, reference_size, reference_measurement_unit, reference_container_type, reference_agg_level, reference_segment, reference_count_upc2, reference_flavor_detail, reference_case_pack, reference_multi_pack, reference_added_user_id) VALUES (:reference_recognition_level, :reference_ean, :reference_short_name, :reference_category, :reference_sub_category, :reference_brand, :reference_sub_brand, :reference_manufacturer, :reference_base_size, :reference_size, :reference_measurement_unit, :reference_container_type, :reference_agg_level, :reference_segment, :reference_count_upc2, :reference_flavor_detail, :reference_case_pack, :reference_multi_pack, :reference_added_user_id)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['reference_recognition_level'=>$recognition_level, 'reference_ean'=>$ean, 'reference_short_name'=>$short_name, 'reference_category'=>$category, 'reference_sub_category'=>$sub_category, 'reference_brand'=>$brand, 'reference_sub_brand'=>$sub_brand, 'reference_manufacturer'=>$manufactuer, 'reference_base_size'=>$base_size, 'reference_size'=>$size, 'reference_measurement_unit'=>$measurement_unit, 'reference_container_type'=>$container_type, 'reference_agg_level'=>$agg_level, 'reference_segment'=>$segment, 'reference_count_upc2'=>$count_upc2, 'reference_flavor_detail'=>$flavor_detail, 'reference_case_pack'=>$case_pack, 'reference_multi_pack'=>$multi_pack, 'reference_added_user_id'=>$user_id]);
@@ -186,6 +192,13 @@ for ($i = 0; $i < $total_count; $i++) {
         $sql = 'INSERT INTO reference_queue (reference_info_key_id) VALUES (:reference_info_key_id)';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['reference_info_key_id'=>$last_id]);
+        $proccessed_rows++;
+    }
+
+    if ($brand_missing || $ean_missing) {
+        $skipped_count++;
     }
 }
+$return_arr[] = array("proccessed_rows" => $proccessed_rows, "skipped_count"=>$skipped_count);
+echo json_encode($return_arr);
 ?>

@@ -57,9 +57,20 @@ function handleFileSelect_ref(evt) {
             url: 'process_ref.php',
             type: 'POST',
             data: formData,
+            dataType: 'JSON',
             success: function (data) {
                 jQuery('#loading-spinner-ref').css("display", "none");
                 jQuery('#ref_upload_success').html('Processed: ' + file_name);
+                var processed_message = '';
+                if (data[0].proccessed_rows != '') {
+                    processed_message += data[0].proccessed_rows + ' rows were processed and added to ' + project_name;
+                }
+                if (data[0].skipped_count != 0) {
+                    processed_message += ', ' + data[0].skipped_count + ' rows were skipped due to missing EAN / Brand';
+                }
+                if (processed_message != '') {
+                    jQuery('#ref_process_success').html(processed_message);
+                }
                 //jQuery('#ref_upload_success').html(data);
             },
             error: function (data) {

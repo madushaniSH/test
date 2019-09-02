@@ -87,6 +87,12 @@ if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESS
         <i class=\"fas fa-th-list fa-2x\"></i>
     </span>
     Probe Hunt
+</a>
+<a href=\"ref_hunt.php\" class=\"btn btn-lg dashboard-btn\">
+    <span>
+        <i class=\"fas fa-book fa-2x\"></i>
+    </span>
+    Reference Hunt
 </a>";
 }
 if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT Analyst'){

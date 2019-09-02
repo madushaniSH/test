@@ -117,6 +117,7 @@ foreach($project_rows as $project_row){
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
+        <span id="ref_process_success" class="success-popup"></span>
     </div>
 </div>
 </div>

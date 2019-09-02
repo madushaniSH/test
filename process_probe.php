@@ -99,7 +99,7 @@ for ($i = 0; $i < $total_count; $i++) {
 
         for ($j = 0; $j < count($probe_list); $j++) {
             if ($probe_list[$j] != '') {
-                $sql = 'INSERT INTO probe (brand_id, client_category_id, probe_id, probe_added_user_id) VALUES (:brand_id, :client_category_id, :probe_id, :probe_added_user_id)';
+                $sql = "INSERT INTO probe (brand_id, client_category_id, probe_id, probe_added_user_id) VALUES (:brand_id, :client_category_id, :probe_id, :probe_added_user_id)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute(['brand_id'=>$brand_id, 'client_category_id'=>$category_id, 'probe_id'=>$probe_list[$j], 'probe_added_user_id'=>$_SESSION['id']]);
                 $last_id = (int)$pdo->lastInsertId();

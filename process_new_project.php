@@ -85,12 +85,20 @@ if ($row_count == 0) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 
-    $sql = 'INSERT INTO `probe_status` (`probe_status_id`, `probe_status_name`) VALUES
-    (1, \'Already Added\'),
-    (2, \'Hunted\'),
-    (3, \'Irrelevant\'),
-    (4, \'Recognition Level Issue\'),
-    (5, \'Validation Error\')';
+    $sql = "INSERT INTO `probe_status` (`probe_status_id`, `probe_status_name`) VALUES
+    (1, \"Already Added\"),
+    (2, \"Hunted\"),
+    (3, \"Irrelevant\"),
+    (4, \"Recognition Level Issue\"),
+    (5, \"Validation Error\"),
+    (6, \"Brand Level\"),
+    (7, \"Size Can’t Find\"),
+    (8, \"Count Can’t Find\"),
+    (9, \"Description Can’t Find\"),
+    (10, \"Flavour Can’t Find\"),
+    (11, \"Container Type Can’t Find\"),
+    (12, \"Sub Brand Can’t Find\"),
+    (13, \"Brand Not Found\")";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 
@@ -251,7 +259,7 @@ if ($row_count == 0) {
       `reference_queue_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
       `reference_info_key_id` int(11) NOT NULL,
       `account_id` int(11) DEFAULT NULL,
-      `reference_being_handeled` tinyint(1) NOT NULL DEFAULT 0,
+      `reference_being_handled` tinyint(1) NOT NULL DEFAULT 0,
        CONSTRAINT '.$dbname.'_REFERENCE_QUEUE_ACCOUNT_ID FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`),
        CONSTRAINT '.$dbname.'_REFERENCE_QUEUE_REFERENCE_INFO_KEY_ID FOREIGN KEY (`reference_info_key_id`) REFERENCES `reference_info` (`reference_info_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
