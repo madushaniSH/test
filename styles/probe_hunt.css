@@ -218,3 +218,10 @@ body {
 #arrow_sec {
   text-align: center;
 }
+   
+#counters{
+   background:black;
+   padding: 2vw;
+   opacity: 0.9;
+   border-radius: 100px;
+}
