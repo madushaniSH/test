@@ -456,4 +456,13 @@ jQuery(document).ready(function () {
         document.getElementById('cancel_product').classList.add('hide');
         document.getElementById('submit_probe').classList.remove('hide');
     }
+    $("#show_button").mouseenter(function () {
+        document.getElementById('counters').classList.remove('hide');
+        document.getElementById('arrow_sec').classList.remove('bounce');
+        $("#counters").fadeIn();
+    });
+    $("#show_button").mouseleave(function () {
+        $("#counters").fadeOut();
+        document.getElementById('arrow_sec').classList.add('bounce');
+    });
 });

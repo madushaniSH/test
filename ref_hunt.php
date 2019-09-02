@@ -97,6 +97,92 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </ul>
     </div>
 </nav>
+<div class="row">
+    <div  id="hunter_counter" class="col ">
+    <div class="downArrow bounce" id="arrow_sec">
+        <a class="btn" id="show_button"><i class="fas fa-chevron-circle-down fa-3x"></i><br>Show Daily Count</a>
+    </div>
+	    <div class="row text-center hide" id="counters">
+	        <div class="col">
+	            <div class="counter">
+                  <i class="fas far fa-copyright fa-2x green_icon"></i>
+                  <h2 id="brand_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Hunted Brand Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i class="fas fa-boxes fa-2x green_icon"></i>
+                  <h2 id="sku_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Hunted SKU Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i class="fas fa-eye fa-2x green_icon"></i>
+                  <h2 id="dvc_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Hunted DVC Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i class="far fa-lightbulb fa-2x green_icon"></i>
+                  <h2 id="facing_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Hunted Facing Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i class="fas fa-clipboard-list fa-2x green_icon"></i>
+                  <h2 id="checked_probe_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Checked Probe Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i id ="qa_error" class="fas fa-skull-crossbones fa-2x"></i>
+                  <h2 id="qa_error_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">QA Error Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i id ="system_error" class="fa-2x fas fa-laptop-code"></i>
+                  <h2 id="system_error_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">System Error Count</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="probe_hunt_section">
 <div class="row">
     <div class="col">
@@ -142,12 +228,10 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 </div>
 <div class="row">
     <div id="ref_hunt_options" class="col hide">
-    <div class="col">
-        <label for="brand_name_filter">Filter by Brand Name</label>
-        <select name="brand_name_filter" id="brand_name_filter" class="form-control">
-        </select>
-    </div>
-    <div class="col">
+    <label for="brand_name_filter">Filter by Brand Name</label>
+    <select name="brand_name_filter" id="brand_name_filter" class="form-control">
+    </select>
+    <div class="col my-3">
         <button type="button" id="ref_brand_button" class="btn qa_button" onclick="get_ref_info();">
         <div class="counter">
             <i class="fas fa-boxes fa-2x"></i>
@@ -167,7 +251,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 </div>
 <div class="modal hide fade modal-form" id="add_reference" tabindex="-1" role="dialog"
     aria-labelledby="add_reference_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="add_reference_title"></h5>
@@ -176,6 +260,25 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                 </button>
             </div>
             <div class="modal-body">
+            <form action="POST" id="probe_form">
+            <p class="border-bottom">Reference Information</p>
+            <!--brand/ ean/ shortname / subbrand/ manufacturer / category / sub category / base size / size / measurement_unit /  container type / -->
+                <div class="row">
+                    <div class="form-group col-md-5">
+                        <label for="ref_brand">Brand Name:</label>
+                        <input type="text" id="brand_name" class="form-control">
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="ref_ean">EAN Name:</label>
+                        <input type="text" id="ref_ean" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col">
+                        <label for="ref_short_name">Short Name:</label>
+                        <input type="text" id="ref_short_name" class="form-control">
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-success" value="Submit" onclick="validate_probe_submission();" id="submit_probe">Save changes</button>

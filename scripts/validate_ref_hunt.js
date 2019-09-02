@@ -132,7 +132,7 @@ function update_ref_count() {
                     } else {
                         document.getElementById('ref_brand_button').disabled = false;
                         if (probe_count === 1) {
-                            document.getElementById('probe_message').innerHTML = "Reference already Assigned for brand " + data[0].brand_name  + ". Please press Continue";
+                            document.getElementById('probe_message').innerHTML = "Reference already assigned for brand " + data[0].brand_name;
                         }
                         if (probe_count == 0) {
                             document.getElementById('probe_message').innerHTML = '';
@@ -168,7 +168,7 @@ function validate_project_name() {
         project_name_error.innerHTML = 'Project Name required for upload';
         ref_hunt_options.classList.add('hide');
         ref_hunt_counter.classList.add('hide');
-      //hunter_counter.classList.add('hide')
+        //hunter_counter.classList.add('hide')
     } else {
         project_name_error.innerHTML = '';
         ref_hunt_options.classList.remove('hide');
@@ -188,11 +188,20 @@ jQuery(document).ready(function () {
         document.getElementById('ref_brand_button').disabled = true;
     });
     jQuery("#brand_name_filter").select2({
-        width: "80%"
+        width: "100%"
     });
     setInterval(function () { update_ref_count(); }, 500);
     jQuery('#brand_name_filter').on("change", function (e) {
         jQuery('#current_brand_ref_count').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
         document.getElementById('ref_brand_button').disabled = true;
+    });
+    $("#show_button").mouseenter(function () {
+        document.getElementById('counters').classList.remove('hide');
+        document.getElementById('arrow_sec').classList.remove('bounce');
+        $("#counters").fadeIn();
+    });
+    $("#show_button").mouseleave(function () {
+        $("#counters").fadeOut();
+        document.getElementById('arrow_sec').classList.add('bounce');
     });
 });

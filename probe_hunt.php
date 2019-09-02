@@ -98,7 +98,10 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 </nav>
 <div class="row">
     <div  id="hunter_counter" class="col hide">
-	    <div class="row text-center">
+        <div class="downArrow bounce" id="arrow_sec">
+            <a class="btn" id="show_button"><i class="fas fa-chevron-circle-down fa-3x"></i><br>Show Daily Count</a>
+        </div>
+	    <div class="row text-center hide" id="counters">
 	        <div class="col">
 	            <div class="counter">
                   <i class="fas far fa-copyright fa-2x green_icon"></i>

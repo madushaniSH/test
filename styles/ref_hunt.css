@@ -13,3 +13,21 @@
     margin-top: 1vw;
     text-align: center;
 }
+
+#hunter_counter{
+  padding-top: 1vw;;
+}
+.qa_button {
+    padding: 0;
+    border-radius: 5px;
+    width: 80%;
+}
+
+.qa_button :hover {
+    background-color: black;
+    color: white;
+}
+
+#probe_hunt_section{
+    margin-top: 0;
+}
