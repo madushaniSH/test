@@ -371,7 +371,60 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <button role="button" class="btn btn-outline-primary" onclick="return add_cant_find_comment();">Some Products Not Found</button>
                     </div>
                 </div>
-            </div>
+                <div id="ref_product_information" class="hide">
+                <p class="border-bottom my-3">Additional Information</p>
+                    <div class="row">
+                        <div class="form-group col-md-5">
+                            <label for="product_name">*Product Name:</label>
+                            <input type="text" id="product_name" class="form-control">
+                            <span id="product_name_error" class="error-popup"></span>
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="product_type">*Product Type:</label>
+                            <select name="product_type" id="product_type" class="form-control">
+                                <option value=""selected disabled>Select</option>
+                                <option value="brand">Brand</option>
+                                <option value="sku">SKU</option>
+                                <option value="dvc">DVC</option>
+                                <option value="facing">Facing</option>
+                            </select>
+                            <span id="product_type_error" class="error-popup"></span>
+                        </div>
+                    </div>
+                    <div class="row hide" id="alt_design_info">
+                        <div class="form-group col-md-5">
+                            <label for="alt_design_name" id="alt_name_label">*Alternative Design Name:</label>
+                            <input type="text" id="alt_design_name" class="form-control">
+                            <span id="alt_design_name_error" class="error-popup"></span>
+                        </div>
+                    </div>
+                    <div class="row" id="facing_count">
+                        <div class="form-group col-md-5">
+                            <label for="num_facings">Number of Facings: <span id="output"></span></label>
+                            <div class="slidecontainer">
+                                <input type="range" min="0" max="5" value="0" class="slider" id="num_facings">
+                                <span id="facing_error" class="error-popup"></span>
+                            </div>
+                        </div>
+                    </div>
+    <script>
+    var slider = document.getElementById("num_facings");
+    var output = document.getElementById("output");
+    output.innerHTML = slider.value; // Display the default slider value
+
+    // Update the current slider value (each time you drag the slider handle)
+    slider.oninput = function() {
+    output.innerHTML = this.value;
+    }
+    </script>
+                    <div>
+                        <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
+                        <button type="button" class="btn btn-outline-danger hide" id="cancel_product" onclick="cancel_product_button();">Save Changes</button>
+                    </div>
+                    <span id="server_error" class="error-popup"></span>
+                    <span id="server_success" class="success-popup"></span>
+                </div>
+            </div>      
             </div>        
             <div class="modal-footer">
                 <button type="button" class="btn btn-success" value="Submit" onclick="validate_probe_submission();" id="submit_probe">Save changes</button>

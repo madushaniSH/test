@@ -102,6 +102,15 @@ if ($row_count == 0) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 
+    $sql = 'CREATE TABLE `project_tickets` (
+      `project_ticket_system_id` int(11) NOT NULL PRIMARY AUTO_INCREMENT,
+      `ticket_id` varchar(255) NOT NULL,
+      `account_id` int(11) NOT NULL,
+      `ticket_creation_time` datetime NOT NULL DEFAULT current_timestamp()
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+
     $sql = 'CREATE TABLE `probe` (
         `probe_key_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `brand_id` int(11) DEFAULT NULL,

@@ -92,7 +92,7 @@ function get_ref_info() {
             jQuery('#ref_flavor_detail').val(data[0].ref_info["reference_flavor_detail"]);
             jQuery('#ref_case_pack').val(data[0].ref_info["reference_case_pack"]);
             jQuery('#ref_multi_pack').val(data[0].ref_info["reference_multi_pack"]);
-            /*var formData = new FormData();
+            var formData = new FormData();
             formData.append('project_name', project_name);
             jQuery.ajax({
                 url: 'get_project_status.php',
@@ -107,7 +107,7 @@ function get_ref_info() {
                 cache: false,
                 contentType: false,
                 processData: false
-            });*/
+            });
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
@@ -227,9 +227,27 @@ function validate_project_name() {
     }
 }
 
+function show_additional_options() {
+    var status_element = document.getElementById('status');
+    var status = status_element.options[status_element.selectedIndex].value;
+    var hunt_information = document.getElementById('ref_product_information');
+    if (status === '2') {
+        hunt_information.classList.remove('hide');
+    } else {
+        hunt_information.classList.add('hide');
+    }
+}
+
 jQuery(document).ready(function () {
     jQuery('#project_name').select2({
         width: '100%',
+    });
+    jQuery('#status').select2({
+        dropdownParent: $("#add_reference"),
+        width: '100%',
+    });
+    jQuery('#status').change(function () {
+        show_additional_options();
     });
     jQuery('#project_name').change(function () {
         validate_project_name();

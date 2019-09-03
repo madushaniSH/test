@@ -1,6 +1,6 @@
 <?php
 /*
-    Filename: fetcg_probe_count.php
+    Filename: add_probe_product.php
     Author: Malika Liyanage
 */
 session_start();

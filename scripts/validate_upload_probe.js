@@ -101,7 +101,7 @@ function validate_project_name() {
     var project_name_element = document.getElementById('project_name');
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
     var project_name_error = document.getElementById('project_name_error');
-    var upload_div = document.getElementById('probe-upload');
+    var upload_div = document.getElementById('ticket_section');
     if (project_name == '') {
         project_name_error.innerHTML = 'Project Name required for upload';
         upload_div.classList.add('hide');
@@ -111,9 +111,54 @@ function validate_project_name() {
     }
 }
 
+function fetch_tickets(){
+
+}
+
+function validate_new_ticket() {
+    var is_valid_form = true;
+    var ticket_id = document.getElementById('ticket_id').value.toUpperCase();
+    var ticket_id_error = document.getElementById('ticket_id_error');
+    if (ticket_id == "") {
+        is_valid_form = false;
+        ticket_id_error.innerHTML = "Ticket ID cannot be empty";
+    } else {
+        ticket_id_error.innerHTML = "";
+    }
+    if (is_valid_form) {
+        var formData = new FormData();
+        formData.append('ticket_id', ticket_id.trim());
+        var project_name_element = document.getElementById('project_name');
+        var project_name = project_name_element.options[project_name_element.selectedIndex].value;
+        formData.append('project_name', project_name);
+        jQuery.ajax({
+            url: 'add_new_ticket.php',
+            type: 'POST',
+            data: formData,
+            success: function (data) {
+                document.getElementById('close_ticket_form').click();
+            },
+            error: function (data) {
+                alert("Error assigning probe. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
+
+function clear_ticket_form() {
+    var ticket_id = document.getElementById('ticket_id');
+    ticket_id.value = "";
+}
+
 
 jQuery(document).ready(function () {
     jQuery('#project_name').select2({
+        width: '100%',
+    });
+    jQuery('#ticket_name').select2({
         width: '100%',
     });
     jQuery('#project_name').change(validate_project_name);
