@@ -261,25 +261,116 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="modal-body">
             <form action="POST" id="probe_form">
-            <p class="border-bottom">Reference Information</p>
-            <!--brand/ ean/ shortname / subbrand/ manufacturer / category / sub category / base size / size / measurement_unit /  container type / -->
+            <button class="btn btn-primary tablinks" onclick="return open_tab(event, 'ref_information')">London</button>
+            <button class="btn btn-primary tablinks" onclick="return open_tab(event, 'ref_hunt_information')">Paris</button>
+            <button class="btn btn-primary tablinks" onclick="return open_tab(event, 'Tokyo')">Tokyo</button>
+            <div id="ref_information" class="tabcontent">
                 <div class="row">
-                    <div class="form-group col-md-5">
-                        <label for="ref_brand">Brand Name:</label>
-                        <input type="text" id="brand_name" class="form-control">
+                    <div class="form-group col-md-2">
+                        <label for="ref_recognition">Recognition Level:</label>
+                        <input type="text" id="ref_recognition" class="form-control" readonly>
                     </div>
-                    <div class="form-group col-md-5">
-                        <label for="ref_ean">EAN Name:</label>
-                        <input type="text" id="ref_ean" class="form-control">
+                    <div class="form-group col-md-10">
+                        <label for="ref_short_name">Short Name:</label>
+                        <input type="text" id="ref_short_name" class="form-control"readonly>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col">
-                        <label for="ref_short_name">Short Name:</label>
-                        <input type="text" id="ref_short_name" class="form-control">
+                    <div class="form-group col-md-6">
+                        <label for="ref_sub_brand">Sub Brand:</label>
+                        <input type="text" id="ref_sub_brand" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ref_manufacturer">Manufacturer:</label>
+                        <input type="text" id="ref_manufacturer" class="form-control"readonly>
+                    </div>                    
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="ref_category">Category:</label>
+                        <input type="text" id="ref_category" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ref_sub_category">Sub Category:</label>
+                        <input type="text" id="ref_sub_category" class="form-control"readonly>
+                    </div>                    
+                </div>   
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label for="ref_base_size">Base Size:</label>
+                        <input type="text" id="ref_base_size" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="ref_size">Size:</label>
+                        <input type="text" id="ref_size" class="form-control"readonly>
+                    </div>                    
+                    <div class="form-group col-md-2">
+                        <label for="ref_measurement_unit">Measurement Unit:</label>
+                        <input type="text" id="ref_measurement_unit" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="ref_container_type">Container Type:</label>
+                        <input type="text" id="ref_container_type" class="form-control"readonly>
+                    </div>    
+                </div>   
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="ref_agg_level">Agg Level:</label>
+                        <input type="text" id="ref_agg_level" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ref_segment">Segment:</label>
+                        <input type="text" id="ref_segment" class="form-control"readonly>
+                    </div>                    
+                </div>      
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="ref_upc2">UPC2 Count:</label>
+                        <input type="text" id="ref_upc2" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ref_flavor_detail">Flavor Detail:</label>
+                        <input type="text" id="ref_flavor_detail" class="form-control"readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="ref_case_pack">Case Pack:</label>
+                        <input type="text" id="ref_case_pack" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ref_multi_pack">Multi Pack:</label>
+                        <input type="text" id="ref_multi_pack" class="form-control"readonly>
                     </div>
                 </div>
             </div>
+            <div id="ref_hunt_information" class="tabcontent">
+                <div class="row">
+                    <div class="form-group col-md-5">
+                        <label for="status">*Status:</label>
+                        <select name="status" id="status" class="form-control">
+                        </select>
+                        <span id="status_error" class="error-popup"></span>
+                    </div>
+                    <div class="form-group col-md-7">
+                        <label for="comment">Comment:</label>
+                        <input type="text" id="comment" class="form-control">
+                        <span id="comment_error" class="error-popup"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-5">
+                        <label for="remark">Remark:</label>
+                        <input type="text" id="remark" class="form-control">
+                        <span id="remark_error" class="error-popup"></span>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <button role="button" class="btn btn-outline-danger" onclick="return add_rec_comment();">Recongnition Issue Recongnized</button>
+                        <button role="button" class="btn btn-outline-primary" onclick="return add_cant_find_comment();">Some Products Not Found</button>
+                    </div>
+                </div>
+            </div>
+            </div>        
             <div class="modal-footer">
                 <button type="button" class="btn btn-success" value="Submit" onclick="validate_probe_submission();" id="submit_probe">Save changes</button>
                 </form>

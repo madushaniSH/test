@@ -76,6 +76,22 @@ function get_ref_info() {
                 title_string += ' <span id="client_category_title">' + data[0].brand + '</span>';
             }
             jQuery('#add_reference_title').html(title_string);
+            jQuery('#ref_recognition').val(data[0].ref_info["reference_recognition_level"]);
+            jQuery('#ref_short_name').val(data[0].ref_info["reference_short_name"]);
+            jQuery('#ref_sub_brand').val(data[0].ref_info["reference_sub_brand"]);
+            jQuery('#ref_manufacturer').val(data[0].ref_info["reference_manufacturer"]);
+            jQuery('#ref_category').val(data[0].ref_info["reference_category"]);
+            jQuery('#ref_sub_category').val(data[0].ref_info["reference_sub_category"]);
+            jQuery('#ref_base_size').val(data[0].ref_info["reference_base_size"]);
+            jQuery('#ref_size').val(data[0].ref_info["reference_size"]);
+            jQuery('#ref_measurement_unit').val(data[0].ref_info["reference_measurement_unit"]);
+            jQuery('#ref_container_type').val(data[0].ref_info["reference_container_type"]);
+            jQuery('#ref_agg_level').val(data[0].ref_info["reference_agg_level"]);
+            jQuery('#ref_segment').val(data[0].ref_info["reference_segment"]);
+            jQuery('#ref_upc2').val(data[0].ref_info["reference_count_upc2"]);
+            jQuery('#ref_flavor_detail').val(data[0].ref_info["reference_flavor_detail"]);
+            jQuery('#ref_case_pack').val(data[0].ref_info["reference_case_pack"]);
+            jQuery('#ref_multi_pack').val(data[0].ref_info["reference_multi_pack"]);
             /*var formData = new FormData();
             formData.append('project_name', project_name);
             jQuery.ajax({
@@ -156,6 +172,22 @@ function update_ref_count() {
     }
 }
 
+function open_tab(evt, tab_name) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tab_name).style.display = "block";
+    evt.currentTarget.className += " active";
+    return false;
+}
+
+
 function validate_project_name() {
     $('#brand_name_filter').empty();
     var project_name_element = document.getElementById('project_name');
@@ -175,6 +207,22 @@ function validate_project_name() {
         ref_hunt_counter.classList.remove('hide');
         //hunter_counter.classList.remove('hide')
         p_name = project_name;
+        jQuery('#ref_recognition').val('');
+        jQuery('#ref_short_name').val('');
+        jQuery('#ref_sub_brand').val('');
+        jQuery('#ref_manufacturer').val('');
+        jQuery('#ref_category').val('');
+        jQuery('#ref_sub_category').val('');
+        jQuery('#ref_base_size').val('');
+        jQuery('#ref_size').val('');
+        jQuery('#ref_measurement_unit').val('');
+        jQuery('#ref_container_type').val('');
+        jQuery('#ref_agg_level').val('');
+        jQuery('#ref_segment').val('');
+        jQuery('#ref_upc2').val('');
+        jQuery('#ref_flavor_detail').val('');
+        jQuery('#ref_case_pack').val('');
+        jQuery('#ref_multi_pack').val('');
     }
 }
 

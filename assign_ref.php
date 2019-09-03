@@ -64,10 +64,12 @@ if ($row_count == 0) {
         $iterations++;
     } while ($this_count == 0  && $iterations < 10);
 }
-$sql = 'SELECT a.reference_ean, a.reference_brand FROM reference_queue b INNER JOIN reference_info a ON a.reference_info_id = b.reference_info_key_id WHERE b.reference_info_key_id = :last_id';
+
+$sql = 'SELECT a.reference_recognition_level, a.reference_ean, a.reference_short_name, a.reference_category, a.reference_sub_category, a.reference_brand, a.reference_sub_brand, a.reference_manufacturer, a.reference_base_size, a.reference_size, a.reference_measurement_unit, a.reference_container_type, a.reference_agg_level, a.reference_segment, a.reference_count_upc2, a.reference_flavor_detail, a.reference_case_pack, a.reference_multi_pack FROM reference_queue b INNER JOIN reference_info a ON a.reference_info_id = b.reference_info_key_id WHERE b.reference_info_key_id = :last_id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['last_id'=>$last_id]);
-$ref_info = $stmt->fetch(PDO::FETCH_OBJ);
-$return_arr[] = array("ean" => $ref_info->reference_ean, "brand" => $ref_info->reference_brand);
+$ref_info = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$return_arr[] = array("ean" => $ref_info["reference_ean"], "brand" => $ref_info["reference_brand"], "ref_info"=>$ref_info);
 echo json_encode($return_arr);
 ?>

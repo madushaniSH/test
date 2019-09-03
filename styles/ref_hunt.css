@@ -31,3 +31,16 @@
 #probe_hunt_section{
     margin-top: 0;
 }
+
+#ref_information label{
+    color: #2c5483;
+}
+
+#ref_information input{
+    font-weight: bold;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+}

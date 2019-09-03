@@ -88,7 +88,7 @@ if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESS
     </span>
     Probe Hunt
 </a>
-<a href=\"ref_hunt.php\" class=\"btn btn-lg dashboard-btn\">
+<a href=\"http://www.partridgegetslucky.com/\" class=\"btn btn-lg dashboard-btn\">
     <span>
         <i class=\"fas fa-book fa-2x\"></i>
     </span>
