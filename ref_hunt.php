@@ -261,13 +261,15 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="modal-body">
             <form action="POST" id="probe_form">
-            <button class="btn btn-primary tablinks" onclick="return open_tab(event, 'ref_information')">London</button>
-            <button class="btn btn-primary tablinks" onclick="return open_tab(event, 'ref_hunt_information')">Paris</button>
-            <button class="btn btn-primary tablinks" onclick="return open_tab(event, 'Tokyo')">Tokyo</button>
+            <div class="sticky-top" id="tab_buttons">
+                <button class="tablinks" onclick="return open_tab(event, 'ref_information')" id="def_tab">Reference Information</button>
+                <button class="tablinks" onclick="return open_tab(event, 'ref_hunt_information')">Hunter Form</button>
+            </div>
+            <hr/>
             <div id="ref_information" class="tabcontent">
                 <div class="row">
                     <div class="form-group col-md-2">
-                        <label for="ref_recognition">Recognition Level:</label>
+                        <label for="ref_recognition">Level:</label>
                         <input type="text" id="ref_recognition" class="form-control" readonly>
                     </div>
                     <div class="form-group col-md-10">
@@ -305,7 +307,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <input type="text" id="ref_size" class="form-control"readonly>
                     </div>                    
                     <div class="form-group col-md-2">
-                        <label for="ref_measurement_unit">Measurement Unit:</label>
+                        <label for="ref_measurement_unit">Unit:</label>
                         <input type="text" id="ref_measurement_unit" class="form-control"readonly>
                     </div>
                     <div class="form-group col-md-4">

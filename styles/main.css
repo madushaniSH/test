@@ -11,6 +11,8 @@ body {
     padding: 0;
 }
 
+button:focus {outline:0;}
+
 .navbar {
     background-color: black;
 }

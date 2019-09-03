@@ -117,6 +117,7 @@ function get_ref_info() {
         processData: false
     });
     $('#add_reference').modal('show');
+    document.getElementById("def_tab").click();
 }
 
 function update_ref_count() {
