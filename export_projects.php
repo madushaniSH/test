@@ -97,6 +97,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 <div id="fetch_project_section">
     <div class="row" id="project_select">
         <div class="col">
+            <h5><strong>DONT SELECT MORE THAN ONE PROJECT FOR NOW :D</strong></h5>
             <label for="project_name">Select Project Name</label>
             <select name="project_name" id="project_name" class="form-control" multiple="multiple">
         <?php
