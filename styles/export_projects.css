@@ -13,3 +13,11 @@
 #datetime_filter {
     width: 60%;
 }
+
+#down_buttons{
+    margin-top: 2vw;
+}
+
+#down_buttons button{
+    margin-right: 2vw;
+}
