@@ -39,3 +39,22 @@
     margin:0;
     margin-left:0.7vw;
 }
+
+#ticket_message {
+    font-size: 1.2vw;
+    margin-bottom: 1vw;
+}
+
+#ticket_message #ticket_id_value{
+    background-color: orangered;
+    color: white;
+    border-radius: 75px;
+    padding: 0.4vw;
+}
+
+#ticket_message #project_name_value{
+    background-color: purple;
+    color: white;
+    border-radius: 75px;
+    padding: 0.4vw;
+}

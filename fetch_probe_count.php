@@ -37,17 +37,16 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = "SELECT count(*) FROM probe_queue WHERE probe_being_handled = 0"; 
+$sql = "SELECT count(*) FROM probe_queue a INNER JOIN probe b ON a.probe_key_id = b.probe_key_id WHERE a.probe_being_handled = 0 AND b.probe_ticket_id =:ticket"; 
 $stmt = $pdo->prepare($sql);
-$stmt->execute(); 
+$stmt->execute(['ticket'=>$_POST['ticket']]); 
 $number_of_rows = $stmt->fetchColumn(); 
 
 
-$sql = "SELECT count(*) FROM probe_queue WHERE probe_being_handled = 1"; 
+$sql = "SELECT count(*) FROM probe_queue a INNER JOIN probe b ON a.probe_key_id = b.probe_key_id WHERE a.probe_being_handled = 1 AND b.probe_ticket_id =:ticket"; 
 $stmt = $pdo->prepare($sql);
-$stmt->execute(); 
+$stmt->execute(['ticket'=>$_POST['ticket']]); 
 $number_of_handled_rows = $stmt->fetchColumn(); 
-
 
 
 $sql = 'SELECT probe_queue_id FROM probe_queue WHERE account_id = :account_id';
@@ -100,6 +99,7 @@ $facing_count = $stmt->fetchColumn();
 if ($facing_count == NULL) {
     $facing_count = 0;
 }
+
 
 $return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count);
 echo json_encode($return_arr);

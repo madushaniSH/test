@@ -49,9 +49,9 @@ if ($row_count == 0) {
     $this_count = 0;
     $iterations = 0;
     do {
-        $sql = 'UPDATE probe_queue SET account_id = :account_id, probe_being_handled = 1 WHERE probe_being_handled = 0 AND account_id IS NULL LIMIT 1';
+        $sql = 'UPDATE probe_queue AS upd INNER JOIN (SELECT t1.probe_key_id FROM probe_queue AS t1 INNER JOIN probe AS t2 ON t2.probe_key_id = t1.probe_key_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.probe_ticket_id = :ticket LIMIT 1 ) AS sel ON sel.probe_key_id = upd.probe_key_id SET upd.account_id = :account_id, upd.probe_being_handled = 1';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['account_id'=>$_SESSION['id']]);
+        $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket']]);
 
         $sql = 'SELECT probe_queue_id FROM probe_queue WHERE account_id = :account_id';
         $stmt = $pdo->prepare($sql);
@@ -62,10 +62,10 @@ if ($row_count == 0) {
         $iterations++;
     } while ($this_count == 0  && $iterations < 10);
 }
-$sql = 'SELECT brand.brand_name, client_category.client_category_name, probe.probe_id FROM  probe_queue LEFT JOIN probe ON probe_queue.probe_key_id = probe.probe_key_id LEFT JOIN brand ON probe.brand_id = brand.brand_id LEFT JOIN client_category ON probe.client_category_id  = client_category.client_category_id WHERE probe_queue_id = :probe_queue_id';
+$sql = 'SELECT brand.brand_name, client_category.client_category_name, probe.probe_id, project_tickets.ticket_id FROM  probe_queue LEFT JOIN probe ON probe_queue.probe_key_id = probe.probe_key_id  INNER JOIN project_tickets ON probe.probe_ticket_id = project_tickets.project_ticket_system_id LEFT JOIN brand ON probe.brand_id = brand.brand_id LEFT JOIN client_category ON probe.client_category_id  = client_category.client_category_id WHERE probe_queue_id = :probe_queue_id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['probe_queue_id'=>$last_id]);
 $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
-$return_arr[] = array("brand_name" => $probe_info->brand_name, "client_category_name" => $probe_info->client_category_name , "probe_id"=>$probe_info->probe_id);
+$return_arr[] = array("brand_name" => $probe_info->brand_name, "client_category_name" => $probe_info->client_category_name , "probe_id"=>$probe_info->probe_id, "ticket"=>$probe_info->ticket_id);
 echo json_encode($return_arr);
 ?>

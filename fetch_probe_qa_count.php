@@ -37,29 +37,29 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'brand'";
+$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'brand' AND probe.probe_ticket_id = :ticket";
 $stmt = $pdo->prepare($sql);
-$stmt->execute(); 
+$stmt->execute(['ticket'=>$_POST['ticket']]); 
 $brand_count = $stmt->fetchColumn(); 
 
-$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'sku'"; 
+$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'sku' AND probe.probe_ticket_id = :ticket"; 
 $stmt = $pdo->prepare($sql);
-$stmt->execute(); 
+$stmt->execute(['ticket'=>$_POST['ticket']]); 
 $sku_count = $stmt->fetchColumn(); 
 
-$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'dvc'"; 
+$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'dvc' AND probe.probe_ticket_id = :ticket"; 
 $stmt = $pdo->prepare($sql);
-$stmt->execute(); 
+$stmt->execute(['ticket'=>$_POST['ticket']]); 
 $dvc_count = $stmt->fetchColumn(); 
 
-$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'facing'"; 
+$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'facing' AND probe.probe_ticket_id = :ticket"; 
 $stmt = $pdo->prepare($sql);
-$stmt->execute(); 
+$stmt->execute(['ticket'=>$_POST['ticket']]); 
 $facing_count = $stmt->fetchColumn(); 
 
-$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'brand' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id)";
+$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'brand' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND probe.probe_ticket_id = :ticket";
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['account_id'=>$_SESSION['id']]);
+$stmt->execute(['account_id'=>$_SESSION['id'], "ticket"=>$_POST['ticket']]);
 $brand_user_count = $stmt->fetchColumn();
 
 $search_item = $_POST['sku_brand_name'].' %';

@@ -1,6 +1,7 @@
 var p_name = "";
 var product_type = "";
 var facing_num = 0;
+var selected_ticket = '';
 
 function assign_brand() {
     product_type = "brand";
@@ -71,6 +72,7 @@ function get_brand_list(product_type, select_element) {
         var formData = new FormData();
         formData.append("project_name", p_name);
         formData.append("product_type", product_type);
+        formData.append("ticket", selected_ticket);
         jQuery.ajax({
             url: "get_qa_brand_list.php",
             type: "POST",
@@ -210,13 +212,14 @@ function get_probe_qa_info() {
     formData.append("sku_brand_name", sku_brand_name);
     formData.append("sku_dvc_name", sku_dvc_name);
     formData.append("sku_facing_name", sku_facing_name);
+    formData.append("ticket", selected_ticket);
     jQuery.ajax({
         url: "assign_qa_product.php",
         type: "POST",
         data: formData,
         dataType: "JSON",
         success: function (data) {
-            var title_string = '<span id="project_title">' + project_name + "</span>";
+            var title_string = '<span id="project_title">' + project_name +  ' ' + data[0].ticket +"</span>";
             if (data[0].brand_name != null) {
                 title_string +=
                     ' <span id="brand_title">' + data[0].brand_name + "</span>";
@@ -229,7 +232,7 @@ function get_probe_qa_info() {
             }
             if (data[0].product_type != null) {
                 title_string +=
-                    ' <span id="probe_id_title">' + data[0].product_type.toUpperCase() + '</span>';
+                    ' <span id="probe_id_title">' + data[0].product_type.toUpperCase() +  '</span>';
             }
 
             if (data[0].probe_id != null) {
@@ -306,6 +309,8 @@ function update_project_qa_count() {
         formData.append("sku_brand_name", sku_brand_name);
         formData.append("sku_dvc_name", sku_dvc_name);
         formData.append("sku_facing_name", sku_facing_name);
+        formData.append('ticket', selected_ticket);
+        console.log(selected_ticket);
         jQuery.ajax({
             url: "fetch_probe_qa_count.php",
             type: "POST",
@@ -409,6 +414,70 @@ function update_project_qa_count() {
     }
 }
 
+function get_ticket_list() {
+    if (p_name != "") {
+        var formData = new FormData();
+        formData.append("project_name", p_name);
+        jQuery.ajax({
+            url: "get_project_tickets.php",
+            type: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: function (data) {
+                $("#ticket").append(
+                    '<option value="" selected disabled>Select</option>'
+                );
+                // adding missing options
+                for (var i = 0; i < data[0].ticket_list.length; i++) {
+                    if (
+                        !$("#ticket").find(
+                            'option[value="' + data[0].ticket_list[i].project_ticket_system_id + '"]'
+                        ).length
+                    ) {
+                        // Append it to the select
+                        $("#ticket").append(
+                            '<option value="' +
+                            data[0].ticket_list[i].project_ticket_system_id +
+                            '">' +
+                            data[0].ticket_list[i].ticket_id +
+                            "</option>"
+                        );
+                    }
+                }
+            },
+            error: function (data) {
+                alert("Error assigning probe. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
+function validate_ticket_name() {
+    if (p_name != "") {
+        var ticket = jQuery('#ticket').val();
+        var probe_qa_options = document.getElementById("probe_qa_options");
+        var probe_hunt_section = document.getElementById("probe_hunt_section");
+        var ticket_section = document.getElementById('ticket_section');
+        var counters = document.getElementById("counters");
+        if (ticket == "" || ticket == null) {
+            probe_qa_options.classList.add("hide");
+            probe_hunt_section.classList.add("hide");
+            counters.classList.add("hide");
+        } else {
+            probe_qa_options.classList.remove("hide");
+            probe_hunt_section.classList.remove("hide");
+            counters.classList.remove("hide");
+            selected_ticket = ticket;
+            get_brand_list("sku", "brand_name");
+            get_brand_list("dvc", "dvc_name");
+            get_brand_list("facing", "facing_name");
+        }
+    }
+}
+
+
 function validate_project_name() {
     var project_name_element = document.getElementById("project_name");
     var project_name =
@@ -416,21 +485,26 @@ function validate_project_name() {
     var project_name_error = document.getElementById("project_name_error");
     var probe_qa_options = document.getElementById("probe_qa_options");
     var probe_hunt_section = document.getElementById("probe_hunt_section");
+    var ticket = document.getElementById('ticket_section');
     var counters = document.getElementById("counters");
     if (project_name == "") {
         project_name_error.innerHTML = "Project Name required for upload";
         probe_qa_options.classList.add("hide");
         probe_hunt_section.classList.add("hide");
         counters.classList.add("hide");
+        ticket.classList.add("hide");
     } else {
+        $('#ticket').empty();
         project_name_error.innerHTML = "";
-        probe_qa_options.classList.remove("hide");
-        probe_hunt_section.classList.remove("hide");
-        counters.classList.remove("hide");
+        probe_qa_options.classList.add("hide");
+        probe_hunt_section.classList.add("hide");
+        counters.classList.add("hide");
         p_name = project_name;
-        get_brand_list("sku", "brand_name");
-        get_brand_list("dvc", "dvc_name");
-        get_brand_list("facing", "facing_name");
+        ticket.classList.remove("hide");
+        get_ticket_list();
+        //get_brand_list("sku", "brand_name");
+        //get_brand_list("dvc", "dvc_name");
+        //get_brand_list("facing", "facing_name");
     }
 }
 
@@ -485,19 +559,18 @@ function validate_qa_form() {
         document.getElementById("status_error").innerHTML = "";
     }
     if (disapprove_button.checked && error_qa.length == 0) {
-        document.getElementById("error_qa_error").innerHTML =
-            "Error Type must be selected";
+        document.getElementById("error_qa_error").innerHTML = "Error Type must be selected.";
         is_valid_form = false;
     } else {
         document.getElementById("error_qa_error").innerHTML = "";
     }
 
-    if (facing_num != document.getElementById("num_facings").value) {
-        document.getElementById("error_qa_error").innerHTML =
-            "Facing Number Changed.Error Type must be selected";
+    if (facing_num != document.getElementById("num_facings").value &&  error_qa.length == 0) {
+        document.getElementById("error_qa_error").innerHTML = "";
+        document.getElementById("error_facing_error").innerHTML = "Facing Number Changed. Error Type must be selected";
         is_valid_form = false;
     } else {
-        document.getElementById("error_qa_error").innerHTML = "";
+        document.getElementById("error_facing_error").innerHTML = "";
     }
 
 
@@ -611,7 +684,9 @@ jQuery(document).ready(function () {
         maxFileCount: 4,
         allowedFileExtensions: ["jpg", "jpeg"]
     });
-
+    jQuery('#ticket').select2({
+        width: '50%',
+    });
     jQuery('#brand_name').on("change", function (e) {
         jQuery('#current_sku_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
         document.getElementById('sku_qa_button').disabled = true;
@@ -621,6 +696,16 @@ jQuery(document).ready(function () {
         document.getElementById('dvc_qa_button').disabled = true;
     });
     jQuery('#facing_name').on("change", function (e) {
+        jQuery('#current_facing_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('facing_qa_button').disabled = true;
+    });
+    jQuery('#ticket').on("change", function (e) {
+        jQuery('#current_brand_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('dvc_qa_button').disabled = true;
+        jQuery('#current_sku_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('sku_qa_button').disabled = true;
+        jQuery('#current_dvc_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('dvc_qa_button').disabled = true;
         jQuery('#current_facing_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
         document.getElementById('facing_qa_button').disabled = true;
     });
@@ -636,4 +721,7 @@ jQuery(document).ready(function () {
     setInterval(function () {
         update_project_qa_count();
     }, 1000);
+    $('#ticket').on('select2:select', function (e) {
+        validate_ticket_name();
+    });
 });

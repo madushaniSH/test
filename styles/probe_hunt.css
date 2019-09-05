@@ -225,3 +225,7 @@ body {
    opacity: 0.9;
    border-radius: 100px;
 }
+
+#ticket_section{
+    margin-top: 1vw;
+}

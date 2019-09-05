@@ -90,8 +90,13 @@ function fetch_details() {
             data: formData,
             dataType: 'JSON',
             success: function (data) {
-                JSONToCSVConvertor(data[0].hunted_product_info, p_name + " Hunted Products " + start_datetime + " - " + end_datetime, true);
-                JSONToCSVConvertor(data[0].probe_details, p_name + " Probe Details " + start_datetime + " - " + end_datetime, true);
+                var project_name =  $("#project_name").val();
+                p_name = project_name.join("_");
+                console.log(p_name);
+                if (project_name.length == 1) {
+                    JSONToCSVConvertor(data[0].hunted_product_info, p_name + " Hunted Products " + start_datetime + " - " + end_datetime, true);
+                    JSONToCSVConvertor(data[0].probe_details, p_name + " Probe Details " + start_datetime + " - " + end_datetime, true);
+                }
                 JSONToCSVConvertor(data[0].hunter_summary, p_name + " Hunter Summary " + start_datetime + " - " + end_datetime, true);
             },
             error: function (data) {
@@ -105,12 +110,11 @@ function fetch_details() {
 }
 
 function validate_project_name() {
-    var project_name_element = document.getElementById('project_name');
-    var project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    var project_name =  $("#project_name").val();
     var project_name_error = document.getElementById('project_name_error');
     var generate_csv_section = document.getElementById('generate_csv_section');
     if (project_name == '') {
-        project_name_error.innerHTML = 'Project Name required for upload';
+        project_name_error.innerHTML = 'Project Name required for export';
         generate_csv_section.classList.add('hide');
     } else {
         project_name_error.innerHTML = '';

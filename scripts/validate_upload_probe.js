@@ -14,6 +14,9 @@ function handleFileSelect(evt) {
         var formData = new FormData();
         formData.append('csv', file);
         formData.append('db_name', project_name);
+        var ticket_name_element = document.getElementById('ticket_name');
+        var ticket_name = ticket_name_element.options[ticket_name_element.selectedIndex].value;
+        formData.append('ticket_name', ticket_name);
         jQuery('#probe_upload_success').html('Please wait ' + file_name + ' is now being processed.<br>');
         jQuery('#loading-spinner').css("display", "inline-block");
         jQuery('#loading-spinner').css("text-align", "center");
@@ -47,9 +50,12 @@ function handleFileSelect_ref(evt) {
         jQuery('#ref_upload_error').html('Error. Only CSV files can be uploaded');
     } else {
         jQuery('#ref_upload_error').html('');
+        var ticket_name_element = document.getElementById('ticket_name');
+        var ticket_name = ticket_name_element.options[ticket_name_element.selectedIndex].value;
         var formData = new FormData();
         formData.append('csv', file);
         formData.append('db_name', project_name);
+        formData.append('ticket_name', ticket_name);
         jQuery('#ref_upload_success').html('Please wait ' + file_name + ' is now being processed.<br>');
         jQuery('#loading-spinner-ref').css("display", "inline-block");
         jQuery('#loading-spinner-ref').css("text-align", "center");
@@ -108,11 +114,29 @@ function validate_project_name() {
     } else {
         project_name_error.innerHTML = '';
         upload_div.classList.remove('hide');
+        fetch_tickets();
     }
 }
 
-function fetch_tickets(){
-
+function fetch_tickets() {
+    var project_name_element = document.getElementById('project_name');
+    var project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    var formData = new FormData();
+    formData.append('project_name', project_name);
+    jQuery.ajax({
+        url: 'get_ticket_list.php',
+        type: 'POST',
+        data: formData,
+        success: function (data) {
+            $('#ticket_name').html(data);
+        },
+        error: function (data) {
+            alert("Error assigning probe. Please refresh");
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
 }
 
 function validate_new_ticket() {
@@ -135,8 +159,14 @@ function validate_new_ticket() {
             url: 'add_new_ticket.php',
             type: 'POST',
             data: formData,
+            dataType: 'JSON',
             success: function (data) {
-                document.getElementById('close_ticket_form').click();
+                if (data[0].error != "") {
+                    document.getElementById('ticket_id_error').innerHTML = data[0].error;
+                } else {
+                    document.getElementById('close_ticket_form').click();
+                    fetch_tickets();
+                }
             },
             error: function (data) {
                 alert("Error assigning probe. Please refresh");
@@ -148,9 +178,26 @@ function validate_new_ticket() {
     }
 }
 
+function validate_ticket_id() {
+    var ticket_name_element = document.getElementById('ticket_name');
+    var ticket_name = ticket_name_element.options[ticket_name_element.selectedIndex].value;
+    var project_name_element = document.getElementById('project_name');
+    var project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    if (ticket_name != "") {
+        document.getElementById('probe-upload').classList.remove('hide');
+        document.getElementById('ticket_id_value').innerHTML = $("#ticket_name option[value='"+ticket_name+"']").text()
+        document.getElementById('project_name_value').innerHTML = project_name;
+    } else {
+        document.getElementById('probe-upload').classList.add('hide');
+        document.getElementById('ticket_id_value').innerHTML = "";
+        document.getElementById('project_name_value').innerHTML = "";
+    }
+}
+
 function clear_ticket_form() {
     var ticket_id = document.getElementById('ticket_id');
     ticket_id.value = "";
+    document.getElementById('ticket_id_error').innerHTML = "";
 }
 
 
@@ -162,6 +209,7 @@ jQuery(document).ready(function () {
         width: '100%',
     });
     jQuery('#project_name').change(validate_project_name);
+    jQuery('#ticket_name').change(validate_ticket_id);
     jQuery("#csv-file").change(handleFileSelect);
     jQuery("#ref-csv-file").change(handleFileSelect_ref);
 });

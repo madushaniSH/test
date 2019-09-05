@@ -37,9 +37,9 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT SUBSTRING_INDEX(products.product_name, \' \', 1 ) as name FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = :product_type AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) ';
+$sql = 'SELECT SUBSTRING_INDEX(products.product_name, \' \', 1 ) as name FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id   WHERE products.product_type = :product_type AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND probe.probe_ticket_id = :ticket';
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['product_type'=>$_POST['product_type'], 'account_id' =>$_SESSION['id']]);
+$stmt->execute(['product_type'=>$_POST['product_type'], 'account_id' =>$_SESSION['id'], 'ticket'=>$_POST['ticket']]);
 $brand_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 
 $return_arr[] = array("brand_rows"=>$brand_rows);

@@ -89,7 +89,7 @@ if ($row_count == 0) {
     (1, \"Already Added\"),
     (2, \"Hunted\"),
     (3, \"Irrelevant\"),
-    (4, \"Recognition Level Issue\"),
+    (4, \"Blur\"),
     (5, \"Validation Error\"),
     (6, \"Brand Level\"),
     (7, \"Size Can’t Find\"),
@@ -103,10 +103,12 @@ if ($row_count == 0) {
     $stmt->execute();
 
     $sql = 'CREATE TABLE `project_tickets` (
-      `project_ticket_system_id` int(11) NOT NULL PRIMARY AUTO_INCREMENT,
+      `project_ticket_system_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
       `ticket_id` varchar(255) NOT NULL,
       `account_id` int(11) NOT NULL,
-      `ticket_creation_time` datetime NOT NULL DEFAULT current_timestamp()
+      `ticket_creation_time` datetime NOT NULL DEFAULT current_timestamp(),
+      `is_probe_hunt` tinyint(1) NOT NULL DEFAULT 0,
+      `is_ref_hunt` tinyint(1) NOT NULL DEFAULT 0
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
@@ -123,10 +125,12 @@ if ($row_count == 0) {
         `probe_processed_hunter_id` int(11) DEFAULT NULL,
         `probe_process_remark` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
         `probe_status_id` int(11) DEFAULT NULL,
+        `probe_ticket_id` int(11) DEFAULT NULL,
          CONSTRAINT  '.$dbname.'_BRAND_ID FOREIGN KEY (`brand_id`) REFERENCES `brand` (`brand_id`),
          CONSTRAINT  '.$dbname.'_CLIENT_CATEGORY_ID FOREIGN KEY (`client_category_id`) REFERENCES `client_category` (`client_category_id`),
          CONSTRAINT  '.$dbname.'_PROBE_HUNTER_ACCOUNT_ID FOREIGN KEY (`probe_processed_hunter_id`) REFERENCES `user_db`.`accounts` (`account_id`),
-         CONSTRAINT '.$dbname.'_PROBE_STATUS FOREIGN KEY (`probe_status_id`) REFERENCES `probe_status` (`probe_status_id`)
+         CONSTRAINT '.$dbname.'_PROBE_STATUS FOREIGN KEY (`probe_status_id`) REFERENCES `probe_status` (`probe_status_id`),
+         CONSTRAINT '.$dbname.'_PROBE_PROJECT_TICKET_ID FOREIGN KEY (`probe_ticket_id`) REFERENCES `project_tickets` (`project_ticket_system_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();

@@ -98,8 +98,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <div class="row" id="project_select">
         <div class="col">
             <label for="project_name">Select Project Name</label>
-            <select name="project_name" id="project_name" class="form-control">
-            <option value=""selected disabled>Select</option>
+            <select name="project_name" id="project_name" class="form-control" multiple="multiple">
         <?php
         foreach($project_rows as $project_row){
             echo "<option value=\"$project_row->project_db_name\">$project_row->project_name ($project_row->project_region)</option>";

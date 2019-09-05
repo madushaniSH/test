@@ -1,6 +1,48 @@
 var p_name = '';
 var product_count = 0;
 var skip_check = false;
+var selected_ticket = '';
+
+function get_ticket_list() {
+    if (p_name != "") {
+        var formData = new FormData();
+        formData.append("project_name", p_name);
+        jQuery.ajax({
+            url: "get_project_tickets.php",
+            type: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: function (data) {
+                $("#ticket").append(
+                    '<option value="" selected disabled>Select</option>'
+                );
+                // adding missing options
+                for (var i = 0; i < data[0].ticket_list.length; i++) {
+                    if (
+                        !$("#ticket").find(
+                            'option[value="' + data[0].ticket_list[i].project_ticket_system_id + '"]'
+                        ).length
+                    ) {
+                        // Append it to the select
+                        $("#ticket").append(
+                            '<option value="' +
+                            data[0].ticket_list[i].project_ticket_system_id +
+                            '">' +
+                            data[0].ticket_list[i].ticket_id +
+                            "</option>"
+                        );
+                    }
+                }
+            },
+            error: function (data) {
+                alert("Error assigning probe. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
 
 function cancel_product_button() {
     var product_name = document.getElementById('product_name').value.trim();
@@ -25,17 +67,21 @@ function validate_project_name() {
     var probe_hunt_options = document.getElementById('probe_hunt_options');
     var probe_hunt_counter = document.getElementById('probe_hunt_counter');
     var hunter_counter = document.getElementById('hunter_counter');
+    var ticket_section = document.getElementById('ticket_section');
     if (project_name == '') {
         project_name_error.innerHTML = 'Project Name required for upload';
         probe_hunt_options.classList.add('hide');
         probe_hunt_counter.classList.add('hide');
         hunter_counter.classList.add('hide')
     } else {
+        $('#ticket').empty();
         project_name_error.innerHTML = '';
-        probe_hunt_options.classList.remove('hide');
-        probe_hunt_counter.classList.remove('hide');
-        hunter_counter.classList.remove('hide')
+        probe_hunt_options.classList.add('hide');
+        probe_hunt_counter.classList.add('hide');
+        hunter_counter.classList.add('hide')
+        ticket_section.classList.remove('hide');
         p_name = project_name;
+        get_ticket_list();
     }
 }
 
@@ -44,6 +90,7 @@ function get_probe_info() {
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
     var formData = new FormData();
     formData.append('project_name', project_name);
+    formData.append('ticket', selected_ticket);
     jQuery.ajax({
         url: 'assign_probe.php',
         type: 'POST',
@@ -58,7 +105,7 @@ function get_probe_info() {
                 title_string += ' <span id="client_category_title">' + data[0].client_category_name + '</span>';
             }
             if (data[0].probe_id != null) {
-                title_string += ' <span id="probe_id_title">' + data[0].probe_id;
+                title_string += ' <span id="probe_id_title">' + data[0].probe_id + " " + data[0].ticket;
             }
             jQuery('#add_probe_title').html(title_string);
             var formData = new FormData();
@@ -89,9 +136,10 @@ function get_probe_info() {
 }
 
 function update_project_count() {
-    if (p_name != '') {
+    if (p_name != '' && selected_ticket != '') {
         var formData = new FormData();
         formData.append('project_name', p_name);
+        formData.append('ticket', selected_ticket);
         jQuery.ajax({
             url: 'fetch_probe_count.php',
             type: 'POST',
@@ -155,8 +203,6 @@ function reset_probe_modal() {
     $("#status").val('').trigger('change');
     $("#product_type").val('').trigger('change');
     document.getElementById('status').disabled = false;
-    document.getElementById('comment').disabled = false;
-    document.getElementById('remark').disabled = false;
     $('#server_error').html('');
     $('#server_success').html('');
     product_count = 0;
@@ -277,7 +323,7 @@ function add_rec_comment() {
     return false;
 }
 
-function add_cant_find_comment(){
+function add_cant_find_comment() {
     document.getElementById('comment').value = "Some Products in Probe could not be found";
     return false;
 }
@@ -332,7 +378,7 @@ function add_probe_product() {
         } else {
             product_name_error.innerHTML = '';
             formData.append('product_name', product_name);
-        }       
+        }
     }
 
     if (product_type == '') {
@@ -355,7 +401,7 @@ function add_probe_product() {
         } else {
             alt_design_name_error.innerHTML = '';
             formData.append('alt_design_name', alt_design_name);
-        }       
+        }
     }
 
     if (product_type === 'facing' && facings == 0) {
@@ -381,8 +427,6 @@ function add_probe_product() {
 
     if (is_valid_form) {
         document.getElementById('status').disabled = true;
-        document.getElementById('comment').disabled = true;
-        document.getElementById('remark').disabled = true;
         jQuery.ajax({
             url: 'add_probe_product.php',
             type: 'POST',
@@ -441,9 +485,31 @@ function add_probe_product() {
     return is_valid_form;
 }
 
+function validate_ticket_name() {
+    if (p_name != "") {
+        var ticket = jQuery('#ticket').val();
+        var probe_hunt_options = document.getElementById('probe_hunt_options');
+        var probe_hunt_counter = document.getElementById('probe_hunt_counter');
+        var hunter_counter = document.getElementById('hunter_counter');
+        if (ticket == "" || ticket == null) {
+            probe_hunt_options.classList.add('hide');
+            probe_hunt_counter.classList.add('hide');
+            hunter_counter.classList.add('hide');
+        } else {
+            probe_hunt_options.classList.remove('hide');
+            probe_hunt_counter.classList.remove('hide');
+            hunter_counter.classList.remove('hide');
+            selected_ticket = ticket;
+        }
+    }
+}
+
 jQuery(document).ready(function () {
     jQuery('#project_name').select2({
         width: '100%',
+    });
+    jQuery('#ticket').select2({
+        width: '50%',
     });
     jQuery('#status').select2({
         dropdownParent: $("#add_probe"),
@@ -453,7 +519,7 @@ jQuery(document).ready(function () {
         dropdownParent: $("#add_probe"),
         width: '100%',
     });
-    jQuery('#project_name').change(function () {
+    jQuery('#project_name').on('select2:select', function () {
         validate_project_name();
     });
     jQuery('#status').change(function () {
@@ -474,6 +540,9 @@ jQuery(document).ready(function () {
         document.getElementById('counters').classList.remove('hide');
         document.getElementById('arrow_sec').classList.remove('bounce');
         $("#counters").fadeIn();
+    });
+    $('#ticket').on('select2:select', function (e) {
+        validate_ticket_name();
     });
     $("#show_button").mouseleave(function () {
         $("#counters").fadeOut();

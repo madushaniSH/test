@@ -1,6 +1,6 @@
 <?php
 /*
-    Filename: add_new_ticket.php
+    Filename: get_qa_error_list.php
     Author: Malika Liyanage
 */
 session_start();
@@ -37,23 +37,10 @@ catch(PDOException $e){
     exit();
 }
 
-$error = "";
-$sql = "SELECT ticket_id FROM project_tickets WHERE ticket_id = :ticket_id";
+$sql = 'SELECT project_ticket_system_id, ticket_id  FROM project_tickets';
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['ticket_id'=>$_POST['ticket_id']]);
-$row_count = $stmt->rowCount(PDO::FETCH_OBJ);
-
-if ($row_count == 0) {
-    try {
-        $sql = 'INSERT INTO project_tickets (ticket_id, account_id) VALUES (:ticket_id, :account_id)';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['ticket_id'=>$_POST['ticket_id'], 'account_id'=>$_SESSION['id']]);
-    } catch (PDOException $e) {
-        echo $e->getMessage();
-    }
-} else {
-    $error = "Duplicate Ticket ID";
-}
-$return_arr[] = array("error"=>$error);
+$stmt->execute();
+$ticket_list = $stmt->fetchAll(PDO::FETCH_OBJ);
+$return_arr[] = array("ticket_list"=>$ticket_list);
 echo json_encode($return_arr);
 ?>
