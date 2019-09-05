@@ -97,7 +97,7 @@ function get_probe_info() {
         data: formData,
         dataType: 'JSON',
         success: function (data) {
-            var title_string = '<span id="project_title">' + project_name + '</span>';
+            var title_string = '<span id="project_title">' + project_name +  " " + data[0].ticket + '</span>';
             if (data[0].brand_name != null) {
                 title_string += ' <span id="brand_title">' + data[0].brand_name + '</span>';
             }
@@ -105,7 +105,7 @@ function get_probe_info() {
                 title_string += ' <span id="client_category_title">' + data[0].client_category_name + '</span>';
             }
             if (data[0].probe_id != null) {
-                title_string += ' <span id="probe_id_title">' + data[0].probe_id + " " + data[0].ticket;
+                title_string += ' <span id="probe_id_title">' + data[0].probe_id;
             }
             jQuery('#add_probe_title').html(title_string);
             var formData = new FormData();
