@@ -95,9 +95,19 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     </div>
 </nav>
 <div id="fetch_project_section">
+    <div class="row hide" id="export_button_selection">
+        <div class="col">
+            <button class="btn btn-success"><i class="fab fa-product-hunt fa-2x"></i> Export Hunted Products </button>
+        </div>
+        <div class="col">
+            <button class="btn btn-success"><i class="fas fa-search fa-2x"></i> Export  Probe Details </button>
+        </div>
+        <div class="col">
+            <button class="btn btn-success"><i class="fas fa-fist-raised fa-2x"></i> Export Hunter Summary </button>
+        </div>
+    </div>
     <div class="row" id="project_select">
         <div class="col">
-            <h5><strong>DONT SELECT MORE THAN ONE PROJECT FOR NOW :D</strong></h5>
             <label for="project_name">Select Project Name</label>
             <select name="project_name" id="project_name" class="form-control" multiple="multiple">
         <?php

@@ -247,7 +247,7 @@ function validate_probe_submission() {
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
     var product_name = document.getElementById('product_name').value.trim();
 
-    if (product_name != "") {
+    if (product_name != "" && product_count != 0) {
         if (!add_probe_product()) {
             is_valid_form = false;
         }
