@@ -95,21 +95,22 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     </div>
 </nav>
 <div id="fetch_project_section">
-    <div class="row hide" id="export_button_selection">
+    <div class="row" id="export_button_selection">
         <div class="col">
-            <button class="btn btn-success"><i class="fab fa-product-hunt fa-2x"></i> Export Hunted Products </button>
+            <button class="btn btn-success" onclick="show_product_info();"><i class="fab fa-product-hunt fa-2x"></i> Get Hunted Products</button>
         </div>
         <div class="col">
-            <button class="btn btn-success"><i class="fas fa-search fa-2x"></i> Export  Probe Details </button>
+            <button class="btn btn-success" onclick="show_probe_info();"><i class="fas fa-search fa-2x"></i> Get Probe Details</button>
         </div>
         <div class="col">
-            <button class="btn btn-success"><i class="fas fa-fist-raised fa-2x"></i> Export Hunter Summary </button>
+            <button class="btn btn-success" onclick="show_hunter_info();"><i class="fas fa-fist-raised fa-2x"></i> Get Hunter Summary</button>
         </div>
     </div>
-    <div class="row" id="project_select">
+    <div class="row hide" id="project_select">
         <div class="col">
             <label for="project_name">Select Project Name</label>
             <select name="project_name" id="project_name" class="form-control" multiple="multiple">
+            <option value="" selected disabled>Select</option>
         <?php
         foreach($project_rows as $project_row){
             echo "<option value=\"$project_row->project_db_name\">$project_row->project_name ($project_row->project_region)</option>";
@@ -119,11 +120,20 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <span id="project_name_error" class="error-popup"></span>    
         </div>
     </div>
-    <div id="generate_csv_section" class="hide">
-        <div>
+    <div id="ticket_section" class="row hide">
+    <div class="col-md-4">
+        <label for="ticket_name">Select Ticket ID</label>
+        <select name="ticket_name" id="ticket_name" class="form-control">
+        </select>
+    </div>
+    </div>
+    <div id="generate_csv_section" class="row hide">
+        <div class="col">
             <input id="datetime_filter" type="text" name="datetimes"  value=""/>
-            <button class="btn btn-primary hide" id="export_button" onclick="fetch_details()">Generate</button>
         </div>
+    </div>
+    <div id="export_final">
+        <button class="btn btn-primary hide" id="export_button" onclick="fetch_details()"><i class="fas fa-download fa-3x"></i></button>
     </div>
 </div>
 </body>

@@ -26,3 +26,12 @@
     text-align:  center;
     margin-bottom: 1vw;
 }
+
+#generate_csv_section {
+    margin-top: 1vw;
+}
+
+#export_final {
+    margin-top: 1vw;
+    text-align: center;
+}

@@ -3,6 +3,8 @@ var p_name = "";
 var filter_picked = false;
 var start_datetime;
 var end_datetime
+var selected_option = '';
+var selected_ticket;
 function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
     var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
@@ -81,45 +83,66 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
 function fetch_details() {
     if (filter_picked) {
         var formData = new FormData();
-        formData.append("project_name", p_name);
         formData.append("start_datetime", start_datetime);
         formData.append("end_datetime", end_datetime);
-        jQuery.ajax({
-            url: 'fetch_details.php',
-            type: 'POST',
-            data: formData,
-            dataType: 'JSON',
-            success: function (data) {
-                var project_name =  $("#project_name").val();
-                p_name = project_name.join("_");
-                console.log(p_name);
-                if (project_name.length == 1) {
-                    JSONToCSVConvertor(data[0].hunted_product_info, p_name + " Hunted Products " + start_datetime + " - " + end_datetime, true);
-                    JSONToCSVConvertor(data[0].probe_details, p_name + " Probe Details " + start_datetime + " - " + end_datetime, true);
-                }
-                JSONToCSVConvertor(data[0].hunter_summary, p_name + " Hunter Summary " + start_datetime + " - " + end_datetime, true);
-            },
-            error: function (data) {
-                alert("Error assigning probe. Please refresh");
-            },
-            cache: false,
-            contentType: false,
-            processData: false
-        });
-    }
-}
-
-function validate_project_name() {
-    var project_name =  $("#project_name").val();
-    var project_name_error = document.getElementById('project_name_error');
-    var generate_csv_section = document.getElementById('generate_csv_section');
-    if (project_name == '') {
-        project_name_error.innerHTML = 'Project Name required for export';
-        generate_csv_section.classList.add('hide');
-    } else {
-        project_name_error.innerHTML = '';
-        p_name = project_name;
-        generate_csv_section.classList.remove('hide');
+        if (selected_option == 'product') {
+            formData.append("ticket", selected_ticket);
+            formData.append("project_name", p_name);
+            jQuery.ajax({
+                url: 'fetch_details_product.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'JSON',
+                success: function (data) {
+                    JSONToCSVConvertor(data[0].hunted_product_info, p_name + " " + $("#ticket_name option[value='" + selected_ticket + "']").text() + " Hunted Products " + start_datetime + " - " + end_datetime, true);
+                },
+                error: function (data) {
+                    alert("Error assigning probe. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        }
+        if (selected_option == 'probe') {
+            formData.append("ticket", selected_ticket);
+            formData.append("project_name", p_name);
+            jQuery.ajax({
+                url: 'fetch_details_probe.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'JSON',
+                success: function (data) {
+                    JSONToCSVConvertor(data[0].probe_details, p_name + " " + $("#ticket_name option[value='" + selected_ticket + "']").text() + " Probe Details " + start_datetime + " - " + end_datetime, true);
+                },
+                error: function (data) {
+                    alert("Error assigning probe. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        }
+        if (selected_option == 'hunter') {
+            for (var i = 0; i < p_name.length; i++) {
+                formData.append("project_name", p_name[i]);
+                jQuery.ajax({
+                    url: 'fetch_details_hunter.php',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'JSON',
+                    success: function (data) {           
+                        JSONToCSVConvertor(data[0].hunter_summary, p_name + " Hunter Summary " + start_datetime + " - " + end_datetime, true);
+                    },
+                    error: function (data) {
+                        alert("Error assigning probe. Please refresh");
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                });    
+            }
+        }
     }
 }
 
@@ -130,17 +153,116 @@ function validate_date_time() {
     if (start_datetime != '' && end_datetime != '') {
         export_button.classList.remove('hide');
         filter_picked = true;
-        
+
     } else {
-        export_button.classList.add('hide');   
+        export_button.classList.add('hide');
         filter_picked = false;
     }
 }
+
+function validate_ticket_id() {
+    var ticket_name = $('#ticket_name').val();
+    if (ticket_name != "") {
+        document.getElementById('generate_csv_section').classList.remove('hide');
+        selected_ticket = ticket_name;
+    } else {
+        document.getElementById('generate_csv_section').classList.add('hide');
+    }
+}
+
+function show_product_info() {
+    var project_select = document.getElementById('project_select');
+    $("#project_name").select2({
+        width: '100%',
+        multiple: false
+    });
+    project_select.classList.remove('hide');
+    selected_option = 'product';
+    $("#project_name").select2().val("").trigger("change");
+}
+
+function show_probe_info() {
+    var project_select = document.getElementById('project_select');
+    $("#project_name").select2({
+        width: '100%',
+        multiple: false
+    });
+    project_select.classList.remove('hide');
+    selected_option = 'probe';
+    $("#project_name").select2().val("").trigger("change");
+}
+
+function show_hunter_info() {
+    var project_select = document.getElementById('project_select');
+    $("#project_name").select2({
+        width: '100%',
+        multiple: true
+    });
+    project_select.classList.remove('hide');
+    selected_option = 'hunter';
+    document.getElementById('generate_csv_section').classList.remove('hide');
+    $("#project_name").prop("selectedIndex", 1).trigger("change");
+}
+
+function validate_project_name() {
+    export_button.classList.add('hide');
+    filter_picked = false;
+    if (selected_option == 'product' || selected_option == 'probe') {
+        var project_name_element = document.getElementById('project_name');
+        var project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    } else if (selected_option == 'hunter') {
+        var project_name = $('#project_name').val();
+    }
+    var project_name_error = document.getElementById('project_name_error');
+    var upload_div = document.getElementById('ticket_section');
+    if (project_name == '') {
+        project_name_error.innerHTML = 'Project Name required for export';
+        upload_div.classList.add('hide');
+        document.getElementById('generate_csv_section').classList.add('hide');
+    } else {
+        project_name_error.innerHTML = '';
+        if (selected_option != 'hunter') {
+            upload_div.classList.remove('hide');
+            document.getElementById('generate_csv_section').classList.add('hide');
+            fetch_tickets();
+        } else {
+            upload_div.classList.add('hide');
+            document.getElementById('generate_csv_section').classList.remove('hide');
+        }
+        p_name = project_name;
+    }
+}
+
+function fetch_tickets() {
+    var project_name_element = document.getElementById('project_name');
+    var project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    var formData = new FormData();
+    formData.append('project_name', project_name);
+    jQuery.ajax({
+        url: 'get_ticket_list.php',
+        type: 'POST',
+        data: formData,
+        success: function (data) {
+            $('#ticket_name').html(data);
+        },
+        error: function (data) {
+            alert("Error assigning probe. Please refresh");
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+}
+
 
 jQuery(document).ready(function () {
     jQuery('#project_name').select2({
         width: '100%',
     });
+    jQuery('#ticket_name').select2({
+        width: '100%',
+    });
+    jQuery('#ticket_name').change(validate_ticket_id);
     jQuery('#project_name').change(validate_project_name);
     $('#datetime_filter').daterangepicker({
         timePicker: true,
@@ -150,7 +272,7 @@ jQuery(document).ready(function () {
             format: 'M/DD HH:mm A',
         }
     });
-    $('#datetime_filter').on('apply.daterangepicker', function(ev, picker) {
+    $('#datetime_filter').on('apply.daterangepicker', function (ev, picker) {
         validate_date_time();
     });
 });
