@@ -2,6 +2,8 @@ var p_name = "";
 var product_type = "";
 var facing_num = 0;
 var selected_ticket = '';
+var is_dupilcate = false;
+var is_dupilcate_dvc = false;
 
 function assign_brand() {
     product_type = "brand";
@@ -290,6 +292,8 @@ function unassign_probe() {
     document.getElementById("name_error").innerHTML = "";
     document.getElementById("num_facings").value = 0;
     document.getElementById("output").innerHTML = 0;
+    is_dupilcate = false;
+    is_dupilcate_dvc = false;
     rename_alert.classList.add("hide");
     dvc_rename_alert.classList.add("hide");
     facing_num = 0;
@@ -582,7 +586,7 @@ function validate_qa_form() {
         document.getElementById("image_error").innerHTML = "";
     }
 
-    if (is_valid_form) {
+    if (is_valid_form && !is_dupilcate && !is_dupilcate_dvc) {
         var formData = new FormData();
         formData.append("project_name", p_name);
         formData.append("product_type", product_type);
@@ -636,8 +640,35 @@ function compare_rename() {
         var rename_alert = document.getElementById("rename_alert");
         if (product_name != product_rename) {
             rename_alert.classList.remove("hide");
+            var formData = new FormData();
+            formData.append("project_name", p_name);
+            formData.append("product_name", product_rename);
+            jQuery.ajax({
+                url: "check_duplicate_sku.php",
+                type: "POST",
+                data: formData,
+                dataType: 'JSON',
+                success: function (data) {
+                   var row_count = parseInt(data[0].row_count, 10);
+                   if (row_count != 0) {
+                       is_dupilcate = true;
+                       document.getElementById('product_dup_rename_error').innerHTML = 'Product Name Already Exists';
+                   } else {
+                       is_dupilcate = false;
+                       document.getElementById('product_dup_rename_error').innerHTML = '';
+                   }
+                },
+                error: function (data) {
+                    alert("Error fetching probe information. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
         } else {
             rename_alert.classList.add("hide");
+            is_dupilcate = false;
+            document.getElementById('product_dup_rename_error').innerHTML = '';
         }
     }
 }
@@ -651,8 +682,35 @@ function compare_alt_rename() {
         var dvc_rename_alert = document.getElementById("dvc_rename_alert");
         if (alt_name != product_alt_rename) {
             dvc_rename_alert.classList.remove("hide");
+            var formData = new FormData();
+            formData.append("project_name", p_name);
+            formData.append("product_name", product_alt_rename);
+            jQuery.ajax({
+                url: "check_duplicate_dvc.php",
+                type: "POST",
+                data: formData,
+                dataType: 'JSON',
+                success: function (data) {
+                   var row_count = parseInt(data[0].row_count, 10);
+                   if (row_count != 0) {
+                       is_dupilcate_dvc = true;
+                       document.getElementById('product_alt_dup_rename_error').innerHTML = 'DVC Name Already Exists';
+                   } else {
+                       is_dupilcate_dvc = false;
+                       document.getElementById('product_alt_dup_rename_error').innerHTML = '';
+                   }
+                },
+                error: function (data) {
+                    alert("Error fetching probe information. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
         } else {
             dvc_rename_alert.classList.add("hide");
+            is_dupilcate_dvc = false;
+            document.getElementById('product_alt_dup_rename_error').innerHTML = '';
         }
     }
 }

@@ -245,6 +245,14 @@ function validate_probe_submission() {
     var remark = document.getElementById('remark').value.trim();
     var project_name_element = document.getElementById('project_name');
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    var product_name = document.getElementById('product_name').value.trim();
+
+    if (product_name != "") {
+        if (!add_probe_product()) {
+            is_valid_form = false;
+        }
+    }
+
     if (status == '') {
         is_valid_form = false;
         status_error.innerHTML = 'Status must be selected';
