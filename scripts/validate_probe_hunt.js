@@ -165,6 +165,8 @@ function update_project_count() {
                     $('#system_error_count').html(data[0].system_error_count);
                     $('#facing_count').empty();
                     $('#facing_count').html(data[0].facing_count);
+                    $('#product_count').empty();
+                    $('#product_count').html(data[0].number_of_products_added);
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {
@@ -181,6 +183,16 @@ function update_project_count() {
                         if (probe_count == 0) {
                             document.getElementById('probe_message').innerHTML = '';
                         }
+                    }
+                    var added_product_count = parseInt(data[0].number_of_products_added, 10);
+                    if (added_product_count > 0) {
+                        product_count = add_probe_product;
+                        document.getElementById('status').disabled = true;      
+                        $('#status').val(2);
+                        $('#status').select2().trigger('change'); 
+                    } else {
+                        product_count = 0;
+                        document.getElementById('status').disabled = false;      
                     }
                 } else {
                     $('#current_probe_count').html('XX');

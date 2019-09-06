@@ -329,6 +329,9 @@ slider.oninput = function() {
                     <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
                     <button type="button" class="btn btn-outline-danger hide" id="cancel_product" onclick="cancel_product_button();">Save Changes</button>
                 </div>
+                <div id="probe_product_count_section">
+                    <p>Products Added to Probe -> <span id="product_count"></span></p>
+                </div>
                 <span id="server_error" class="error-popup"></span>
                 <span id="server_success" class="success-popup"></span>
             </div>

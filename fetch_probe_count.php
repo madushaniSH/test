@@ -48,12 +48,20 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute(['ticket'=>$_POST['ticket']]); 
 $number_of_handled_rows = $stmt->fetchColumn(); 
 
-
-$sql = 'SELECT probe_queue_id FROM probe_queue WHERE account_id = :account_id';
+$sql = 'SELECT probe_queue_id, probe_key_id FROM probe_queue WHERE account_id = :account_id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id'=>$_SESSION['id']]);
+$probe_info = $stmt->fetch(PDO::FETCH_OBJ);
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
+$number_of_products_added = 0;
+if ($row_count == 1) {
+    $sql = "SELECT COUNT(*) FROM probe_product_info WHERE probe_product_info_key_id = :probe_key";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['probe_key'=>$probe_info->probe_key_id]);
+    $number_of_products_added = $stmt->fetchColumn();
+}
+ 
 $sql = 'SELECT account_latest_login_date_time FROM user_db.accounts WHERE account_id = :account_id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id'=>$_SESSION['id']]);
@@ -101,6 +109,6 @@ if ($facing_count == NULL) {
 }
 
 
-$return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count);
+$return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count, "number_of_products_added"=>$number_of_products_added);
 echo json_encode($return_arr);
 ?>
