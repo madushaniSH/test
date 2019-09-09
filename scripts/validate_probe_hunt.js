@@ -97,7 +97,7 @@ function get_probe_info() {
         data: formData,
         dataType: 'JSON',
         success: function (data) {
-            var title_string = '<span id="project_title">' + project_name +  " " + data[0].ticket + '</span>';
+            var title_string = '<span id="project_title">' + project_name + " " + data[0].ticket + '</span>';
             if (data[0].brand_name != null) {
                 title_string += ' <span id="brand_title">' + data[0].brand_name + '</span>';
             }
@@ -187,12 +187,12 @@ function update_project_count() {
                     var added_product_count = parseInt(data[0].number_of_products_added, 10);
                     if (added_product_count > 0) {
                         product_count = add_probe_product;
-                        document.getElementById('status').disabled = true;      
+                        document.getElementById('status').disabled = true;
                         $('#status').val(2);
-                        $('#status').select2().trigger('change'); 
+                        $('#status').select2().trigger('change');
                     } else {
                         product_count = 0;
-                        document.getElementById('status').disabled = false;      
+                        document.getElementById('status').disabled = false;
                     }
                 } else {
                     $('#current_probe_count').html('XX');
@@ -224,6 +224,8 @@ function reset_probe_modal() {
 function reset_hunt_information() {
     $("#product_type").val('').trigger('change');
     document.getElementById('product_name').value = '';
+    document.getElementById('manu_link').value = '';
+    document.getElementById('product_link').value = '';
     document.getElementById('alt_design_name').value = '';
     document.getElementById("num_facings").value = 0;
     document.getElementById("output").innerHTML = 0;
@@ -231,6 +233,7 @@ function reset_hunt_information() {
     document.getElementById('alt_design_name_error').innerHTML = '';
     document.getElementById('product_type_error').innerHTML = '';
     document.getElementById('facing_error').innerHTML = '';
+    document.getElementById('manu_link_error').innerHTML = '';
 
 }
 
@@ -355,16 +358,33 @@ function show_dvc_options() {
     var product_type_element = document.getElementById('product_type');
     var product_type = product_type_element.options[product_type_element.selectedIndex].value;
     var alt_design_info = document.getElementById('alt_design_info');
+    var manu_link_section = document.getElementById('manu_link_section');
     if (status != '' && (product_type === 'dvc' || product_type === 'facing')) {
         alt_design_info.classList.remove('hide');
     } else {
         alt_design_info.classList.add('hide');
     }
 
+    if (product_type === 'brand') {
+        manu_link_section.classList.remove('hide');
+    } else {
+        manu_link_section.classList.add('hide');
+    }
+
     if (product_type === 'facing') {
         document.getElementById('alt_name_label').innerHTML = 'Alternative Design Name:';
     } else {
         document.getElementById('alt_name_label').innerHTML = '*Alternative Design Name:';
+    }
+}
+
+function is_url(str) {
+    regexp = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+    if (regexp.test(str)) {
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
@@ -384,6 +404,8 @@ function add_probe_product() {
     var status = status_element.options[status_element.selectedIndex].value;
     var facings = document.getElementById("num_facings").value;
     var facing_error = document.getElementById('facing_error');
+    var manu_link = document.getElementById('manu_link').value.trim();
+    var product_link = document.getElementById('product_link').value.trim();
     formData.append('facings', facings);
 
     if (product_name == '') {
@@ -422,6 +444,30 @@ function add_probe_product() {
             alt_design_name_error.innerHTML = '';
             formData.append('alt_design_name', alt_design_name);
         }
+    }
+
+    if (product_type === 'brand' && manu_link == '') {
+        document.getElementById('manu_link_error').innerHTML = 'Manufacturer Link cannot be empty';
+        is_valid_form = false;
+    } else {
+        document.getElementById('manu_link_error').innerHTML = '';
+        if (!is_url(manu_link) && product_type == 'brand') {
+            document.getElementById('manu_link_error').innerHTML = 'Invalid URL';
+            is_valid_form = false;
+        } else {
+            if (product_type != 'brand') {
+                manu_link = '';
+            }
+            formData.append('manu_link', manu_link);
+        }
+    }
+
+    if (product_link != '' && !is_url(product_link)) {
+        is_valid_form = false;
+        document.getElementById('product_link_error').innerHTML = 'Invalid URL';
+    } else {
+        document.getElementById('product_link_error').innerHTML = '';
+        formData.append('product_link', product_link);
     }
 
     if (product_type === 'facing' && facings == 0) {

@@ -300,7 +300,12 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                             </div>
                         </div>
                     </div>
-                    <p class="border-bottom my-3">QA Information</p>
+                    <div class="form-row">
+                        <div class="col">
+                            <p id="product_source_button">Go to Product Source</p> 
+                        </div>
+                    </div>
+                    <p class="border-bottom my-3"></p>
                     <div class="form-row" id="rename_section">
                         <div class="col">
                             <div class="form-group">
@@ -328,6 +333,15 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         </div>
                     </div>
                     <div class="form-row">
+                        <div class="col">
+                            <div class="form-group hide" id="manu_link_section">
+                                <label for="manu_link">Manufacturer Link <span id="manu_source_button"></span> </label>
+                                <input type="text" id="manu_link" class="form-control">
+                                <span id="manu_error" class="error-popup"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
                         <div class="col col-md-7">
                             <div class="form-group">
                             <p>Error Type  <button type="button" class="btn btn-outline-danger add-error"  data-toggle="modal" data-target="#qa_error">Add Error</button></p>
@@ -335,7 +349,8 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                                 
                             </select>
                             <span id="error_qa_error" class="error-popup"></span>
-                            <span id="error_facing_error" class="error-popup"></span>
+                            <p id="error_facing_error" class="error-popup"></p>
+                            <p id="error_link_error" class="error-popup"></p>
                             </div>
                         </div>
                         <div class="col col-md-4">

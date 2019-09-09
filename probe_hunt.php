@@ -325,6 +325,18 @@ slider.oninput = function() {
   output.innerHTML = this.value;
 }
 </script>
+                <div class="row" id="link_section">
+                    <div class="form-group col-md-5 hide" id="manu_link_section">
+                        <label for="manu_link">*Manufacturer Source Link:</label>
+                        <input type="text" id="manu_link" class="form-control">
+                        <span id="manu_link_error" class="error-popup"></span>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="product_link">Product Source Link:</label>
+                        <input type="text" id="product_link" class="form-control">
+                        <span id="product_link_error" class="error-popup"></span>
+                    </div>
+                </div>
                 <div>
                     <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
                     <button type="button" class="btn btn-outline-danger hide" id="cancel_product" onclick="cancel_product_button();">Save Changes</button>

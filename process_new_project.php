@@ -160,6 +160,8 @@ if ($row_count == 0) {
         `product_qa_account_id` int(11) DEFAULT NULL,
         `product_qa_datetime` datetime DEFAULT NULL,
         `product_qa_status` enum(\'pending\',\'approved\',\'disapproved\') NOT NULL DEFAULT \'pending\',
+        `manufacturer_link` varchar(2083) DEFAULT NULL,
+        `product_link` varchar(2083) DEFAULT NULL,
          CONSTRAINT '.$dbname.'_PRODUCT_ACCOUNT_ID FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`),
          CONSTRAINT '.$dbname.'_PRODUCT_QA_ACCOUNT_ID FOREIGN KEY (`product_qa_account_id`) REFERENCES `user_db`.`accounts` (`account_id`),
          CONSTRAINT '.$dbname.'_PRODUCT_STATUS FOREIGN KEY (`product_status`) REFERENCES `probe_status` (`probe_status_id`)
