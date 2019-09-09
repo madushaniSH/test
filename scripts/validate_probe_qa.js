@@ -288,6 +288,7 @@ function unassign_probe() {
     document.getElementById("product_alt_rename_error").innerHTML = "";
     document.getElementById("status_error").innerHTML = "";
     document.getElementById("error_qa_error").innerHTML = "";
+    document.getElementById("error_facing_error").innerHTML = "";
     document.getElementById("image_error").innerHTML = "";
     document.getElementById("name_error").innerHTML = "";
     document.getElementById("num_facings").value = 0;
@@ -617,6 +618,7 @@ function validate_qa_form() {
                 document.getElementById("product_alt_rename_error").innerHTML = "";
                 document.getElementById("status_error").innerHTML = "";
                 document.getElementById("error_qa_error").innerHTML = "";
+                document.getElementById("error_facing_error").innerHTML = "";
                 document.getElementById("image_error").innerHTML = "";
                 document.getElementById("name_error").innerHTML = "";
                 rename_alert.classList.add("hide");
