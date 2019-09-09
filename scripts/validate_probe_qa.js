@@ -616,7 +616,7 @@ function validate_qa_form() {
         is_valid_form = false;
     } else {
         document.getElementById('manu_error').innerHTML = '';
-        if (!is_url(manu_link)) {
+        if (!is_url(manu_link) && product_type == "brand") {
             document.getElementById('manu_error').innerHTML = 'Invalid URL';
             is_valid_form = false;
         } else {

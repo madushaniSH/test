@@ -123,11 +123,16 @@ if ($row_count == 1){
             $sql->execute(['product_id'=>$product_info->product_id,'image_location'=>$image_file]);
         }
     }
+
+    $manu_link = trim($_POST['manu_link']);
+    if ($manu_link == '' || $_POST['product_type'] != 'brand') {
+        $manu_link = NULL;
+    }
     
     $now = new DateTime();
     $sql = "UPDATE products SET manufacturer_link = :manufacturer_link,product_facing_count = :num_facings ,product_qa_account_id = :account_id, product_qa_datetime = :date_time, product_qa_status = :qa_status WHERE product_id = :product_id";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['manufacturer_link'=>$_POST['manu_link'],'account_id'=>$_SESSION['id'], 'date_time'=>$now->format('Y-m-d H:i:s'), 'qa_status'=>$_POST['status'], 'product_id'=>$product_info->product_id, 'num_facings'=>$_POST['num_facings']]);
+    $stmt->execute(['manufacturer_link'=>$manu_link,'account_id'=>$_SESSION['id'], 'date_time'=>$now->format('Y-m-d H:i:s'), 'qa_status'=>$_POST['status'], 'product_id'=>$product_info->product_id, 'num_facings'=>$_POST['num_facings']]);
     
     $sql = 'DELETE FROM probe_qa_queue WHERE account_id = :account_id AND probe_being_handled = 1';
     $stmt = $pdo->prepare($sql);
