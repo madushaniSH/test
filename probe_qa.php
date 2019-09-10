@@ -99,7 +99,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="details.php"><span class="fas fa-user-cog"> Details</a>
+                <a class="nav-link" href="details.php"><span class="fas fa-user-cog"> <?php echo $_SESSION["username"]?></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout.php"><span class="fas fa-sign-out-alt"> Logout</a>
