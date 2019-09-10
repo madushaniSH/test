@@ -132,7 +132,7 @@ function fetch_details() {
                     data: formData,
                     dataType: 'JSON',
                     success: function (data) {           
-                        JSONToCSVConvertor(data[0].hunter_summary, p_name + " Hunter Summary " + start_datetime + " - " + end_datetime, true);
+                        JSONToCSVConvertor(data[0].hunter_summary, data[0].dbname + " Hunter Summary " + start_datetime + " - " + end_datetime, true);
                     },
                     error: function (data) {
                         alert("Error assigning probe. Please refresh");

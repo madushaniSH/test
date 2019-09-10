@@ -81,6 +81,6 @@ for ($i = 0; $i < count($hunter_summary); $i++){
     unset($hunter_summary[$i][probe_processed_hunter_id]);
 }
 
-$return_arr[] = array("hunter_summary"=>$hunter_summary);
+$return_arr[] = array("hunter_summary"=>$hunter_summary, "dbname" =>$dbname);
 echo json_encode($return_arr);
 ?>
