@@ -86,7 +86,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/js/plugins/piexif.min.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/js/fileinput.min.js"></script>
-    <title>Product Hunt</title>
+    <title>Quality Assurance</title>
 </head>
 
 <body>
