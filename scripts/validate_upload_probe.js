@@ -115,6 +115,7 @@ function validate_project_name() {
         project_name_error.innerHTML = '';
         upload_div.classList.remove('hide');
         fetch_tickets();
+        jQuery('#probe_upload_success').html('');
     }
 }
 
@@ -129,6 +130,7 @@ function fetch_tickets() {
         data: formData,
         success: function (data) {
             $('#ticket_name').html(data);
+            $("#ticket_name").val('').trigger('change')
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
@@ -179,6 +181,7 @@ function validate_new_ticket() {
 }
 
 function validate_ticket_id() {
+    jQuery('#probe_upload_success').html('');
     var ticket_name_element = document.getElementById('ticket_name');
     var ticket_name = ticket_name_element.options[ticket_name_element.selectedIndex].value;
     var project_name_element = document.getElementById('project_name');

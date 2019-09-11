@@ -246,6 +246,10 @@ jQuery(document).ready(function () {
         dropdownParent: $("#add_reference"),
         width: '100%',
     });
+    jQuery('#product_type').select2({
+        dropdownParent: $("#add_reference"),
+        width: '100%',
+    });
     jQuery('#status').change(function () {
         show_additional_options();
     });
