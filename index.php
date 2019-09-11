@@ -81,6 +81,7 @@ if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESS
 </a>
 ";
 }
+require ('footer.php');
 ?>
 </body>
 </html>

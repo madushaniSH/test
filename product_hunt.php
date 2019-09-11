@@ -104,5 +104,6 @@ if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESS
     Quality Assurance
 </a>";
 }
+require ('footer.php');
 ?>
 </body>
