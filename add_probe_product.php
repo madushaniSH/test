@@ -55,11 +55,25 @@ if (isset($_POST['alt_design_name']) && $_POST['alt_design_name'] != '') {
     $alt_design_name = NULL;
 }
 try {
-    $sql = 'INSERT INTO products (product_name, product_type, product_status, product_alt_design_name, product_facing_count, account_id, manufacturer_link, product_link) VALUES (:product_name, :product_type, :product_status, :product_alt_design_name, :product_facing_count, :account_id, :manufacturer_link, :product_link)';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['product_name'=>trim($_POST['product_name']), 'product_type'=>$_POST['product_type'], 'product_status'=>$_POST['status'],'product_alt_design_name'=>$alt_design_name, 'product_facing_count'=>$_POST['facings'], 'account_id'=>$_SESSION['id'], 'manufacturer_link'=>$manu_link, 'product_link'=>$product_link]);
-    $last_id = (int)$pdo->lastInsertId();
-    $sql = 'SELECT probe_key_id FROM probe_queue WHERE account_id = :account_id';
+    do {
+        $flag = true;
+        try{
+            $pdo->beginTransaction();
+            $sql = 'INSERT INTO products (product_name, product_type, product_status, product_alt_design_name, product_facing_count, account_id, manufacturer_link, product_link) VALUES (:product_name, :product_type, :product_status, :product_alt_design_name, :product_facing_count, :account_id, :manufacturer_link, :product_link)';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['product_name'=>trim($_POST['product_name']), 'product_type'=>$_POST['product_type'], 'product_status'=>$_POST['status'],'product_alt_design_name'=>$alt_design_name, 'product_facing_count'=>$_POST['facings'], 'account_id'=>$_SESSION['id'], 'manufacturer_link'=>$manu_link, 'product_link'=>$product_link]);
+            $last_id = $pdo->lastInsertId();
+            $pdo->commit();
+        } catch(Exception $e) {
+            $pdo->rollBack();
+        }
+        if ($last_id == NULL) {
+            $pdo->rollBack();
+            $flag = false;
+        }
+    } while (!$flag);
+
+    $sql = 'SELECT probe_key_id FROM probe_queue WHERE account_id = :account_id AND probe_being_handled = 1';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$_SESSION['id']]);
     $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
@@ -85,6 +99,8 @@ try {
         $stmt->execute(['product_alt_design_name'=>$alt_design_name, 'product_type'=>$_POST['product_type']]);
         $fetched_count = $stmt->rowCount();
         $fetched_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else if ($product_type == 'facing') {
+        $fetched_count = 1;
     }
 
     if ($fetched_count != 1) {
