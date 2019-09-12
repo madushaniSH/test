@@ -238,6 +238,16 @@ function show_additional_options() {
     }
 }
 
+function add_rec_comment() {
+    document.getElementById('comment').value = "Recongnition Issue";
+    return false;
+}
+
+function add_cant_find_comment() {
+    document.getElementById('comment').value = "Some Products in Probe could not be found";
+    return false;
+}
+
 jQuery(document).ready(function () {
     jQuery('#project_name').select2({
         width: '100%',

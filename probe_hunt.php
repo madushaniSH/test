@@ -68,8 +68,6 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="styles/probe_hunt.css" />
-    <script src="scripts/transition.js"></script>
-    <script src="scripts/validate_probe_hunt.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
@@ -209,6 +207,32 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 </div>
 <div class="row">
     <div  id="probe_hunt_counter" class="col hide">
+        <div class="row text-center hide" id="target_message">
+            <div class="col">
+            <div class="spinner-grow text-primary text-center" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-secondary text-center" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-success text-center" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-danger text-center" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-warning text-center" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-info text-center" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-dark text-center" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+             <?php if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ){ echo "<p>Todays Target : Checked <span id =\"pro_count\"></span> probe(s) out of <span class=\"tot_count\">6000</span></p>";} else {echo "<p>Todays Target : Checked <span id =\"pro_count\"></span> probe(s) out of <span class=\"tot_count\">120</span></p>";} ?>
+            </div>
+        </div>
 	    <div class="row text-center">
 	        <div class="col">
 	            <div class="counter">
@@ -355,4 +379,6 @@ slider.oninput = function() {
         </div>
     </div>
 </div>
+    <script src="scripts/transition.js"></script>
+    <script src="scripts/validate_probe_hunt.js"></script>
 </body>

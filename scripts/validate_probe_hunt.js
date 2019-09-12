@@ -46,8 +46,10 @@ function get_ticket_list() {
 
 function cancel_product_button() {
     var product_name = document.getElementById('product_name').value.trim();
+    var product_type_element = document.getElementById('product_type');
+    var product_type = product_type_element.options[product_type_element.selectedIndex].value;
     var flag = true;
-    if (product_name != '') {
+    if (product_name != '' || product_type != '') {
 
         if (!add_probe_product()) {
             flag = false;
@@ -167,6 +169,8 @@ function update_project_count() {
                     $('#facing_count').html(data[0].facing_count);
                     $('#product_count').empty();
                     $('#product_count').html(data[0].number_of_products_added);
+                    $('#pro_count').empty();
+                    $('#pro_count').html(data[0].checked_count);
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {
@@ -188,11 +192,35 @@ function update_project_count() {
                     if (added_product_count > 0) {
                         product_count = added_product_count;
                         document.getElementById('status').disabled = true;
-                        $('#status').val(2);
-                        $('#status').select2().trigger('change');
+                        var formData = new FormData();
+                         var project_name_element = document.getElementById('project_name');
+                        var project_name = project_name_element.options[project_name_element.selectedIndex].value;
+                        formData.append('project_name', project_name);
+                        jQuery.ajax({
+                            url: 'get_project_status.php',
+                            type: 'POST',
+                            data: formData,
+                            success: function (data) {
+                                $('#status').html(data);
+                                $('#status').val(2).change();
+                            },
+                            error: function (data) {
+                                alert("Error assigning probe. Please refresh");
+                            },
+                            cache: false,
+                            contentType: false,
+                            processData: false
+                        });
                     } else {
                         product_count = 0;
                         document.getElementById('status').disabled = false;
+                    }
+                    if (product_count > 0) {
+                        document.getElementById('cancel_product').classList.remove('hide');
+                        document.getElementById('submit_probe').classList.add('hide');
+                    } else {
+                        document.getElementById('cancel_product').classList.add('hide');
+                        document.getElementById('submit_probe').classList.remove('hide');
                     }
                 } else {
                     $('#current_probe_count').html('XX');
@@ -279,7 +307,7 @@ function validate_probe_submission() {
     }
 
     if (is_valid_form) {
-        if (status === '2' && !skip_check && product_count <= 1) {
+        if (status === '2' && !skip_check && product_count < 1) {
             var is_valid_form = true;
             var formData = new FormData();
             var product_name = document.getElementById('product_name').value.trim();
@@ -723,6 +751,11 @@ function validate_ticket_name() {
             probe_hunt_counter.classList.remove('hide');
             hunter_counter.classList.remove('hide');
             selected_ticket = ticket;
+            if (p_name == 'GMI_US') {
+                document.getElementById('target_message').classList.remove('hide');
+            } else {
+                document.getElementById('target_message').classList.add('hide');
+            }
         }
     }
 }

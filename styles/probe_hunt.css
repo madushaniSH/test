@@ -243,3 +243,16 @@ body {
     color: palevioletred;
     font-size: 18px;
 }
+
+#target_message p {
+    font-size: 1.2vw;
+}
+
+#target_message span {
+    font-weight: bold;
+    color: orangered;
+}
+
+#target_message .tot_count {
+    color: darkblue;
+}
