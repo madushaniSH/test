@@ -92,12 +92,12 @@ if ($row_count == 0) {
     (4, \"Blur\"),
     (5, \"Validation Error\"),
     (6, \"Brand Level\"),
-    (7, \"Size Can’t Find\"),
-    (8, \"Count Can’t Find\"),
-    (9, \"Description Can’t Find\"),
-    (10, \"Flavour Can’t Find\"),
-    (11, \"Container Type Can’t Find\"),
-    (12, \"Sub Brand Can’t Find\"),
+    (7, \"Size Can't Find\"),
+    (8, \"Count Can't Find\"),
+    (9, \"Description Can't Find\"),
+    (10, \"Flavour Can't Find\"),
+    (11, \"Container Type Can't Find\"),
+    (12, \"Sub Brand Can't Find\"),
     (13, \"Brand Not Found\")";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
