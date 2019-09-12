@@ -101,7 +101,7 @@ function get_brand_list(product_type, select_element) {
                     }
                 }
                 if (selected_val != '') {
-                    $("#" + select_element).select2('val', selected_val).change();
+                    $("#" + select_element).val(selected_val).change();
                 }
 
                 var element = document.getElementById(select_element).options;
