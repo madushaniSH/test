@@ -256,3 +256,7 @@ body {
 #target_message .tot_count {
     color: darkblue;
 }
+
+#rename_error {
+    color: #812b2b;
+}

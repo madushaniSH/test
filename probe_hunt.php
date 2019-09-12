@@ -168,6 +168,17 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="col">
 	            <div class="counter">
+                  <i id ="rename_error" class="fa-2x fas fa-eye-slash"></i>
+                  <h2 id="rename_error_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Rename Error Count</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
                   <i id ="system_error" class="fa-2x fas fa-laptop-code"></i>
                   <h2 id="system_error_count" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">

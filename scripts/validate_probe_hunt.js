@@ -171,6 +171,8 @@ function update_project_count() {
                     $('#product_count').html(data[0].number_of_products_added);
                     $('#pro_count').empty();
                     $('#pro_count').html(data[0].checked_count);
+                    $('#rename_error_count').empty();
+                    $('#rename_error_count').html(data[0].rename_error_count);
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {

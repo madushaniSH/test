@@ -1,4 +1,5 @@
 var p_name = '';
+let product_count = 0;
 
 function get_brand_list(select_element) {
     if (p_name != "") {
@@ -174,12 +175,12 @@ function update_ref_count() {
 }
 
 function open_tab(evt, tab_name) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
+    let i = 0;
+    const tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
     }
-    tablinks = document.getElementsByClassName("tablinks");
+    const tablinks = document.getElementsByClassName("tablinks");
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
@@ -188,26 +189,56 @@ function open_tab(evt, tab_name) {
     return false;
 }
 
-
+/*
 function validate_project_name() {
-    $('#brand_name_filter').empty();
     var project_name_element = document.getElementById('project_name');
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
     var project_name_error = document.getElementById('project_name_error');
-    var ref_hunt_options = document.getElementById('ref_hunt_options');
-    var ref_hunt_counter = document.getElementById('ref_hunt_counter');
+    var probe_hunt_options = document.getElementById('probe_hunt_options');
+    var probe_hunt_counter = document.getElementById('probe_hunt_counter');
+    var hunter_counter = document.getElementById('hunter_counter');
+    var ticket_section = document.getElementById('ticket_section');
+    if (project_name == '') {
+        project_name_error.innerHTML = 'Project Name required for upload';
+        probe_hunt_options.classList.add('hide');
+        probe_hunt_counter.classList.add('hide');
+        hunter_counter.classList.add('hide')
+    } else {
+        $('#ticket').empty();
+        project_name_error.innerHTML = '';
+        probe_hunt_options.classList.add('hide');
+        probe_hunt_counter.classList.add('hide');
+        hunter_counter.classList.add('hide')
+        ticket_section.classList.remove('hide');
+        p_name = project_name;
+        get_ticket_list();
+    }
+}
+*/
+
+function validate_project_name() {
+    $('#brand_name_filter').empty();
+    const project_name_element = document.getElementById('project_name');
+    const project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    const project_name_error = document.getElementById('project_name_error');
+    const ref_hunt_options = document.getElementById('ref_hunt_options');
+    const ref_hunt_counter = document.getElementById('ref_hunt_counter');
+    const ticket_section = document.getElementById('ticket_section');
     //var hunter_counter = document.getElementById('hunter_counter');
     if (project_name == '') {
         project_name_error.innerHTML = 'Project Name required for upload';
         ref_hunt_options.classList.add('hide');
         ref_hunt_counter.classList.add('hide');
+        ticket_section.classList.add('hide');
         //hunter_counter.classList.add('hide')
     } else {
         project_name_error.innerHTML = '';
-        ref_hunt_options.classList.remove('hide');
-        ref_hunt_counter.classList.remove('hide');
+        ticket_section.classList.remove('hide');
+        ref_hunt_counter.classList.add('hide');
+        ref_hunt_options.classList.add('hide');
         //hunter_counter.classList.remove('hide')
         p_name = project_name;
+        get_ticket_list();
         jQuery('#ref_recognition').val('');
         jQuery('#ref_short_name').val('');
         jQuery('#ref_sub_brand').val('');
@@ -228,9 +259,9 @@ function validate_project_name() {
 }
 
 function show_additional_options() {
-    var status_element = document.getElementById('status');
-    var status = status_element.options[status_element.selectedIndex].value;
-    var hunt_information = document.getElementById('ref_product_information');
+    const status_element = document.getElementById('status');
+    const status = status_element.options[status_element.selectedIndex].value;
+    const hunt_information = document.getElementById('ref_product_information');
     if (status === '2') {
         hunt_information.classList.remove('hide');
     } else {
@@ -246,6 +277,74 @@ function add_rec_comment() {
 function add_cant_find_comment() {
     document.getElementById('comment').value = "Some Products in Probe could not be found";
     return false;
+}
+
+function show_dvc_options() {
+    const status_element = document.getElementById('status');
+    const status = status_element.options[status_element.selectedIndex].value;
+    const hunt_information = document.getElementById('hunt_information');
+    const product_type_element = document.getElementById('product_type');
+    const product_type = product_type_element.options[product_type_element.selectedIndex].value;
+    const alt_design_info = document.getElementById('alt_design_info');
+    const manu_link_section = document.getElementById('manu_link_section');
+    if (status != '' && (product_type === 'dvc' || product_type === 'facing')) {
+        alt_design_info.classList.remove('hide');
+    } else {
+        alt_design_info.classList.add('hide');
+    }
+
+    if (product_type === 'brand') {
+        manu_link_section.classList.remove('hide');
+    } else {
+        manu_link_section.classList.add('hide');
+    }
+
+    if (product_type === 'facing') {
+        document.getElementById('alt_name_label').innerHTML = 'Alternative Design Name:';
+    } else {
+        document.getElementById('alt_name_label').innerHTML = '*Alternative Design Name:';
+    }
+}
+
+function get_ticket_list() {
+    if (p_name != "") {
+        var formData = new FormData();
+        formData.append("project_name", p_name);
+        jQuery.ajax({
+            url: "get_project_tickets.php",
+            type: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: function (data) {
+                $("#ticket").append(
+                    '<option value="" selected disabled>Select</option>'
+                );
+                // adding missing options
+                for (var i = 0; i < data[0].ticket_list.length; i++) {
+                    if (
+                        !$("#ticket").find(
+                            'option[value="' + data[0].ticket_list[i].project_ticket_system_id + '"]'
+                        ).length
+                    ) {
+                        // Append it to the select
+                        $("#ticket").append(
+                            '<option value="' +
+                            data[0].ticket_list[i].project_ticket_system_id +
+                            '">' +
+                            data[0].ticket_list[i].ticket_id +
+                            "</option>"
+                        );
+                    }
+                }
+            },
+            error: function (data) {
+                alert("Error assigning probe. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
 }
 
 jQuery(document).ready(function () {
@@ -284,5 +383,11 @@ jQuery(document).ready(function () {
     $("#show_button").mouseleave(function () {
         $("#counters").fadeOut();
         document.getElementById('arrow_sec').classList.add('bounce');
+    });
+    jQuery('#product_type').change(function () {
+        show_dvc_options();
+    });
+    jQuery('#ticket').select2({
+        width: '50%',
     });
 });

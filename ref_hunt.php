@@ -198,6 +198,16 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         <span id="project_name_error" class="error-popup"></span>    
     </div>
 </div>
+<div id="ticket_section" class="hide">
+<div class="row">
+    <div class="col">
+        <label for="ticket">Select Ticket ID</label>
+        <select name="ticket" id="ticket" class="form-control">
+        </select>
+        <span id="ticket_error" class="error-popup"></span>    
+    </div>
+</div>
+</div>
 <div class="row">
     <div  id="ref_hunt_counter" class="col hide">
 	    <div class="row text-center">
