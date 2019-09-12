@@ -83,6 +83,7 @@ function get_brand_list(product_type, select_element) {
             dataType: "JSON",
             success: function (data) {
                 // adding missing options
+                let selected_val = $("#" + select_element).val();
                 for (var i = 0; i < data[0].brand_rows.length; i++) {
                     if (
                         !$("#" + select_element).find(
@@ -98,6 +99,9 @@ function get_brand_list(product_type, select_element) {
                             "</option>"
                         );
                     }
+                }
+                if (selected_val != '') {
+                    $("#" + select_element).select2('val', selected_val).change();
                 }
 
                 var element = document.getElementById(select_element).options;
@@ -536,9 +540,9 @@ function validate_project_name() {
         p_name = project_name;
         ticket.classList.remove("hide");
         get_ticket_list();
-        //get_brand_list("sku", "brand_name");
-        //get_brand_list("dvc", "dvc_name");
-        //get_brand_list("facing", "facing_name");
+        $("#brand_name").empty();
+        $("#dvc_name").empty();
+        $("#facing_name").empty();
     }
 }
 
