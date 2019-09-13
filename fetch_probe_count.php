@@ -201,7 +201,36 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
 }
 
 if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
-    $mon_accuracy = 0;
+    $cycle_start = $_POST['start_time'];
+    $cycle_end = $_POST['end_time'];
+    $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="brand" AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime) AND products.product_status = 2';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
+    $mon_brand_count = $stmt->fetchColumn();
+
+    $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="sku" AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime) AND products.product_status = 2';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
+    $mon_sku_count = $stmt->fetchColumn();
+
+    $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="dvc" AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime) AND products.product_status = 2';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
+    $mon_dvc_count = $stmt->fetchColumn();
+
+    $sql = 'SELECT SUM(product_facing_count) FROM products WHERE products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime AND products.product_status = 2';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
+    $mon_facing_count = $stmt->fetchColumn();
+    if ($mon_facing_count == null) {
+        $mon_facing_count = 0;
+    }
+    $sql = "SELECT COUNT(DISTINCT products.product_id) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.account_id = :account_id AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
+    $mon_error_type_count = $stmt->fetchColumn();
+    $total_count = ($mon_brand_count * 2) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2);
+    $mon_accuracy = round(((($total_count - $mon_error_type_count) / $total_count) * 100), 2);
 } else {
     $cycle_start = $_POST['start_time'];
     $cycle_end = $_POST['end_time'];
