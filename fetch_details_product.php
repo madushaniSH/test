@@ -33,7 +33,7 @@ catch(PDOException $e){
     echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
     exit();
 }
-$sql = 'SELECT products.product_id, probe.probe_id AS "Probe ID", project_tickets.ticket_id  AS "Ticket ID", brand.brand_name AS "Brand", products.product_alt_design_name AS "Alternative Design Name", products.product_name AS "English Product Name" , products.product_type AS "Product Type", products.product_creation_time AS "Product Creation Time", client_category.client_category_name AS "Category", products.product_facing_count AS "Facing Count",products.account_id AS "hunter_gid", products.manufacturer_link AS "Manufacturer Link", products.product_link AS "Product Link",products.product_qa_account_id AS "qa_gid", products.product_qa_datetime AS "QA Time", products.product_qa_status AS "Product Status"
+$sql = 'SELECT products.product_id, probe.probe_id AS "Probe ID", project_tickets.ticket_id  AS "Ticket ID", brand.brand_name AS "Brand", products.product_alt_design_name AS "Alternative Design Name", products.product_name AS "English Product Name" , products.product_previous AS "Previous English Product Name" products.product_type AS "Product Type", products.product_creation_time AS "Product Creation Time", client_category.client_category_name AS "Category", products.product_facing_count AS "Facing Count",products.account_id AS "hunter_gid", products.manufacturer_link AS "Manufacturer Link", products.product_link AS "Product Link",products.product_qa_account_id AS "qa_gid", products.product_qa_datetime AS "QA Time", products.product_qa_status AS "Product Status"
 FROM products
 INNER JOIN probe_product_info
 ON products.product_id = probe_product_info.probe_product_info_product_id
@@ -69,6 +69,9 @@ for ($i = 0; $i < count($hunted_product_info); $i++){
     }
     if ($hunted_product_info[$i]["Product Link"] == null) {
         $hunted_product_info[$i]["Product Link"] = '';
+    }
+    if ($hunted_product_info[$i]["Previous English Product Name"] == null){
+        $hunted_product_info[$i]["Previous English Product Name"] = '';
     }
     $sql = 'SELECT b.account_gid FROM products INNER JOIN user_db.accounts b ON products.account_id = b.account_id WHERE b.account_id = :account_id AND products.product_id = :product_id';
     $stmt = $pdo->prepare($sql);
