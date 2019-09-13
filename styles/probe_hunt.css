@@ -260,3 +260,7 @@ body {
 #rename_error {
     color: #812b2b;
 }
+
+#error_type_error {
+    color: darkgoldenrod;
+}

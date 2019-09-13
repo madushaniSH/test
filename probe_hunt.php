@@ -163,7 +163,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <span class="sr-only">Loading...</span>
                   </div>
                 </h2>
-                    <p class="count-text ">QA Error Count</p>
+                    <p class="count-text ">Disapproved Products</p>
                 </div>
             </div>
             <div class="col">
@@ -174,7 +174,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <span class="sr-only">Loading...</span>
                   </div>
                 </h2>
-                    <p class="count-text ">Rename Error Count</p>
+                    <p class="count-text ">Rename Errors</p>
                 </div>
             </div>
             <div class="col">
@@ -185,7 +185,18 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <span class="sr-only">Loading...</span>
                   </div>
                 </h2>
-                    <p class="count-text ">System Error Count</p>
+                    <p class="count-text ">System Errors</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i id ="error_type_error" class="fa-2x fas fa-exclamation-circle"></i>
+                  <h2 id="error_type_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">QA Errors</p>
                 </div>
             </div>
         </div>

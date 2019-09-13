@@ -173,6 +173,8 @@ function update_project_count() {
                     $('#pro_count').html(data[0].checked_count);
                     $('#rename_error_count').empty();
                     $('#rename_error_count').html(data[0].rename_error_count);
+                    $('#error_type_count').empty();
+                    $('#error_type_count').html(data[0].error_type_count);
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {
