@@ -104,7 +104,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
     }*/
     $total_count = ($hunter_summary[$i]["Brand Hunted"] * 2)  + $hunter_summary[$i]["SKU Hunted"] + (($hunter_summary[$i]["DVC Hunted"] + $hunter_summary[$i]["Hunted Facing Count"]) / 2);
     $monthly_accuracy = round(((($total_count - $hunter_summary[$i]["QA Errors"] )/ $total_count) * 100),2);
-    $hunter_summary[$i]["Monthly Accuracy"] = $monthly_accuracy . '%';
+    $hunter_summary[$i]["Accuracy"] = $monthly_accuracy . '%';
 
     unset($hunter_summary[$i][probe_processed_hunter_id]);
 }

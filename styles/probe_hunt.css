@@ -262,5 +262,9 @@ body {
 }
 
 #error_type_error {
-    color: darkgoldenrod;
+    color: #bb0e0e;
+}
+
+#accuracy{
+    color: lightgreen;
 }
