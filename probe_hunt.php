@@ -97,7 +97,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 <div class="row">
     <div  id="hunter_counter" class="col hide">
         <div class="downArrow bounce" id="arrow_sec">
-            <a class="btn" id="show_button"><i class="fas fa-chevron-circle-down fa-3x"></i><br> <?php if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ){ echo "Show Project Daily Progress";} else {echo "Show Daily Count for <span id=\"acc_pro\"></span>";} ?></a>
+            <a class="btn" id="show_button"><i class="fas fa-chevron-circle-down fa-3x"></i><br> <?php if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ){ echo "Show <span id=\"acc_pro\"></span> Daily Progress";} else {echo "Show Daily Count for <span id=\"acc_pro\"></span>";} ?></a>
         </div>
 	    <div class="row text-center hide" id="counters">
 	        <div class="col">
