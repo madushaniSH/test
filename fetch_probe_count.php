@@ -238,16 +238,25 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
     $mon_brand_count = $stmt->fetchColumn();
+    if ($mon_brand_count == null) {
+        $mon_brand_count = 0;
+    }
 
     $sql = 'SELECT COUNT(*) FROM products WHERE products.account_id = :account_id AND product_type ="sku" AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime) AND products.product_status = 2';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
     $mon_sku_count = $stmt->fetchColumn();
+    if ($mon_sku_count == null) {
+        $mon_sku_count = 0;
+    }
 
     $sql = 'SELECT COUNT(*) FROM products WHERE products.account_id = :account_id AND product_type ="dvc" AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime) AND products.product_status = 2';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
     $mon_dvc_count = $stmt->fetchColumn();
+    if ($mon_dvc_count == null) {
+        $mon_dvc_count = 0;
+    }
 
     $sql = 'SELECT SUM(product_facing_count) FROM products WHERE products.account_id = :account_id AND  products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime AND products.product_status = 2';
     $stmt = $pdo->prepare($sql);
