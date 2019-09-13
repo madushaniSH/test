@@ -91,6 +91,21 @@ for ($i = 0; $i < count($hunter_summary); $i++){
     $error_count = $stmt->fetchColumn();
     $hunter_summary[$i]["QA Errors"] = $error_count;
 
+    /*$date = DateTime::createFromFormat('d', '15');
+    $today = date("Y-m-d");
+    if ($today < $date) {
+        $prev_date = DateTime::createFromFormat('d', 15)->add(new DateInterval('P-1M'));
+        $cycle_start = $prev_date->format('Y-m-d');
+        $cycle_end  = $date->format('Y-m-d');
+    } else {
+        $cycle_start = $date->format('Y-m-d');
+        $next_date = DateTime::createFromFormat('d', 15)->add(new DateInterval('P1M'));
+        $cycle_end  = $next_date->format('Y-m-d');
+    }*/
+    $total_count = ($hunter_summary[$i]["Brand Hunted"] * 2)  + $hunter_summary[$i]["SKU Hunted"] + (($hunter_summary[$i]["DVC Hunted"] + $hunter_summary[$i]["Hunted Facing Count"]) / 2);
+    $monthly_accuracy = round(((($total_count - $hunter_summary[$i]["QA Errors"] )/ $total_count) * 100),2);
+    $hunter_summary[$i]["Monthly Accuracy"] = $monthly_accuracy . '%';
+
     unset($hunter_summary[$i][probe_processed_hunter_id]);
 }
 
