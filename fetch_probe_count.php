@@ -207,16 +207,25 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
     $mon_brand_count = $stmt->fetchColumn();
+    if ($mon_brand_count == null) {
+        $mon_brand_count = 0;
+    }
 
     $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="sku" AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime) AND products.product_status = 2';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
     $mon_sku_count = $stmt->fetchColumn();
+    if ($mon_sku_count == null) {
+        $mon_sku_count = 0;
+    }
 
     $sql = 'SELECT COUNT(*) FROM products WHERE product_type ="dvc" AND (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime) AND products.product_status = 2';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
     $mon_dvc_count = $stmt->fetchColumn();
+    if ($mon_facing_count == null) {
+        $mon_facing_count = 0;
+    }
 
     $sql = 'SELECT SUM(product_facing_count) FROM products WHERE products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime AND products.product_status = 2';
     $stmt = $pdo->prepare($sql);
@@ -225,12 +234,17 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     if ($mon_facing_count == null) {
         $mon_facing_count = 0;
     }
-    $sql = "SELECT COUNT(DISTINCT products.product_id) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
-    $mon_error_type_count = $stmt->fetchColumn();
-    $total_count = ($mon_brand_count * 1.5) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2);
-    $mon_accuracy = round(((($total_count - ($mon_error_type_count * 5)) / $total_count) * 100), 2);
+   
+    if ($mon_sku_count == 0 && $mon_brand_count == 0 && $mon_dvc_count == 0 && $mon_facing_count == 0) {
+        $mon_accuracy = 0;
+    } else {
+        $sql = "SELECT COUNT(DISTINCT products.product_id) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
+        $mon_error_type_count = $stmt->fetchColumn();
+        $total_count = ($mon_brand_count * 1.5) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2);
+        $mon_accuracy = round(((($total_count - ($mon_error_type_count * 5)) / $total_count) * 100), 2);
+    }
 } else {
     $cycle_start = $_POST['start_time'];
     $cycle_end = $_POST['end_time'];
@@ -265,12 +279,16 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     if ($mon_facing_count == null) {
         $mon_facing_count = 0;
     }
-    $sql = "SELECT COUNT(DISTINCT products.product_id) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.account_id = :account_id AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
-    $mon_error_type_count = $stmt->fetchColumn();
-    $total_count = ($mon_brand_count * 1.5) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2);
-    $mon_accuracy = round(((($total_count - ($mon_error_type_count * 5)) / $total_count) * 100), 2);
+    if ($mon_sku_count == 0 && $mon_brand_count == 0 && $mon_dvc_count == 0 && $mon_facing_count == 0) {
+        $mon_accuracy = 0;
+    } else {
+        $sql = "SELECT COUNT(DISTINCT products.product_id) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.account_id = :account_id AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
+        $mon_error_type_count = $stmt->fetchColumn();
+        $total_count = ($mon_brand_count * 1.5) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2);
+        $mon_accuracy = round(((($total_count - ($mon_error_type_count * 5)) / $total_count) * 100), 2);
+    }
 }
 $return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count, "number_of_products_added"=>$number_of_products_added, "rename_error_count"=>$rename_error_count, "error_type_count"=>$error_type_count, "mon_accuracy"=>$mon_accuracy);
 echo json_encode($return_arr);
