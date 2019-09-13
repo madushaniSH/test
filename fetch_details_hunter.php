@@ -73,7 +73,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
     $error_count = $stmt->fetchColumn();
     $hunter_summary[$i]["Error Count"] = $error_count;
 
-    $sql = "SELECT COUNT(*) FROM products WHERE account_id = :account_id AND (products.product_previous IS NOT NULL OR products.product_alt_design_previous IS NOT NULL) AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
+    $sql = "SELECT COUNT(*) FROM products WHERE ( product_type = 'sku' OR product_type = 'brand' ) AND account_id = :account_id AND (products.product_previous IS NOT NULL OR products.product_alt_design_previous IS NOT NULL) AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
     $error_count = $stmt->fetchColumn();

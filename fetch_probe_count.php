@@ -109,7 +109,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
         $facing_count = 0;
     }
 
-    $sql = "SELECT COUNT(*) FROM products WHERE (products.product_previous IS NOT NULL OR products.product_alt_design_previous IS NOT NULL) AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
+    $sql = "SELECT COUNT(*) FROM products WHERE ( product_type = 'brand' OR product_type = 'sku' ) AND products.product_previous IS NOT NULL AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime'=>$min_time, 'end_datetime'=>$maxtime]);
     $rename_error_count = $stmt->fetchColumn();
@@ -184,7 +184,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     if ($facing_count == null) {
         $facing_count = 0;
     }
-    $sql = "SELECT COUNT(*) FROM products WHERE account_id = :account_id AND (products.product_previous IS NOT NULL OR products.product_alt_design_previous IS NOT NULL) AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
+    $sql = "SELECT COUNT(*) FROM products WHERE ( product_type = 'brand' OR product_type = 'sku' ) AND account_id = :account_id AND products.product_previous IS NOT NULL AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$min_time, 'end_datetime'=>$maxtime]);
     $rename_error_count = $stmt->fetchColumn();
