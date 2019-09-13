@@ -225,9 +225,9 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     if ($mon_facing_count == null) {
         $mon_facing_count = 0;
     }
-    $sql = "SELECT COUNT(DISTINCT products.product_id) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.account_id = :account_id AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
+    $sql = "SELECT COUNT(DISTINCT products.product_id) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
+    $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
     $mon_error_type_count = $stmt->fetchColumn();
     $total_count = ($mon_brand_count * 2) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2);
     $mon_accuracy = round(((($total_count - $mon_error_type_count) / $total_count) * 100), 2);
