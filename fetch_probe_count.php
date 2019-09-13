@@ -114,7 +114,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $stmt->execute(['start_datetime'=>$min_time, 'end_datetime'=>$maxtime]);
     $rename_error_count = $stmt->fetchColumn();
 
-    $sql = "SELECT COUNT(*) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
+    $sql = "SELECT COUNT(DISTINCT products.product_id) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime'=>$min_time, 'end_datetime'=>$maxtime]);
     $error_type_count = $stmt->fetchColumn();
@@ -194,7 +194,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$min_time, 'end_datetime'=>$maxtime]);
     $rename_error_count = $stmt->fetchColumn();
 
-    $sql = "SELECT COUNT(*) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.account_id = :account_id AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
+    $sql = "SELECT COUNT(DISTINCT products.product_id) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.account_id = :account_id AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$min_time, 'end_datetime'=>$maxtime]);
     $error_type_count = $stmt->fetchColumn();

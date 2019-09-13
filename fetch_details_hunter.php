@@ -85,7 +85,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
     $error_count = $stmt->fetchColumn();
     $hunter_summary[$i]["System Errors"] = $error_count;
 
-    $sql = "SELECT COUNT(*) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.account_id = :account_id AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
+    $sql = "SELECT COUNT(DISTINCT products.product_id) FROM products INNER JOIN product_qa_errors ON products.product_id = product_qa_errors.product_id WHERE products.account_id = :account_id AND products.product_qa_datetime >= :start_datetime AND products.product_qa_datetime <= :end_datetime AND products.product_status = 2";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
     $error_count = $stmt->fetchColumn();
