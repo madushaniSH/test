@@ -230,7 +230,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
     $mon_error_type_count = $stmt->fetchColumn();
     $total_count = ($mon_brand_count * 1.5) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2);
-    $mon_accuracy = round(((($total_count - ($mon_error_type_count * 10)) / $total_count) * 100), 2);
+    $mon_accuracy = round(((($total_count - ($mon_error_type_count * 5)) / $total_count) * 100), 2);
 } else {
     $cycle_start = $_POST['start_time'];
     $cycle_end = $_POST['end_time'];
@@ -261,7 +261,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
     $mon_error_type_count = $stmt->fetchColumn();
     $total_count = ($mon_brand_count * 1.5) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2);
-    $mon_accuracy = round(((($total_count - ($mon_error_type_count * 10)) / $total_count) * 100), 2);
+    $mon_accuracy = round(((($total_count - ($mon_error_type_count * 5)) / $total_count) * 100), 2);
 }
 $return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count, "number_of_products_added"=>$number_of_products_added, "rename_error_count"=>$rename_error_count, "error_type_count"=>$error_type_count, "mon_accuracy"=>$mon_accuracy);
 echo json_encode($return_arr);
