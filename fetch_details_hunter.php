@@ -102,8 +102,8 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         $next_date = DateTime::createFromFormat('d', 15)->add(new DateInterval('P1M'));
         $cycle_end  = $next_date->format('Y-m-d');
     }*/
-    $total_count = ($hunter_summary[$i]["Brand Hunted"] * 2)  + $hunter_summary[$i]["SKU Hunted"] + (($hunter_summary[$i]["DVC Hunted"] + $hunter_summary[$i]["Hunted Facing Count"]) / 2);
-    $monthly_accuracy = round(((($total_count - $hunter_summary[$i]["QA Errors"] )/ $total_count) * 100),2);
+    $total_count = ($hunter_summary[$i]["Brand Hunted"] * 1.5)  + $hunter_summary[$i]["SKU Hunted"] + (($hunter_summary[$i]["DVC Hunted"] + $hunter_summary[$i]["Hunted Facing Count"]) / 2);
+    $monthly_accuracy = round(((($total_count - ($hunter_summary[$i]["QA Errors"] * 10) )/ $total_count) * 100),2);
     $hunter_summary[$i]["Accuracy"] = $monthly_accuracy . '%';
 
     unset($hunter_summary[$i][probe_processed_hunter_id]);
