@@ -1,3 +1,11 @@
+html, body {margin: 0; height: 100%; overflow-x: hidden; overflow-y: auto}
+
+body {
+    background-image: url('images/sup_wallpaper.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 #create-project-form {
     width: 50%;
     margin: 0 auto;

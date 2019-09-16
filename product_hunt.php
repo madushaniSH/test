@@ -76,6 +76,12 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor'){
         <i class=\"fas fa-file-export fa-2x\"></i>
     </span>
     Export Project
+</a>
+<a href=\"show_active.php\" class=\"btn btn-lg dashboard-btn\">
+    <span>
+        <i class=\"fas fa-users fa-2x\"></i>
+    </span>
+    Manage Queue
 </a>"
 ;
 
