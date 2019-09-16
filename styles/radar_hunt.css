@@ -1,0 +1,10 @@
+#radar_button {
+    padding: 0;
+    border-radius: 5px;
+    width: 80%;
+}
+
+#radar_button :hover {
+    background-color: black;
+    color: white;
+}

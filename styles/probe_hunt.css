@@ -1,4 +1,4 @@
-html, body {margin: 0; height: 100%; overflow: hidden}
+html, body {margin: 0; height: 100%; overflow-x: hidden; overflow-y: auto}
 
 body {
     background-image: url('images/wallpaper.jpeg');
@@ -11,8 +11,9 @@ body {
     margin: 0 auto;
     background-color: white;
     opacity: 0.95;
-    margin-top: 1.5vw;
+    margin-top: 0.5vw;
     padding: 2vw;
+    margin-bottom: 1.5vw;
 }
 
 #hunter_counter {

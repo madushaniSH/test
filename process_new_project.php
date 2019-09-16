@@ -281,6 +281,29 @@ if ($row_count == 0) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(); 
 
+    $sql = 'CREATE TABLE `radar_hunt` (
+  `radar_hunt_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `radar_category` varchar(255) NOT NULL,
+  `radar_brand` varchar(255) NOT NULL,
+  `radar_added_user_id` int(11) NOT NULL,
+  `radar_added_date` datetime NOT NULL DEFAULT current_timestamp(),
+   `radar_ticket_id` int(11) NOT NULL,
+   CONSTRAINT '.$dbname.'_RADAR_ACCOUNT_ID FOREIGN KEY (`radar_added_user_id`) REFERENCES `user_db`.`accounts` (`account_id`),
+   CONSTRAINT '.$dbname.'_RADAR_TICKET_ID FOREIGN KEY (`radar_ticket_id`) REFERENCES `project_tickets` (`project_ticket_system_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(); 
+
+    $sql = 'CREATE TABLE `radar_queue` (
+  `radar_queue_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `radar_hunt_key_id` int(11) NOT NULL,
+  `account_id` int(11) DEFAULT NULL,
+  `radar_being_handled` tinyint(1) NOT NULL DEFAULT 0,
+   CONSTRAINT `RADAR_QUEUE_ACCOUNT_ID` FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(); 
+
     echo "<span class=\"success-popup\">Project Created</span>";
 } else {
     echo "<span class=\"error-popup\">Project with that name already exists</span>    ";

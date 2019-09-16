@@ -107,6 +107,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <h2 id="ticket_message">Selected <span id="project_name_value"></span> <span id="ticket_id_value"></span></h2>
     <button class="btn btn-secondary" onclick="show_upload_options_probe()" id="option1">Probe Upload</button>
     <button class="btn btn-secondary" onclick="show_upload_options_reference()" id="option2">Reference Upload</button>
+    <button class="btn btn-secondary" onclick="show_upload_options_radar()" id="option3">Radar Upload</button>
     <div id="probe-upload-container" class="hide">
         <label for="csv-file"><i class="fas fa-upload"><span> Upload Probe CSV file</span></i></label>
         <input type="file" id="csv-file" name="files"/>
@@ -129,6 +130,18 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
         </div>
         <span id="ref_process_success" class="success-popup"></span>
+    </div>
+    <div id="radar-upload-container" class="hide">
+        <label for="radar-csv-file"><i class="fas fa-upload"><span> Upload Radar CSV file</span></i></label>
+        <input type="file" id="radar-csv-file" name="files"/>
+        <div class="text-center">
+        <span id="radar_upload_error" class="error-popup"></span>
+        <span id="radar_upload_success" class="success-popup"></span>
+            <div class="spinner-border text-success" role="status" id="loading-spinner-radar">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <span id="radar_process_success" class="success-popup"></span>
     </div>
 </div>
 </div>

@@ -88,6 +88,12 @@ if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESS
     </span>
     Probe Hunt
 </a>
+<a href=\"radar.php\" class=\"btn btn-lg dashboard-btn\">
+    <span>
+        <i class=\"fas fa-satellite-dish fa-2x\"></i>
+    </span>
+    Radar Hunt
+</a>
 <a href=\"ref_hunt.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
         <i class=\"fas fa-book fa-2x\"></i>

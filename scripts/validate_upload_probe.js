@@ -38,6 +38,56 @@ function handleFileSelect(evt) {
     }
 }
 
+function handleFileSelect_radar(evt) {
+    var file = evt.target.files[0];
+    var project_name_element = document.getElementById('project_name');
+    var project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    var file_name = jQuery(this).val();
+    var file_name = file_name.split('\\').pop();
+    var extension = file_name.split('.').pop();
+    if (extension != 'csv') {
+        jQuery('#radar_upload_success').html('');
+        jQuery('#radar_upload_error').html('Error. Only CSV files can be uploaded');
+    } else {
+        jQuery('#radar_upload_error').html('');
+        var formData = new FormData();
+        formData.append('csv', file);
+        formData.append('db_name', project_name);
+        var ticket_name_element = document.getElementById('ticket_name');
+        var ticket_name = ticket_name_element.options[ticket_name_element.selectedIndex].value;
+        formData.append('ticket_name', ticket_name);
+        jQuery('#radar_upload_success').html('Please wait ' + file_name + ' is now being processed.<br>');
+        jQuery('#loading-spinner-radar').css("display", "inline-block");
+        jQuery('#loading-spinner-radar').css("text-align", "center");
+        jQuery.ajax({
+            url: 'process_radar.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: function (data) {
+                jQuery('#loading-spinner-radar').css("display", "none");
+                jQuery('#radar_upload_success').html('Processed: ' + file_name);
+                var processed_message = '';
+                if (data[0].proccessed_rows != '') {
+                    processed_message += data[0].proccessed_rows + ' rows were processed and added to ' + project_name;
+                }
+                if (data[0].skipped_count != 0) {
+                    processed_message += ', ' + data[0].skipped_count + ' rows were skipped due to missing Category / Brand';
+                }
+                if (processed_message != '') {
+                    jQuery('#radar_process_success').html(processed_message);
+                }
+            },
+            error: function (data) {
+                alert("AJAX error");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
+
 function handleFileSelect_ref(evt) {
     var file = evt.target.files[0];
     var project_name_element = document.getElementById('project_name');
@@ -89,11 +139,22 @@ function handleFileSelect_ref(evt) {
     }
 }
 
+const show_upload_options_radar = () => {
+    document.getElementById('probe-upload-container').classList.add('hide');
+    document.getElementById('ref-upload-container').classList.add('hide');
+    document.getElementById('radar-upload-container').classList.remove('hide');
+    document.getElementById('option1').classList.remove('active_btn');
+    document.getElementById('option2').classList.remove('active_btn');
+    document.getElementById('option3').classList.add('active_btn');
+}
+
 function show_upload_options_probe() {
     document.getElementById('probe-upload-container').classList.remove('hide');
     document.getElementById('ref-upload-container').classList.add('hide');
     document.getElementById('option1').classList.add('active_btn');
     document.getElementById('option2').classList.remove('active_btn');
+    document.getElementById('option3').classList.remove('active_btn');
+    document.getElementById('radar-upload-container').classList.add('hide');
 }
 
 function show_upload_options_reference() {
@@ -101,6 +162,8 @@ function show_upload_options_reference() {
     document.getElementById('ref-upload-container').classList.remove('hide');
     document.getElementById('option1').classList.remove('active_btn');
     document.getElementById('option2').classList.add('active_btn');
+    document.getElementById('option3').classList.remove('active_btn');
+    document.getElementById('radar-upload-container').classList.add('hide');
 }
 
 function validate_project_name() {
@@ -188,7 +251,7 @@ function validate_ticket_id() {
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
     if (ticket_name != "") {
         document.getElementById('probe-upload').classList.remove('hide');
-        document.getElementById('ticket_id_value').innerHTML = $("#ticket_name option[value='"+ticket_name+"']").text()
+        document.getElementById('ticket_id_value').innerHTML = $("#ticket_name option[value='" + ticket_name + "']").text()
         document.getElementById('project_name_value').innerHTML = project_name;
     } else {
         document.getElementById('probe-upload').classList.add('hide');
@@ -215,4 +278,5 @@ jQuery(document).ready(function () {
     jQuery('#ticket_name').change(validate_ticket_id);
     jQuery("#csv-file").change(handleFileSelect);
     jQuery("#ref-csv-file").change(handleFileSelect_ref);
+    jQuery("#radar-csv-file").change(handleFileSelect_radar);
 });
