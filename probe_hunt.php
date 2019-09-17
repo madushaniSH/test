@@ -207,7 +207,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <span class="sr-only">Loading...</span>
                   </div>
                 </h2>
-                    <p class="count-text ">Monthly Accuracy</p>
+                    <p class="count-text ">Cycle Accuracy</p>
                 </div>
             </div>
         </div>
@@ -411,6 +411,22 @@ slider.oninput = function() {
             </div>
         </div>
     </div>
+</div>
+<div class="modal fade" id="confirm_probe" tabindex="-1" role="dialog" aria-labelledby="econfirm_probe_title" aria-hidden="true"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog  modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirm_probe_title">Are You Sure ?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success" onclick="confirm_save();">Confirm</button>
+      </div>
+    </div>
+  </div>
 </div>
     <script src="scripts/transition.js"></script>
     <script src="scripts/validate_probe_hunt.js"></script>

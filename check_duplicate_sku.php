@@ -37,7 +37,7 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = "SELECT product_id FROM products WHERE product_name = :rename";
+$sql = "SELECT product_id FROM products WHERE product_name = BINARY :rename";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['rename'=>$_POST['product_name']]);
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);

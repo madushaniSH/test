@@ -2,6 +2,7 @@ var p_name = '';
 var product_count = 0;
 var skip_check = false;
 var selected_ticket = '';
+let save_confirm = false;
 
 function get_ticket_list() {
     if (p_name != "") {
@@ -143,28 +144,28 @@ function update_project_count() {
         formData.append('project_name', p_name);
         formData.append('ticket', selected_ticket);
         var d = new Date();
-        d.setHours(0,0,0,0);        
+        d.setHours(0, 0, 0, 0);
         d.setDate(15);
         let cycle_start = new Date();
         let cycle_end = new Date();
-        cycle_start.setUTCHours(0,0,0,0);
-        cycle_end.setUTCHours(0,0,0,0);
+        cycle_start.setUTCHours(0, 0, 0, 0);
+        cycle_end.setUTCHours(0, 0, 0, 0);
         if (cycle_start.getUTCDate() <= 15) {
             cycle_start.setUTCDate(16);
-            cycle_start.setUTCHours(4,30,0,0)
+            cycle_start.setUTCHours(4, 30, 0, 0)
             cycle_start.setUTCMonth(cycle_start.getMonth() - 1);
             cycle_end.setUTCDate(15);
-            cycle_end.setUTCHours(4,30,0,0);
+            cycle_end.setUTCHours(4, 30, 0, 0);
         } else {
             cycle_start.setUTCDate(16);
             cycle_start.setUTCDate(16);
-            cycle_start.setUTCHours(4,30,0,0)
+            cycle_start.setUTCHours(4, 30, 0, 0)
             cycle_end.setUTCMonth(cycle_start.getMonth() + 1);
             cycle_end.setUTCDate(15);
-            cycle_end.setUTCHours(4,30,0,0)
+            cycle_end.setUTCHours(4, 30, 0, 0)
         }
-        formData.append('start_time',cycle_start.toISOString().slice(0, 19).replace('T', ' '));
-        formData.append('end_time',cycle_end.toISOString().slice(0, 19).replace('T', ' '));
+        formData.append('start_time', cycle_start.toISOString().slice(0, 19).replace('T', ' '));
+        formData.append('end_time', cycle_end.toISOString().slice(0, 19).replace('T', ' '));
         jQuery.ajax({
             url: 'fetch_probe_count.php',
             type: 'POST',
@@ -223,7 +224,7 @@ function update_project_count() {
                         product_count = added_product_count;
                         document.getElementById('status').disabled = true;
                         var formData = new FormData();
-                         var project_name_element = document.getElementById('project_name');
+                        var project_name_element = document.getElementById('project_name');
                         var project_name = project_name_element.options[project_name_element.selectedIndex].value;
                         formData.append('project_name', project_name);
                         jQuery.ajax({
@@ -441,61 +442,96 @@ function validate_probe_submission() {
 
 
             if (is_valid_form) {
-                document.getElementById('status').disabled = true;
+                $('#confirm_probe').modal('show');
+                if (save_confirm) {
+                    document.getElementById('status').disabled = true;
+                    jQuery.ajax({
+                        url: 'add_probe_product.php',
+                        type: 'POST',
+                        data: formData,
+                        dataType: 'JSON',
+                        success: function (data) {
+                            if (data[0].success != '') {
+                                server_success.innerHTML = data[0].success;
+                            } else {
+                                server_success.innerHTML = '';
+                                reset_hunt_information();
+                            }
+
+                            if (data[0].error != '') {
+                                server_error.innerHTML = data[0].error;
+                            } else {
+                                server_error.innerHTML = '';
+                            }
+                            if (data[0].duplicate_error != '') {
+                                toastr.options = {
+                                    "closeButton": true,
+                                    "debug": false,
+                                    "newestOnTop": false,
+                                    "progressBar": false,
+                                    "positionClass": "toast-top-right",
+                                    "preventDuplicates": false,
+                                    "onclick": null,
+                                    "showEasing": "swing",
+                                    "hideEasing": "linear",
+                                    "showMethod": "fadeIn",
+                                    "hideMethod": "fadeOut",
+                                    "timeOut": "0",
+                                    "extendedTimeOut": "0",
+                                }
+                                toastr.error(data[0].duplicate_error);
+                            }
+                            jQuery.ajax({
+                                url: 'update_probe_queue.php',
+                                type: 'POST',
+                                data: formData,
+                                dataType: 'JSON',
+                                success: function (data) {
+                                    if (data[0].success != '') {
+                                        reset_probe_modal();
+                                        product_count = 0;
+                                    }
+                                },
+                                error: function (data) {
+                                    alert("Error fetching probe information. Please refresh");
+                                },
+                                cache: false,
+                                contentType: false,
+                                processData: false
+                            });
+                        },
+                        error: function (data) {
+                            alert("Error fetching probe information. Please refresh");
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
+                    reset_hunt_information();
+                    product_count++;
+
+
+                    if (product_count > 0) {
+                        document.getElementById('cancel_product').classList.remove('hide');
+                        document.getElementById('submit_probe').classList.add('hide');
+                    } else {
+                        document.getElementById('cancel_product').classList.add('hide');
+                        document.getElementById('submit_probe').classList.remove('hide');
+                    }
+                }
+                save_confirm = false;
+            }
+        } else {
+            $('#confirm_probe').modal('show');
+            if (save_confirm) {
                 jQuery.ajax({
-                    url: 'add_probe_product.php',
+                    url: 'update_probe_queue.php',
                     type: 'POST',
                     data: formData,
                     dataType: 'JSON',
                     success: function (data) {
-                        if (data[0].success != '') {
-                            server_success.innerHTML = data[0].success;
-                        } else {
-                            server_success.innerHTML = '';
-                            reset_hunt_information();
-                        }
-
-                        if (data[0].error != '') {
-                            server_error.innerHTML = data[0].error;
-                        } else {
-                            server_error.innerHTML = '';
-                        }
-                        if (data[0].duplicate_error != '') {
-                            toastr.options = {
-                                "closeButton": true,
-                                "debug": false,
-                                "newestOnTop": false,
-                                "progressBar": false,
-                                "positionClass": "toast-top-right",
-                                "preventDuplicates": false,
-                                "onclick": null,
-                                "showEasing": "swing",
-                                "hideEasing": "linear",
-                                "showMethod": "fadeIn",
-                                "hideMethod": "fadeOut",
-                                "timeOut": "0",
-                                "extendedTimeOut": "0",
-                            }
-                            toastr.error(data[0].duplicate_error);
-                        }
-                        jQuery.ajax({
-                            url: 'update_probe_queue.php',
-                            type: 'POST',
-                            data: formData,
-                            dataType: 'JSON',
-                            success: function (data) {
-                                if (data[0].success != '') {
-                                    reset_probe_modal();
-                                    product_count = 0;
-                                }
-                            },
-                            error: function (data) {
-                                alert("Error fetching probe information. Please refresh");
-                            },
-                            cache: false,
-                            contentType: false,
-                            processData: false
-                        });
+                        reset_probe_modal();
+                        product_count = 0;
                     },
                     error: function (data) {
                         alert("Error fetching probe information. Please refresh");
@@ -504,34 +540,8 @@ function validate_probe_submission() {
                     contentType: false,
                     processData: false
                 });
-                reset_hunt_information();
-                product_count++;
+                save_confirm = false;
             }
-
-            if (product_count > 0) {
-                document.getElementById('cancel_product').classList.remove('hide');
-                document.getElementById('submit_probe').classList.add('hide');
-            } else {
-                document.getElementById('cancel_product').classList.add('hide');
-                document.getElementById('submit_probe').classList.remove('hide');
-            }
-        } else {
-            jQuery.ajax({
-                url: 'update_probe_queue.php',
-                type: 'POST',
-                data: formData,
-                dataType: 'JSON',
-                success: function (data) {
-                    reset_probe_modal();
-                    product_count = 0;
-                },
-                error: function (data) {
-                    alert("Error fetching probe information. Please refresh");
-                },
-                cache: false,
-                contentType: false,
-                processData: false
-            });
         }
         product_count = 0;
         skip_check = false;
@@ -543,6 +553,12 @@ function validate_probe_submission() {
         document.getElementById('cancel_product').classList.add('hide');
         document.getElementById('submit_probe').classList.remove('hide');
     }
+}
+
+const confirm_save = () => {
+    save_confirm = true
+    document.getElementById('submit_probe').click();
+    $('#confirm_probe').modal('hide');
 }
 
 function show_additional_options() {

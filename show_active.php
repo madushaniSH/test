@@ -112,7 +112,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <div class="row hide" id="result">
         <div class="col">
             <h2>Active Users</h2>
-            <ul id="active"></ul>
+            <ol id="active"></ol>
         </div>
     </div>
 </div>
