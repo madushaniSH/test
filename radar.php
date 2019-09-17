@@ -244,7 +244,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 	        <div class="col">
 	            <div class="counter">
                   <i class="fas fa-clipboard-list fa-2x"></i>
-                  <h2 id="current_probe_count" class="timer count-title count-number">
+                  <h2 id="radar_brands" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
                   </div>
@@ -255,7 +255,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <div class="col">
 	            <div class="counter">
                   <i class="far fa-lightbulb fa-2x"></i>
-                  <h2 id="current_probe_handle_count" class="timer count-title count-number">
+                  <h2 id="radar_brand_handle" class="timer count-title count-number">
                     <div class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
                   </div>
@@ -271,11 +271,11 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <label for="brand_name_filter">Filter by Client Category</label>
     <select name="brand_name_filter" id="brand_name_filter" class="form-control">
     </select>
-    <div class="col my-3">
+    <div class="col my-3 hide" id="radar_assign">
         <button type="button" id="radar_button" class="btn" onclick="get_ref_info();">
         <div class="counter">
             <i class="fas fa-boxes fa-2x"></i>
-            <h2 id="current_brand_ref_count" class="timer count-title count-number">
+            <h2 id="current_cat_radar" class="timer count-title count-number">
                 <div class="spinner-border text-success" role="status">
                 <span class="sr-only">Loading...</span>
                 </div>
