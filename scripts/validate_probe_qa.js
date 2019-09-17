@@ -251,6 +251,11 @@ function get_probe_qa_info() {
                 title_string +=
                     ' <span>' + data[0].probe_id + '</span>';
             }
+            let dateTimeParts= data[0].time.split(/[- :]/); // regular expression split that creates array with: year, month, day, hour, minutes, seconds values
+            dateTimeParts[1]--; // monthIndex begins with 0 for January and ends with 11 for December so we need to decrement by one
+            const dateObject = new Date(...dateTimeParts);
+            title_string +=
+                    ' <span id="time_title">' + dateObject.toLocaleString() +  '</span>';
 
             jQuery("#qa_probe_title").html(title_string);
             jQuery("#product_name").val(data[0].product_name);
