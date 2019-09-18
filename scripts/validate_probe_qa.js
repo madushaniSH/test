@@ -713,15 +713,6 @@ function validate_qa_form() {
         document.getElementById("error_qa_error").innerHTML = "";
     }
 
-    if (facing_num != document.getElementById("num_facings").value && error_qa.length == 0) {
-        document.getElementById("error_qa_error").innerHTML = "";
-        document.getElementById("error_facing_error").innerHTML = "Facing Number Changed. Error Type must be selected";
-        is_valid_form = false;
-    } else {
-        document.getElementById("error_facing_error").innerHTML = "";
-    }
-
-
     if (disapprove_button.checked && error_images.length == 0) {
         document.getElementById("image_error").innerHTML =
             "At least one image must be selected for upload";
