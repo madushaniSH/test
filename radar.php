@@ -386,7 +386,7 @@ slider.oninput = function() {
                 </div>
                 <div>
                     <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
-                    <button class="btn btn-warning">Continue <i class="fas fa-angle-double-right"></i></button>
+                    <button class="btn btn-warning" id="continue_two">Continue <i class="fas fa-angle-double-right"></i></button>
                     <button type="button" class="btn btn-outline-danger hide" id="cancel_product" onclick="cancel_product_button();">Save Changes</button>
                 </div>
                 <span id="server_error" class="error-popup"></span>
