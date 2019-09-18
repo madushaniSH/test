@@ -1,6 +1,6 @@
 <?php
 /*
-    Filename: assign_qa_product.php
+    Filename: assign_radar.php
     Author: Malika Liyanage
 */
 session_start();

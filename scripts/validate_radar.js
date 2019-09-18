@@ -56,7 +56,6 @@ const validate_project_name = () => {
         probe_hunt_counter.classList.add('hide');
         hunter_counter.classList.add('hide')
         probe_hunt_options.classList.add('hide');
-        radar_assign.classList.add('hide');
     } else {
         $('#ticket').empty();
         $("#brand_name_filter").val("").trigger("change");
@@ -66,7 +65,6 @@ const validate_project_name = () => {
         ticket_section.classList.remove('hide');
         probe_hunt_options.classList.add('hide');
         p_name = project_name;
-        radar_assign.classList.add('hide');
         get_ticket_list();
     }
 }
@@ -85,12 +83,10 @@ const validate_ticket_name = () => {
             probe_hunt_options.classList.add('hide');
             probe_hunt_counter.classList.add('hide');
             hunter_counter.classList.add('hide');
-            radar_assign.classList.add('hide');
         } else {
             probe_hunt_options.classList.remove('hide');
             probe_hunt_counter.classList.remove('hide');
             hunter_counter.classList.remove('hide');
-            radar_assign.classList.add('hide');
             selected_ticket = ticket;
             get_client_cat("brand_name_filter");
         }
@@ -101,18 +97,13 @@ const validate_client_cat = () => {
     if (p_name != '') {
         const client_cat = $('#brand_name_filter').val();
         const radar_assign = document.getElementById('radar_assign');
-        if (client_cat == '' || client_cat == null) {
-            radar_assign.classList.add('hide');
-        } else {
-            radar_assign.classList.remove('hide');
-        }
     }
 }
 
 const update_ref_count = () => {
     if (p_name != '' && selected_ticket != '') {
         get_client_cat("brand_name_filter");
-        let formData = new FormData ();
+        let formData = new FormData();
         formData.append('project_name', p_name);
         var radar_cat = $("#brand_name_filter").val();
         formData.append("radar_cat", radar_cat);
@@ -247,6 +238,22 @@ const get_radar_info = () => {
             }
             jQuery("#add_radar_title").html(title_string);
             $("#add_radar").modal("show");
+            var formData = new FormData();
+            formData.append('project_name', project_name);
+            jQuery.ajax({
+                url: 'get_project_status.php',
+                type: 'POST',
+                data: formData,
+                success: function (data) {
+                    $('#status').html(data);
+                },
+                error: function (data) {
+                    alert("Error assigning probe. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
@@ -257,9 +264,97 @@ const get_radar_info = () => {
     });
 }
 
+const show_additional_options = () => {
+    const status_element = document.getElementById('status');
+    const status = status_element.options[status_element.selectedIndex].value;
+    const hunt_information = document.getElementById('hunt_information');
+    const save_sec = document.getElementById('save_sec');
+    save_sec.classList.remove('hide');
+    if (status === '2') {
+        hunt_information.classList.remove('hide');
+        save_sec.classList.add('hide');
+    } else {
+        hunt_information.classList.add('hide');
+        save_sec.classList.remove('hide');
+    }
+}
+
+const is_url = (str) => {
+    regexp = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+    if (regexp.test(str)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+const save_radar_source = () => {
+    let is_valid_form = true;
+    const status_element = document.getElementById('status');
+    const status = status_element.options[status_element.selectedIndex].value;
+    const status_error = document.getElementById('status_error');
+    const suggestion_source = document.getElementById('source').value.trim();
+    const source_error = document.getElementById('source_error');
+    const comment = document.getElementById('comment').value.trim();
+    if (status === '') {
+        status_error.innerHTML = 'Status must be selected';
+        is_valid_form = false;
+    } else {
+        status_error.innerHTML = '';
+    }
+    if (suggestion_source === '') {
+        source_error.innerHTML = 'Source cannot be left blank';
+        is_valid_form = false;
+    } else {
+        source_error.innerHTML = '';
+        if (!is_url(suggestion_source)) {
+            source_error.innerHTML = 'Invalid source URL';
+            is_valid_form = false;
+        } else {
+            source_error.innerHTML = '';
+        }
+    }
+    if (is_valid_form) {
+        let formData = new FormData();
+        formData.append('project_name', p_name);
+        formData.append('status', status);
+        formData.append('source', suggestion_source);
+        formData.append('comment', comment);
+        jQuery.ajax({
+            url: "process_source.php",
+            type: "POST",
+            data: formData,
+            success: function (data) {
+                reset_radar_form();
+            },
+            error: function (data) {
+                alert("Error assigning probe. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
+
+const reset_radar_form = () => {
+    $("#status").val('').trigger('change');
+    $("#probe_form").trigger('reset');
+    $('#status_error').empty();
+    $('#source_error').empty();
+}
+
 jQuery(document).ready(function () {
     jQuery('#project_name').select2({
         width: '100%',
+    });
+    jQuery('#status').select2({
+        dropdownParent: $("#add_radar"),
+        width: '100%',
+    });
+    jQuery('#status').change(function () {
+        show_additional_options();
     });
     jQuery('#ticket').select2({
         width: '50%',
@@ -286,4 +381,8 @@ jQuery(document).ready(function () {
         $("#counters").fadeIn();
     });
     setInterval(function () { update_ref_count(); }, 500);
+    $("#continue_one").click(function (event) {
+        event.preventDefault();
+        save_radar_source();
+    });
 });

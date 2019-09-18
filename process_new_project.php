@@ -299,7 +299,24 @@ if ($row_count == 0) {
   `radar_hunt_key_id` int(11) NOT NULL,
   `account_id` int(11) DEFAULT NULL,
   `radar_being_handled` tinyint(1) NOT NULL DEFAULT 0,
-   CONSTRAINT `RADAR_QUEUE_ACCOUNT_ID` FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`)
+   CONSTRAINT '.$dbname.'_RADAR_QUEUE_ACCOUNT_ID FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(); 
+
+    $sql = 'CREATE TABLE `radar_sources` (
+  `radar_source_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `radar_hunt_id` int(11) NOT NULL,
+  `radar_status_id` int(11) NOT NULL,
+  `radar_source_link` varchar(2083) NOT NULL,
+  `radar_comment` varchar(255) DEFAULT NULL,
+  `radar_product_id` int(11) DEFAULT NULL,
+  `account_id` int(11) NOT NULL,
+  `creation_time` datetime NOT NULL DEFAULT current_timestamp(),
+ CONSTRAINT '.$dbname.'_RADAR_HUNT_ID FOREIGN KEY (`radar_hunt_id`) REFERENCES `radar_hunt` (`radar_hunt_id`),
+ CONSTRAINT '.$dbname.'_RADAR_PRODUCT_ID FOREIGN KEY (`radar_product_id`) REFERENCES `products` (`product_id`),
+ CONSTRAINT '.$dbname.'_RADAR_STATUS FOREIGN KEY (`radar_status_id`) REFERENCES `probe_status` (`probe_status_id`),
+ CONSTRAINT '.$dbname.'_RADAR_ACCOUNT FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(); 

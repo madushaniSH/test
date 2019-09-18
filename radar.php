@@ -271,7 +271,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <label for="brand_name_filter">Filter by Client Category</label>
     <select name="brand_name_filter" id="brand_name_filter" class="form-control">
     </select>
-    <div class="col my-3 hide" id="radar_assign">
+    <div class="col my-3 " id="radar_assign">
         <button type="button" id="radar_button" class="btn" onclick="get_radar_info();">
         <div class="counter">
             <i class="fas fa-boxes fa-2x"></i>
@@ -309,20 +309,21 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <span id="status_error" class="error-popup"></span>
                 </div>
                 <div class="form-group col-md-7">
+                    <label for="source">*Suggestion Source Link:</label>
+                    <input type="text" id="source" class="form-control">
+                    <span id="source_error" class="error-popup"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-5">
                     <label for="comment">Comment:</label>
                     <input type="text" id="comment" class="form-control">
                     <span id="comment_error" class="error-popup"></span>
                 </div>
             </div>
             <div class="row">
-                <div class="form-group col-md-5">
-                    <label for="remark">Remark:</label>
-                    <input type="text" id="remark" class="form-control">
-                    <span id="remark_error" class="error-popup"></span>
-                </div>
-                <div class="form-group col-md-5">
-                    <button role="button" class="btn btn-outline-danger" onclick="return add_rec_comment();">Recongnition Issue Recongnized</button>
-                    <button role="button" class="btn btn-outline-primary" onclick="return add_cant_find_comment();">Some Products Not Found</button>
+                <div class="form-group col" id="save_sec">
+                    <button class="btn btn-warning" id="continue_one">Continue <i class="fas fa-angle-double-right"></i></button>
                 </div>
             </div>
             <div id="hunt_information" class="hide">
@@ -385,17 +386,15 @@ slider.oninput = function() {
                 </div>
                 <div>
                     <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
+                    <button class="btn btn-warning">Continue <i class="fas fa-angle-double-right"></i></button>
                     <button type="button" class="btn btn-outline-danger hide" id="cancel_product" onclick="cancel_product_button();">Save Changes</button>
-                </div>
-                <div id="probe_product_count_section">
-                    <p>Products Added to Probe -> <span id="product_count"></span></p>
                 </div>
                 <span id="server_error" class="error-popup"></span>
                 <span id="server_success" class="success-popup"></span>
             </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" value="Submit" onclick="validate_probe_submission();" id="submit_probe">Save changes</button>
+                <button type="button" class="btn btn-success" value="Submit" onclick="validate_probe_submission();" id="submit_probe">Close Suggestion</button>
                 </form>
             </div>
         </div>
