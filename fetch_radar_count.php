@@ -60,7 +60,7 @@ if ($row_count == 1) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['radar_queue_id' =>$radar_queue_info->radar_queue_id,'account_id'=>$_SESSION['id']]);
     $radar_info = $stmt->fetch(PDO::FETCH_OBJ);
-    $radar_cat = $brand_info->reference_brand;
+    $radar_cat = $radar_info->name;
 }
 
 $search_item = $_POST['radar_cat'].'';

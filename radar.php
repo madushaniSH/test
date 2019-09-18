@@ -272,7 +272,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <select name="brand_name_filter" id="brand_name_filter" class="form-control">
     </select>
     <div class="col my-3 hide" id="radar_assign">
-        <button type="button" id="radar_button" class="btn" onclick="get_ref_info();">
+        <button type="button" id="radar_button" class="btn" onclick="get_radar_info();">
         <div class="counter">
             <i class="fas fa-boxes fa-2x"></i>
             <h2 id="current_cat_radar" class="timer count-title count-number">
@@ -284,10 +284,138 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </div>
         </button>
     </div>
-    <button class="btn" id="exit_btn" onclick="window.location.href='product_hunt.php'"><i class="fas fa-chevron-circle-left fa-3x"></i><br>Exit</i></button>
     <p class="error-popup" id="probe_message"></p>
+    <button class="btn" id="exit_btn" onclick="window.location.href='product_hunt.php'"><i class="fas fa-chevron-circle-left fa-3x"></i><br>Exit</i></button>
     </div>
 </div>
+</div>
+<div class="modal hide fade modal-form" id="add_radar" tabindex="-1" role="dialog"
+    aria-labelledby="add_radar_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="add_radar_title"></h5>
+                <button type="button" class="close hide" id="close_probe_title" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form action="POST" id="probe_form">
+            <div class="row">
+                <div class="form-group col-md-5">
+                    <label for="status">*Status:</label>
+                    <select name="status" id="status" class="form-control">
+                    </select>
+                    <span id="status_error" class="error-popup"></span>
+                </div>
+                <div class="form-group col-md-7">
+                    <label for="comment">Comment:</label>
+                    <input type="text" id="comment" class="form-control">
+                    <span id="comment_error" class="error-popup"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-5">
+                    <label for="remark">Remark:</label>
+                    <input type="text" id="remark" class="form-control">
+                    <span id="remark_error" class="error-popup"></span>
+                </div>
+                <div class="form-group col-md-5">
+                    <button role="button" class="btn btn-outline-danger" onclick="return add_rec_comment();">Recongnition Issue Recongnized</button>
+                    <button role="button" class="btn btn-outline-primary" onclick="return add_cant_find_comment();">Some Products Not Found</button>
+                </div>
+            </div>
+            <div id="hunt_information" class="hide">
+                <p class="border-bottom my-3">Additional Information</p>
+                <div class="row">
+                    <div class="form-group col-md-5">
+                        <label for="product_name">*Product Name:</label>
+                        <input type="text" id="product_name" class="form-control">
+                        <span id="product_name_error" class="error-popup"></span>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="product_type">*Product Type:</label>
+                        <select name="product_type" id="product_type" class="form-control">
+                            <option value=""selected disabled>Select</option>
+                            <option value="brand">Brand</option>
+                            <option value="sku">SKU</option>
+                            <option value="dvc">DVC</option>
+                            <option value="facing">Facing</option>
+                        </select>
+                        <span id="product_type_error" class="error-popup"></span>
+                    </div>
+                </div>
+                <div class="row hide" id="alt_design_info">
+                    <div class="form-group col-md-5">
+                        <label for="alt_design_name" id="alt_name_label">*Alternative Design Name:</label>
+                        <input type="text" id="alt_design_name" class="form-control">
+                        <span id="alt_design_name_error" class="error-popup"></span>
+                    </div>
+                </div>
+                <div class="row" id="facing_count">
+                    <div class="form-group col-md-5">
+                        <label for="num_facings">Number of Facings: <span id="output"></span></label>
+                        <div class="slidecontainer">
+                            <input type="range" min="0" max="5" value="0" class="slider" id="num_facings">
+                            <span id="facing_error" class="error-popup"></span>
+                        </div>
+                    </div>
+                </div>
+<script>
+var slider = document.getElementById("num_facings");
+var output = document.getElementById("output");
+output.innerHTML = slider.value; // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function() {
+  output.innerHTML = this.value;
+}
+</script>
+                <div class="row" id="link_section">
+                    <div class="form-group col-md-5 hide" id="manu_link_section">
+                        <label for="manu_link">*Manufacturer Source Link:</label>
+                        <input type="text" id="manu_link" class="form-control">
+                        <span id="manu_link_error" class="error-popup"></span>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="product_link">Product Source Link:</label>
+                        <input type="text" id="product_link" class="form-control">
+                        <span id="product_link_error" class="error-popup"></span>
+                    </div>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
+                    <button type="button" class="btn btn-outline-danger hide" id="cancel_product" onclick="cancel_product_button();">Save Changes</button>
+                </div>
+                <div id="probe_product_count_section">
+                    <p>Products Added to Probe -> <span id="product_count"></span></p>
+                </div>
+                <span id="server_error" class="error-popup"></span>
+                <span id="server_success" class="success-popup"></span>
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" value="Submit" onclick="validate_probe_submission();" id="submit_probe">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirm_probe" tabindex="-1" role="dialog" aria-labelledby="econfirm_probe_title" aria-hidden="true"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog  modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirm_probe_title">Are You Sure ?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success" onclick="confirm_save();">Confirm</button>
+      </div>
+    </div>
+  </div>
 </div>
     <script src="scripts/transition.js"></script>
     <script src="scripts/validate_radar.js"></script>

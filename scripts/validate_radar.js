@@ -131,19 +131,19 @@ const update_ref_count = () => {
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {
-                        /*document.getElementById('ref_brand_button').disabled = true;
+                        document.getElementById('radar_button').disabled = true;
                         document.getElementById('probe_message').innerHTML = '';
                         if ($('#add_reference').is(':visible')) {
                             $('#close_probe_title').click();
-                        }*/
+                        }
                     } else {
-                        /*document.getElementById('ref_brand_button').disabled = false;
+                        document.getElementById('radar_button').disabled = false;
                         if (probe_count === 1) {
-                            document.getElementById('probe_message').innerHTML = "Reference already assigned for brand " + data[0].brand_name;
+                            document.getElementById('probe_message').innerHTML = "Radar already assigned for Category " + data[0].radar_cat;
                         }
                         if (probe_count == 0) {
                             document.getElementById('probe_message').innerHTML = '';
-                        }*/
+                        }
                     }
                     $("#current_cat_radar").empty();
                     $("#current_cat_radar").html(data[0].radar_cat_count);
@@ -218,6 +218,43 @@ const get_client_cat = (select_element) => {
             processData: false
         });
     }
+}
+
+const get_radar_info = () => {
+    const project_name_element = document.getElementById("project_name");
+    const project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    const client_cat = $("#brand_name_filter").val();
+    let formData = new FormData();
+    formData.append("project_name", project_name);
+    formData.append("client_cat", client_cat);
+    formData.append("ticket", selected_ticket);
+    jQuery.ajax({
+        url: "assign_radar.php",
+        type: "POST",
+        data: formData,
+        dataType: "JSON",
+        success: function (data) {
+            var title_string = '<span id="project_title">' + project_name + ' ' + data[0].ticket + "</span>";
+            if (data[0].brand_name != null) {
+                title_string +=
+                    ' <span id="brand_title">' + data[0].brand_name + "</span>";
+            }
+            if (data[0].client_category_name != null) {
+                title_string +=
+                    ' <span id="client_category_title">' +
+                    data[0].client_category_name +
+                    "</span>";
+            }
+            jQuery("#add_radar_title").html(title_string);
+            $("#add_radar").modal("show");
+        },
+        error: function (data) {
+            alert("Error assigning probe. Please refresh");
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
 }
 
 jQuery(document).ready(function () {
