@@ -51,7 +51,7 @@ for ($i = 0; $i < $total_count; $i++) {
     if ($csvAsArray[$i]["probes_with_high_other_percent"] != '') {
         $brand = $csvAsArray[$i]["brand"];
         $category = $csvAsArray[$i]["category"];
-        $probe_list = explode (",", $csvAsArray[$i]["probes_with_high_other_percent"]);
+        $probe_list = explode (",", trim($csvAsArray[$i]["probes_with_high_other_percent"]));
         
         if ($brand != '') {
             $sql = 'SELECT brand_id FROM brand WHERE brand_name = :brand_name';
