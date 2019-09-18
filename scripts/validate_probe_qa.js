@@ -131,6 +131,71 @@ function get_brand_list(product_type, select_element) {
     }
 }
 
+const get_product_name_list = (product_type, select_element) => {
+    if (p_name != "") {
+        let sku_dvc_name = $("#dvc_name").val();
+        if (sku_dvc_name != '' || sku_dvc_name != null) {
+            var formData = new FormData();
+            formData.append("project_name", p_name);
+            formData.append("product_type", product_type);
+            formData.append("ticket", selected_ticket);
+            formData.append("dvc_name", sku_dvc_name)
+            jQuery.ajax({
+                url: "get_qa_dvc_products.php",
+                type: "POST",
+                data: formData,
+                dataType: "JSON",
+                success: function (data) {
+                    // adding missing options
+                    let selected_val = $("#" + select_element).val();
+                    for (var i = 0; i < data[0].brand_rows.length; i++) {
+                        if (
+                            !$("#" + select_element).find(
+                                'option[value="' + data[0].brand_rows[i].name + '"]'
+                            ).length
+                        ) {
+                            // Append it to the select
+                            $("#" + select_element).append(
+                                '<option value="' +
+                                data[0].brand_rows[i].name +
+                                '">' +
+                                data[0].brand_rows[i].name +
+                                "</option>"
+                            );
+                        }
+                    }
+                    if (selected_val != '') {
+                        $("#" + select_element).val(selected_val).change();
+                    }
+
+                    var element = document.getElementById(select_element).options;
+                    var found = true;
+                    for (var i = 0; i < element.length; i++) {
+                        found = false;
+                        for (var j = 0; j < data[0].brand_rows.length; j++) {
+                            if (data[0].brand_rows[j].name == element[i].value) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            document
+                                .getElementById(select_element)
+                                .remove(document.getElementById(select_element)[i]);
+                        }
+                    }
+                },
+                error: function (data) {
+                    alert("Error assigning probe. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        }
+    }
+}
+
 function get_error_list() {
     if (p_name != "") {
         var formData = new FormData();
@@ -216,7 +281,10 @@ function get_probe_qa_info() {
     var project_name =
         project_name_element.options[project_name_element.selectedIndex].value;
     var sku_brand_name = $("#brand_name").val();
-    var sku_dvc_name = $("#dvc_name").val();
+    var sku_dvc_name = $("#dvc_product_name").val();
+    if (sku_dvc_name == null) {
+        sku_dvc_name = $("#dvc_name").val() + ' %';
+    }
     var sku_facing_name = $("#facing_name").val();
     var formData = new FormData();
     formData.append("project_name", project_name);
@@ -231,7 +299,7 @@ function get_probe_qa_info() {
         data: formData,
         dataType: "JSON",
         success: function (data) {
-            var title_string = '<span id="project_title">' + project_name +  ' ' + data[0].ticket +"</span>";
+            var title_string = '<span id="project_title">' + project_name + ' ' + data[0].ticket + "</span>";
             if (data[0].brand_name != null) {
                 title_string +=
                     ' <span id="brand_title">' + data[0].brand_name + "</span>";
@@ -244,18 +312,18 @@ function get_probe_qa_info() {
             }
             if (data[0].product_type != null) {
                 title_string +=
-                    ' <span id="probe_id_title">' + data[0].product_type.toUpperCase() +  '</span>';
+                    ' <span id="probe_id_title">' + data[0].product_type.toUpperCase() + '</span>';
             }
 
             if (data[0].probe_id != null) {
                 title_string +=
                     ' <span>' + data[0].probe_id + '</span>';
             }
-            let dateTimeParts= data[0].time.split(/[- :]/); // regular expression split that creates array with: year, month, day, hour, minutes, seconds values
+            let dateTimeParts = data[0].time.split(/[- :]/); // regular expression split that creates array with: year, month, day, hour, minutes, seconds values
             dateTimeParts[1]--; // monthIndex begins with 0 for January and ends with 11 for December so we need to decrement by one
             const dateObject = new Date(...dateTimeParts);
             title_string +=
-                    ' <span id="time_title">' + dateObject.toLocaleString() +  '</span>';
+                ' <span id="time_title">' + dateObject.toLocaleString() + '</span>';
 
             jQuery("#qa_probe_title").html(title_string);
             jQuery("#product_name").val(data[0].product_name);
@@ -344,9 +412,13 @@ function update_project_qa_count() {
         get_brand_list("sku", "brand_name");
         get_brand_list("dvc", "dvc_name");
         get_brand_list("facing", "facing_name");
+        get_product_name_list("dvc", "dvc_product_name");
         get_error_list();
         var sku_brand_name = $("#brand_name").val();
-        var sku_dvc_name = $("#dvc_name").val();
+        var sku_dvc_name = $("#dvc_product_name").val();
+        if (sku_dvc_name == null) {
+            sku_dvc_name = $("#dvc_name").val() + ' %';
+        }
         var sku_facing_name = $('#facing_name').val();
         var formData = new FormData();
         formData.append("project_name", p_name);
@@ -516,6 +588,7 @@ function validate_ticket_name() {
             get_brand_list("sku", "brand_name");
             get_brand_list("dvc", "dvc_name");
             get_brand_list("facing", "facing_name");
+            get_product_name_list("dvc", "dvc_product_name");
         }
     }
 }
@@ -640,7 +713,7 @@ function validate_qa_form() {
         document.getElementById("error_qa_error").innerHTML = "";
     }
 
-    if (facing_num != document.getElementById("num_facings").value &&  error_qa.length == 0) {
+    if (facing_num != document.getElementById("num_facings").value && error_qa.length == 0) {
         document.getElementById("error_qa_error").innerHTML = "";
         document.getElementById("error_facing_error").innerHTML = "Facing Number Changed. Error Type must be selected";
         is_valid_form = false;
@@ -724,14 +797,14 @@ function compare_rename() {
                 data: formData,
                 dataType: 'JSON',
                 success: function (data) {
-                   var row_count = parseInt(data[0].row_count, 10);
-                   if (row_count != 0) {
-                       is_dupilcate = true;
-                       document.getElementById('product_dup_rename_error').innerHTML = 'Product Name Already Exists';
-                   } else {
-                       is_dupilcate = false;
-                       document.getElementById('product_dup_rename_error').innerHTML = '';
-                   }
+                    var row_count = parseInt(data[0].row_count, 10);
+                    if (row_count != 0) {
+                        is_dupilcate = true;
+                        document.getElementById('product_dup_rename_error').innerHTML = 'Product Name Already Exists';
+                    } else {
+                        is_dupilcate = false;
+                        document.getElementById('product_dup_rename_error').innerHTML = '';
+                    }
                 },
                 error: function (data) {
                     alert("Error fetching probe information. Please refresh");
@@ -766,14 +839,14 @@ function compare_alt_rename() {
                 data: formData,
                 dataType: 'JSON',
                 success: function (data) {
-                   var row_count = parseInt(data[0].row_count, 10);
-                   if (row_count != 0) {
-                       is_dupilcate_dvc = true;
-                       document.getElementById('product_alt_dup_rename_error').innerHTML = 'DVC Name Already Exists';
-                   } else {
-                       is_dupilcate_dvc = false;
-                       document.getElementById('product_alt_dup_rename_error').innerHTML = '';
-                   }
+                    var row_count = parseInt(data[0].row_count, 10);
+                    if (row_count != 0) {
+                        is_dupilcate_dvc = true;
+                        document.getElementById('product_alt_dup_rename_error').innerHTML = 'DVC Name Already Exists';
+                    } else {
+                        is_dupilcate_dvc = false;
+                        document.getElementById('product_alt_dup_rename_error').innerHTML = '';
+                    }
                 },
                 error: function (data) {
                     alert("Error fetching probe information. Please refresh");
@@ -806,6 +879,9 @@ jQuery(document).ready(function () {
     jQuery("#facing_name").select2({
         width: "100%"
     })
+    jQuery("#dvc_product_name").select2({
+        width: "100%"
+    })
     jQuery("#error_qa").select2({
         dropdownParent: $("#qa_probe"),
         width: "100%"
@@ -815,7 +891,7 @@ jQuery(document).ready(function () {
         showCancel: false,
         showUpload: false,
         maxFileCount: 4,
-        allowedFileExtensions: ["png","jpg", "jpeg"]
+        allowedFileExtensions: ["png", "jpg", "jpeg"]
     });
     jQuery('#ticket').select2({
         width: '50%',
@@ -824,13 +900,17 @@ jQuery(document).ready(function () {
         jQuery('#current_sku_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
         document.getElementById('sku_qa_button').disabled = true;
     });
+    jQuery('#facing_name').on("change", function (e) {
+        jQuery('#current_facing_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('facing_qa_button').disabled = true;
+    });
     jQuery('#dvc_name').on("change", function (e) {
         jQuery('#current_dvc_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
         document.getElementById('dvc_qa_button').disabled = true;
     });
-    jQuery('#facing_name').on("change", function (e) {
-        jQuery('#current_facing_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
-        document.getElementById('facing_qa_button').disabled = true;
+    jQuery('#dvc_product_name').on("change", function (e) {
+        jQuery('#current_dvc_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('dvc_qa_button').disabled = true;
     });
     jQuery('#ticket').on("change", function (e) {
         jQuery('#current_brand_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")

@@ -68,8 +68,9 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id']]);
 $brand_sku_count = $stmt->fetchColumn();
 
-$search_item = $_POST['sku_dvc_name'].' %';
-$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'dvc' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id)AND products.product_name LIKE :search_item";
+
+$search_item = $_POST['sku_dvc_name'];
+$sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'dvc' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id)AND products.product_alt_design_name LIKE :search_item";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id']]);
 $dvc_sku_count = $stmt->fetchColumn();

@@ -53,14 +53,14 @@ if ($row_count == 0) {
         $search_term .= $_POST['sku_brand_name'].' ';
     }
     if ($_POST['product_type'] == 'dvc') {
-        $search_term .=  $_POST['sku_dvc_name'].' ';
+        $search_term .=  $_POST['sku_dvc_name'];
     }
     if ($_POST['product_type'] == 'facing') {
         $search_term .=  $_POST['sku_facing_name'].' ';
     }
     $search_term .= '%';
     do {
-        $sql = 'UPDATE probe_qa_queue AS upd INNER JOIN (SELECT t1.product_id FROM probe_qa_queue AS t1 INNER JOIN products AS t2 ON t2.product_id = t1.product_id INNER JOIN probe_product_info AS t3 ON t3.probe_product_info_product_id = t2.product_id INNER JOIN probe as t4 ON t3.probe_product_info_key_id = t4.probe_key_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.product_type = :product_type AND t2.product_name LIKE :search_term AND t4.probe_ticket_id = :ticket LIMIT 1 ) AS sel ON sel.product_id = upd.product_id SET upd.account_id = :account_id, upd.probe_being_handled = 1';
+        $sql = 'UPDATE probe_qa_queue AS upd INNER JOIN (SELECT t1.product_id FROM probe_qa_queue AS t1 INNER JOIN products AS t2 ON t2.product_id = t1.product_id INNER JOIN probe_product_info AS t3 ON t3.probe_product_info_product_id = t2.product_id INNER JOIN probe as t4 ON t3.probe_product_info_key_id = t4.probe_key_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.product_type = :product_type AND ( (t2.product_name LIKE :search_term) OR (t2.product_type = "dvc" AND t2.product_alt_design_name LIKE :search_term) ) AND t4.probe_ticket_id = :ticket LIMIT 1 ) AS sel ON sel.product_id = upd.product_id SET upd.account_id = :account_id, upd.probe_being_handled = 1';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['account_id'=>$_SESSION['id'], 'product_type'=>$_POST['product_type'], 'search_term'=>$search_term, "ticket"=>$_POST['ticket']]);
 

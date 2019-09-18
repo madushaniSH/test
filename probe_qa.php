@@ -202,6 +202,20 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <span id="facing_name_error" class="error-popup"></span>
         </div>
     </div>
+    <div class="row">
+        <div class="col">
+        </div>
+        <div class="col">
+        </div>
+        <div class="col">
+            <label for="dvc_product_name">Select Product Name</label>
+            <select name="dvc_product_name" id="dvc_product_name" class="form-control">
+            </select>
+            <span id="dvc_name_error" class="error-popup"></span>
+        </div>
+        <div class="col">
+        </div>
+    </div>
         <div class="row">                        
             <div id="probe_qa_counter" class="col">
                 <div class="row text-center">
