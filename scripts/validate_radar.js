@@ -290,24 +290,22 @@ const is_url = (str) => {
 }
 
 const validate_product_info = () => {
-    var is_valid_form = true;
-    var formData = new FormData();
-    var product_name = document.getElementById('product_name').value.trim();
-    var product_name_error = document.getElementById('product_name_error');
-    var product_type_element = document.getElementById('product_type');
-    var product_type = product_type_element.options[product_type_element.selectedIndex].value;
-    var product_type_error = document.getElementById('product_type_error');
-    var alt_design_name = document.getElementById('alt_design_name').value.trim();
-    var alt_design_name_error = document.getElementById('alt_design_name_error');
-    var project_name_element = document.getElementById('project_name');
-    var project_name = project_name_element.options[project_name_element.selectedIndex].value;
-    var status_element = document.getElementById('status');
-    var status = status_element.options[status_element.selectedIndex].value;
-    var facings = document.getElementById("num_facings").value;
-    var facing_error = document.getElementById('facing_error');
-    var manu_link = document.getElementById('manu_link').value.trim();
-    var product_link = document.getElementById('product_link').value.trim();
-    formData.append('facings', facings);
+    let is_valid_form = true;
+    const product_name = document.getElementById('product_name').value.trim();
+    const product_name_error = document.getElementById('product_name_error');
+    const product_type_element = document.getElementById('product_type');
+    const product_type = product_type_element.options[product_type_element.selectedIndex].value;
+    const product_type_error = document.getElementById('product_type_error');
+    const alt_design_name = document.getElementById('alt_design_name').value.trim();
+    const alt_design_name_error = document.getElementById('alt_design_name_error');
+    const project_name_element = document.getElementById('project_name');
+    const project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    const status_element = document.getElementById('status');
+    const status = status_element.options[status_element.selectedIndex].value;
+    const facings = document.getElementById("num_facings").value;
+    const facing_error = document.getElementById('facing_error');
+    const manu_link = document.getElementById('manu_link').value.trim();
+    const product_link = document.getElementById('product_link').value.trim();
 
     if (product_name == '') {
         product_name_error.innerHTML = 'Product Name required';
@@ -434,6 +432,22 @@ const save_radar_source = () => {
             data: formData,
             success: function (data) {
                 reset_radar_form();
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": false,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "0",
+                }
+                toastr.success('Details Added');
             },
             error: function (data) {
                 alert("Error assigning probe. Please refresh");
