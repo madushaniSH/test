@@ -815,7 +815,7 @@ jQuery(document).ready(function () {
         showCancel: false,
         showUpload: false,
         maxFileCount: 4,
-        allowedFileExtensions: ["jpg", "jpeg"]
+        allowedFileExtensions: ["png","jpg", "jpeg"]
     });
     jQuery('#ticket').select2({
         width: '50%',
