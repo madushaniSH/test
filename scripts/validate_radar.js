@@ -2,6 +2,7 @@ let p_name = '';
 let selected_ticket = '';
 let product_count = 0;
 let is_confirmed = false;
+let suggestion_count = 0;
 const get_ticket_list = () => {
     if (p_name != "") {
         var formData = new FormData();
@@ -121,6 +122,31 @@ const update_ref_count = () => {
                     $('#radar_brands').html(data[0].number_of_rows);
                     $('#radar_brand_handle').empty();
                     $('#radar_brand_handle').html(data[0].number_of_handled_rows);
+                    $('#brand_count').empty();
+                    $('#brand_count').html(data[0].brand_count);
+                    $('#sku_count').empty();
+                    $('#sku_count').html(data[0].sku_count);
+                    $('#dvc_count').empty();
+                    $('#dvc_count').html(data[0].dvc_count);
+                    $('#checked_probe_count').empty();
+                    $('#checked_probe_count').html(data[0].checked_count);
+                    $('#qa_error_count').empty();
+                    $('#qa_error_count').html(data[0].error_count);
+                    $('#system_error_count').empty();
+                    $('#system_error_count').html(data[0].system_error_count);
+                    $('#facing_count').empty();
+                    $('#facing_count').html(data[0].facing_count);
+                    $('#product_count').empty();
+                    $('#product_count').html(data[0].number_of_products_added);
+                    $('#pro_count').empty();
+                    $('#pro_count').html(data[0].checked_count);
+                    $('#rename_error_count').empty();
+                    $('#rename_error_count').html(data[0].rename_error_count);
+                    $('#error_type_count').empty();
+                    $('#error_type_count').html(data[0].error_type_count);
+                    $('#mon_acc_count').empty();
+                    $('#mon_acc_count').html(data[0].mon_accuracy + '%');
+                    $('#acc_pro').html(p_name);
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {
@@ -392,166 +418,7 @@ const save_radar_source = (save_radar, close_radar) => {
     const source_error = document.getElementById('source_error');
     const comment = document.getElementById('comment').value.trim();
     const server_success = document.getElementById('server_success');
-    if (status === '') {
-        status_error.innerHTML = 'Status must be selected';
-        is_valid_form = false;
-    } else {
-        status_error.innerHTML = '';
-    }
-    if (suggestion_source === '') {
-        source_error.innerHTML = 'Source cannot be left blank';
-        is_valid_form = false;
-    } else {
-        source_error.innerHTML = '';
-        if (!is_url(suggestion_source)) {
-            source_error.innerHTML = 'Invalid source URL';
-            is_valid_form = false;
-        } else {
-            source_error.innerHTML = '';
-        }
-    }
-    const product_name = document.getElementById('product_name').value.trim();
-    const product_type_element = document.getElementById('product_type');
-    const product_type = product_type_element.options[product_type_element.selectedIndex].value;
-    let flag = false;
-    if (status == 2) {
-        if (product_count >= 1) {
-            if ((product_name !== '' || product_type !== '') || (!save_radar)) {
-                if (!validate_product_info()) {
-                    is_valid_form = false;
-                }
-            } else {
-                flag = true;
-            }
-        } else {
-            if (!validate_product_info()) {
-                is_valid_form = false;
-            }
-        }
-    }
-    if (is_valid_form && (status != 2 || flag)) {
-        let formData = new FormData();
-        formData.append('project_name', p_name);
-        formData.append('status', status);
-        formData.append('source', suggestion_source);
-        formData.append('comment', comment);
-        jQuery.ajax({
-            url: "process_source.php",
-            type: "POST",
-            data: formData,
-            success: function (data) {
-                reset_radar_form();
-                toastr.options = {
-                    "closeButton": true,
-                    "debug": false,
-                    "newestOnTop": false,
-                    "progressBar": false,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
-                    "onclick": null,
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut",
-                    "timeOut": "5000",
-                    "extendedTimeOut": "0",
-                }
-                toastr.success('Details Added');
-            },
-            error: function (data) {
-                alert("Error assigning probe. Please refresh");
-            },
-            cache: false,
-            contentType: false,
-            processData: false
-        });
-        reset_hunt_information();
-    } else if (is_valid_form && status == 2) {
-        const alt_design_name = document.getElementById('alt_design_name').value.trim();
-        const alt_design_name_error = document.getElementById('alt_design_name_error');
-        const facings = document.getElementById("num_facings").value;
-        let manu_link = document.getElementById('manu_link').value.trim();
-        const product_link = document.getElementById('product_link').value.trim();
-        if (product_type != 'brand') {
-            manu_link = '';
-        }
-        let formData = new FormData();
-        formData.append('project_name', p_name);
-        formData.append('status', status);
-        formData.append('source', suggestion_source);
-        formData.append('comment', comment);
-        formData.append('product_name', product_name);
-        formData.append('product_type', product_type);
-        formData.append('alt_design_name', alt_design_name);
-        formData.append('manu_link', manu_link);
-        formData.append('product_link', product_link);
-        formData.append('facings', facings);
-        status_element.disabled = true;
-        document.getElementById('source').disabled = true;
-        jQuery.ajax({
-            url: 'add_radar_product.php',
-            type: 'POST',
-            data: formData,
-            dataType: 'JSON',
-            success: function (data) {
-                if (data[0].success != '') {
-                    server_success.innerHTML = data[0].success;
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": false,
-                        "progressBar": false,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut",
-                        "timeOut": "5000",
-                        "extendedTimeOut": "0",
-                    }
-                    toastr.success('Details Added');
-                } else {
-                    server_success.innerHTML = '';
-                    reset_hunt_information();
-                }
-
-                if (data[0].error != '') {
-                    server_error.innerHTML = data[0].error;
-                } else {
-                    server_error.innerHTML = '';
-                }
-                if (data[0].duplicate_error != '') {
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": false,
-                        "progressBar": false,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut",
-                        "timeOut": "0",
-                        "extendedTimeOut": "0",
-                    }
-                    toastr.error(data[0].duplicate_error);
-                }
-            },
-            error: function (data) {
-                alert("Error fetching probe information. Please refresh");
-            },
-            cache: false,
-            contentType: false,
-            processData: false
-        });
-        product_count++;
-        reset_hunt_information();
-    }
-    if (close_radar && is_valid_form) {
+    if (suggestion_count > 0 && close_radar && status == '' && suggestion_source == '') {
         let formData = new FormData();
         formData.append('project_name', p_name);
         jQuery.ajax({
@@ -584,6 +451,207 @@ const save_radar_source = (save_radar, close_radar) => {
             contentType: false,
             processData: false
         });
+    } else {
+        if (status === '') {
+            status_error.innerHTML = 'Status must be selected';
+            is_valid_form = false;
+        } else {
+            status_error.innerHTML = '';
+        }
+        if (suggestion_source === '') {
+            source_error.innerHTML = 'Source cannot be left blank';
+            is_valid_form = false;
+        } else {
+            source_error.innerHTML = '';
+            if (!is_url(suggestion_source)) {
+                source_error.innerHTML = 'Invalid source URL';
+                is_valid_form = false;
+            } else {
+                source_error.innerHTML = '';
+            }
+        }
+        const product_name = document.getElementById('product_name').value.trim();
+        const product_type_element = document.getElementById('product_type');
+        const product_type = product_type_element.options[product_type_element.selectedIndex].value;
+        let flag = false;
+        if (status == 2) {
+            if (product_count >= 1) {
+                if ((product_name !== '' || product_type !== '') || (!save_radar)) {
+                    if (!validate_product_info()) {
+                        is_valid_form = false;
+                    }
+                } else {
+                    flag = true;
+                }
+            } else {
+                if (!validate_product_info()) {
+                    is_valid_form = false;
+                }
+            }
+        }
+        if (flag) {
+            reset_radar_form();
+            reset_hunt_information();
+        } else {
+            if (is_valid_form && status != 2) {
+                let formData = new FormData();
+                formData.append('project_name', p_name);
+                formData.append('status', status);
+                formData.append('source', suggestion_source);
+                formData.append('comment', comment);
+                jQuery.ajax({
+                    url: "process_source.php",
+                    type: "POST",
+                    data: formData,
+                    success: function (data) {
+                        reset_radar_form();
+                        toastr.options = {
+                            "closeButton": true,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-right",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut",
+                            "timeOut": "5000",
+                            "extendedTimeOut": "0",
+                        }
+                        toastr.success('Details Added');
+                    },
+                    error: function (data) {
+                        alert("Error assigning probe. Please refresh");
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                });
+                suggestion_count++;
+                reset_hunt_information();
+            } else if (is_valid_form && status == 2) {
+                const alt_design_name = document.getElementById('alt_design_name').value.trim();
+                const alt_design_name_error = document.getElementById('alt_design_name_error');
+                const facings = document.getElementById("num_facings").value;
+                let manu_link = document.getElementById('manu_link').value.trim();
+                const product_link = document.getElementById('product_link').value.trim();
+                if (product_type != 'brand') {
+                    manu_link = '';
+                }
+                let formData = new FormData();
+                formData.append('project_name', p_name);
+                formData.append('status', status);
+                formData.append('source', suggestion_source);
+                formData.append('comment', comment);
+                formData.append('product_name', product_name);
+                formData.append('product_type', product_type);
+                formData.append('alt_design_name', alt_design_name);
+                formData.append('manu_link', manu_link);
+                formData.append('product_link', product_link);
+                formData.append('facings', facings);
+                status_element.disabled = true;
+                document.getElementById('source').disabled = true;
+                jQuery.ajax({
+                    url: 'add_radar_product.php',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'JSON',
+                    success: function (data) {
+                        if (data[0].success != '') {
+                            server_success.innerHTML = data[0].success;
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": false,
+                                "progressBar": false,
+                                "positionClass": "toast-top-right",
+                                "preventDuplicates": false,
+                                "onclick": null,
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut",
+                                "timeOut": "5000",
+                                "extendedTimeOut": "0",
+                            }
+                            toastr.success('Details Added');
+                        } else {
+                            server_success.innerHTML = '';
+                            reset_hunt_information();
+                        }
+
+                        if (data[0].error != '') {
+                            server_error.innerHTML = data[0].error;
+                        } else {
+                            server_error.innerHTML = '';
+                        }
+                        if (data[0].duplicate_error != '') {
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": false,
+                                "progressBar": false,
+                                "positionClass": "toast-top-right",
+                                "preventDuplicates": false,
+                                "onclick": null,
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut",
+                                "timeOut": "0",
+                                "extendedTimeOut": "0",
+                            }
+                            toastr.error(data[0].duplicate_error);
+                        }
+                    },
+                    error: function (data) {
+                        alert("Error fetching probe information. Please refresh");
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                });
+                product_count++;
+                suggestion_count++;
+                reset_hunt_information();
+            }
+        }
+        if (close_radar && is_valid_form) {
+            let formData = new FormData();
+            formData.append('project_name', p_name);
+            jQuery.ajax({
+                url: "close_source.php",
+                type: "POST",
+                data: formData,
+                success: function (data) {
+                    reset_radar_form();
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut",
+                        "timeOut": "0",
+                        "extendedTimeOut": "0",
+                    }
+                    toastr.success('Suggestion Cleared');
+                },
+                error: function (data) {
+                    alert("Error assigning probe. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        }
     }
     return is_valid_form;
 }
@@ -705,6 +773,7 @@ jQuery(document).ready(function () {
         $('#confirm_probe').modal('hide');
         if (save_radar_source(true, true)) {
             reset_radar_form();
+            suggestion_count = 0;
             $('#add_radar').modal('hide');
         }
     });

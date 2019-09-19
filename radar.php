@@ -152,7 +152,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <span class="sr-only">Loading...</span>
                   </div>
                 </h2>
-                    <p class="count-text ">Checked Probe Count</p>
+                    <p class="count-text ">Added Link Count</p>
                 </div>
             </div>
             <div class="col">
@@ -207,7 +207,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <span class="sr-only">Loading...</span>
                   </div>
                 </h2>
-                    <p class="count-text ">Monthly Accuracy</p>
+                    <p class="count-text ">Cycle Accuracy</p>
                 </div>
             </div>
         </div>
