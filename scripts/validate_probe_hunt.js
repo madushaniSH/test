@@ -293,7 +293,6 @@ function reset_hunt_information() {
     document.getElementById('product_type_error').innerHTML = '';
     document.getElementById('facing_error').innerHTML = '';
     document.getElementById('manu_link_error').innerHTML = '';
-
 }
 
 function validate_probe_submission() {

@@ -385,16 +385,15 @@ slider.oninput = function() {
                     </div>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
+                    <button type="button" class="btn btn-outline-primary" id="plus_product">+ Product</button>
                     <button class="btn btn-warning" id="continue_two">Continue <i class="fas fa-angle-double-right"></i></button>
-                    <button type="button" class="btn btn-outline-danger hide" id="cancel_product" onclick="cancel_product_button();">Save Changes</button>
                 </div>
                 <span id="server_error" class="error-popup"></span>
                 <span id="server_success" class="success-popup"></span>
             </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" value="Submit" onclick="validate_probe_submission();" id="submit_probe">Close Suggestion</button>
+                <button type="button" class="btn btn-success" value="Submit" id="submit_probe">Close Suggestion</button>
                 </form>
             </div>
         </div>
@@ -411,7 +410,7 @@ slider.oninput = function() {
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-success" onclick="confirm_save();">Confirm</button>
+        <button type="button" class="btn btn-success" id="confirm_save">Confirm</button>
       </div>
     </div>
   </div>
