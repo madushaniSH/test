@@ -111,6 +111,29 @@ const update_ref_count = () => {
         var radar_cat = $("#brand_name_filter").val();
         formData.append("radar_cat", radar_cat);
         formData.append("ticket", selected_ticket);
+        var d = new Date();
+        d.setHours(0, 0, 0, 0);
+        d.setDate(15);
+        let cycle_start = new Date();
+        let cycle_end = new Date();
+        cycle_start.setUTCHours(0, 0, 0, 0);
+        cycle_end.setUTCHours(0, 0, 0, 0);
+        if (cycle_start.getUTCDate() <= 15) {
+            cycle_start.setUTCDate(16);
+            cycle_start.setUTCHours(4, 30, 0, 0)
+            cycle_start.setUTCMonth(cycle_start.getMonth() - 1);
+            cycle_end.setUTCDate(15);
+            cycle_end.setUTCHours(4, 30, 0, 0);
+        } else {
+            cycle_start.setUTCDate(16);
+            cycle_start.setUTCDate(16);
+            cycle_start.setUTCHours(4, 30, 0, 0)
+            cycle_end.setUTCMonth(cycle_start.getMonth() + 1);
+            cycle_end.setUTCDate(15);
+            cycle_end.setUTCHours(4, 30, 0, 0)
+        }
+        formData.append('start_time', cycle_start.toISOString().slice(0, 19).replace('T', ' '));
+        formData.append('end_time', cycle_end.toISOString().slice(0, 19).replace('T', ' '));
         jQuery.ajax({
             url: 'fetch_radar_count.php',
             type: 'POST',

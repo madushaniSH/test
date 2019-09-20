@@ -34,7 +34,7 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT DISTINCT probe.probe_processed_hunter_id, a.account_gid FROM probe INNER JOIN user_db.accounts a ON probe.probe_processed_hunter_id = a.account_id';
+$sql = 'SELECT DISTINCT probe_processed_hunter_id, account_gid FROM (SELECT DISTINCT probe.probe_processed_hunter_id, a.account_gid FROM probe INNER JOIN user_db.accounts a ON probe.probe_processed_hunter_id = a.account_id UNION ALL SELECT DISTINCT radar_hunt.radar_hunter_id AS "probe_processed_hunter_id", a.account_gid FROM radar_hunt INNER JOIN user_db.accounts a ON radar_hunt.radar_hunter_id = a.account_id) t3';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $hunter_summary = $stmt->fetchAll(PDO::FETCH_ASSOC);
