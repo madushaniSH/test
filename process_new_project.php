@@ -289,6 +289,8 @@ if ($row_count == 0) {
   `radar_added_user_id` int(11) NOT NULL,
   `radar_added_date` datetime NOT NULL DEFAULT current_timestamp(),
    `radar_ticket_id` int(11) NOT NULL,
+   `radar_hunter_id` int(11) DEFAULT NULL,
+  `radar_processed_time` datetime DEFAULT NULL,
    CONSTRAINT '.$dbname.'_RADAR_ACCOUNT_ID FOREIGN KEY (`radar_added_user_id`) REFERENCES `user_db`.`accounts` (`account_id`),
    CONSTRAINT '.$dbname.'_RADAR_TICKET_ID FOREIGN KEY (`radar_ticket_id`) REFERENCES `project_tickets` (`project_ticket_system_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
