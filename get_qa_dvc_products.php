@@ -38,11 +38,17 @@ catch(PDOException $e){
 }
 
 $search_term = $_POST['dvc_name'].'%';
-$sql = 'SELECT products.product_alt_design_name as name FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id   WHERE products.product_type = :product_type AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND probe.probe_ticket_id = :ticket AND product_name LIKE :search_term';
-$stmt = $pdo->prepare($sql);
-$stmt->execute(['product_type'=>$_POST['product_type'], 'account_id' =>$_SESSION['id'], 'ticket'=>$_POST['ticket'], "search_term"=>$search_term]);
-$brand_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
-
+if ($_POST['type'] == 'probe') {
+    $sql = 'SELECT products.product_alt_design_name as name FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id   WHERE products.product_type = :product_type AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND probe.probe_ticket_id = :ticket AND product_name LIKE :search_term';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['product_type'=>$_POST['product_type'], 'account_id' =>$_SESSION['id'], 'ticket'=>$_POST['ticket'], "search_term"=>$search_term]);
+    $brand_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+} else if ($_POST['type'] == 'radar') {
+    $sql = 'SELECT products.product_alt_design_name as name FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id   WHERE products.product_type = :product_type AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND radar_hunt.radar_ticket_id = :ticket AND product_name LIKE :search_term AND products.product_hunt_type = :type';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['product_type'=>$_POST['product_type'], 'account_id' =>$_SESSION['id'], 'ticket'=>$_POST['ticket'], "type"=>$_POST['type'], "search_term"=>$search_term]);
+    $brand_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+}
 $return_arr[] = array("brand_rows"=>$brand_rows);
 echo json_encode($return_arr);
 ?>

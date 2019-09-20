@@ -4,6 +4,7 @@ var facing_num = 0;
 var selected_ticket = '';
 var is_dupilcate = false;
 var is_dupilcate_dvc = false;
+let selected_type = '';
 var org_manu_link = '';
 
 function assign_brand() {
@@ -76,6 +77,7 @@ function get_brand_list(product_type, select_element) {
         formData.append("project_name", p_name);
         formData.append("product_type", product_type);
         formData.append("ticket", selected_ticket);
+        formData.append("type", selected_type);
         jQuery.ajax({
             url: "get_qa_brand_list.php",
             type: "POST",
@@ -140,6 +142,7 @@ const get_product_name_list = (product_type, select_element) => {
             formData.append("product_type", product_type);
             formData.append("ticket", selected_ticket);
             formData.append("dvc_name", sku_dvc_name)
+            formData.append("type", selected_type);
             jQuery.ajax({
                 url: "get_qa_dvc_products.php",
                 type: "POST",
@@ -293,70 +296,141 @@ function get_probe_qa_info() {
     formData.append("sku_dvc_name", sku_dvc_name);
     formData.append("sku_facing_name", sku_facing_name);
     formData.append("ticket", selected_ticket);
+    formData.append("type", selected_type);
     jQuery.ajax({
         url: "assign_qa_product.php",
         type: "POST",
         data: formData,
         dataType: "JSON",
         success: function (data) {
-            var title_string = '<span id="project_title">' + project_name + ' ' + data[0].ticket + "</span>";
-            if (data[0].brand_name != null) {
-                title_string +=
-                    ' <span id="brand_title">' + data[0].brand_name + "</span>";
-            }
-            if (data[0].client_category_name != null) {
-                title_string +=
-                    ' <span id="client_category_title">' +
-                    data[0].client_category_name +
-                    "</span>";
-            }
-            if (data[0].product_type != null) {
-                title_string +=
-                    ' <span id="probe_id_title">' + data[0].product_type.toUpperCase() + '</span>';
-            }
+            if (selected_type === 'probe') {
+                document.getElementById('suggestion_source_button').classList.add('hide');
+                var title_string = '<span id="project_title">' + project_name + ' ' + data[0].probe_info.ticket_id + " " + selected_type.toUpperCase() +"</span>";
+                if (data[0].probe_info.brand_name != null) {
+                    title_string +=
+                        ' <span id="brand_title">' + data[0].probe_info.brand_name + "</span>";
+                }
+                if (data[0].probe_info.client_category_name != null) {
+                    title_string +=
+                        ' <span id="client_category_title">' +
+                        data[0].probe_info.client_category_name +
+                        "</span>";
+                }
+                if (data[0].probe_info.product_type != null) {
+                    title_string +=
+                        ' <span id="probe_id_title">' + data[0].probe_info.product_type.toUpperCase() + '</span>';
+                }
 
-            if (data[0].probe_id != null) {
+                if (data[0].probe_info.probe_id != null) {
+                    title_string +=
+                        ' <span>' + data[0].probe_info.probe_id + '</span>';
+                }
+                let dateTimeParts = data[0].probe_info.product_creation_time.split(/[- :]/); // regular expression split that creates array with: year, month, day, hour, minutes, seconds values
+                dateTimeParts[1]--; // monthIndex begins with 0 for January and ends with 11 for December so we need to decrement by one
+                const dateObject = new Date(...dateTimeParts);
                 title_string +=
-                    ' <span>' + data[0].probe_id + '</span>';
-            }
-            let dateTimeParts = data[0].time.split(/[- :]/); // regular expression split that creates array with: year, month, day, hour, minutes, seconds values
-            dateTimeParts[1]--; // monthIndex begins with 0 for January and ends with 11 for December so we need to decrement by one
-            const dateObject = new Date(...dateTimeParts);
-            title_string +=
-                ' <span id="time_title">' + dateObject.toLocaleString() + '</span>';
+                    ' <span id="time_title">' + dateObject.toLocaleString() + '</span>';
 
-            jQuery("#qa_probe_title").html(title_string);
-            jQuery("#product_name").val(data[0].product_name);
-            jQuery("#alt_name").val(data[0].product_alt_design_name);
-            org_manu_link = data[0].manufacturer_link;
-            jQuery('#manu_link').val(data[0].manufacturer_link);
-            var product_link = data[0].product_link;
-            if (product_link == null) {
-                product_link = '';
-                document.getElementById('product_source_button').classList.add('hide');
-            } else {
-                document.getElementById('product_source_button').classList.remove('hide');
-                var str = "Go to Product Source <i class=\"fas fa-external-link-alt\">";
-                var result = str.link(product_link);
-                document.getElementById('product_source_button').innerHTML = result;
-                $('#product_source_button a').attr('target', '_blank');
+                jQuery("#qa_probe_title").html(title_string);
+                jQuery("#product_name").val(data[0].probe_info.product_name);
+                jQuery("#alt_name").val(data[0].probe_info.product_alt_design_name);
+                org_manu_link = data[0].probe_info.manufacturer_link;
+                jQuery('#manu_link').val(data[0].probe_info.manufacturer_link);
+                var product_link = data[0].probe_info.product_link;
+                if (product_link == null) {
+                    product_link = '';
+                    document.getElementById('product_source_button').classList.add('hide');
+                } else {
+                    document.getElementById('product_source_button').classList.remove('hide');
+                    var str = "Go to Product Source <i class=\"fas fa-external-link-alt\">";
+                    var result = str.link(product_link);
+                    document.getElementById('product_source_button').innerHTML = result;
+                    $('#product_source_button a').attr('target', '_blank');
+                }
+                if (data[0].probe_info.manufacturer_link == null) {
+                    document.getElementById('manu_source_button').classList.add('hide');
+                } else {
+                    document.getElementById('manu_source_button').classList.remove('hide');
+                    var str = "<i class=\"fas fa-external-link-alt\">";
+                    var result = str.link(data[0].probe_info.manufacturer_link);
+                    document.getElementById('manu_source_button').innerHTML = result;
+                    $('#manu_source_button a').attr('target', '_blank');
+                }
+                document.getElementById("num_facings").value = data[0].probe_info.product_facing_count;
+                facing_num = data[0].probe_info.product_facing_count;
+                document.getElementById("output").innerHTML = document.getElementById("num_facings").value;
+                if (data[0].probe_info.product_alt_design_previous != null) {
+                    jQuery('#name_error').html('Orignal name was overwritten by an Analyst');
+                }
+                display_qa_probe();
             }
-            if (data[0].manufacturer_link == null) {
-                document.getElementById('manu_source_button').classList.add('hide');
-            } else {
-                document.getElementById('manu_source_button').classList.remove('hide');
-                var str = "<i class=\"fas fa-external-link-alt\">";
-                var result = str.link(data[0].manufacturer_link);
-                document.getElementById('manu_source_button').innerHTML = result;
-                $('#manu_source_button a').attr('target', '_blank');
+            if (selected_type === 'radar') {
+                var title_string = '<span id="project_title">' + project_name + ' ' + data[0].radar_info.ticket_id + " "  + selected_type.toUpperCase()+ "</span>";
+                if (data[0].radar_info.radar_brand != null) {
+                    title_string +=
+                        ' <span id="brand_title">' + data[0].radar_info.radar_brand + "</span>";
+                }
+                if (data[0].radar_info.radar_category != null) {
+                    title_string +=
+                        ' <span id="client_category_title">' +
+                        data[0].radar_info.radar_category +
+                        "</span>";
+                }
+                if (data[0].radar_info.product_type != null) {
+                    title_string +=
+                        ' <span id="probe_id_title">' + data[0].radar_info.product_type.toUpperCase() + '</span>';
+                }
+
+                let dateTimeParts = data[0].radar_info.product_creation_time.split(/[- :]/); // regular expression split that creates array with: year, month, day, hour, minutes, seconds values
+                dateTimeParts[1]--; // monthIndex begins with 0 for January and ends with 11 for December so we need to decrement by one
+                const dateObject = new Date(...dateTimeParts);
+                title_string +=
+                    ' <span id="time_title">' + dateObject.toLocaleString() + '</span>';
+
+                jQuery("#qa_probe_title").html(title_string);
+                jQuery("#product_name").val(data[0].radar_info.product_name);
+                jQuery("#alt_name").val(data[0].radar_info.product_alt_design_name);
+                org_manu_link = data[0].radar_info.manufacturer_link;
+                jQuery('#manu_link').val(data[0].radar_info.manufacturer_link);
+                var product_link = data[0].radar_info.product_link;
+                if (product_link == null) {
+                    product_link = '';
+                    document.getElementById('product_source_button').classList.add('hide');
+                } else {
+                    document.getElementById('product_source_button').classList.remove('hide');
+                    var str = "Go to Product Source <i class=\"fas fa-external-link-alt\">";
+                    var result = str.link(product_link);
+                    document.getElementById('product_source_button').innerHTML = result;
+                    $('#product_source_button a').attr('target', '_blank');
+                }
+                let source_link = data[0].radar_info.radar_source_link;
+                if (source_link == null) {
+                    source_link = '';
+                    document.getElementById('suggestion_source_button').classList.add('hide');
+                } else {
+                    document.getElementById('suggestion_source_button').classList.remove('hide');
+                    let str = "Go to Suggestion Source <i class=\"fas fa-external-link-alt\">";
+                    let result = str.link(source_link);
+                    document.getElementById('suggestion_source_button').innerHTML = result;
+                    $('#suggestion_source_button a').attr('target', '_blank');
+                }
+                if (data[0].radar_info.manufacturer_link == null) {
+                    document.getElementById('manu_source_button').classList.add('hide');
+                } else {
+                    document.getElementById('manu_source_button').classList.remove('hide');
+                    var str = "<i class=\"fas fa-external-link-alt\">";
+                    var result = str.link(data[0].radar_info.manufacturer_link);
+                    document.getElementById('manu_source_button').innerHTML = result;
+                    $('#manu_source_button a').attr('target', '_blank');
+                }
+                document.getElementById("num_facings").value = data[0].radar_info.product_facing_count;
+                facing_num = data[0].radar_info.product_facing_count;
+                document.getElementById("output").innerHTML = document.getElementById("num_facings").value;
+                if (data[0].radar_info.product_alt_design_previous != null) {
+                    jQuery('#name_error').html('Orignal name was overwritten by an Analyst');
+                }
+                display_qa_probe();
             }
-            document.getElementById("num_facings").value = data[0].product_facing_count;
-            facing_num = data[0].product_facing_count;
-            document.getElementById("output").innerHTML = document.getElementById("num_facings").value;
-            if (data[0].product_alt_design_previous != null) {
-                jQuery('#name_error').html('Orignal name was overwritten by an Analyst');
-            }
-            display_qa_probe();
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
@@ -408,7 +482,7 @@ function unassign_probe() {
 }
 
 function update_project_qa_count() {
-    if (p_name != "") {
+    if (p_name != "" && selected_type != '') {
         get_brand_list("sku", "brand_name");
         get_brand_list("dvc", "dvc_name");
         get_brand_list("facing", "facing_name");
@@ -426,6 +500,7 @@ function update_project_qa_count() {
         formData.append("sku_dvc_name", sku_dvc_name);
         formData.append("sku_facing_name", sku_facing_name);
         formData.append('ticket', selected_ticket);
+        formData.append("type", selected_type);
         jQuery.ajax({
             url: "fetch_probe_qa_count.php",
             type: "POST",
@@ -571,30 +646,64 @@ function get_ticket_list() {
 }
 function validate_ticket_name() {
     if (p_name != "") {
+        selected_type = '';
         var ticket = jQuery('#ticket').val();
         var probe_qa_options = document.getElementById("probe_qa_options");
         var probe_hunt_section = document.getElementById("probe_hunt_section");
         var ticket_section = document.getElementById('ticket_section');
         var counters = document.getElementById("counters");
+        let options_hunt = document.getElementById('options_hunt');
         if (ticket == "" || ticket == null) {
             probe_qa_options.classList.add("hide");
             probe_hunt_section.classList.add("hide");
             counters.classList.add("hide");
+            options_hunt.classList.add("hide");
         } else {
-            probe_qa_options.classList.remove("hide");
-            probe_hunt_section.classList.remove("hide");
-            counters.classList.remove("hide");
+            probe_qa_options.classList.add("hide");
+            probe_hunt_section.classList.add("hide");
+            counters.classList.add("hide");
             selected_ticket = ticket;
-            get_brand_list("sku", "brand_name");
-            get_brand_list("dvc", "dvc_name");
-            get_brand_list("facing", "facing_name");
-            get_product_name_list("dvc", "dvc_product_name");
+            options_hunt.classList.remove("hide");
         }
     }
+}
+const show_upload_options_radar = () => {
+    $("#brand_name").empty();
+    $("#dvc_name").empty();
+    $("#facing_name").empty();
+    $("#dvc_product_name").empty();
+    document.getElementById('probe_qa_options').classList.remove('hide');
+    document.getElementById('probe_hunt_section').classList.remove('hide');
+    document.getElementById('counters').classList.remove('hide');
+    document.getElementById('option1').classList.remove('active_btn');
+    document.getElementById('option3').classList.add('active_btn');
+    selected_type = 'radar';
+    get_brand_list("sku", "brand_name");
+    get_brand_list("dvc", "dvc_name");
+    get_brand_list("facing", "facing_name");
+    get_product_name_list("dvc", "dvc_product_name");
+}
+
+const show_upload_options_probe = () => {
+    $("#brand_name").empty();
+    $("#dvc_name").empty();
+    $("#facing_name").empty();
+    $("#dvc_product_name").empty();
+    document.getElementById('probe_qa_options').classList.remove('hide');
+    document.getElementById('probe_hunt_section').classList.remove('hide');
+    document.getElementById('counters').classList.remove('hide');
+    document.getElementById('option1').classList.add('active_btn');
+    document.getElementById('option3').classList.remove('active_btn');
+    selected_type = 'probe';
+    get_brand_list("sku", "brand_name");
+    get_brand_list("dvc", "dvc_name");
+    get_brand_list("facing", "facing_name");
+    get_product_name_list("dvc", "dvc_product_name");
 }
 
 
 function validate_project_name() {
+    selected_type = '';
     var project_name_element = document.getElementById("project_name");
     var project_name =
         project_name_element.options[project_name_element.selectedIndex].value;
@@ -603,12 +712,14 @@ function validate_project_name() {
     var probe_hunt_section = document.getElementById("probe_hunt_section");
     var ticket = document.getElementById('ticket_section');
     var counters = document.getElementById("counters");
+    let options_hunt = document.getElementById('options_hunt');
     if (project_name == "") {
         project_name_error.innerHTML = "Project Name required for upload";
         probe_qa_options.classList.add("hide");
         probe_hunt_section.classList.add("hide");
         counters.classList.add("hide");
         ticket.classList.add("hide");
+        options_hunt.classList.add('hide');
     } else {
         $('#ticket').empty();
         project_name_error.innerHTML = "";
@@ -617,10 +728,12 @@ function validate_project_name() {
         counters.classList.add("hide");
         p_name = project_name;
         ticket.classList.remove("hide");
+        options_hunt.classList.add('hide');
         get_ticket_list();
         $("#brand_name").empty();
         $("#dvc_name").empty();
         $("#facing_name").empty();
+        $("#dvc_product_name").empty();
     }
 }
 
@@ -729,7 +842,8 @@ function validate_qa_form() {
         formData.append("error_image_count", error_images.length);
         formData.append("product_alt_rename", product_alt_rename);
         formData.append("error_qa", error_qa);
-        formData.append("num_facings", document.getElementById("num_facings").value)
+        formData.append("num_facings", document.getElementById("num_facings").value);
+        console.log(document.getElementById("num_facings").value);
         formData.append("manu_link", manu_link);
         for (var i = 0; i < error_images.length; i++) {
             formData.append("error_images" + i, document.getElementById('error_images').files[i]);

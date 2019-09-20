@@ -131,6 +131,14 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                 <span id="ticket_error" class="error-popup"></span>    
             </div>
         </div>
+        <div id="options_hunt" class="hide">
+            <div class="row">
+            <div class="col">
+                <button class="btn btn-secondary" onclick="show_upload_options_probe()" id="option1">Probe Upload</button>
+                <button class="btn btn-secondary" onclick="show_upload_options_radar()" id="option3">Radar Upload</button>
+            </div>
+            </div>
+        </div>
         </div>
         <div class="row text-center hide" id="counters">
             <div class="col">
@@ -317,6 +325,11 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <div class="form-row">
                         <div class="col">
                             <p id="product_source_button">Go to Product Source</p> 
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <p id="suggestion_source_button" class="hide">Go to Suggestion Source</p> 
                         </div>
                     </div>
                     <p class="border-bottom my-3"></p>

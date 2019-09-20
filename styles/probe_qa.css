@@ -101,13 +101,22 @@
     font-size: 1vw;
 }
 
-#counters{
+#counters {
     background: transparent;
     padding: 0;
     opacity: 1;
     border-radius: 0;
- }
+}
 
- #time_title {
-     color: darkturquoise;
- }
+#time_title {
+    color: darkturquoise;
+}
+
+.active_btn {
+    background-color: black;
+    color: white;
+}
+
+#options_hunt {
+    margin-top: 1vw;
+}
