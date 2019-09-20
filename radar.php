@@ -302,6 +302,11 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <div class="modal-body">
             <form action="POST" id="probe_form">
             <div class="row">
+                <div class="form-group col-md-5" id="count_sec">
+                <p><i class="fas fa-link"></i> Current Suggestion Link Count : <span id ="suggestion_count"></span></p>
+                </div>
+            </div>
+            <div class="row">
                 <div class="form-group col-md-5">
                     <label for="status">*Status:</label>
                     <select name="status" id="status" class="form-control">

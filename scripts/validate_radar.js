@@ -147,6 +147,9 @@ const update_ref_count = () => {
                     $('#mon_acc_count').empty();
                     $('#mon_acc_count').html(data[0].mon_accuracy + '%');
                     $('#acc_pro').html(p_name);
+                    $('#suggestion_count').empty();
+                    $('#suggestion_count').html(data[0].current_link_count);
+                    suggestion_count = data[0].current_link_count;
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {

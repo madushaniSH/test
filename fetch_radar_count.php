@@ -58,12 +58,18 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
 
     $brand_name = '';
 
+    $current_link_count = 0;
     if ($row_count == 1) {
         $sql = 'SELECT DISTINCT(a.radar_category) AS name FROM radar_queue b INNER JOIN radar_hunt a ON a.radar_hunt_id = b.radar_hunt_key_id WHERE (b.radar_being_handled = 0 OR b.account_id = :account_id) AND a.radar_category IS NOT NULL AND b.radar_queue_id = :radar_queue_id';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['radar_queue_id' =>$radar_queue_info->radar_queue_id,'account_id'=>$_SESSION['id']]);
         $radar_info = $stmt->fetch(PDO::FETCH_OBJ);
         $radar_cat = $radar_info->name;
+
+        $sql = 'SELECT count(*) FROM radar_queue b INNER JOIN radar_hunt a ON a.radar_hunt_id = b.radar_hunt_key_id INNER JOIN radar_sources c ON c.radar_hunt_id = b.radar_hunt_key_id WHERE b.radar_queue_id = :id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id' =>$radar_queue_info->radar_queue_id]);
+        $current_link_count = $stmt->fetchColumn();
     }
 
     $search_item = $_POST['radar_cat'].'';
@@ -145,6 +151,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
     $brand_name = '';
+    $current_link_count = 0;
 
     if ($row_count == 1) {
         $sql = 'SELECT DISTINCT(a.radar_category) AS name FROM radar_queue b INNER JOIN radar_hunt a ON a.radar_hunt_id = b.radar_hunt_key_id WHERE (b.radar_being_handled = 0 OR b.account_id = :account_id) AND a.radar_category IS NOT NULL AND b.radar_queue_id = :radar_queue_id';
@@ -152,6 +159,12 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
         $stmt->execute(['radar_queue_id' =>$radar_queue_info->radar_queue_id,'account_id'=>$_SESSION['id']]);
         $radar_info = $stmt->fetch(PDO::FETCH_OBJ);
         $radar_cat = $radar_info->name;
+
+        $sql = 'SELECT count(*) FROM radar_queue b INNER JOIN radar_hunt a ON a.radar_hunt_id = b.radar_hunt_key_id INNER JOIN radar_sources c ON c.radar_hunt_id = b.radar_hunt_key_id WHERE b.radar_queue_id = :id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id' =>$radar_queue_info->radar_queue_id]);
+        $current_link_count = $stmt->fetchColumn();
+
     }
 
     $search_item = $_POST['radar_cat'].'';
@@ -306,6 +319,6 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
         $mon_accuracy = round(((($total_count - ($mon_error_type_count * 5)) / $total_count) * 100), 2);
     }
 }
-$return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "radar_cat_count"=>$radar_cat_count, "radar_cat"=>$radar_cat, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count, "number_of_products_added"=>$number_of_products_added, "rename_error_count"=>$rename_error_count, "error_type_count"=>$error_type_count, "mon_accuracy"=>$mon_accuracy);
+$return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "radar_cat_count"=>$radar_cat_count, "radar_cat"=>$radar_cat, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count, "number_of_products_added"=>$number_of_products_added, "rename_error_count"=>$rename_error_count, "error_type_count"=>$error_type_count, "mon_accuracy"=>$mon_accuracy, "current_link_count"=>$current_link_count);
 echo json_encode($return_arr);
 ?>

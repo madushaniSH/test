@@ -8,3 +8,24 @@
     background-color: black;
     color: white;
 }
+
+#count_sec {
+    padding: 0.5;
+    background: #141212;
+    color: white;
+    margin-left:0.5vw;
+    border-radius: 1vw;
+    padding: 0.5vw;
+}
+#count_sec p {
+    margin: 0 auto;
+}
+
+#count_sec i {
+    color: aqua;
+}
+
+#count_sec span {
+    color: aqua;
+    font-size: 1vw;
+}

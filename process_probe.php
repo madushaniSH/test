@@ -98,7 +98,7 @@ for ($i = 0; $i < $total_count; $i++) {
         }
 
 
-        for ($j = 0; $j < count($probe_list); $j++) {
+        for ($j = 0; $j < min(10,count($probe_list)); $j++) {
             if ($probe_list[$j] != '') {
                 $sql = "INSERT INTO probe (brand_id, client_category_id, probe_id, probe_added_user_id, probe_ticket_id) VALUES (:brand_id, :client_category_id, :probe_id, :probe_added_user_id, :probe_ticket_id)";
                 $stmt = $pdo->prepare($sql);
