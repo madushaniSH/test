@@ -34,7 +34,7 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT project_name, project_db_name FROM projects WHERE project_region = "AMER"';
+$sql = 'SELECT project_name, project_db_name, project_region FROM projects';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $project_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
