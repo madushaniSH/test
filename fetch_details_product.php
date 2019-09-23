@@ -33,7 +33,7 @@ catch(PDOException $e){
     echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
     exit();
 }
-$sql = 'SELECT products.product_id, product_hunt_type AS "Product Hunt Type",probe.probe_id AS "Probe ID", radar_sources.radar_source_link AS "Radar Source Link", brand.brand_name AS "Brand", products.product_alt_design_name AS "Alternative Design Name", products.product_name AS "English Product Name" , products.product_previous AS "Previous English Product Name", products.product_type AS "Product Type", products.product_creation_time AS "Product Creation Time", client_category.client_category_name AS "Category", products.product_facing_count AS "Facing Count",products.account_id AS "hunter_gid", products.manufacturer_link AS "Manufacturer Link", products.product_link AS "Product Link",products.product_qa_account_id AS "qa_gid", products.product_qa_datetime AS "QA Time", products.product_qa_status AS "Product Status"
+$sql = 'SELECT products.product_id, product_hunt_type AS "Product Hunt Type",probe.probe_id AS "Probe ID", radar_sources.radar_source_link AS "Radar Source Link", brand.brand_name AS "Brand", radar_hunt.radar_brand AS "Radar Brand", products.product_alt_design_name AS "Alternative Design Name", products.product_name AS "English Product Name" , products.product_previous AS "Previous English Product Name", products.product_type AS "Product Type", products.product_creation_time AS "Product Creation Time", client_category.client_category_name AS "Category", radar_hunt.radar_category AS "Radar Category", products.product_facing_count AS "Facing Count",products.account_id AS "hunter_gid", products.manufacturer_link AS "Manufacturer Link", products.product_link AS "Product Link",products.product_qa_account_id AS "qa_gid", products.product_qa_datetime AS "QA Time", products.product_qa_status AS "Product Status"
 FROM products
 LEFT JOIN probe_product_info
 ON products.product_id = probe_product_info.probe_product_info_product_id
@@ -64,6 +64,12 @@ for ($i = 0; $i < count($hunted_product_info); $i++){
     }
     if ($hunted_product_info[$i]["Radar Source Link"] == null) {
         $hunted_product_info[$i]["Radar Source Link"] = '';
+    }
+    if ($hunted_product_info[$i]["Radar Brand"] == null) {
+        $hunted_product_info[$i]["Radar Brand"] = '';
+    }
+    if ($hunted_product_info[$i]["Radar Category"] == null) {
+        $hunted_product_info[$i]["Radar Category"] = '';
     }
     if ($hunted_product_info[$i]["Alternative Design Name"] == null) {
         $hunted_product_info[$i]["Alternative Design Name"] = '';
