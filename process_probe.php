@@ -47,6 +47,7 @@ foreach ($csvAsArray as $i=>$row) {
 }
 
 $total_count = count($csvAsArray);
+$pdo->beginTransaction();
 for ($i = 0; $i < $total_count; $i++) {
     if ($csvAsArray[$i]["probes_with_high_other_percent"] != '') {
         $brand = $csvAsArray[$i]["brand"];
@@ -61,11 +62,9 @@ for ($i = 0; $i < $total_count; $i++) {
             $brand_info = $stmt->fetch(PDO::FETCH_OBJ);
             $brand_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
             if ($brand_row_count == 0) {
-                $pdo->beginTransaction();
                 $sql = 'INSERT INTO brand (brand_name) VALUES (:brand_name)';
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute(['brand_name'=>$brand]);
-                $pdo->commit();
 
                 $sql = 'SELECT brand_id FROM brand WHERE brand_name = :brand_name';
                 $stmt = $pdo->prepare($sql);
@@ -85,11 +84,9 @@ for ($i = 0; $i < $total_count; $i++) {
             $category_row_cout = $stmt->rowCount(PDO::FETCH_OBJ);
 
             if ($category_row_cout == 0) {
-                $pdo->beginTransaction();
                 $sql = 'INSERT INTO client_category (client_category_name) VALUES (:client_category_name)';
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute(['client_category_name'=>$category]);
-                $pdo->commit();
 
                 $sql = 'SELECT client_category_id FROM client_category WHERE client_category_id = :client_category_id';
                 $stmt = $pdo->prepare($sql);
@@ -101,8 +98,6 @@ for ($i = 0; $i < $total_count; $i++) {
             $category_id = null;
         }
 
-
-        $pdo->beginTransaction();
         for ($j = 0; $j < min(10,count($probe_list)); $j++) {
             if ($probe_list[$j] != '') {
                 $sql = "INSERT INTO probe (brand_id, client_category_id, probe_id, probe_added_user_id, probe_ticket_id) VALUES (:brand_id, :client_category_id, :probe_id, :probe_added_user_id, :probe_ticket_id)";
@@ -115,7 +110,7 @@ for ($i = 0; $i < $total_count; $i++) {
                 $stmt->execute(['probe_key_id'=>$last_id]);
             }
         }
-        $pdo->commit();
     }
 }
+$pdo->commit();
 ?>
