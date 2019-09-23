@@ -94,6 +94,15 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </ul>
     </div>
 </nav>
+    <?php
+if($_SESSION['role'] === 'Admin'){
+    echo "
+        <div class=\"col\">
+            <button class=\"btn btn-success\" onclick=\"special();\">Click Me</button>
+        </div>
+    ";
+}
+?>
 <div id="fetch_project_section">
     <div class="row" id="export_button_selection">
         <div class="col">

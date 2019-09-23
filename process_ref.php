@@ -49,11 +49,11 @@ foreach ($csvAsArray as $i=>$row) {
 $total_count = count($csvAsArray);
 $skipped_count = 0;
 $proccessed_rows = 0;
+$user_id = $_SESSION['id'];
 for ($i = 0; $i < $total_count; $i++) {
     $brand_missing = false;
     $ean_missing = false;
     $null_count = 0;
-    $user_id = $_SESSION['id'];
 
     if ($csvAsArray[$i]["Recognition Level"] != ''){
         $recognition_level = $csvAsArray[$i]["Recognition Level"];

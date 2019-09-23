@@ -98,10 +98,10 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     </div>
 </nav>
 <div class="row">
-    <div  id="hunter_counter" class="col ">
-    <div class="downArrow bounce" id="arrow_sec">
-        <a class="btn" id="show_button"><i class="fas fa-chevron-circle-down fa-3x"></i><br>Show Daily Count</a>
-    </div>
+    <div  id="hunter_counter" class="col hide">
+        <div class="downArrow bounce" id="arrow_sec">
+            <a class="btn" id="show_button"><i class="fas fa-chevron-circle-down fa-3x"></i><br> <?php if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ){ echo "Show <span id=\"acc_pro\"></span> Daily Progress";} else {echo "Show Daily Count for <span id=\"acc_pro\"></span>";} ?></a>
+        </div>
 	    <div class="row text-center hide" id="counters">
 	        <div class="col">
 	            <div class="counter">
@@ -155,7 +155,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <span class="sr-only">Loading...</span>
                   </div>
                 </h2>
-                    <p class="count-text ">Checked Probe Count</p>
+                    <p class="count-text ">Added Link Count</p>
                 </div>
             </div>
             <div class="col">
@@ -166,7 +166,29 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <span class="sr-only">Loading...</span>
                   </div>
                 </h2>
-                    <p class="count-text ">QA Error Count</p>
+                    <p class="count-text ">Disapproved Products</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i id ="error_type_error" class="fa-2x fas fa-exclamation-circle"></i>
+                  <h2 id="error_type_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">QA Errors</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i id ="rename_error" class="fa-2x fas fa-eye-slash"></i>
+                  <h2 id="rename_error_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Rename Errors</p>
                 </div>
             </div>
             <div class="col">
@@ -177,7 +199,18 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <span class="sr-only">Loading...</span>
                   </div>
                 </h2>
-                    <p class="count-text ">System Error Count</p>
+                    <p class="count-text ">System Errors</p>
+                </div>
+            </div>
+            <div class="col">
+	            <div class="counter">
+                  <i id ="accuracy" class="fa-2x fas fa-bullseye"></i>
+                  <h2 id="mon_acc_count" class="timer count-title count-number">
+                    <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </h2>
+                    <p class="count-text ">Cycle Accuracy</p>
                 </div>
             </div>
         </div>

@@ -78,6 +78,27 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     document.body.removeChild(link);
 }
 
+const special = () => {
+    let formData = new FormData();
+    formData.append("start_datetime", '2019-08-20 00:00:00');
+    formData.append("end_datetime", '2019-09-20 00:00:00');
+    jQuery.ajax({
+        url: 'special.php',
+        type: 'POST',
+        data: formData,
+        dataType: 'JSON',
+        success: function (data) {
+            JSONToCSVConvertor(data[0].hunter_summary," Monthly Summary 2019-08-20 00:00:00 to 2019-09-20 00:00:00", true);
+        },
+        error: function (data) {
+            alert("Error assigning probe. Please refresh");
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+}
+
 
 // gets projects details from server in json format
 function fetch_details() {
@@ -131,7 +152,7 @@ function fetch_details() {
                     type: 'POST',
                     data: formData,
                     dataType: 'JSON',
-                    success: function (data) {           
+                    success: function (data) {
                         JSONToCSVConvertor(data[0].hunter_summary, data[0].dbname + " Hunter Summary " + start_datetime + " - " + end_datetime, true);
                     },
                     error: function (data) {
@@ -140,7 +161,7 @@ function fetch_details() {
                     cache: false,
                     contentType: false,
                     processData: false
-                });    
+                });
             }
         }
     }

@@ -1,5 +1,6 @@
 var p_name = '';
 let product_count = 0;
+let selected_ticket = '';
 
 function get_brand_list(select_element) {
     if (p_name != "") {
@@ -216,7 +217,7 @@ function validate_project_name() {
 }
 */
 
-function validate_project_name() {
+const validate_project_name = () => {
     $('#brand_name_filter').empty();
     const project_name_element = document.getElementById('project_name');
     const project_name = project_name_element.options[project_name_element.selectedIndex].value;
@@ -224,19 +225,19 @@ function validate_project_name() {
     const ref_hunt_options = document.getElementById('ref_hunt_options');
     const ref_hunt_counter = document.getElementById('ref_hunt_counter');
     const ticket_section = document.getElementById('ticket_section');
-    //var hunter_counter = document.getElementById('hunter_counter');
+    const hunter_counter = document.getElementById('hunter_counter');
     if (project_name == '') {
         project_name_error.innerHTML = 'Project Name required for upload';
         ref_hunt_options.classList.add('hide');
         ref_hunt_counter.classList.add('hide');
         ticket_section.classList.add('hide');
-        //hunter_counter.classList.add('hide')
+        hunter_counter.classList.add('hide')
     } else {
         project_name_error.innerHTML = '';
         ticket_section.classList.remove('hide');
         ref_hunt_counter.classList.add('hide');
         ref_hunt_options.classList.add('hide');
-        //hunter_counter.classList.remove('hide')
+        hunter_counter.classList.add('hide')
         p_name = project_name;
         get_ticket_list();
         jQuery('#ref_recognition').val('');
@@ -255,6 +256,26 @@ function validate_project_name() {
         jQuery('#ref_flavor_detail').val('');
         jQuery('#ref_case_pack').val('');
         jQuery('#ref_multi_pack').val('');
+    }
+}
+
+const validate_ticket_name = () => {
+    if (p_name != "") {
+        const ticket = jQuery('#ticket').val();
+        const probe_hunt_options = document.getElementById('ref_hunt_options');
+        const probe_hunt_counter = document.getElementById('ref_hunt_counter');
+        const hunter_counter = document.getElementById('hunter_counter');
+        const radar_assign = document.getElementById('radar_assign');
+        if (ticket == "" || ticket == null) {
+            probe_hunt_options.classList.add('hide');
+            probe_hunt_counter.classList.add('hide');
+            hunter_counter.classList.add('hide');
+        } else {
+            probe_hunt_options.classList.remove('hide');
+            probe_hunt_counter.classList.remove('hide');
+            hunter_counter.classList.remove('hide');
+            selected_ticket = ticket;
+        }
     }
 }
 
@@ -364,6 +385,11 @@ jQuery(document).ready(function () {
     });
     jQuery('#project_name').change(function () {
         validate_project_name();
+        jQuery('#current_brand_ref_count').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('ref_brand_button').disabled = true;
+    });
+    jQuery('#ticket').change(function () {
+        validate_ticket_name();
         jQuery('#current_brand_ref_count').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
         document.getElementById('ref_brand_button').disabled = true;
     });
