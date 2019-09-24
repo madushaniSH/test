@@ -264,6 +264,7 @@ if ($row_count == 0) {
       `reference_process_remark` varchar(255) DEFAULT NULL,
       `reference_processed_hunter_id` int(11) DEFAULT NULL,
       `reference_status_id` int(11) DEFAULT NULL,
+      `reference_ticket_id` int(11) DEFAULT NULL,
        CONSTRAINT  '.$dbname.'_REF_ADDED_USER_ID FOREIGN KEY (`reference_added_user_id`) REFERENCES `user_db`.`accounts` (`account_id`),
        CONSTRAINT  '.$dbname.'_REF_PROCESSED_HUNTER_ID FOREIGN KEY (`reference_processed_hunter_id`) REFERENCES `user_db`.`accounts` (`account_id`),
        CONSTRAINT  '.$dbname.'_REF_STATUS_ID FOREIGN KEY (`reference_status_id`) REFERENCES `probe_status` (`probe_status_id`)

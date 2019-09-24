@@ -50,6 +50,7 @@ $total_count = count($csvAsArray);
 $skipped_count = 0;
 $proccessed_rows = 0;
 $user_id = $_SESSION['id'];
+$pdo->beginTransaction();
 for ($i = 0; $i < $total_count; $i++) {
     $brand_missing = false;
     $ean_missing = false;
@@ -199,6 +200,7 @@ for ($i = 0; $i < $total_count; $i++) {
         $skipped_count++;
     }
 }
+$pdo->commit();
 $return_arr[] = array("proccessed_rows" => $proccessed_rows, "skipped_count"=>$skipped_count);
 echo json_encode($return_arr);
 ?>
