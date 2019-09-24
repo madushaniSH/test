@@ -160,15 +160,115 @@ const validate_product_info = () => {
     return is_valid_form;
 }
 
+const reset_hunt_information = () => {
+    $("#product_type").val('').trigger('change');
+    document.getElementById('product_name').value = '';
+    document.getElementById('manu_link').value = '';
+    document.getElementById('product_link').value = '';
+    document.getElementById('alt_design_name').value = '';
+    document.getElementById("num_facings").value = 0;
+    document.getElementById("output").innerHTML = 0;
+    document.getElementById('product_name_error').innerHTML = '';
+    document.getElementById('server_success').innerHTML = '';
+    document.getElementById('alt_design_name_error').innerHTML = '';
+    document.getElementById('product_type_error').innerHTML = '';
+    document.getElementById('facing_error').innerHTML = '';
+    document.getElementById('manu_link_error').innerHTML = '';
+}
+
 const save_ref_info = (save_product, close_reference) => {
+    const product_name = document.getElementById('product_name').value.trim();
+    const product_type_element = document.getElementById('product_type');
+    const product_type = product_type_element.options[product_type_element.selectedIndex].value;
+    const alt_design_name = document.getElementById('alt_design_name').value.trim();
+    const project_name_element = document.getElementById('project_name');
+    const project_name = project_name_element.options[project_name_element.selectedIndex].value;
+    const status_element = document.getElementById('status');
+    const status = status_element.options[status_element.selectedIndex].value;
+    const facings = document.getElementById("num_facings").value;
+    let manu_link = document.getElementById('manu_link').value.trim();
+    const product_link = document.getElementById('product_link').value.trim();
     if (save_product) {
         valid_product = validate_product_info();
         if (valid_product) {
-            alert('bam');
+            if (product_type != 'brand') {
+                manu_link = '';
+            }
+            let formData = new FormData();
+            formData.append('project_name', p_name);
+            formData.append('status', status);
+            formData.append('product_name', product_name);
+            formData.append('product_type', product_type);
+            formData.append('alt_design_name', alt_design_name);
+            formData.append('manu_link', manu_link);
+            formData.append('product_link', product_link);
+            formData.append('facings', facings);
+            status_element.disabled = true;
+            jQuery.ajax({
+                url: 'add_ref_product.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'JSON',
+                success: function (data) {
+                    if (data[0].success != '') {
+                        server_success.innerHTML = data[0].success;
+                        toastr.options = {
+                            "closeButton": true,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-right",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut",
+                            "timeOut": "5000",
+                            "extendedTimeOut": "0",
+                        }
+                        toastr.success('Product Added');
+                    } else {
+                        server_success.innerHTML = '';
+                        reset_hunt_information();
+                    }
+
+                    if (data[0].error != '') {
+                        server_error.innerHTML = data[0].error;
+                    } else {
+                        server_error.innerHTML = '';
+                    }
+                    if (data[0].duplicate_error != '') {
+                        toastr.options = {
+                            "closeButton": true,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-right",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut",
+                            "timeOut": "0",
+                            "extendedTimeOut": "0",
+                        }
+                        toastr.error(data[0].duplicate_error);
+                    }
+                },
+                error: function (data) {
+                    alert("Error fetching probe information. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+            reset_hunt_information();
         }
     }
-
 }
+
 
 function get_ref_info() {
     var project_name_element = document.getElementById('project_name');
@@ -379,7 +479,7 @@ const validate_project_name = () => {
 
 const validate_ticket_name = () => {
     if (p_name != "") {
-    $('#brand_name_filter').empty();
+        $('#brand_name_filter').empty();
         const ticket = jQuery('#ticket').val();
         const probe_hunt_options = document.getElementById('ref_hunt_options');
         const probe_hunt_counter = document.getElementById('ref_hunt_counter');

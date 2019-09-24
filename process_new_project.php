@@ -325,6 +325,16 @@ if ($row_count == 0) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(); 
 
+    $sql = 'CREATE TABLE `ref_product_info` (
+  `ref_product_info_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `reference_info_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  CONSTRAINT '.$dbname.'_REFERENCE_INFO_PRODUCT_ID FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
+  CONSTRAINT '.$dbname.'_REFERENCE_INFO_REF_ID FOREIGN KEY (`reference_info_id`) REFERENCES `reference_info` (`reference_info_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(); 
+
     echo "<span class=\"success-popup\">Project Created</span>";
 } else {
     echo "<span class=\"error-popup\">Project with that name already exists</span>    ";
