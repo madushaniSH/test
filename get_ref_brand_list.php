@@ -37,9 +37,9 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT DISTINCT(a.reference_brand) AS name FROM reference_queue b INNER JOIN reference_info a ON a.reference_info_id = b.reference_info_key_id WHERE (b.reference_being_handled = 0 OR b.account_id = :account_id) AND a.reference_brand IS NOT NULL';
+$sql = 'SELECT DISTINCT(a.reference_brand) AS name FROM reference_queue b INNER JOIN reference_info a ON a.reference_info_id = b.reference_info_key_id WHERE (b.reference_being_handled = 0 OR b.account_id = :account_id) AND a.reference_brand IS NOT NULL AND a.reference_ticket_id = :ticket';
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['account_id' =>$_SESSION['id']]);
+$stmt->execute(['account_id' =>$_SESSION['id'], 'ticket'=>$_POST['ticket']]);
 $brand_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 
 $return_arr[] = array("brand_rows"=>$brand_rows);

@@ -3,9 +3,10 @@ let product_count = 0;
 let selected_ticket = '';
 
 function get_brand_list(select_element) {
-    if (p_name != "") {
+    if (p_name != "" && selected_ticket != '') {
         var formData = new FormData();
         formData.append("project_name", p_name);
+        formData.append("ticket", selected_ticket);
         jQuery.ajax({
             url: "get_ref_brand_list.php",
             type: "POST",
@@ -123,12 +124,13 @@ function get_ref_info() {
 }
 
 function update_ref_count() {
-    if (p_name != '') {
+    if (p_name != '' && selected_ticket != '') {
         get_brand_list("brand_name_filter");
         var formData = new FormData();
         formData.append('project_name', p_name);
         var sku_brand_name = $("#brand_name_filter").val();
         formData.append("sku_brand_name", sku_brand_name);
+        formData.append("ticket", selected_ticket);
         jQuery.ajax({
             url: 'fetch_ref_count.php',
             type: 'POST',
@@ -219,6 +221,8 @@ function validate_project_name() {
 
 const validate_project_name = () => {
     $('#brand_name_filter').empty();
+    $('#ticket').empty();
+    selected_ticket = '';
     const project_name_element = document.getElementById('project_name');
     const project_name = project_name_element.options[project_name_element.selectedIndex].value;
     const project_name_error = document.getElementById('project_name_error');
@@ -261,6 +265,7 @@ const validate_project_name = () => {
 
 const validate_ticket_name = () => {
     if (p_name != "") {
+    $('#brand_name_filter').empty();
         const ticket = jQuery('#ticket').val();
         const probe_hunt_options = document.getElementById('ref_hunt_options');
         const probe_hunt_counter = document.getElementById('ref_hunt_counter');
@@ -275,6 +280,7 @@ const validate_ticket_name = () => {
             probe_hunt_counter.classList.remove('hide');
             hunter_counter.classList.remove('hide');
             selected_ticket = ticket;
+            get_brand_list("brand_name_filter");
         }
     }
 }

@@ -37,14 +37,14 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = "SELECT count(*) FROM reference_queue WHERE reference_being_handled = 0"; 
+$sql = "SELECT count(*) FROM reference_queue a INNER JOIN reference_info b ON a.reference_info_key_id = b.reference_info_id WHERE reference_being_handled = 0 AND b.reference_ticket_id = :ticket"; 
 $stmt = $pdo->prepare($sql);
-$stmt->execute(); 
+$stmt->execute(['ticket'=>$_POST['ticket']]);
 $number_of_rows = $stmt->fetchColumn(); 
 
-$sql = "SELECT count(*) FROM reference_queue WHERE reference_being_handled = 1"; 
+$sql = "SELECT count(*) FROM reference_queue a INNER JOIN reference_info b ON a.reference_info_key_id = b.reference_info_id WHERE reference_being_handled = 1 AND b.reference_ticket_id = :ticket"; 
 $stmt = $pdo->prepare($sql);
-$stmt->execute(); 
+$stmt->execute(['ticket'=>$_POST['ticket']]); 
 $number_of_handled_rows = $stmt->fetchColumn(); 
 
 $sql = 'SELECT reference_queue_id FROM reference_queue WHERE account_id = :account_id';
