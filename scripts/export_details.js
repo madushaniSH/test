@@ -88,7 +88,7 @@ const special = () => {
         data: formData,
         dataType: 'JSON',
         success: function (data) {
-            JSONToCSVConvertor(data[0].hunter_summary," Monthly Summary 2019-08-20 00:00:00 to 2019-09-20 00:00:00", true);
+            JSONToCSVConvertor(data[0].hunter_summary," Monthly Summary 2019-09-16 00:00:00 to 2019-10-15 00:00:00", true);
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");

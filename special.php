@@ -77,6 +77,12 @@ for ($i = 0; $i < count($project_info); $i++) {
         $stmt->execute(['start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
         $checked_count = $stmt->fetchColumn();
         $project_info[$i]["Checked Probe Count"] = $checked_count;
+
+        $sql = 'SELECT COUNT(*) FROM radar_sources WHERE (radar_sources.creation_time >= :start_datetime AND radar_sources.creation_time <= :end_datetime)';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
+        $checked_count = $stmt->fetchColumn();
+        $project_info[$i]["Added Radar Link Count"] = $checked_count;
     
     $sql = 'SELECT COUNT(DISTINCT DATE(probe_hunter_processed_time)) FROM probe WHERE probe_hunter_processed_time >= :start_datetime AND probe_hunter_processed_time <= :end_datetime';
     $stmt = $pdo->prepare($sql);

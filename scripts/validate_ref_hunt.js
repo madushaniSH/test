@@ -177,6 +177,10 @@ const reset_hunt_information = () => {
 }
 
 const save_ref_info = (save_product, close_reference) => {
+    let valid_product = false;
+    let is_valid_form = true;
+    const comment = document.getElementById('comment').value.trim();
+    const remark = document.getElementById('remark').value.trim();
     const product_name = document.getElementById('product_name').value.trim();
     const product_type_element = document.getElementById('product_type');
     const product_type = product_type_element.options[product_type_element.selectedIndex].value;
@@ -188,7 +192,13 @@ const save_ref_info = (save_product, close_reference) => {
     const facings = document.getElementById("num_facings").value;
     let manu_link = document.getElementById('manu_link').value.trim();
     const product_link = document.getElementById('product_link').value.trim();
-    if (save_product) {
+    if (status === '') {
+        document.getElementById('status_error').innerHTML = 'Status must be selected';
+        is_valid_form = false;
+    } else {
+        document.getElementById('status_error').innerHTML = '';
+    }
+    if (save_product && status == 2 && is_valid_form) {
         valid_product = validate_product_info();
         if (valid_product) {
             if (product_type != 'brand') {
@@ -266,6 +276,70 @@ const save_ref_info = (save_product, close_reference) => {
             });
             reset_hunt_information();
         }
+    }
+    if (close_reference && is_valid_form) {
+        if (status == 2 && )
+        jQuery.ajax({
+            url: 'close_ref.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data[0].success != '') {
+                    server_success.innerHTML = data[0].success;
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut",
+                        "timeOut": "5000",
+                        "extendedTimeOut": "0",
+                    }
+                    toastr.success('Product Added');
+                } else {
+                    server_success.innerHTML = '';
+                    reset_hunt_information();
+                }
+
+                if (data[0].error != '') {
+                    server_error.innerHTML = data[0].error;
+                } else {
+                    server_error.innerHTML = '';
+                }
+                if (data[0].duplicate_error != '') {
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut",
+                        "timeOut": "0",
+                        "extendedTimeOut": "0",
+                    }
+                    toastr.error(data[0].duplicate_error);
+                }
+            },
+            error: function (data) {
+                alert("Error fetching probe information. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+        reset_hunt_information();
     }
 }
 
