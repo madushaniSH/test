@@ -60,13 +60,12 @@
     background: purple;
 }
 
-.modal-dialog,
-.modal-content {
+#add_reference .modal-dialog, #add_reference .modal-content {
     /* 80% of window height */
     height: 85%;
 }
 
-.modal-body {
+#add_reference .modal-body {
     /* 100% = dialog height, 120px = header + footer */
     max-height: calc(100% - 120px);
     overflow-y: scroll;

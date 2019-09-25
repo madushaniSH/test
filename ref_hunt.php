@@ -487,6 +487,7 @@ slider.oninput = function() {
         </div>
     </div>
 </div>
+</div>
 <div class="modal fade" id="confirm_probe" tabindex="-1" role="dialog" aria-labelledby="econfirm_probe_title" aria-hidden="true"  data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog  modal-dialog-centered modal-sm" role="document">
     <div class="modal-content">
@@ -498,9 +499,10 @@ slider.oninput = function() {
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-success" onclick="confirm_save();">Confirm</button>
+        <button type="button" class="btn btn-success" id="confirm_save">Confirm</button>
       </div>
     </div>
   </div>
+</div>
 </div>
 </body>

@@ -2,6 +2,16 @@ var p_name = '';
 let product_count = 0;
 let selected_ticket = '';
 
+const reset_ref_form = () => {
+    $("#status").val('').trigger('change');
+    $("#probe_form").trigger('reset');
+    $('#status_error').empty();
+    $('#source_error').empty();
+    document.getElementById('status').disabled = false;
+    document.getElementById('server_success').innerHTML = '';
+    product_count = 0;
+}
+
 function get_brand_list(select_element) {
     if (p_name != "" && selected_ticket != '') {
         var formData = new FormData();
@@ -179,6 +189,7 @@ const reset_hunt_information = () => {
 const save_ref_info = (save_product, close_reference) => {
     let valid_product = false;
     let is_valid_form = true;
+    let skip_check = false;
     const comment = document.getElementById('comment').value.trim();
     const remark = document.getElementById('remark').value.trim();
     const product_name = document.getElementById('product_name').value.trim();
@@ -199,94 +210,102 @@ const save_ref_info = (save_product, close_reference) => {
         document.getElementById('status_error').innerHTML = '';
     }
     if (save_product && status == 2 && is_valid_form) {
-        valid_product = validate_product_info();
-        if (valid_product) {
-            if (product_type != 'brand') {
-                manu_link = '';
+        if (product_name === '' && product_type === '' && close_reference && product_count > 0) {
+            skip_check = true;
+        }
+        if (!skip_check) {
+            valid_product = validate_product_info();
+            if (valid_product) {
+                if (product_type != 'brand') {
+                    manu_link = '';
+                }
+                let formData = new FormData();
+                formData.append('project_name', p_name);
+                formData.append('status', status);
+                formData.append('product_name', product_name);
+                formData.append('product_type', product_type);
+                formData.append('alt_design_name', alt_design_name);
+                formData.append('manu_link', manu_link);
+                formData.append('product_link', product_link);
+                formData.append('facings', facings);
+                status_element.disabled = true;
+                jQuery.ajax({
+                    url: 'add_ref_product.php',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'JSON',
+                    success: function (data) {
+                        if (data[0].success != '') {
+                            server_success.innerHTML = data[0].success;
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": false,
+                                "progressBar": false,
+                                "positionClass": "toast-top-right",
+                                "preventDuplicates": false,
+                                "onclick": null,
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut",
+                                "timeOut": "5000",
+                                "extendedTimeOut": "0",
+                            }
+                            toastr.success('Product Added');
+                        } else {
+                            server_success.innerHTML = '';
+                            reset_hunt_information();
+                        }
+
+                        if (data[0].error != '') {
+                            server_error.innerHTML = data[0].error;
+                        } else {
+                            server_error.innerHTML = '';
+                        }
+                        if (data[0].duplicate_error != '') {
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": false,
+                                "progressBar": false,
+                                "positionClass": "toast-top-right",
+                                "preventDuplicates": false,
+                                "onclick": null,
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut",
+                                "timeOut": "0",
+                                "extendedTimeOut": "0",
+                            }
+                            toastr.error(data[0].duplicate_error);
+                        }
+                    },
+                    error: function (data) {
+                        alert("Error fetching probe information. Please refresh");
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                });
+                reset_hunt_information();
+                product_count++;
+            } else {
+                is_valid_form = false;
             }
+        } 
+        if (close_reference && (valid_product || skip_check)) {
             let formData = new FormData();
             formData.append('project_name', p_name);
             formData.append('status', status);
-            formData.append('product_name', product_name);
-            formData.append('product_type', product_type);
-            formData.append('alt_design_name', alt_design_name);
-            formData.append('manu_link', manu_link);
-            formData.append('product_link', product_link);
-            formData.append('facings', facings);
-            status_element.disabled = true;
+            formData.append('comment', comment);
+            formData.append('remark', remark);
             jQuery.ajax({
-                url: 'add_ref_product.php',
+                url: 'close_ref.php',
                 type: 'POST',
                 data: formData,
-                dataType: 'JSON',
                 success: function (data) {
-                    if (data[0].success != '') {
-                        server_success.innerHTML = data[0].success;
-                        toastr.options = {
-                            "closeButton": true,
-                            "debug": false,
-                            "newestOnTop": false,
-                            "progressBar": false,
-                            "positionClass": "toast-top-right",
-                            "preventDuplicates": false,
-                            "onclick": null,
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "fadeIn",
-                            "hideMethod": "fadeOut",
-                            "timeOut": "5000",
-                            "extendedTimeOut": "0",
-                        }
-                        toastr.success('Product Added');
-                    } else {
-                        server_success.innerHTML = '';
-                        reset_hunt_information();
-                    }
-
-                    if (data[0].error != '') {
-                        server_error.innerHTML = data[0].error;
-                    } else {
-                        server_error.innerHTML = '';
-                    }
-                    if (data[0].duplicate_error != '') {
-                        toastr.options = {
-                            "closeButton": true,
-                            "debug": false,
-                            "newestOnTop": false,
-                            "progressBar": false,
-                            "positionClass": "toast-top-right",
-                            "preventDuplicates": false,
-                            "onclick": null,
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "fadeIn",
-                            "hideMethod": "fadeOut",
-                            "timeOut": "0",
-                            "extendedTimeOut": "0",
-                        }
-                        toastr.error(data[0].duplicate_error);
-                    }
-                },
-                error: function (data) {
-                    alert("Error fetching probe information. Please refresh");
-                },
-                cache: false,
-                contentType: false,
-                processData: false
-            });
-            reset_hunt_information();
-        }
-    }
-    if (close_reference && is_valid_form) {
-        if (status == 2 && )
-        jQuery.ajax({
-            url: 'close_ref.php',
-            type: 'POST',
-            data: formData,
-            dataType: 'JSON',
-            success: function (data) {
-                if (data[0].success != '') {
-                    server_success.innerHTML = data[0].success;
                     toastr.options = {
                         "closeButton": true,
                         "debug": false,
@@ -302,35 +321,45 @@ const save_ref_info = (save_product, close_reference) => {
                         "timeOut": "5000",
                         "extendedTimeOut": "0",
                     }
-                    toastr.success('Product Added');
-                } else {
-                    server_success.innerHTML = '';
-                    reset_hunt_information();
+                    toastr.success('Reference Cleared');
+                },
+                error: function (data) {
+                    alert("Error fetching probe information. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+            reset_hunt_information();
+        }
+    }
+    if (close_reference && is_valid_form && status != 2) {
+        let formData = new FormData();
+        formData.append('project_name', p_name);
+        formData.append('status', status);
+        formData.append('comment', comment);
+        formData.append('remark', remark);
+        jQuery.ajax({
+            url: 'close_ref.php',
+            type: 'POST',
+            data: formData,
+            success: function (data) {
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": false,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "0",
                 }
-
-                if (data[0].error != '') {
-                    server_error.innerHTML = data[0].error;
-                } else {
-                    server_error.innerHTML = '';
-                }
-                if (data[0].duplicate_error != '') {
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": false,
-                        "progressBar": false,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut",
-                        "timeOut": "0",
-                        "extendedTimeOut": "0",
-                    }
-                    toastr.error(data[0].duplicate_error);
-                }
+                toastr.success('Reference Cleared');
             },
             error: function (data) {
                 alert("Error fetching probe information. Please refresh");
@@ -341,6 +370,7 @@ const save_ref_info = (save_product, close_reference) => {
         });
         reset_hunt_information();
     }
+    return is_valid_form;
 }
 
 
@@ -713,5 +743,17 @@ jQuery(document).ready(function () {
     $("#add_ref_product").click(function (event) {
         event.preventDefault();
         save_ref_info(true, false);
+    });
+    $("#submit_probe").click(function (event) {
+        event.preventDefault();
+        $('#confirm_probe').modal('show');
+    });
+    $("#confirm_save").click(function (event) {
+        event.preventDefault();
+        $('#confirm_probe').modal('hide');
+        if (save_ref_info(true, true)) {
+            reset_ref_form();
+            $('#add_reference').modal('hide');
+        }
     });
 });
