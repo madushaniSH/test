@@ -41,6 +41,7 @@ catch(PDOException $e){
 
 $tmpName = $_FILES['csv']['tmp_name'];
 $csvAsArray = array_map('str_getcsv', file($tmpName,FILE_SKIP_EMPTY_LINES));
+$csvAsArray = mb_convert_encoding($csvAsArray, "UTF-8", "ISO-8859-15");
 $keys = array_shift($csvAsArray);
 foreach ($csvAsArray as $i=>$row) {
     $csvAsArray[$i] = array_combine($keys, $row);
