@@ -366,7 +366,7 @@ const validate_product_info = () => {
         is_valid_form = false;
     } else {
         product_name_error.innerHTML = '';
-        var patt = /^[a-zA-Z 0-9\-\'\!\%\&\(\)\.\_\/\+\,\#\\\:\=\$]*$/;
+        var patt = /^[a-zA-Z 0-9\-\'\!\%\&\(\)\.\_\/\+\,\#\\\:\=\;\$]*$/;
         if (!patt.test(product_name)) {
             is_valid_form = false;
             product_name_error.innerHTML = 'Non English Product Name Entered';
@@ -387,7 +387,7 @@ const validate_product_info = () => {
         is_valid_form = false;
     } else {
         alt_design_name_error.innerHTML = '';
-        var patt = /^[a-zA-Z 0-9\-\'\!\%\&\(\)\.\_\/\+\,\#\\\:\=\$]*$/;
+        var patt = /^[a-zA-Z 0-9\-\'\!\%\&\(\)\.\_\/\+\,\#\\\:\=\;\$]*$/;
         if (!patt.test(alt_design_name)) {
             is_valid_form = false;
             alt_design_name_error.innerHTML = 'Non English Product Name Entered';
