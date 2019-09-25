@@ -80,8 +80,8 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
 
 const special = () => {
     let formData = new FormData();
-    formData.append("start_datetime", '2019-08-20 00:00:00');
-    formData.append("end_datetime", '2019-09-20 00:00:00');
+    formData.append("start_datetime", '2019-09-16 00:00:00');
+    formData.append("end_datetime", '2019-10-15 00:00:00');
     jQuery.ajax({
         url: 'special.php',
         type: 'POST',
