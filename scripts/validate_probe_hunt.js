@@ -277,6 +277,8 @@ function reset_probe_modal() {
     $('#server_error').html('');
     $('#server_success').html('');
     product_count = 0;
+    var hunt_information = document.getElementById('hunt_information');
+    hunt_information.classList.add('hide');
     reset_hunt_information();
 }
 
