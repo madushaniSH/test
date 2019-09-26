@@ -667,6 +667,25 @@ function validate_ticket_name() {
         }
     }
 }
+
+const show_upload_options_ref = () => {
+    $("#brand_name").empty();
+    $("#dvc_name").empty();
+    $("#facing_name").empty();
+    $("#dvc_product_name").empty();
+    document.getElementById('probe_qa_options').classList.remove('hide');
+    document.getElementById('probe_hunt_section').classList.remove('hide');
+    document.getElementById('counters').classList.remove('hide');
+    document.getElementById('option1').classList.remove('active_btn');
+    document.getElementById('option2').classList.remove('active_btn');
+    document.getElementById('option3').classList.add('active_btn');
+    selected_type = 'reference';
+    get_brand_list("sku", "brand_name");
+    get_brand_list("dvc", "dvc_name");
+    get_brand_list("facing", "facing_name");
+    get_product_name_list("dvc", "dvc_product_name");
+}
+
 const show_upload_options_radar = () => {
     $("#brand_name").empty();
     $("#dvc_name").empty();
@@ -676,7 +695,8 @@ const show_upload_options_radar = () => {
     document.getElementById('probe_hunt_section').classList.remove('hide');
     document.getElementById('counters').classList.remove('hide');
     document.getElementById('option1').classList.remove('active_btn');
-    document.getElementById('option3').classList.add('active_btn');
+    document.getElementById('option2').classList.add('active_btn');
+    document.getElementById('option3').classList.remove('active_btn');
     selected_type = 'radar';
     get_brand_list("sku", "brand_name");
     get_brand_list("dvc", "dvc_name");
@@ -693,6 +713,7 @@ const show_upload_options_probe = () => {
     document.getElementById('probe_hunt_section').classList.remove('hide');
     document.getElementById('counters').classList.remove('hide');
     document.getElementById('option1').classList.add('active_btn');
+    document.getElementById('option2').classList.remove('active_btn');
     document.getElementById('option3').classList.remove('active_btn');
     selected_type = 'probe';
     get_brand_list("sku", "brand_name");

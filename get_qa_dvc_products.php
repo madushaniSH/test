@@ -48,6 +48,11 @@ if ($_POST['type'] == 'probe') {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['product_type'=>$_POST['product_type'], 'account_id' =>$_SESSION['id'], 'ticket'=>$_POST['ticket'], "type"=>$_POST['type'], "search_term"=>$search_term]);
     $brand_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+} else if ($_POST['type'] == 'reference') {
+    $sql = 'SELECT products.product_alt_design_name as name FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN ref_product_info ON ref_product_info.product_id = products.product_id INNER JOIN reference_info ON reference_info.reference_info_id = ref_product_info.reference_info_id   WHERE products.product_type = :product_type AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND reference_info.reference_ticket_id = :ticket AND product_name LIKE :search_term AND products.product_hunt_type = :type';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['product_type'=>$_POST['product_type'], 'account_id' =>$_SESSION['id'], 'ticket'=>$_POST['ticket'], "type"=>$_POST['type'], "search_term"=>$search_term]);
+    $brand_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 }
 $return_arr[] = array("brand_rows"=>$brand_rows);
 echo json_encode($return_arr);

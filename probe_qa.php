@@ -135,7 +135,8 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <div class="row">
             <div class="col">
                 <button class="btn btn-secondary" onclick="show_upload_options_probe()" id="option1">Probe QA</button>
-                <button class="btn btn-secondary" onclick="show_upload_options_radar()" id="option3">Radar QA</button>
+                <button class="btn btn-secondary" onclick="show_upload_options_radar()" id="option2">Radar QA</button>
+                <button class="btn btn-secondary" onclick="show_upload_options_ref()" id="option3">Reference QA</button>
             </div>
             </div>
         </div>

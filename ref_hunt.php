@@ -155,7 +155,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <span class="sr-only">Loading...</span>
                   </div>
                 </h2>
-                    <p class="count-text ">Added Link Count</p>
+                    <p class="count-text ">Reference Count</p>
                 </div>
             </div>
             <div class="col">
