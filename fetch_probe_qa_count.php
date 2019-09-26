@@ -38,48 +38,48 @@ catch(PDOException $e){
 }
 
 if ($_POST['type'] == 'probe') {
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'brand' AND probe.probe_ticket_id = :ticket";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'brand' AND probe.probe_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['ticket'=>$_POST['ticket']]);
+    $stmt->execute(['ticket'=>$_POST['ticket'], "selected_type"=>$_POST['type']]);
     $brand_count = $stmt->fetchColumn();
 
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'sku' AND probe.probe_ticket_id = :ticket";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'sku' AND probe.probe_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['ticket'=>$_POST['ticket']]);
+    $stmt->execute(['ticket'=>$_POST['ticket'], "selected_type"=>$_POST['type']]);
     $sku_count = $stmt->fetchColumn();
 
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'dvc' AND probe.probe_ticket_id = :ticket";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'dvc' AND probe.probe_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['ticket'=>$_POST['ticket']]);
+    $stmt->execute(['ticket'=>$_POST['ticket'], "selected_type"=>$_POST['type']]);
     $dvc_count = $stmt->fetchColumn();
 
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'facing' AND probe.probe_ticket_id = :ticket";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'facing' AND probe.probe_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['ticket'=>$_POST['ticket']]);
+    $stmt->execute(['ticket'=>$_POST['ticket'], "selected_type"=>$_POST['type']]);
     $facing_count = $stmt->fetchColumn();
 
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'brand' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND probe.probe_ticket_id = :ticket";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'brand' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND probe.probe_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['account_id'=>$_SESSION['id'], "ticket"=>$_POST['ticket']]);
+    $stmt->execute(['account_id'=>$_SESSION['id'], "ticket"=>$_POST['ticket'], "selected_type"=>$_POST['type']]);
     $brand_user_count = $stmt->fetchColumn();
 
     $search_item = $_POST['sku_brand_name'].' %';
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'sku' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND products.product_name LIKE :search_item";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'sku' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND products.product_name LIKE :search_item AND probe.probe_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id']]);
+    $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id'], "ticket"=>$_POST['ticket'], "selected_type"=>$_POST['type']]);
     $brand_sku_count = $stmt->fetchColumn();
 
 
     $search_item = $_POST['sku_dvc_name'];
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'dvc' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id)AND products.product_alt_design_name LIKE :search_item";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'dvc' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id)AND products.product_alt_design_name LIKE :search_item AND probe.probe_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id']]);
+    $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id'], "ticket"=>$_POST['ticket'], "selected_type"=>$_POST['type']]);
     $dvc_sku_count = $stmt->fetchColumn();
 
     $search_item = $_POST['sku_facing_name'].' %';
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'facing' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id)AND products.product_name LIKE :search_item";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN probe_product_info ON probe_product_info.probe_product_info_product_id = products.product_id INNER JOIN probe ON probe_product_info.probe_product_info_key_id = probe.probe_key_id WHERE products.product_type = 'facing' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id)AND products.product_name LIKE :search_item AND probe.probe_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id']]);
+    $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id'], "ticket"=>$_POST['ticket'], "selected_type"=>$_POST['type']]);
     $facing_sku_count = $stmt->fetchColumn();
 
 
@@ -89,24 +89,24 @@ if ($_POST['type'] == 'probe') {
     $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
     $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 }else if ($_POST['type'] == 'radar') {
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id WHERE products.product_type = 'brand' AND radar_hunt.radar_ticket_id = :ticket";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id WHERE products.product_type = 'brand' AND radar_hunt.radar_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['ticket'=>$_POST['ticket']]);
+    $stmt->execute(['ticket'=>$_POST['ticket'], "selected_type"=>$_POST['type']]);
     $brand_count = $stmt->fetchColumn();
 
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id WHERE products.product_type = 'sku' AND radar_hunt.radar_ticket_id = :ticket";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id WHERE products.product_type = 'sku' AND radar_hunt.radar_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['ticket'=>$_POST['ticket']]);
+    $stmt->execute(['ticket'=>$_POST['ticket'], "selected_type"=>$_POST['type']]);
     $sku_count = $stmt->fetchColumn();
 
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id WHERE products.product_type = 'dvc' AND radar_hunt.radar_ticket_id = :ticket";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id WHERE products.product_type = 'dvc' AND radar_hunt.radar_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['ticket'=>$_POST['ticket']]);
+    $stmt->execute(['ticket'=>$_POST['ticket'], "selected_type"=>$_POST['type']]);
     $dvc_count = $stmt->fetchColumn();
 
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id WHERE products.product_type = 'facing' AND radar_hunt.radar_ticket_id = :ticket";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id WHERE products.product_type = 'facing' AND radar_hunt.radar_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['ticket'=>$_POST['ticket']]);
+    $stmt->execute(['ticket'=>$_POST['ticket'], "selected_type"=>$_POST['type']]);
     $facing_count = $stmt->fetchColumn();
 
     $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id WHERE products.product_type = 'brand' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND radar_hunt.radar_ticket_id = :ticket AND products.product_hunt_type = :selected_type";
@@ -115,22 +115,22 @@ if ($_POST['type'] == 'probe') {
     $brand_user_count = $stmt->fetchColumn();
 
     $search_item = $_POST['sku_brand_name'].' %';
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'sku' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND products.product_name LIKE :search_item AND products.product_hunt_type = :selected_type";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id WHERE products.product_type = 'sku' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id) AND products.product_name LIKE :search_item AND products.product_hunt_type = :selected_type AND radar_hunt.radar_ticket_id = :ticket";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id'], "selected_type"=>$_POST['type']]);
+    $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id'], "selected_type"=>$_POST['type'], "ticket"=>$_POST['ticket']]);
     $brand_sku_count = $stmt->fetchColumn();
 
 
     $search_item = $_POST['sku_dvc_name'];
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'dvc' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id)AND products.product_alt_design_name LIKE :search_item AND products.product_hunt_type = :selected_type";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id WHERE products.product_type = 'dvc' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id)AND products.product_alt_design_name LIKE :search_item AND products.product_hunt_type = :selected_type AND radar_hunt.radar_ticket_id = :ticket";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id'], "selected_type"=>$_POST['type']]);
+    $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id'], "selected_type"=>$_POST['type'], "ticket"=>$_POST['ticket']]);
     $dvc_sku_count = $stmt->fetchColumn();
 
     $search_item = $_POST['sku_facing_name'].' %';
-    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE products.product_type = 'facing' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id)AND products.product_name LIKE :search_item AND products.product_hunt_type = :selected_type";
+    $sql = "SELECT count(*) FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN radar_sources ON radar_sources.radar_product_id = products.product_id INNER JOIN radar_hunt ON radar_hunt.radar_hunt_id = radar_sources.radar_hunt_id WHERE products.product_type = 'facing' AND (probe_qa_queue.probe_being_handled = 0 OR probe_qa_queue.account_id = :account_id)AND products.product_name LIKE :search_item AND products.product_hunt_type = :selected_type AND radar_hunt.radar_ticket_id = :ticket";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id'], "selected_type"=>$_POST['type']]);
+    $stmt->execute(['search_item'=>$search_item, 'account_id'=>$_SESSION['id'], "selected_type"=>$_POST['type'], "ticket"=>$_POST['ticket']]);
     $facing_sku_count = $stmt->fetchColumn();
 
 
