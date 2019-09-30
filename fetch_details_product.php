@@ -33,7 +33,7 @@ catch(PDOException $e){
     echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
     exit();
 }
-$sql = 'SELECT products.product_id, product_hunt_type AS "Product Hunt Type",probe.probe_id AS "Probe ID", radar_sources.radar_source_link AS "Radar Source Link", brand.brand_name AS "Brand", radar_hunt.radar_brand AS "Radar Brand", products.product_alt_design_name AS "Alternative Design Name", products.product_name AS "English Product Name" , products.product_previous AS "Previous English Product Name", products.product_type AS "Product Type", products.product_creation_time AS "Product Creation Time", client_category.client_category_name AS "Category", radar_hunt.radar_category AS "Radar Category", products.product_facing_count AS "Facing Count",products.account_id AS "hunter_gid", products.manufacturer_link AS "Manufacturer Link", products.product_link AS "Product Link",products.product_qa_account_id AS "qa_gid", products.product_qa_datetime AS "QA Time", products.product_qa_status AS "Product Status"
+$sql = 'SELECT products.product_id, product_hunt_type AS "Product Hunt Type",probe.probe_id AS "Probe ID", radar_sources.radar_source_link AS "Radar Source Link", reference_info.reference_ean AS "Reference EAN" ,brand.brand_name AS "Brand", radar_hunt.radar_brand AS "Radar Brand", reference_info.reference_brand AS "Reference Brand", products.product_alt_design_name AS "Alternative Design Name", products.product_name AS "English Product Name" , products.product_previous AS "Previous English Product Name", products.product_type AS "Product Type", products.product_creation_time AS "Product Creation Time", client_category.client_category_name AS "Category", radar_hunt.radar_category AS "Radar Category", reference_info.reference_category AS "Reference Category",products.product_facing_count AS "Facing Count",products.account_id AS "hunter_gid", products.manufacturer_link AS "Manufacturer Link", products.product_link AS "Product Link",products.product_qa_account_id AS "qa_gid", products.product_qa_datetime AS "QA Time", products.product_qa_status AS "Product Status"
 FROM products
 LEFT JOIN probe_product_info
 ON products.product_id = probe_product_info.probe_product_info_product_id
@@ -45,6 +45,10 @@ LEFT JOIN radar_sources
 ON products.product_id = radar_sources.radar_product_id
 LEFT JOIN radar_hunt
 ON radar_sources.radar_hunt_id = radar_hunt.radar_hunt_id
+LEFT JOIN ref_product_info 
+ON products.product_id = ref_product_info.product_id
+LEFT JOIN reference_info
+ON ref_product_info.reference_info_id = reference_info.reference_info_id
 LEFT JOIN brand
 ON probe.brand_id = brand.brand_id
 LEFT JOIN client_category
@@ -54,13 +58,22 @@ products.product_status = 2
 AND
 (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime)
 AND
-(products.product_hunt_type = "probe" AND probe.probe_ticket_id = :ticket) || (products.product_hunt_type = "radar" AND radar_hunt.radar_ticket_id = :ticket)';
+(products.product_hunt_type = "probe" AND probe.probe_ticket_id = :ticket) || (products.product_hunt_type = "radar" AND radar_hunt.radar_ticket_id = :ticket) || (products.product_hunt_type = "reference" AND reference_info.reference_ticket_id = :ticket)';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime']), "ticket"=>$_POST['ticket']]);
 $hunted_product_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
 for ($i = 0; $i < count($hunted_product_info); $i++){
     if ($hunted_product_info[$i]["Probe ID"] == null) {
         $hunted_product_info[$i]["Probe ID"] = '';
+    }
+    if ($hunted_product_info[$i]["Reference Category"] == null) {
+        $hunted_product_info[$i]["Reference Category"] = '';
+    }
+    if ($hunted_product_info[$i]["Reference Brand"] == null) {
+        $hunted_product_info[$i]["Reference Brand"] = '';
+    }
+    if ($hunted_product_info[$i]["Reference EAN"] == null) {
+        $hunted_product_info[$i]["Reference EAN"] = '';
     }
     if ($hunted_product_info[$i]["Radar Source Link"] == null) {
         $hunted_product_info[$i]["Radar Source Link"] = '';
@@ -150,6 +163,19 @@ for ($i = 0; $i < count($hunted_product_info); $i++){
                 ON radar_sources.radar_hunt_id = radar_hunt.radar_hunt_id
                 INNER JOIN project_tickets
                 ON radar_hunt.radar_ticket_id = project_tickets.project_ticket_system_id
+                WHERE products.product_id = :product_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['product_id'=>$hunted_product_info[$i][product_id]]);
+        $ticket_info = $stmt->fetch(PDO::FETCH_OBJ);
+        $hunted_product_info[$i]['Ticket ID'] = $ticket_info->ticket_id;
+    } else if ($type_info->product_hunt_type == 'reference') {
+        $sql = 'SELECT project_tickets.ticket_id FROM products  
+                INNER JOIN ref_product_info
+                ON products.product_id = ref_product_info.product_id
+                INNER JOIN reference_info
+                ON reference_info.reference_info_id = ref_product_info.reference_info_id
+                INNER JOIN project_tickets
+                ON reference_info.reference_ticket_id = project_tickets.project_ticket_system_id
                 WHERE products.product_id = :product_id';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['product_id'=>$hunted_product_info[$i][product_id]]);
