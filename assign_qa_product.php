@@ -68,6 +68,10 @@ if ($row_count == 0) {
             $sql = 'UPDATE probe_qa_queue AS upd INNER JOIN (SELECT t1.product_id FROM probe_qa_queue AS t1 INNER JOIN products AS t2 ON t2.product_id = t1.product_id INNER JOIN radar_sources AS t3 ON t3.radar_product_id = t2.product_id INNER JOIN radar_hunt as t4 ON t3.radar_hunt_id = t4.radar_hunt_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.product_type = :product_type AND ( (t2.product_name LIKE :search_term) OR (t2.product_type = "dvc" AND t2.product_alt_design_name LIKE :search_term) ) AND t4.radar_ticket_id = :ticket LIMIT 1 ) AS sel ON sel.product_id = upd.product_id SET upd.account_id = :account_id, upd.probe_being_handled = 1';
             $stmt = $pdo->prepare($sql);
             $stmt->execute(['account_id'=>$_SESSION['id'], 'product_type'=>$_POST['product_type'], 'search_term'=>$search_term, "ticket"=>$_POST['ticket']]);
+        } else if ($_POST['type'] == 'reference') {
+            $sql = 'UPDATE probe_qa_queue AS upd INNER JOIN (SELECT t1.product_id FROM probe_qa_queue AS t1 INNER JOIN products AS t2 ON t2.product_id = t1.product_id INNER JOIN ref_product_info AS t3 ON t3.product_id = t2.product_id INNER JOIN reference_info as t4 ON t3.reference_info_id = t4.reference_info_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.product_type = :product_type AND ( (t2.product_name LIKE :search_term) OR (t2.product_type = "dvc" AND t2.product_alt_design_name LIKE :search_term) ) AND t4.reference_ticket_id = :ticket LIMIT 1 ) AS sel ON sel.product_id = upd.product_id SET upd.account_id = :account_id, upd.probe_being_handled = 1';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['account_id'=>$_SESSION['id'], 'product_type'=>$_POST['product_type'], 'search_term'=>$search_term, "ticket"=>$_POST['ticket']]);
         }
 
         $sql = 'SELECT probe_qa_queue_id FROM probe_qa_queue WHERE account_id = :account_id';
@@ -89,7 +93,12 @@ if ($_POST['type'] == 'probe') {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['probe_qa_queue_id'=>$last_id]);
     $radar_info = $stmt->fetch(PDO::FETCH_OBJ);
+} else if ($_POST['type'] == 'reference') {
+    $sql = 'SELECT a.reference_recognition_level, a.reference_ean, a.reference_short_name, a.reference_category, a.reference_sub_category, a.reference_brand, a.reference_sub_brand, a.reference_manufacturer, a.reference_base_size, a.reference_size, a.reference_measurement_unit, a.reference_container_type, a.reference_agg_level, a.reference_segment, a.reference_count_upc2, a.reference_flavor_detail, a.reference_case_pack, a.reference_multi_pack, project_tickets.ticket_id, products.product_type,products.product_name, products.product_alt_design_name, products.product_alt_design_previous, products.product_facing_count, products.manufacturer_link, products.product_link, products.product_creation_time FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id INNER JOIN ref_product_info ON ref_product_info.product_id = products.product_id INNER JOIN reference_info a ON a.reference_info_id = ref_product_info.reference_info_id INNER JOIN project_tickets ON a.reference_ticket_id = project_tickets.project_ticket_system_id WHERE probe_qa_queue.probe_qa_queue_id = :probe_qa_queue_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['probe_qa_queue_id'=>$last_id]);
+    $ref_info = $stmt->fetch(PDO::FETCH_OBJ);
 }
-$return_arr[] = array("probe_info"=>$probe_info, "radar_info"=>$radar_info);
+$return_arr[] = array("probe_info"=>$probe_info, "radar_info"=>$radar_info, "ref_info"=>$ref_info);
 echo json_encode($return_arr);
 ?>

@@ -307,6 +307,12 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             <div class="sticky-top" id="tab_buttons">
                 <button class="tablinks" onclick="return open_tab(event, 'ref_information')" id="def_tab">Reference Information</button>
                 <button class="tablinks" onclick="return open_tab(event, 'ref_hunt_information')">Hunter Form</button>
+                    <div class="row" id="ref_product_counter">
+                        <p>Brands : <span id="ref_current_brand_counter">0</span> / 1</p>
+                        <p>SKU : <span id="ref_current_sku_counter">0</span> / 1</p>
+                        <p>DVC : <span id="ref_current_dvc_counter">0</span> / -</p>
+                        <p>Facing : <span id="ref_current_facing_counter">0</span> / -</p>
+                    </div>
             </div>
             <hr/>
             <div id="ref_information" class="tabcontent">
@@ -421,6 +427,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <label for="product_name">*Product Name:</label>
                         <input type="text" id="product_name" class="form-control">
                         <span id="product_name_error" class="error-popup"></span>
+                        <span id="product_name_ref_error" class="error-popup"></span>
                     </div>
                     <div class="form-group col-md-5">
                         <label for="product_type">*Product Type:</label>

@@ -306,6 +306,91 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="modal-body">
             <form action="POST" id="qa_form">
+            <div class="sticky-top" id="tab_buttons">
+                <button class="tablinks" onclick="return open_tab(event, 'ref_hunt_information')" id="def_tab">QA Form</button>
+                <button class="tablinks hide" onclick="return open_tab(event, 'ref_information')" id="ref_tab">Reference Information</button>
+            </div>
+            <div id="ref_information" class="tabcontent">
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label for="ref_recognition">Level:</label>
+                        <input type="text" id="ref_recognition" class="form-control" readonly>
+                    </div>
+                    <div class="form-group col-md-10">
+                        <label for="ref_short_name">Short Name:</label>
+                        <input type="text" id="ref_short_name" class="form-control"readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="ref_sub_brand">Sub Brand:</label>
+                        <input type="text" id="ref_sub_brand" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ref_manufacturer">Manufacturer:</label>
+                        <input type="text" id="ref_manufacturer" class="form-control"readonly>
+                    </div>                    
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="ref_category">Category:</label>
+                        <input type="text" id="ref_category" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ref_sub_category">Sub Category:</label>
+                        <input type="text" id="ref_sub_category" class="form-control"readonly>
+                    </div>                    
+                </div>   
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label for="ref_base_size">Base Size:</label>
+                        <input type="text" id="ref_base_size" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="ref_size">Size:</label>
+                        <input type="text" id="ref_size" class="form-control"readonly>
+                    </div>                    
+                    <div class="form-group col-md-2">
+                        <label for="ref_measurement_unit">Unit:</label>
+                        <input type="text" id="ref_measurement_unit" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="ref_container_type">Container Type:</label>
+                        <input type="text" id="ref_container_type" class="form-control"readonly>
+                    </div>    
+                </div>   
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="ref_agg_level">Agg Level:</label>
+                        <input type="text" id="ref_agg_level" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ref_segment">Segment:</label>
+                        <input type="text" id="ref_segment" class="form-control"readonly>
+                    </div>                    
+                </div>      
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="ref_upc2">UPC2 Count:</label>
+                        <input type="text" id="ref_upc2" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ref_flavor_detail">Flavor Detail:</label>
+                        <input type="text" id="ref_flavor_detail" class="form-control"readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="ref_case_pack">Case Pack:</label>
+                        <input type="text" id="ref_case_pack" class="form-control"readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ref_multi_pack">Multi Pack:</label>
+                        <input type="text" id="ref_multi_pack" class="form-control"readonly>
+                    </div>
+                </div>
+            </div>
+            <div id="ref_hunt_information" class="tabcontent">
                     <div class="form-row">
                         <div class="col">
                             <div class="form-group">
@@ -442,6 +527,7 @@ slider.oninput = function() {
         </div>
     </div>
 </div>    
+</div>
 <div class="modal hide fade modal-form" id="qa_error" tabindex="-1" role="dialog"
     aria-labelledby="qa_error_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-md" role="document">

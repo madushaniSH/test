@@ -49,20 +49,40 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $stmt->execute(['ticket'=>$_POST['ticket']]); 
     $number_of_handled_rows = $stmt->fetchColumn(); 
 
-    $sql = 'SELECT reference_queue_id FROM reference_queue WHERE account_id = :account_id';
+    $sql = 'SELECT reference_queue_id, reference_info_key_id FROM reference_queue WHERE account_id = :account_id';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$_SESSION['id']]);
     $ref_queue_info = $stmt->fetch(PDO::FETCH_OBJ);
     $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
     $brand_name = '';
-
+    $number_of_added_brand = 0;
+    $number_of_added_sku = 0;
+    $number_of_added_dvc = 0;
+    $number_of_added_facing = 0;
     if ($row_count == 1) {
         $sql = 'SELECT a.reference_brand FROM reference_queue b INNER JOIN reference_info a ON a.reference_info_id = b.reference_info_key_id WHERE b.reference_queue_id = :reference_queue_id AND b.account_id = :account_id';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['reference_queue_id' =>$ref_queue_info->reference_queue_id,'account_id'=>$_SESSION['id']]);
         $brand_info = $stmt->fetch(PDO::FETCH_OBJ);
         $brand_name = $brand_info->reference_brand;
+
+        $sql = 'SELECT COUNT(*) FROM products INNER JOIN ref_product_info ON products.product_id = ref_product_info.product_id INNER JOIN reference_info ON reference_info.reference_info_id = ref_product_info.reference_info_id WHERE products.product_type ="brand" AND products.account_id = :account_id AND products.product_status = 2 AND reference_info.reference_info_id = :reference_info_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'reference_info_id'=>$ref_queue_info->reference_info_key_id]);
+        $number_of_added_brand = $stmt->fetchColumn();
+        $sql = 'SELECT COUNT(*) FROM products INNER JOIN ref_product_info ON products.product_id = ref_product_info.product_id INNER JOIN reference_info ON reference_info.reference_info_id = ref_product_info.reference_info_id WHERE products.product_type ="sku" AND products.account_id = :account_id AND products.product_status = 2 AND reference_info.reference_info_id = :reference_info_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'reference_info_id'=>$ref_queue_info->reference_info_key_id]);
+        $number_of_added_sku = $stmt->fetchColumn();
+        $sql = 'SELECT COUNT(*) FROM products INNER JOIN ref_product_info ON products.product_id = ref_product_info.product_id INNER JOIN reference_info ON reference_info.reference_info_id = ref_product_info.reference_info_id WHERE products.product_type ="dvc" AND products.account_id = :account_id AND products.product_status = 2 AND reference_info.reference_info_id = :reference_info_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'reference_info_id'=>$ref_queue_info->reference_info_key_id]);
+        $number_of_added_dvc = $stmt->fetchColumn();
+        $sql = 'SELECT COUNT(*) FROM products INNER JOIN ref_product_info ON products.product_id = ref_product_info.product_id INNER JOIN reference_info ON reference_info.reference_info_id = ref_product_info.reference_info_id WHERE products.product_type ="facing" AND products.account_id = :account_id AND products.product_status = 2 AND reference_info.reference_info_id = :reference_info_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'reference_info_id'=>$ref_queue_info->reference_info_key_id]);
+        $number_of_added_facing = $stmt->fetchColumn();
     }
 
     $search_item = $_POST['sku_brand_name'].'';
@@ -144,13 +164,33 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
     $brand_name = '';
-
+    $number_of_added_brand = 0;
+    $number_of_added_sku = 0;
+    $number_of_added_dvc = 0;
+    $number_of_added_facing = 0;
     if ($row_count == 1) {
         $sql = 'SELECT a.reference_brand FROM reference_queue b INNER JOIN reference_info a ON a.reference_info_id = b.reference_info_key_id WHERE b.reference_queue_id = :reference_queue_id AND b.account_id = :account_id';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['reference_queue_id' =>$ref_queue_info->reference_queue_id,'account_id'=>$_SESSION['id']]);
         $brand_info = $stmt->fetch(PDO::FETCH_OBJ);
         $brand_name = $brand_info->reference_brand;
+
+        $sql = 'SELECT COUNT(*) FROM products INNER JOIN ref_product_info ON products.product_id = ref_product_info.product_id INNER JOIN reference_info ON reference_info.reference_info_id = ref_product_info.reference_info_id WHERE products.product_type ="brand" AND products.account_id = :account_id AND products.product_status = 2 AND reference_info.reference_info_id = :reference_info_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'reference_info_id'=>$ref_queue_info->reference_info_key_id]);
+        $number_of_added_brand = $stmt->fetchColumn();
+        $sql = 'SELECT COUNT(*) FROM products INNER JOIN ref_product_info ON products.product_id = ref_product_info.product_id INNER JOIN reference_info ON reference_info.reference_info_id = ref_product_info.reference_info_id WHERE products.product_type ="sku" AND products.account_id = :account_id AND products.product_status = 2 AND reference_info.reference_info_id = :reference_info_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'reference_info_id'=>$ref_queue_info->reference_info_key_id]);
+        $number_of_added_sku = $stmt->fetchColumn();
+        $sql = 'SELECT COUNT(*) FROM products INNER JOIN ref_product_info ON products.product_id = ref_product_info.product_id INNER JOIN reference_info ON reference_info.reference_info_id = ref_product_info.reference_info_id WHERE products.product_type ="dvc" AND products.account_id = :account_id AND products.product_status = 2 AND reference_info.reference_info_id = :reference_info_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'reference_info_id'=>$ref_queue_info->reference_info_key_id]);
+        $number_of_added_dvc = $stmt->fetchColumn();
+        $sql = 'SELECT COUNT(*) FROM products INNER JOIN ref_product_info ON products.product_id = ref_product_info.product_id INNER JOIN reference_info ON reference_info.reference_info_id = ref_product_info.reference_info_id WHERE products.product_type ="facing" AND products.account_id = :account_id AND products.product_status = 2 AND reference_info.reference_info_id = :reference_info_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'reference_info_id'=>$ref_queue_info->reference_info_key_id]);
+        $number_of_added_facing = $stmt->fetchColumn();
     }
 
     $search_item = $_POST['sku_brand_name'].'';
@@ -306,6 +346,6 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     }
 }
 
-$return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "ref_brand_count"=>$ref_brand_count, "brand_name"=>$brand_name, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count, "number_of_products_added"=>$number_of_products_added, "rename_error_count"=>$rename_error_count, "error_type_count"=>$error_type_count, "mon_accuracy"=>$mon_accuracy);
+$return_arr[] = array("number_of_added_brand"=> $number_of_added_brand,"number_of_added_sku"=> $number_of_added_sku, "number_of_added_dvc"=> $number_of_added_dvc, "number_of_added_facing"=> $number_of_added_facing, "number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "ref_brand_count"=>$ref_brand_count, "brand_name"=>$brand_name, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count, "number_of_products_added"=>$number_of_products_added, "rename_error_count"=>$rename_error_count, "error_type_count"=>$error_type_count, "mon_accuracy"=>$mon_accuracy);
 echo json_encode($return_arr);
 ?>

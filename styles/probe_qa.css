@@ -120,3 +120,39 @@
 #options_hunt {
     margin-top: 1vw;
 }
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+}
+
+.tablinks{
+    background: transparent; 
+    border: none;
+    border-bottom: solid 2px purple;
+    padding: 0.7vw;
+    margin-right: 1vw;
+}
+
+.active{
+    border: none;
+    border-radius: 1vw;
+    color: white;
+    background: purple;
+}
+
+#qa_probe .modal-dialog, #add_reference .modal-content {
+    /* 80% of window height */
+    height: 85%;
+}
+
+#qa_probe .modal-body {
+    /* 100% = dialog height, 120px = header + footer */
+    max-height: calc(100% - 120px);
+    overflow-y: scroll;
+}
+
+#tab_buttons{
+    background: white;
+    padding: 0.4vw;
+}

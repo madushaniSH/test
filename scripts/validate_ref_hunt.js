@@ -1,6 +1,8 @@
 var p_name = '';
 let product_count = 0;
 let selected_ticket = '';
+let current_brand_count = 0;
+let current_sku_count = 0;
 const reset_ref_form = () => {
     $("#status").val('').trigger('change');
     $("#probe_form").trigger('reset');
@@ -9,6 +11,22 @@ const reset_ref_form = () => {
     document.getElementById('status').disabled = false;
     $('#server_success').empty();
     product_count = 0;
+    jQuery('#ref_recognition').val('');
+    jQuery('#ref_short_name').val('');
+    jQuery('#ref_sub_brand').val('');
+    jQuery('#ref_manufacturer').val('');
+    jQuery('#ref_category').val('');
+    jQuery('#ref_sub_category').val('');
+    jQuery('#ref_base_size').val('');
+    jQuery('#ref_size').val('');
+    jQuery('#ref_measurement_unit').val('');
+    jQuery('#ref_container_type').val('');
+    jQuery('#ref_agg_level').val('');
+    jQuery('#ref_segment').val('');
+    jQuery('#ref_upc2').val('');
+    jQuery('#ref_flavor_detail').val('');
+    jQuery('#ref_case_pack').val('');
+    jQuery('#ref_multi_pack').val('');
 }
 
 function get_brand_list(select_element) {
@@ -81,6 +99,7 @@ const validate_product_info = () => {
     let is_valid_form = true;
     const product_name = document.getElementById('product_name').value.trim();
     const product_name_error = document.getElementById('product_name_error');
+    const product_name_ref_error = document.getElementById('product_name_ref_error');
     const product_type_element = document.getElementById('product_type');
     const product_type = product_type_element.options[product_type_element.selectedIndex].value;
     const product_type_error = document.getElementById('product_type_error');
@@ -103,10 +122,17 @@ const validate_product_info = () => {
         var patt = /^[a-zA-Z 0-9\-\'\!\%\&\(\)\.\_\/\+\,\#\\\;\:\=\$]*$/;
         if (!patt.test(product_name)) {
             is_valid_form = false;
-            product_name_error.innerHTML = 'Non English Product Name Entered';
+            product_name_error.innerHTML = 'Non English Product Name Entered.';
         } else {
             product_name_error.innerHTML = '';
         }
+    }
+
+    if (((product_type === 'brand' && current_brand_count >= 1) || (product_type === 'sku' && current_sku_count >= 1)) && product_name != ''){
+        product_name_ref_error.innerHTML = 'Cannot enter more than one of this product type';
+        is_valid_form = false;
+    } else {
+        product_name_ref_error.innerHTML = '';
     }
 
     if (product_type == '') {
@@ -144,6 +170,7 @@ const validate_product_info = () => {
             }
         }
     }
+
 
     if (product_link != '' && !is_url(product_link)) {
         is_valid_form = false;
@@ -292,7 +319,7 @@ const save_ref_info = (save_product, close_reference) => {
             } else {
                 is_valid_form = false;
             }
-        } 
+        }
         if (close_reference && (valid_product || skip_check)) {
             let formData = new FormData();
             formData.append('project_name', p_name);
@@ -419,6 +446,10 @@ function get_ref_info() {
                 data: formData,
                 success: function (data) {
                     $('#status').html(data);
+                    if (product_count > 0) {
+                        document.getElementById('status').disabled = true;
+                        $('#status').val(2).change();
+                    }
                 },
                 error: function (data) {
                     alert("Error assigning probe. Please refresh");
@@ -506,6 +537,19 @@ function update_ref_count() {
                     $('#mon_acc_count').empty();
                     $('#mon_acc_count').html(data[0].mon_accuracy + '%');
                     $('#acc_pro').html(p_name);
+                    $('#ref_current_brand_counter').empty();
+                    $('#ref_current_brand_counter').html(data[0].number_of_added_brand);
+                    current_brand_count = parseInt(data[0].number_of_added_brand, 10);
+                    $('#ref_current_sku_counter').empty();
+                    $('#ref_current_sku_counter').html(data[0].number_of_added_sku);
+                    current_sku_count = parseInt(data[0].number_of_added_sku, 10);
+                    $('#ref_current_dvc_counter').empty();
+                    $('#ref_current_dvc_counter').html(data[0].number_of_added_dvc);
+                    let dvc_count = parseInt(data[0].number_of_added_dvc, 10);
+                    $('#ref_current_facing_counter').empty();
+                    $('#ref_current_facing_counter').html(data[0].number_of_added_facing);
+                    let facing_count = parseInt(data[0].number_of_added_facing, 10);
+                    product_count = current_sku_count + current_brand_count + dvc_count + facing_count;
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {
@@ -555,33 +599,6 @@ function open_tab(evt, tab_name) {
     evt.currentTarget.className += " active";
     return false;
 }
-
-/*
-function validate_project_name() {
-    var project_name_element = document.getElementById('project_name');
-    var project_name = project_name_element.options[project_name_element.selectedIndex].value;
-    var project_name_error = document.getElementById('project_name_error');
-    var probe_hunt_options = document.getElementById('probe_hunt_options');
-    var probe_hunt_counter = document.getElementById('probe_hunt_counter');
-    var hunter_counter = document.getElementById('hunter_counter');
-    var ticket_section = document.getElementById('ticket_section');
-    if (project_name == '') {
-        project_name_error.innerHTML = 'Project Name required for upload';
-        probe_hunt_options.classList.add('hide');
-        probe_hunt_counter.classList.add('hide');
-        hunter_counter.classList.add('hide')
-    } else {
-        $('#ticket').empty();
-        project_name_error.innerHTML = '';
-        probe_hunt_options.classList.add('hide');
-        probe_hunt_counter.classList.add('hide');
-        hunter_counter.classList.add('hide')
-        ticket_section.classList.remove('hide');
-        p_name = project_name;
-        get_ticket_list();
-    }
-}
-*/
 
 const validate_project_name = () => {
     $('#brand_name_filter').empty();

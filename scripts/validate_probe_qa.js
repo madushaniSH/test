@@ -305,7 +305,7 @@ function get_probe_qa_info() {
         success: function (data) {
             if (selected_type === 'probe') {
                 document.getElementById('suggestion_source_button').classList.add('hide');
-                var title_string = '<span id="project_title">' + project_name + ' ' + data[0].probe_info.ticket_id + " " + selected_type.toUpperCase() +"</span>";
+                var title_string = '<span id="project_title">' + project_name + ' ' + data[0].probe_info.ticket_id + " " + selected_type.toUpperCase() + "</span>";
                 if (data[0].probe_info.brand_name != null) {
                     title_string +=
                         ' <span id="brand_title">' + data[0].probe_info.brand_name + "</span>";
@@ -365,7 +365,7 @@ function get_probe_qa_info() {
                 display_qa_probe();
             }
             if (selected_type === 'radar') {
-                var title_string = '<span id="project_title">' + project_name + ' ' + data[0].radar_info.ticket_id + " "  + selected_type.toUpperCase()+ "</span>";
+                var title_string = '<span id="project_title">' + project_name + ' ' + data[0].radar_info.ticket_id + " " + selected_type.toUpperCase() + "</span>";
                 if (data[0].radar_info.radar_brand != null) {
                     title_string +=
                         ' <span id="brand_title">' + data[0].radar_info.radar_brand + "</span>";
@@ -431,6 +431,83 @@ function get_probe_qa_info() {
                 }
                 display_qa_probe();
             }
+
+
+            if (selected_type === 'reference') {
+                var title_string = '<span id="project_title">' + project_name + ' ' + data[0].ref_info.ticket_id + " " + selected_type.toUpperCase() + "</span>";
+                if (data[0].ref_info.reference_brand != null) {
+                    title_string +=
+                        ' <span id="brand_title">' + data[0].ref_info.reference_brand + "</span>";
+                }
+                if (data[0].ref_info.reference_ean != null) {
+                    title_string +=
+                        ' <span id="client_category_title">' +
+                        data[0].ref_info.reference_ean +
+                        "</span>";
+                }
+                if (data[0].ref_info.product_type != null) {
+                    title_string +=
+                        ' <span id="probe_id_title">' + data[0].ref_info.product_type.toUpperCase() + '</span>';
+                }
+
+                let dateTimeParts = data[0].ref_info.product_creation_time.split(/[- :]/); // regular expression split that creates array with: year, month, day, hour, minutes, seconds values
+                dateTimeParts[1]--; // monthIndex begins with 0 for January and ends with 11 for December so we need to decrement by one
+                const dateObject = new Date(...dateTimeParts);
+                title_string +=
+                    ' <span id="time_title">' + dateObject.toLocaleString() + '</span>';
+
+                jQuery("#qa_probe_title").html(title_string);
+                jQuery("#product_name").val(data[0].ref_info.product_name);
+                jQuery("#alt_name").val(data[0].ref_info.product_alt_design_name);
+                org_manu_link = data[0].ref_info.manufacturer_link;
+                jQuery('#manu_link').val(data[0].ref_info.manufacturer_link);
+                var product_link = data[0].ref_info.product_link;
+                if (product_link == null) {
+                    product_link = '';
+                    document.getElementById('product_source_button').classList.add('hide');
+                } else {
+                    document.getElementById('product_source_button').classList.remove('hide');
+                    var str = "Go to Product Source <i class=\"fas fa-external-link-alt\">";
+                    var result = str.link(product_link);
+                    document.getElementById('product_source_button').innerHTML = result;
+                    $('#product_source_button a').attr('target', '_blank');
+                }
+                if (data[0].ref_info.manufacturer_link == null) {
+                    document.getElementById('manu_source_button').classList.add('hide');
+                } else {
+                    document.getElementById('manu_source_button').classList.remove('hide');
+                    var str = "<i class=\"fas fa-external-link-alt\">";
+                    var result = str.link(data[0].ref_info.manufacturer_link);
+                    document.getElementById('manu_source_button').innerHTML = result;
+                    $('#manu_source_button a').attr('target', '_blank');
+                }
+                document.getElementById("num_facings").value = data[0].ref_info.product_facing_count;
+                facing_num = data[0].ref_info.product_facing_count;
+                document.getElementById("output").innerHTML = document.getElementById("num_facings").value;
+                if (data[0].ref_info.product_alt_design_previous != null) {
+                    jQuery('#name_error').html('Orignal name was overwritten by an Analyst');
+                }
+                jQuery('#ref_recognition').val(data[0].ref_info["reference_recognition_level"]);
+                jQuery('#ref_short_name').val(data[0].ref_info["reference_short_name"]);
+                jQuery('#ref_sub_brand').val(data[0].ref_info["reference_sub_brand"]);
+                jQuery('#ref_manufacturer').val(data[0].ref_info["reference_manufacturer"]);
+                jQuery('#ref_category').val(data[0].ref_info["reference_category"]);
+                jQuery('#ref_sub_category').val(data[0].ref_info["reference_sub_category"]);
+                jQuery('#ref_base_size').val(data[0].ref_info["reference_base_size"]);
+                jQuery('#ref_size').val(data[0].ref_info["reference_size"]);
+                jQuery('#ref_measurement_unit').val(data[0].ref_info["reference_measurement_unit"]);
+                jQuery('#ref_container_type').val(data[0].ref_info["reference_container_type"]);
+                jQuery('#ref_agg_level').val(data[0].ref_info["reference_agg_level"]);
+                jQuery('#ref_segment').val(data[0].ref_info["reference_segment"]);
+                jQuery('#ref_upc2').val(data[0].ref_info["reference_count_upc2"]);
+                jQuery('#ref_flavor_detail').val(data[0].ref_info["reference_flavor_detail"]);
+                jQuery('#ref_case_pack').val(data[0].ref_info["reference_case_pack"]);
+                jQuery('#ref_multi_pack').val(data[0].ref_info["reference_multi_pack"]);
+                display_qa_probe();
+            }
+
+
+
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
@@ -474,6 +551,22 @@ function unassign_probe() {
     document.getElementById("name_error").innerHTML = "";
     document.getElementById("num_facings").value = 0;
     document.getElementById("output").innerHTML = 0;
+    jQuery('#ref_recognition').val('');
+    jQuery('#ref_short_name').val('');
+    jQuery('#ref_sub_brand').val('');
+    jQuery('#ref_manufacturer').val('');
+    jQuery('#ref_category').val('');
+    jQuery('#ref_sub_category').val('');
+    jQuery('#ref_base_size').val('');
+    jQuery('#ref_size').val('');
+    jQuery('#ref_measurement_unit').val('');
+    jQuery('#ref_container_type').val('');
+    jQuery('#ref_agg_level').val('');
+    jQuery('#ref_segment').val('');
+    jQuery('#ref_upc2').val('');
+    jQuery('#ref_flavor_detail').val('');
+    jQuery('#ref_case_pack').val('');
+    jQuery('#ref_multi_pack').val('');
     is_dupilcate = false;
     is_dupilcate_dvc = false;
     rename_alert.classList.add("hide");
@@ -684,6 +777,8 @@ const show_upload_options_ref = () => {
     get_brand_list("dvc", "dvc_name");
     get_brand_list("facing", "facing_name");
     get_product_name_list("dvc", "dvc_product_name");
+    document.getElementById('def_tab').click();
+    document.getElementById('ref_tab').classList.remove('hide');
 }
 
 const show_upload_options_radar = () => {
@@ -702,6 +797,8 @@ const show_upload_options_radar = () => {
     get_brand_list("dvc", "dvc_name");
     get_brand_list("facing", "facing_name");
     get_product_name_list("dvc", "dvc_product_name");
+    document.getElementById('def_tab').click();
+    document.getElementById('ref_tab').classList.add('hide');
 }
 
 const show_upload_options_probe = () => {
@@ -720,6 +817,8 @@ const show_upload_options_probe = () => {
     get_brand_list("dvc", "dvc_name");
     get_brand_list("facing", "facing_name");
     get_product_name_list("dvc", "dvc_product_name");
+    document.getElementById('def_tab').click();
+    document.getElementById('ref_tab').classList.add('hide');
 }
 
 
@@ -895,6 +994,22 @@ function validate_qa_form() {
                 document.getElementById("name_error").innerHTML = "";
                 rename_alert.classList.add("hide");
                 dvc_rename_alert.classList.add("hide");
+                jQuery('#ref_recognition').val('');
+                jQuery('#ref_short_name').val('');
+                jQuery('#ref_sub_brand').val('');
+                jQuery('#ref_manufacturer').val('');
+                jQuery('#ref_category').val('');
+                jQuery('#ref_sub_category').val('');
+                jQuery('#ref_base_size').val('');
+                jQuery('#ref_size').val('');
+                jQuery('#ref_measurement_unit').val('');
+                jQuery('#ref_container_type').val('');
+                jQuery('#ref_agg_level').val('');
+                jQuery('#ref_segment').val('');
+                jQuery('#ref_upc2').val('');
+                jQuery('#ref_flavor_detail').val('');
+                jQuery('#ref_case_pack').val('');
+                jQuery('#ref_multi_pack').val('');
             },
             error: function (data) {
                 alert("Error fetching probe information. Please refresh");
@@ -906,6 +1021,22 @@ function validate_qa_form() {
         facing_num = 0;
     }
 }
+
+function open_tab(evt, tab_name) {
+    let i = 0;
+    const tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    const tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tab_name).style.display = "block";
+    evt.currentTarget.className += " active";
+    return false;
+}
+
 
 function compare_rename() {
     if (product_type == "brand" || "sku") {

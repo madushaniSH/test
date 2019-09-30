@@ -48,15 +48,14 @@
 .tablinks{
     background: transparent; 
     border: none;
-    border-bottom: solid 2px purple;
     padding: 0.7vw;
     margin-right: 1vw;
 }
 
 .active{
-    border: none;
-    border-radius: 1vw;
     color: white;
+    border-top-left-radius: 1vw;
+    border-top-right-radius: 0.6vw;
     background: purple;
 }
 
@@ -73,5 +72,22 @@
 
 #tab_buttons{
     background: white;
+}
+
+#ref_product_counter {
     padding: 0.4vw;
+    background: purple;
+    color: white;
+    border-radius: 0.2vw;
+    margin-bottom: 0;
+}
+
+#ref_product_counter p {
+    padding: 0.5vw;
+    margin: 0 auto;
+}
+
+#ref_recognition {
+    background: #2c8346;
+    color: white;
 }
