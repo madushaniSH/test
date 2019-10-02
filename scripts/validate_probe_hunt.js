@@ -140,6 +140,8 @@ function get_probe_info() {
 
 function update_project_count() {
     if (p_name != '' && selected_ticket != '') {
+        //get_client_cat_list('client_cat_filter');
+        //get_brand_list('brand_name_filter');
         var formData = new FormData();
         formData.append('project_name', p_name);
         formData.append('ticket', selected_ticket);
@@ -295,6 +297,7 @@ function reset_hunt_information() {
     document.getElementById('product_type_error').innerHTML = '';
     document.getElementById('facing_error').innerHTML = '';
     document.getElementById('manu_link_error').innerHTML = '';
+    document.getElementById('product_comment').value = '';
 }
 
 function validate_probe_submission() {
@@ -357,6 +360,8 @@ function validate_probe_submission() {
             var facing_error = document.getElementById('facing_error');
             var manu_link = document.getElementById('manu_link').value.trim();
             var product_link = document.getElementById('product_link').value.trim();
+            const product_comment = document.getElementById('product_comment').value.trim();
+            formData.append('product_comment', product_comment);
             formData.append('facings', facings);
 
             if (product_name == '') {
@@ -638,6 +643,8 @@ function add_probe_product() {
     var facing_error = document.getElementById('facing_error');
     var manu_link = document.getElementById('manu_link').value.trim();
     var product_link = document.getElementById('product_link').value.trim();
+    const product_comment = document.getElementById('product_comment').value.trim();
+    formData.append('product_comment', product_comment);
     formData.append('facings', facings);
 
     if (product_name == '') {
@@ -807,8 +814,138 @@ function validate_ticket_name() {
     }
 }
 
+const get_brand_list = (select_element) => {
+    if (p_name != "" && selected_ticket != "") {
+        const client_cat = $('#client_cat_filter').val();
+        if (client_cat != null) {
+        let formData = new FormData();
+        formData.append("project_name", p_name);
+        formData.append("ticket", selected_ticket);
+        formData.append('client_cat', client_cat);
+        jQuery.ajax({
+            url: "get_probe_brand.php",
+            type: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: function (data) {
+                // adding missing options
+                let selected_val = $("#" + select_element).val();
+                for (var i = 0; i < data[0].brand_rows.length; i++) {
+                    if (
+                        !$("#" + select_element).find(
+                            'option[value="' + data[0].brand_rows[i].name + '"]'
+                        ).length
+                    ) {
+                        // Append it to the select
+                        $("#" + select_element).append(
+                            '<option value="' +
+                            data[0].brand_rows[i].name +
+                            '">' +
+                            data[0].brand_rows[i].name +
+                            "</option>"
+                        );
+                    }
+                }
+                if (selected_val != '') {
+                    $("#" + select_element).val(selected_val).change();
+                }
+
+                var element = document.getElementById(select_element).options;
+                var found = true;
+                for (var i = 0; i < element.length; i++) {
+                    found = false;
+                    for (var j = 0; j < data[0].brand_rows.length; j++) {
+                        if (data[0].brand_rows[j].name == element[i].value) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        document
+                            .getElementById(select_element)
+                            .remove(document.getElementById(select_element)[i]);
+                    }
+                }
+            },
+            error: function (data) {
+                alert("Error assigning probe. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+        }
+    }
+}
+
+const get_client_cat_list = (select_element) => {
+    if (p_name != "" && selected_ticket != "") {
+        var formData = new FormData();
+        formData.append("project_name", p_name);
+        formData.append("ticket", selected_ticket);
+        jQuery.ajax({
+            url: "get_probe_client_cat.php",
+            type: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: function (data) {
+                // adding missing options
+                let selected_val = $("#" + select_element).val();
+                for (var i = 0; i < data[0].brand_rows.length; i++) {
+                    if (
+                        !$("#" + select_element).find(
+                            'option[value="' + data[0].brand_rows[i].name + '"]'
+                        ).length
+                    ) {
+                        // Append it to the select
+                        $("#" + select_element).append(
+                            '<option value="' +
+                            data[0].brand_rows[i].name +
+                            '">' +
+                            data[0].brand_rows[i].name +
+                            "</option>"
+                        );
+                    }
+                }
+                if (selected_val != '') {
+                    $("#" + select_element).val(selected_val).change();
+                }
+
+                var element = document.getElementById(select_element).options;
+                var found = true;
+                for (var i = 0; i < element.length; i++) {
+                    found = false;
+                    for (var j = 0; j < data[0].brand_rows.length; j++) {
+                        if (data[0].brand_rows[j].name == element[i].value) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        document
+                            .getElementById(select_element)
+                            .remove(document.getElementById(select_element)[i]);
+                    }
+                }
+            },
+            error: function (data) {
+                alert("Error assigning probe. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
+
 jQuery(document).ready(function () {
     jQuery('#project_name').select2({
+        width: '100%',
+    });
+    jQuery('#brand_name_filter').select2({
+        width: '100%',
+    });
+    jQuery('#client_cat_filter').select2({
         width: '100%',
     });
     jQuery('#ticket').select2({

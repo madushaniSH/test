@@ -291,7 +291,19 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
         </div>
     </div>
+</div> 
+<!--
+<div class="row">
+    <div id="probe_hunt_options" class="col hide">
+        <label for="client_cat_filter">Filter by Client Category</label>
+        <select name="client_cat_filter" id="client_cat_filter" class="form-control">
+        </select>
+        <label for="brand_name_filter">Filter by Brand Name</label>
+        <select name="brand_name_filter" id="brand_name_filter" class="form-control">
+        </select>
+    </div>
 </div>
+-->
 <div class="row">
     <div id="probe_hunt_options" class="col hide">
     <button class="btn" id="exit_btn" onclick="window.location.href='product_hunt.php'"><i class="fas fa-chevron-circle-left fa-3x"></i><br>Exit</i></button>
@@ -356,11 +368,16 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                         <span id="product_type_error" class="error-popup"></span>
                     </div>
                 </div>
-                <div class="row hide" id="alt_design_info">
-                    <div class="form-group col-md-5">
+                <div class="row">
+                    <div class="form-group col-md-5 hide" id="alt_design_info">
                         <label for="alt_design_name" id="alt_name_label">*Alternative Design Name:</label>
                         <input type="text" id="alt_design_name" class="form-control">
                         <span id="alt_design_name_error" class="error-popup"></span>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="product_comment">Product Comment:</label>
+                        <input type="text" id="product_comment" class="form-control">
+                        <span id="product_comment_error" class="error-popup"></span>
                     </div>
                 </div>
                 <div class="row" id="facing_count">
