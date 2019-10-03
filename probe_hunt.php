@@ -292,7 +292,6 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         </div>
     </div>
 </div> 
-<!--
 <div class="row">
     <div id="probe_hunt_options" class="col hide">
         <label for="client_cat_filter">Filter by Client Category</label>
@@ -301,14 +300,22 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         <label for="brand_name_filter">Filter by Brand Name</label>
         <select name="brand_name_filter" id="brand_name_filter" class="form-control">
         </select>
+    <div class="col">
+        <button type="button" id="probe_hunt_button" class="btn qa_button" onclick="get_probe_info()">
+        <div class="counter">
+            <i class="fas fa-boxes fa-2x"></i>
+            <h2 id="current_probe_brand_counter" class="timer count-title count-number">
+                <div class="spinner-border text-success" role="status">
+                <span class="sr-only">Loading...</span>
+                </div>
+            </h2>
+            <p class="count-text ">Remaining References For Brand</p>
+        </div>
+        </button>
     </div>
-</div>
--->
-<div class="row">
-    <div id="probe_hunt_options" class="col hide">
     <button class="btn" id="exit_btn" onclick="window.location.href='product_hunt.php'"><i class="fas fa-chevron-circle-left fa-3x"></i><br>Exit</i></button>
-    <button class="btn hide" id="continue_btn" onclick="get_probe_info()"><i class="fas fa-chevron-circle-right fa-3x"></i><br>Continue</button>
     <p class="error-popup" id="probe_message"></p>
+    </div>
     </div>
 </div>
 </div>

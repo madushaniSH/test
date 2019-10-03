@@ -92,8 +92,12 @@ function get_probe_info() {
     var project_name_element = document.getElementById('project_name');
     var project_name = project_name_element.options[project_name_element.selectedIndex].value;
     var formData = new FormData();
+    const brand = $('#brand_name_filter').val();
+    const client_cat = $('#client_cat_filter').val();
     formData.append('project_name', project_name);
     formData.append('ticket', selected_ticket);
+    formData.append('brand', brand);
+    formData.append('client_cat', client_cat);
     jQuery.ajax({
         url: 'assign_probe.php',
         type: 'POST',
@@ -140,11 +144,15 @@ function get_probe_info() {
 
 function update_project_count() {
     if (p_name != '' && selected_ticket != '') {
-        //get_client_cat_list('client_cat_filter');
-        //get_brand_list('brand_name_filter');
+        get_client_cat_list('client_cat_filter');
+        get_brand_list('brand_name_filter');
         var formData = new FormData();
         formData.append('project_name', p_name);
         formData.append('ticket', selected_ticket);
+        const brand = $('#brand_name_filter').val();
+        const client_cat = $('#client_cat_filter').val();
+        formData.append('brand', brand);
+        formData.append('client_cat', client_cat);
         var d = new Date();
         d.setHours(0, 0, 0, 0);
         d.setDate(15);
@@ -204,22 +212,30 @@ function update_project_count() {
                     $('#mon_acc_count').empty();
                     $('#mon_acc_count').html(data[0].mon_accuracy + '%');
                     $('#acc_pro').html(p_name);
+                    $('#current_probe_brand_counter').empty();
+                    $('#current_probe_brand_counter').html(data[0].probe_brand_count);
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {
-                        document.getElementById('continue_btn').classList.add('hide');
+                        document.getElementById('probe_hunt_button').disabled = true;
                         document.getElementById('probe_message').innerHTML = '';
                         if ($('#add_probe').is(':visible')) {
                             $('#close_probe_title').click();
                         }
                     } else {
-                        document.getElementById('continue_btn').classList.remove('hide');
+                        document.getElementById('probe_hunt_button').disabled = false;
                         if (probe_count === 1) {
                             document.getElementById('probe_message').innerHTML = 'Probe Assigned. Please press Continue';
                         }
                         if (probe_count == 0) {
                             document.getElementById('probe_message').innerHTML = '';
                         }
+                    }
+                    var brand_count = parseInt(data[0].probe_brand_count, 10);
+                    if (brand_count == 0 && probe_count == 0) {
+                        document.getElementById('probe_hunt_button').disabled = true;
+                    } else {
+                        document.getElementById('probe_hunt_button').disabled = false;
                     }
                     var added_product_count = parseInt(data[0].number_of_products_added, 10);
                     if (added_product_count > 0) {
@@ -833,13 +849,13 @@ const get_brand_list = (select_element) => {
                 for (var i = 0; i < data[0].brand_rows.length; i++) {
                     if (
                         !$("#" + select_element).find(
-                            'option[value="' + data[0].brand_rows[i].name + '"]'
+                            'option[value="' + data[0].brand_rows[i].id + '"]'
                         ).length
                     ) {
                         // Append it to the select
                         $("#" + select_element).append(
                             '<option value="' +
-                            data[0].brand_rows[i].name +
+                            data[0].brand_rows[i].id +
                             '">' +
                             data[0].brand_rows[i].name +
                             "</option>"
@@ -855,7 +871,7 @@ const get_brand_list = (select_element) => {
                 for (var i = 0; i < element.length; i++) {
                     found = false;
                     for (var j = 0; j < data[0].brand_rows.length; j++) {
-                        if (data[0].brand_rows[j].name == element[i].value) {
+                        if (data[0].brand_rows[j].id == element[i].value) {
                             found = true;
                             break;
                         }
@@ -894,13 +910,13 @@ const get_client_cat_list = (select_element) => {
                 for (var i = 0; i < data[0].brand_rows.length; i++) {
                     if (
                         !$("#" + select_element).find(
-                            'option[value="' + data[0].brand_rows[i].name + '"]'
+                            'option[value="' + data[0].brand_rows[i].id + '"]'
                         ).length
                     ) {
                         // Append it to the select
                         $("#" + select_element).append(
                             '<option value="' +
-                            data[0].brand_rows[i].name +
+                            data[0].brand_rows[i].id +
                             '">' +
                             data[0].brand_rows[i].name +
                             "</option>"
@@ -916,7 +932,7 @@ const get_client_cat_list = (select_element) => {
                 for (var i = 0; i < element.length; i++) {
                     found = false;
                     for (var j = 0; j < data[0].brand_rows.length; j++) {
-                        if (data[0].brand_rows[j].name == element[i].value) {
+                        if (data[0].brand_rows[j].id == element[i].value) {
                             found = true;
                             break;
                         }
@@ -961,6 +977,17 @@ jQuery(document).ready(function () {
     });
     jQuery('#project_name').on('select2:select', function () {
         validate_project_name();
+        $('#client_cat_filter').empty();
+        $('#brand_name_filter').empty();
+    });
+    jQuery('#brand_name_filter').on("select2:select", function (e) {
+        jQuery('#current_probe_brand_counter').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('probe_hunt_button').disabled = true;
+    });
+    jQuery('#client_cat_filter').on("select2:select", function (e) {
+        $('#brand_name_filter').empty();
+        jQuery('#current_probe_brand_counter').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('probe_hunt_button').disabled = true;
     });
     jQuery('#status').change(function () {
         show_additional_options();
@@ -983,6 +1010,8 @@ jQuery(document).ready(function () {
     });
     $('#ticket').on('select2:select', function (e) {
         validate_ticket_name();
+        $('#client_cat_filter').empty();
+        $('#brand_name_filter').empty();
     });
     $("#show_button").mouseleave(function () {
         $("#counters").fadeOut();

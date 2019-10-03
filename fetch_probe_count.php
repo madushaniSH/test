@@ -43,11 +43,32 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $stmt->execute(['ticket'=>$_POST['ticket']]);
     $number_of_rows = $stmt->fetchColumn();
 
-
     $sql = "SELECT count(*) FROM probe_queue a INNER JOIN probe b ON a.probe_key_id = b.probe_key_id WHERE a.probe_being_handled = 1 AND b.probe_ticket_id =:ticket";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['ticket'=>$_POST['ticket']]);
     $number_of_handled_rows = $stmt->fetchColumn();
+
+    if ($_POST['client_cat'] == 0 && $_POST['brand'] == 0) {
+        $sql = "SELECT count(*) FROM probe_queue a INNER JOIN probe b ON a.probe_key_id = b.probe_key_id WHERE (a.probe_being_handled = 0 OR a.probe_being_handled = 1 AND  a.account_id = :account_id) AND b.probe_ticket_id =:ticket AND b.client_category_id IS NULL AND b.brand_id IS NULL";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket']]);
+        $probe_brand_count = $stmt->fetchColumn();
+    } else if ($_POST['client_cat'] == 0 && $_POST['brand'] != 0 ) {
+        $sql = "SELECT count(*) FROM probe_queue a INNER JOIN probe b ON a.probe_key_id = b.probe_key_id WHERE (a.probe_being_handled = 0 OR a.probe_being_handled = 1 AND  a.account_id = :account_id) AND b.probe_ticket_id =:ticket AND b.client_category_id IS NULL AND b.brand_id = :brand_id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'brand_id'=>(int)$_POST['brand']]);
+        $probe_brand_count = $stmt->fetchColumn();
+    } else if ($_POST['brand'] == 0 && $_POST['client_cat'] != 0) {
+        $sql = "SELECT count(*) FROM probe_queue a INNER JOIN probe b ON a.probe_key_id = b.probe_key_id WHERE (a.probe_being_handled = 0 OR a.probe_being_handled = 1 AND  a.account_id = :account_id) AND b.probe_ticket_id =:ticket AND b.client_category_id = :client_id AND b.brand_id IS NULL";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'client_id'=>(int)$_POST['client_cat']]);
+        $probe_brand_count = $stmt->fetchColumn();
+    } else {
+        $sql = "SELECT count(*) FROM probe_queue a INNER JOIN probe b ON a.probe_key_id = b.probe_key_id WHERE (a.probe_being_handled = 0 OR a.probe_being_handled = 1 AND  a.account_id = :account_id) AND b.probe_ticket_id =:ticket AND b.client_category_id = :client_id AND b.brand_id = :brand_id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'client_id'=>(int)$_POST['client_cat'], 'brand_id'=>(int)$_POST['brand']]);
+        $probe_brand_count = $stmt->fetchColumn();
+    }
 
     $sql = 'SELECT probe_queue_id, probe_key_id FROM probe_queue WHERE account_id = :account_id';
     $stmt = $pdo->prepare($sql);
@@ -129,6 +150,28 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['ticket'=>$_POST['ticket']]);
     $number_of_handled_rows = $stmt->fetchColumn();
+
+    if ($_POST['client_cat'] == 0 && $_POST['brand'] == 0) {
+        $sql = "SELECT count(*) FROM probe_queue a INNER JOIN probe b ON a.probe_key_id = b.probe_key_id WHERE (a.probe_being_handled = 0 OR a.probe_being_handled = 1 AND  a.account_id = :account_id) AND b.probe_ticket_id =:ticket AND b.client_category_id IS NULL AND b.brand_id IS NULL";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket']]);
+        $probe_brand_count = $stmt->fetchColumn();
+    } else if ($_POST['client_cat'] == 0 && $_POST['brand'] != 0 ) {
+        $sql = "SELECT count(*) FROM probe_queue a INNER JOIN probe b ON a.probe_key_id = b.probe_key_id WHERE (a.probe_being_handled = 0 OR a.probe_being_handled = 1 AND  a.account_id = :account_id) AND b.probe_ticket_id =:ticket AND b.client_category_id IS NULL AND b.brand_id = :brand_id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'brand_id'=>(int)$_POST['brand']]);
+        $probe_brand_count = $stmt->fetchColumn();
+    } else if ($_POST['brand'] == 0 && $_POST['client_cat'] != 0) {
+        $sql = "SELECT count(*) FROM probe_queue a INNER JOIN probe b ON a.probe_key_id = b.probe_key_id WHERE (a.probe_being_handled = 0 OR a.probe_being_handled = 1 AND  a.account_id = :account_id) AND b.probe_ticket_id =:ticket AND b.client_category_id = :client_id AND b.brand_id IS NULL";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'client_id'=>(int)$_POST['client_cat']]);
+        $probe_brand_count = $stmt->fetchColumn();
+    } else {
+        $sql = "SELECT count(*) FROM probe_queue a INNER JOIN probe b ON a.probe_key_id = b.probe_key_id WHERE (a.probe_being_handled = 0 OR a.probe_being_handled = 1 AND  a.account_id = :account_id) AND b.probe_ticket_id =:ticket AND b.client_category_id = :client_id AND b.brand_id = :brand_id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'client_id'=>(int)$_POST['client_cat'], 'brand_id'=>(int)$_POST['brand']]);
+        $probe_brand_count = $stmt->fetchColumn();
+    }
 
     $sql = 'SELECT probe_queue_id, probe_key_id FROM probe_queue WHERE account_id = :account_id';
     $stmt = $pdo->prepare($sql);
@@ -290,6 +333,6 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
         $mon_accuracy = round(((($total_count - ($mon_error_type_count * 5)) / $total_count) * 100), 2);
     }
 }
-$return_arr[] = array("number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count, "number_of_products_added"=>$number_of_products_added, "rename_error_count"=>$rename_error_count, "error_type_count"=>$error_type_count, "mon_accuracy"=>$mon_accuracy);
+$return_arr[] = array("number_of_rows" => $number_of_rows, "probe_brand_count"=>$probe_brand_count,"processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count, "number_of_products_added"=>$number_of_products_added, "rename_error_count"=>$rename_error_count, "error_type_count"=>$error_type_count, "mon_accuracy"=>$mon_accuracy);
 echo json_encode($return_arr);
 ?>

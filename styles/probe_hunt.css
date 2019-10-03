@@ -269,3 +269,11 @@ body {
 #accuracy{
     color: lightgreen;
 }
+
+#probe_hunt_button {
+    width: 75%;
+}
+
+#probe_hunt_button :hover{
+    background-color: black;
+}
