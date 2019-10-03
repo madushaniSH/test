@@ -309,7 +309,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                 <span class="sr-only">Loading...</span>
                 </div>
             </h2>
-            <p class="count-text ">Remaining References For Brand</p>
+            <p class="count-text ">Remaining Probes For Brand</p>
         </div>
         </button>
     </div>
