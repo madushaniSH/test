@@ -300,6 +300,11 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
         <label for="brand_name_filter">Filter by Brand Name</label>
         <select name="brand_name_filter" id="brand_name_filter" class="form-control">
         </select>
+    <div class="col hide" id="probe_warning_section">
+        <div class="alert alert-danger">
+            <strong>Warning!</strong> <span id="probe_warning_message">You done goofed</span></a>.
+        </div>
+    </div>
     <div class="col">
         <button type="button" id="probe_hunt_button" class="btn qa_button" onclick="get_probe_info()">
         <div class="counter">

@@ -277,3 +277,9 @@ body {
 #probe_hunt_button :hover{
     background-color: black;
 }
+
+#probe_warning_section {
+    margin: 0 auto;
+    margin-top : 1vw;
+    margin-bottom: 1vw;
+}

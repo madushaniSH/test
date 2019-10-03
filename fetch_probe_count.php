@@ -333,6 +333,35 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
         $mon_accuracy = round(((($total_count - ($mon_error_type_count * 5)) / $total_count) * 100), 2);
     }
 }
-$return_arr[] = array("number_of_rows" => $number_of_rows, "probe_brand_count"=>$probe_brand_count,"processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count, "number_of_products_added"=>$number_of_products_added, "rename_error_count"=>$rename_error_count, "error_type_count"=>$error_type_count, "mon_accuracy"=>$mon_accuracy);
+$date = new DateTime();
+$tosub = new DateInterval('PT12H');
+$date->sub($tosub);
+if ($_POST['client_cat'] == 0 && $_POST['brand'] == 0) {
+    $sql = "SELECT `user_db`.`accounts`.account_gid , b.probe_processed_hunter_id ,MIN(b.probe_hunter_processed_time) FROM probe b INNER JOIN `user_db`.`accounts` ON `user_db`.`accounts`.account_id = b.probe_processed_hunter_id WHERE b.probe_ticket_id =:ticket AND b.client_category_id IS NULL AND b.brand_id IS NULL AND b.probe_hunter_processed_time > :date_to_check";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['ticket'=>$_POST['ticket'], 'date_to_check'=>$date->format('Y-m-d H:i:s')]);
+    $initial_info = $stmt->fetch(PDO::FETCH_OBJ);
+} else if ($_POST['client_cat'] == 0 && $_POST['brand'] != 0 ) {
+    $sql = "SELECT `user_db`.`accounts`.account_gid , b.probe_processed_hunter_id ,MIN(b.probe_hunter_processed_time) FROM probe b INNER JOIN `user_db`.`accounts` ON `user_db`.`accounts`.account_id = b.probe_processed_hunter_id  WHERE b.probe_ticket_id =:ticket AND b.client_category_id IS NULL AND b.brand_id = :brand_id AND b.probe_hunter_processed_time > :date_to_check";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['ticket'=>$_POST['ticket'], 'brand_id'=>(int)$_POST['brand'], 'date_to_check'=>$date->format('Y-m-d H:i:s')]);
+    $initial_info = $stmt->fetch(PDO::FETCH_OBJ);
+} else if ($_POST['brand'] == 0 && $_POST['client_cat'] != 0) {
+    $sql = "SELECT `user_db`.`accounts`.account_gid , b.probe_processed_hunter_id ,MIN(b.probe_hunter_processed_time) FROM probe b INNER JOIN `user_db`.`accounts` ON `user_db`.`accounts`.account_id = b.probe_processed_hunter_id  WHERE b.probe_ticket_id =:ticket AND b.client_category_id = :client_id AND b.brand_id IS NULL AND b.probe_hunter_processed_time > :date_to_check";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['ticket'=>$_POST['ticket'], 'client_id'=>(int)$_POST['client_cat'], 'date_to_check'=>$date->format('Y-m-d H:i:s')]);
+    $initial_info = $stmt->fetch(PDO::FETCH_OBJ);
+} else {
+    $sql = "SELECT `user_db`.`accounts`.account_gid , b.probe_processed_hunter_id ,MIN(b.probe_hunter_processed_time) FROM probe b INNER JOIN `user_db`.`accounts` ON `user_db`.`accounts`.account_id = b.probe_processed_hunter_id  WHERE b.probe_ticket_id =:ticket AND b.client_category_id = :client_id AND b.brand_id = :brand_id AND b.probe_hunter_processed_time > :date_to_check";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['ticket'=>$_POST['ticket'], 'client_id'=>(int)$_POST['client_cat'], 'brand_id'=>(int)$_POST['brand'], 'date_to_check'=>$date->format('Y-m-d H:i:s')]);
+    $initial_info = $stmt->fetch(PDO::FETCH_OBJ);
+}
+$user_id = $_SESSION['id'];
+$warning = '';
+if ($initial_info->probe_processed_hunter_id != $user_id) {
+    $warning .= $initial_info->account_gid;
+}
+$return_arr[] = array("warning"=>$warning,"number_of_rows" => $number_of_rows, "probe_brand_count"=>$probe_brand_count,"processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count, "number_of_products_added"=>$number_of_products_added, "rename_error_count"=>$rename_error_count, "error_type_count"=>$error_type_count, "mon_accuracy"=>$mon_accuracy);
 echo json_encode($return_arr);
 ?>

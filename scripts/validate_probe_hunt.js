@@ -214,6 +214,13 @@ function update_project_count() {
                     $('#acc_pro').html(p_name);
                     $('#current_probe_brand_counter').empty();
                     $('#current_probe_brand_counter').html(data[0].probe_brand_count);
+                    if (data[0].warning != '') {
+                        document.getElementById('probe_warning_section').classList.remove('hide');
+                        $('#probe_warning_message').html('Processing of this brand has already been begun by ' + data[0].warning);
+                    } else {
+                        document.getElementById('probe_warning_section').classList.add('hide');
+                        $('#probe_warning_message').html('');
+                    }
                     var count = parseInt(data[0].number_of_rows, 10);
                     var probe_count = parseInt(data[0].processing_probe_row, 10);
                     if (count == 0 && probe_count == 0) {
