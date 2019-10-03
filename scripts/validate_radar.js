@@ -465,7 +465,7 @@ const save_radar_source = (save_radar, close_radar) => {
                     "hideEasing": "linear",
                     "showMethod": "fadeIn",
                     "hideMethod": "fadeOut",
-                    "timeOut": "0",
+                    "timeOut": "5000",
                     "extendedTimeOut": "0",
                 }
                 toastr.success('Suggestion Cleared');
@@ -665,7 +665,7 @@ const save_radar_source = (save_radar, close_radar) => {
                         "hideEasing": "linear",
                         "showMethod": "fadeIn",
                         "hideMethod": "fadeOut",
-                        "timeOut": "0",
+                        "timeOut": "5000",
                         "extendedTimeOut": "0",
                     }
                     toastr.success('Suggestion Cleared');
