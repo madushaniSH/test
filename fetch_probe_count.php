@@ -337,22 +337,22 @@ $date = new DateTime();
 $tosub = new DateInterval('PT12H');
 $date->sub($tosub);
 if ($_POST['client_cat'] == 0 && $_POST['brand'] == 0) {
-    $sql = "SELECT `user_db`.`accounts`.account_gid , b.probe_processed_hunter_id ,MIN(b.probe_hunter_processed_time) FROM probe b INNER JOIN `user_db`.`accounts` ON `user_db`.`accounts`.account_id = b.probe_processed_hunter_id WHERE b.probe_ticket_id =:ticket AND b.client_category_id IS NULL AND b.brand_id IS NULL AND b.probe_hunter_processed_time > :date_to_check";
+    $sql = "SELECT `user_db`.`accounts`.account_gid , b.probe_processed_hunter_id ,MIN(b.probe_hunter_processed_time) FROM probe b INNER JOIN `user_db`.`accounts` ON `user_db`.`accounts`.account_id = b.probe_processed_hunter_id WHERE b.probe_ticket_id =:ticket AND b.client_category_id IS NULL AND b.brand_id IS NULL AND b.probe_hunter_processed_time > :date_to_check GROUP BY b.probe_processed_hunter_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['ticket'=>$_POST['ticket'], 'date_to_check'=>$date->format('Y-m-d H:i:s')]);
     $initial_info = $stmt->fetch(PDO::FETCH_OBJ);
 } else if ($_POST['client_cat'] == 0 && $_POST['brand'] != 0 ) {
-    $sql = "SELECT `user_db`.`accounts`.account_gid , b.probe_processed_hunter_id ,MIN(b.probe_hunter_processed_time) FROM probe b INNER JOIN `user_db`.`accounts` ON `user_db`.`accounts`.account_id = b.probe_processed_hunter_id  WHERE b.probe_ticket_id =:ticket AND b.client_category_id IS NULL AND b.brand_id = :brand_id AND b.probe_hunter_processed_time > :date_to_check";
+    $sql = "SELECT `user_db`.`accounts`.account_gid , b.probe_processed_hunter_id ,MIN(b.probe_hunter_processed_time) FROM probe b INNER JOIN `user_db`.`accounts` ON `user_db`.`accounts`.account_id = b.probe_processed_hunter_id  WHERE b.probe_ticket_id =:ticket AND b.client_category_id IS NULL AND b.brand_id = :brand_id AND b.probe_hunter_processed_time > :date_to_check GROUP BY b.probe_processed_hunter_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['ticket'=>$_POST['ticket'], 'brand_id'=>(int)$_POST['brand'], 'date_to_check'=>$date->format('Y-m-d H:i:s')]);
     $initial_info = $stmt->fetch(PDO::FETCH_OBJ);
 } else if ($_POST['brand'] == 0 && $_POST['client_cat'] != 0) {
-    $sql = "SELECT `user_db`.`accounts`.account_gid , b.probe_processed_hunter_id ,MIN(b.probe_hunter_processed_time) FROM probe b INNER JOIN `user_db`.`accounts` ON `user_db`.`accounts`.account_id = b.probe_processed_hunter_id  WHERE b.probe_ticket_id =:ticket AND b.client_category_id = :client_id AND b.brand_id IS NULL AND b.probe_hunter_processed_time > :date_to_check";
+    $sql = "SELECT `user_db`.`accounts`.account_gid , b.probe_processed_hunter_id ,MIN(b.probe_hunter_processed_time) FROM probe b INNER JOIN `user_db`.`accounts` ON `user_db`.`accounts`.account_id = b.probe_processed_hunter_id  WHERE b.probe_ticket_id =:ticket AND b.client_category_id = :client_id AND b.brand_id IS NULL AND b.probe_hunter_processed_time > :date_to_check GROUP BY b.probe_processed_hunter_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['ticket'=>$_POST['ticket'], 'client_id'=>(int)$_POST['client_cat'], 'date_to_check'=>$date->format('Y-m-d H:i:s')]);
     $initial_info = $stmt->fetch(PDO::FETCH_OBJ);
 } else {
-    $sql = "SELECT `user_db`.`accounts`.account_gid , b.probe_processed_hunter_id ,MIN(b.probe_hunter_processed_time) FROM probe b INNER JOIN `user_db`.`accounts` ON `user_db`.`accounts`.account_id = b.probe_processed_hunter_id  WHERE b.probe_ticket_id =:ticket AND b.client_category_id = :client_id AND b.brand_id = :brand_id AND b.probe_hunter_processed_time > :date_to_check";
+    $sql = "SELECT `user_db`.`accounts`.account_gid , b.probe_processed_hunter_id ,MIN(b.probe_hunter_processed_time) FROM probe b INNER JOIN `user_db`.`accounts` ON `user_db`.`accounts`.account_id = b.probe_processed_hunter_id  WHERE b.probe_ticket_id =:ticket AND b.client_category_id = :client_id AND b.brand_id = :brand_id AND b.probe_hunter_processed_time > :date_to_check GROUP BY b.probe_processed_hunter_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['ticket'=>$_POST['ticket'], 'client_id'=>(int)$_POST['client_cat'], 'brand_id'=>(int)$_POST['brand'], 'date_to_check'=>$date->format('Y-m-d H:i:s')]);
     $initial_info = $stmt->fetch(PDO::FETCH_OBJ);
