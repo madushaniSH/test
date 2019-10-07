@@ -88,7 +88,7 @@ const special = () => {
         data: formData,
         dataType: 'JSON',
         success: function (data) {
-            JSONToCSVConvertor(data[0].hunter_summary," Monthly Summary 2019-09-16 00:00:00 to 2019-10-15 00:00:00", true);
+            JSONToCSVConvertor(data[0].hunter_summary, " Monthly Summary 2019-09-16 00:00:00 to 2019-10-15 00:00:00", true);
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
@@ -145,24 +145,22 @@ function fetch_details() {
             });
         }
         if (selected_option == 'hunter') {
-            for (var i = 0; i < p_name.length; i++) {
-                formData.append("project_name", p_name[i]);
-                jQuery.ajax({
-                    url: 'fetch_details_hunter.php',
-                    type: 'POST',
-                    data: formData,
-                    dataType: 'JSON',
-                    success: function (data) {
-                        JSONToCSVConvertor(data[0].hunter_summary, data[0].dbname + " Hunter Summary " + start_datetime + " - " + end_datetime, true);
-                    },
-                    error: function (data) {
-                        alert("Error assigning probe. Please refresh");
-                    },
-                    cache: false,
-                    contentType: false,
-                    processData: false
-                });
-            }
+            formData.append("project_name", p_name);
+            jQuery.ajax({
+                url: 'fetch_details_hunter.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'JSON',
+                success: function (data) {
+                    JSONToCSVConvertor(data[0].hunter_summary, p_name.join("_") + " Hunter Summary " + start_datetime + " - " + end_datetime, true);
+                },
+                error: function (data) {
+                    alert("Error assigning probe. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
         }
     }
 }
