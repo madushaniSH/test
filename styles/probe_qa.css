@@ -135,9 +135,9 @@
 }
 
 .active{
-    border: none;
-    border-radius: 1vw;
     color: white;
+    border-top-left-radius: 1vw;
+    border-top-right-radius: 0.6vw;
     background: purple;
 }
 

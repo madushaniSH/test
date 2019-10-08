@@ -1,6 +1,6 @@
 html, body {margin: 0; height: 100%; overflow-x: hidden; overflow-y: auto}
 
-body {
+#content {
     background-image: url('images/sup_wallpaper.jpg');
     background-repeat: no-repeat;
     background-size: cover;

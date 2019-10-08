@@ -13,6 +13,10 @@ if (!isset($_SESSION['logged_in'])) {
 	exit();
 }
 
+    if($_SESSION['role'] === 'SRT' || $_SESSION['role'] === 'SRT Analyst'){
+        header('Location: dashboard.php');
+    }
+
 // unset the variable out from session. out is used to store error messages from details.php
 if(isset($_SESSION['out'])){
     unset($_SESSION['out']);
@@ -73,7 +77,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor') {
 }
 if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT' || $_SESSION['role'] === 'SRT Analyst'){
     echo"
-<a href=\"product_hunt.php\" class=\"btn btn-lg dashboard-btn\">
+<a href=\"dashboard.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
         <i class=\"fas fa-dragon fa-2x\"></i>
     </span>

@@ -337,3 +337,10 @@ button:focus {
     /* Vertically center the text there */
     background-color: black;
 }
+
+.active{
+    color: white;
+    border-top-left-radius: 1vw;
+    border-top-right-radius: 0.6vw;
+    background: purple;
+}

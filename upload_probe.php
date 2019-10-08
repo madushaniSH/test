@@ -44,135 +44,351 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 
+$pdo = NULL;
+
+// Current settings to connect to the user account database
+require('user_db_connection.php');
+
+// Setting up the DSN
+$dsn = 'mysql:host='.$host.';dbname='.$dbname;
+
+/*
+    Attempts to connect to the databse, if no connection was estabishled
+    kills the script
+*/
+try{
+    // Creating a new PDO instance
+    $pdo = new PDO($dsn, $user, $pwd);
+    // setting the PDO error mode to exception
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+
+catch(PDOException $e){
+    // throws error message
+    echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
+    exit();
+}
+
+$sql = 'SELECT account_gid, account_nic, account_email, CONCAT (account_first_name," ",account_last_name) AS name, account_profile_picture_location FROM accounts WHERE account_id = :id';
+$stmt = $pdo->prepare($sql);
+$stmt->execute(['id'=>$_SESSION['id']]);
+$user_information = $stmt->fetch(PDO::FETCH_OBJ);
+
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel='icon' href='favicon.ico' type='image/x-icon' />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script
-			  src="https://code.jquery.com/jquery-3.4.1.min.js"
-			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-			  crossorigin="anonymous"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="styles/sb-admin-2.min.css" rel="stylesheet">
     <script src="scripts/transition.js"></script>
     <script src="scripts/validate_upload_probe.js"></script>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="styles/probe_upload.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
-    <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.1.0/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
+    <script type="text/javascript">
+        (function() {
+            var css = document.createElement('link');
+            css.href = 'https://use.fontawesome.com/releases/v5.1.0/css/all.css';
+            css.rel = 'stylesheet';
+            css.type = 'text/css';
+            document.getElementsByTagName('head')[0].appendChild(css);
+        })();
+    </script>
     <title>Upload Probe</title>
 </head>
-<body >
-<svg id="fader"></svg>
-<nav class="navbar">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a href="product_hunt.php" class="btn btn-light nav-back"><i class="fas fa-arrow-circle-left"></i></a>
-            <a href="index.php" class="navbar-brand">Data Operations</a>
-        </div>
-    </div>
-</nav>
-<div id="probe_upload_section" >
-<div class="row">
-    <div class="col">
-        <label for="project_name">Select Project Name</label>
-        <select name="project_name" id="project_name" class="form-control">
-        <option value=""selected disabled>Select</option>
-    <?php
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="dashboard.php">
+                <div class="sidebar-brand-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">Data Operations</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item ">
+                <a class="nav-link" href="dashboard.php">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <?php
+            if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor'){
+                echo"
+            <!-- Divider -->
+            <hr class=\"sidebar-divider\">
+
+            <!-- Heading -->
+            <div class=\"sidebar-heading\">
+                Management Tools
+            </div>
+            <li class=\"nav-item \">
+                <a class=\"nav-link\" href=\"new_project.php\">
+                    <i class=\"fas fa-meteor fa-2x\"></i>   
+                    <span>Create New Project</span></a>
+            </li>
+
+            <li class=\"nav-item active\">
+                <a class=\"nav-link\" href=\"upload_probe.php\">
+                    <i class=\"fas fa-rocket fa-2x\"></i>
+                    <span>Upload Probes</span></a>
+            </li>
+
+            <li class=\"nav-item\">
+                <a class=\"nav-link\" href=\"export_projects.php\">
+                    <i class=\"fas fa-file-export fa-2x\"></i>
+                    <span>Export Project</span></a>
+            </li>
+
+            <li class=\"nav-item\">
+                <a class=\"nav-link\" href=\"show_active.php\">
+                    <i class=\"fas fa-users fa-2x\"></i>
+                    <span>Manage Queue</span></a>
+            </li>
+            "
+            ;
+            }
+             if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT'){
+                echo"
+            <!-- Divider -->
+            <hr class=\"sidebar-divider\">
+
+            <!-- Heading -->
+            <div class=\"sidebar-heading\">
+                Hunter Tools
+            </div>
+            <li class=\"nav-item\">
+                <a class=\"nav-link\" href=\"probe_hunt.php\">
+                    <i class=\"fas fa-th-list fa-2x\"></i>
+                    <span>Probe Hunt</span></a>
+            </li>
+
+            <li class=\"nav-item\">
+                <a class=\"nav-link\" href=\"radar.php\">
+                    <i class=\"fas fa-satellite-dish fa-2x\"></i>
+                    <span>Radar Hunt</span></a>
+            </li>
+
+            <li class=\"nav-item\">
+                <a class=\"nav-link\" href=\"ref_hunt.php\">
+                    <i class=\"fas fa-book fa-2x\"></i>
+                    <span>Reference Hunt</span></a>
+            </li>
+            "
+            ;
+
+            }
+            if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT Analyst'){
+                echo"
+            <!-- Divider -->
+            <hr class=\"sidebar-divider\">
+
+            <!-- Heading -->
+            <div class=\"sidebar-heading\">
+                Analyst Tools
+            </div>
+            <li class=\"nav-item\">
+                <a class=\"nav-link\" href=\"probe_qa.php\">
+                    <i class=\"fas fa-search-plus fa-2x\"></i>
+                    <span>Quality Assurance</span></a>
+            </li>
+            "
+            ;
+            }
+
+            ?>
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+
+                <!-- Sidebar Toggler (Sidebar) -->
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light  topbar mb-4 static-top shadow">
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $user_information->name;?></span>
+                                <img class="img-profile rounded-circle" src="<?php echo $user_information->account_profile_picture_location?>">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="details.php">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profile
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <div id="probe_upload_section">
+                        <div class="row">
+                            <div class="col">
+                                <label for="project_name">Select Project Name</label>
+                                <select name="project_name" id="project_name" class="form-control">
+                                    <option value="" selected disabled>Select</option>
+                                    <?php
     foreach($project_rows as $project_row){
         echo "<option value=\"$project_row->project_db_name\">$project_row->project_name ($project_row->project_region)</option>";
     }
     ?>
-        </select>
-        <span id="project_name_error" class="error-popup"></span>    
-    </div>
-</div>
-<div id="ticket_section" class="row hide">
-    <div class="col-md-4">
-        <label for="ticket_name">Select Ticket ID</label>
-        <button class="btn btn-outline-success" data-toggle="modal" data-target="#add_ticket">+Add New Ticket</button>
-        <select name="ticket_name" id="ticket_name" class="form-control">
-        </select>
-    </div>
-</div>
-<div id="probe-upload" class="hide">
-    <h2 id="ticket_message">Selected <span id="project_name_value"></span> <span id="ticket_id_value"></span></h2>
-    <button class="btn btn-secondary" onclick="show_upload_options_probe()" id="option1">Probe Upload</button>
-    <button class="btn btn-secondary" onclick="show_upload_options_reference()" id="option2">Reference Upload</button>
-    <button class="btn btn-secondary" onclick="show_upload_options_radar()" id="option3">Radar Upload</button>
-    <div id="probe-upload-container" class="hide">
-        <label for="csv-file"><i class="fas fa-upload"><span> Upload Probe CSV file</span></i></label>
-        <input type="file" id="csv-file" name="files"/>
-        <div class="text-center">
-        <span id="probe_upload_error" class="error-popup"></span>
-        <span id="probe_upload_success" class="success-popup"></span>
-            <div class="spinner-border text-success" role="status" id="loading-spinner">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-    </div>
-    <div id="ref-upload-container" class="hide">
-        <label for="ref-csv-file"><i class="fas fa-upload"><span> Upload Reference CSV file</span></i></label>
-        <input type="file" id="ref-csv-file" name="files"/>
-        <div class="text-center">
-        <span id="ref_upload_error" class="error-popup"></span>
-        <span id="ref_upload_success" class="success-popup"></span>
-            <div class="spinner-border text-success" role="status" id="loading-spinner-ref">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <span id="ref_process_success" class="success-popup"></span>
-    </div>
-    <div id="radar-upload-container" class="hide">
-        <label for="radar-csv-file"><i class="fas fa-upload"><span> Upload Radar CSV file</span></i></label>
-        <input type="file" id="radar-csv-file" name="files"/>
-        <div class="text-center">
-        <span id="radar_upload_error" class="error-popup"></span>
-        <span id="radar_upload_success" class="success-popup"></span>
-            <div class="spinner-border text-success" role="status" id="loading-spinner-radar">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <span id="radar_process_success" class="success-popup"></span>
-    </div>
-</div>
-</div>
-<div class="modal hide fade modal-form" id="add_ticket" tabindex="-1" role="dialog"
-    aria-labelledby="add_ticket_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="add_ticket_title">Enter New Ticket</h5>
-                <button type="button" class="close" id="close_ticket_form" data-dismiss="modal" aria-label="Close" onclick="clear_ticket_form();">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="new_error_form">
-                    <div class="form-row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="ticket_id">New Ticket ID:</label>
-                                <input type="text" id="ticket_id" class="form-control">
-                                <span id="ticket_id_error" class="error-popup"></span>
+                                </select>
+                                <span id="project_name_error" class="error-popup"></span>
+                            </div>
+                        </div>
+                        <div id="ticket_section" class="row hide">
+                            <div class="col-md-4">
+                                <label for="ticket_name">Select Ticket ID</label>
+                                <button class="btn btn-outline-success" data-toggle="modal" data-target="#add_ticket">+Add New Ticket</button>
+                                <select name="ticket_name" id="ticket_name" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+                        <div id="probe-upload" class="hide">
+                            <h2 id="ticket_message">Selected <span id="project_name_value"></span> <span id="ticket_id_value"></span></h2>
+                            <button class="btn btn-secondary" onclick="show_upload_options_probe()" id="option1">Probe Upload</button>
+                            <button class="btn btn-secondary" onclick="show_upload_options_reference()" id="option2">Reference Upload</button>
+                            <button class="btn btn-secondary" onclick="show_upload_options_radar()" id="option3">Radar Upload</button>
+                            <div id="probe-upload-container" class="hide">
+                                <label for="csv-file"><i class="fas fa-upload"><span> Upload Probe CSV file</span></i></label>
+                                <input type="file" id="csv-file" name="files" />
+                                <div class="text-center">
+                                    <span id="probe_upload_error" class="error-popup"></span>
+                                    <span id="probe_upload_success" class="success-popup"></span>
+                                    <div class="spinner-border text-success" role="status" id="loading-spinner">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="ref-upload-container" class="hide">
+                                <label for="ref-csv-file"><i class="fas fa-upload"><span> Upload Reference CSV file</span></i></label>
+                                <input type="file" id="ref-csv-file" name="files" />
+                                <div class="text-center">
+                                    <span id="ref_upload_error" class="error-popup"></span>
+                                    <span id="ref_upload_success" class="success-popup"></span>
+                                    <div class="spinner-border text-success" role="status" id="loading-spinner-ref">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                                <span id="ref_process_success" class="success-popup"></span>
+                            </div>
+                            <div id="radar-upload-container" class="hide">
+                                <label for="radar-csv-file"><i class="fas fa-upload"><span> Upload Radar CSV file</span></i></label>
+                                <input type="file" id="radar-csv-file" name="files" />
+                                <div class="text-center">
+                                    <span id="radar_upload_error" class="error-popup"></span>
+                                    <span id="radar_upload_success" class="success-popup"></span>
+                                    <div class="spinner-border text-success" role="status" id="loading-spinner-radar">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                                <span id="radar_process_success" class="success-popup"></span>
                             </div>
                         </div>
                     </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="clear_ticket_form();">Cancel</button>
-                <button type="button" class="btn btn-success" value="Submit" onclick="validate_new_ticket();">Save changes</button>
-                </form>
+                    <div class="modal hide fade modal-form" id="add_ticket" tabindex="-1" role="dialog" aria-labelledby="add_ticket_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="add_ticket_title">Enter New Ticket</h5>
+                                    <button type="button" class="close" id="close_ticket_form" data-dismiss="modal" aria-label="Close" onclick="clear_ticket_form();">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="new_error_form">
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="ticket_id">New Ticket ID:</label>
+                                                    <input type="text" id="ticket_id" class="form-control">
+                                                    <span id="ticket_id_error" class="error-popup"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="clear_ticket_form();">Cancel</button>
+                                    <button type="button" class="btn btn-success" value="Submit" onclick="validate_new_ticket();">Save changes</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>    
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="logout.php">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+    <!-- Custom scripts for all pages-->
+    <script src="scripts/sb-admin-2.min.js"></script>
 </body>

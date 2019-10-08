@@ -67,7 +67,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $user_information = $stmt->fetch(PDO::FETCH_OBJ);
 
             $_SESSION['role'] = $user_information->designation_name;
-
             header("location: index.php");
         }else{
             $error_message = 'The password you have entered is incorrect';
