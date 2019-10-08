@@ -344,3 +344,8 @@ button:focus {
     border-top-right-radius: 0.6vw;
     background: purple;
 }
+
+#ranking_profile_pic {
+    width: 100%;
+    margin: 0 auto;
+}

@@ -65,6 +65,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
 
     <!-- Custom styles for this template-->
     <link href="styles/sb-admin-2.min.css" rel="stylesheet">
+    <link href="styles/dashboard.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
 </head>
 
@@ -220,13 +221,39 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                 </nav>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
-                    <!-- 404 Error Text -->
-                    <div class="text-center">
-                        <div class="error mx-auto" data-text="404">404</div>
-                        <p class="lead text-gray-800 mb-5">Dashboard under construction</p>
-                        <p class="text-gray-500 mb-0">Please use the links on the left...</p>
+                    <div class="row">
+                        <div class="col-lg-6">
+                        <!-- Basic Card Example -->
+                        <div class="card shadow mb-4">
+                          <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Your Ranking</h6>
+                          </div>
+                          <div class="card-body">
+                              <div class="row">
+                                  <div class="col-md-2">
+                                    <img class="img-profile rounded-circle" src="<?php echo $user_information->account_profile_picture_location?>" id="ranking_profile_pic">
+                                  </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                          <p>Account Name</p>
+                                          <p>Total Points</p>
+                                          <p>Overall Accuracy</p> 
+                                          <p>Ranking</p>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <p class="text-dark"><?php echo $user_information->name;?></p>
+                                            <p class="text-danger"><span id="total_points"> Coming Soon</span></p>
+                                            <p class="text-info"><span id="overall_accuracy"> Coming Soon</span></p>
+                                            <p class="text-success"><span id="ranking"> Coming Soon</span></p>
+                                        </div>
+                                    </div>
+                              </div>
+        </div>
+                          </div>
+                        </div>
                     </div>
+               </div>
 
                 </div>
                 <!-- /.container-fluid -->
