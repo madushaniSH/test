@@ -1,4 +1,10 @@
 <?php
+function cmp($a, $b)
+{
+    return min($a["Points"], $b["Points"]);
+}
+?>
+<?php
 /*
     Author: Malika Liyanage
 */
@@ -166,6 +172,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
 
     unset($hunter_summary[$i][probe_processed_hunter_id]);
 }
+usort($hunter_summary, "cmp");
 for($i = 0; $i < count($hunter_summary); $i++) {
     $hunter_summary[$i]["Rank"] = $i + 1;
     $max = $hunter_summary[$i]["AMER"];
