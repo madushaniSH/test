@@ -33,14 +33,16 @@ const fetch_dashboard_info = () => {
         data: formData,
         dataType: "JSON",
         success: function (data) {
-            if (data[0].current_info.Points != null) {
-                $('#total_points').html(data[0].current_info.Points);
-            }
-            if (data[0].current_info.Accuracy != null) {
-                $('#overall_accuracy').html(data[0].current_info.Accuracy);
-            }
-            if (data[0].current_info.Rank != null) {
-                $('#ranking').html(data[0].current_info.Rank + " / " + data[0].total);
+            if (data[0].current_info != null) {
+                if (data[0].current_info.Points != null) {
+                    $('#total_points').html(data[0].current_info.Points);
+                }
+                if (data[0].current_info.Accuracy != null) {
+                    $('#overall_accuracy').html(data[0].current_info.Accuracy);
+                }
+                if (data[0].current_info.Rank != null) {
+                    $('#ranking').html(data[0].current_info.Rank + " / " + data[0].total);
+                }
             }
             let max_size = data[0].hunter_summary.length;
             let flag = false;
