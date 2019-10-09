@@ -349,3 +349,7 @@ button:focus {
     width: 100%;
     margin: 0 auto;
 }
+
+.leader_board_pic{
+    width: 2vw;
+}

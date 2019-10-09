@@ -223,43 +223,104 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-6">
-                        <!-- Basic Card Example -->
-                        <div class="card shadow mb-4">
-                          <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Your Ranking</h6>
-                          </div>
-                          <div class="card-body">
-                              <div class="row">
-                                  <div class="col-md-2">
-                                    <img class="img-profile rounded-circle" src="<?php echo $user_information->account_profile_picture_location?>" id="ranking_profile_pic">
-                                  </div>
-                                <div class="col">
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Your Ranking</h6>
+                                </div>
+                                <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-3">
-                                          <p>Account Name</p>
-                                          <p>Total Points</p>
-                                          <p>Overall Accuracy</p> 
-                                          <p>Ranking</p>
+                                        <div class="col-md-2">
+                                            <img class="img-profile rounded-circle" src="<?php echo $user_information->account_profile_picture_location?>" id="ranking_profile_pic">
                                         </div>
-                                        <div class="col-md-7">
-                                            <p class="text-dark"><?php echo $user_information->name;?></p>
-                                            <p class="text-danger"><span id="total_points"> Coming Soon</span></p>
-                                            <p class="text-info"><span id="overall_accuracy"> Coming Soon</span></p>
-                                            <p class="text-success"><span id="ranking"> Coming Soon</span></p>
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <p><i class="far fa-user text-dark"></i> Account Name</p>
+                                                    <p><i class="far fa-star text-primary"></i> Total Points</p>
+                                                    <p><i class="fas fa-bullseye text-info"></i> Overall Accuracy</p>
+                                                    <p><i class="fas fa-trophy text-success"></i> Ranking</p>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <p class="text-dark">
+                                                        <?php echo $user_information->name;?>
+                                                    </p>
+                                                    <p class="text-primary"><span id="total_points"> N / A</span></p>
+                                                    <p class="text-info"><span id="overall_accuracy"> N / A</span></p>
+                                                    <p class="text-success"><span id="ranking"> N / A</span></p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                              </div>
-        </div>
-                          </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-               </div>
 
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <!-- Basic Card Example -->
+                            <div class="card">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-success">Top Three Hunters</h6>
+                                </div>
+                                <div class="card-body">
+                                
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <p>Rank</p>
+                                        </div>
+                                        <div class="col-md-1">
+                                        </div>
+                                        <div class="col">
+                                            <p>Hunter</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>Region</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>Points</p>
+                                        </div>
+                                    </div>
+                                    <div id="leader_board_section">
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-danger">Bottom Three Hunters</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <p>Rank</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>Hunter</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>Region</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>Points</p>
+                                        </div>
+                                    </div>
+                                    <div id="bottom_board_section">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- /.container-fluid -->
-            </div>
 
+            </div>
+            <!-- /.container-fluid -->
         </div>
+
+    </div>
     </div>
     <!-- End of Page Wrapper -->
     <!-- Logout Modal-->
@@ -293,5 +354,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
 
     <!-- Custom scripts for all pages-->
     <script src="scripts/sb-admin-2.min.js"></script>
+
+    <script src="scripts/dashboard.js"></script>
 
 </body>

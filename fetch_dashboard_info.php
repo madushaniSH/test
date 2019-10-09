@@ -1,4 +1,10 @@
 <?php
+function cmp($a, $b)
+{
+    return min($a["Points"], $b["Points"]);
+}
+?>
+<?php
 /*
     Author: Malika Liyanage
 */
@@ -15,14 +21,37 @@ if (!isset($_SESSION['logged_in'])) {
 }
 // Current settings to connect to the user account database
 require('user_db_connection.php');
+$dbname = 'project_db';
+// Setting up the DSN
+$dsn = 'mysql:host='.$host.';dbname='.$dbname;
 
-// getting the list of projects into an array from the passes string.
-$project_array = explode(",",$_POST['project_name']);
+/*
+    Attempts to connect to the databse, if no connection was estabishled
+    kills the script
+*/
+try{
+    // Creating a new PDO instance
+    $pdo = new PDO($dsn, $user, $pwd);
+    // setting the PDO error mode to exception
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+
+catch(PDOException $e){
+    // throws error message
+    echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
+    exit();
+}
+
+$sql = 'SELECT project_db_name, project_region FROM `project_db`.projects WHERE 1';
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$project_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $count_projects = count($project_array);
 $hunter_summary = array();
 $max_size = 0;
+$key = NULL;
 for ($i = 0; $i < $count_projects; $i++) {
-    $dbname = $project_array[$i];
+    $dbname = $project_array[$i]["project_db_name"];
     $dsn = 'mysql:host='.$host.';dbname='.$dbname;
     $pdo = new PDO($dsn, $user, $pwd);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -41,19 +70,26 @@ for ($i = 0; $i < $count_projects; $i++) {
         }
         if(!$found) {
             $hunter_summary[$max_size]["probe_processed_hunter_id"] = $this_project_hunters[$j]["probe_processed_hunter_id"];
+            if ($hunter_summary[$max_size]["probe_processed_hunter_id"] == $_SESSION['id']) {
+                $key =  $max_size;
+            }
+            $sql = 'SELECT a.account_profile_picture_location, CONCAT (a.account_first_name," ", a.account_last_name) AS name FROM user_db.accounts a WHERE  a.account_id = :id';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['id'=>$hunter_summary[$max_size]["probe_processed_hunter_id"]]);
+            $user_information = $stmt->fetch(PDO::FETCH_OBJ);
+            $hunter_summary[$max_size]["pic_location"] = $user_information->account_profile_picture_location;
+            $hunter_summary[$max_size]["name"] = $user_information->name;
             $hunter_summary[$max_size]["account_gid"] = $this_project_hunters[$j]["account_gid"];
             $hunter_summary[$max_size]["Brand Hunted"] = 0;
             $hunter_summary[$max_size]["SKU Hunted"] = 0;
             $hunter_summary[$max_size]["DVC Hunted"] = 0;
             $hunter_summary[$max_size]["Hunted Facing Count"] = 0;
-            $hunter_summary[$max_size]["Checked Probe Count"] = 0;
-            $hunter_summary[$max_size]["Radar Link Count"] = 0;
-            $hunter_summary[$max_size]["Checked Reference Count"] = 0;
-            $hunter_summary[$max_size]["Disapproved Products"] = 0;
-            $hunter_summary[$max_size]["Rename Errors"] = 0;
-            $hunter_summary[$max_size]["System Errors"] = 0;
             $hunter_summary[$max_size]["QA Errors"] = 0;
             $hunter_summary[$max_size]["Accuracy"] = 0;
+            $hunter_summary[$max_size]["EMEA"] = 0;
+            $hunter_summary[$max_size]["AMER"] = 0;
+            $hunter_summary[$max_size]["APAC"] = 0;
+            $hunter_summary[$max_size]["DPG"] = 0;
             $max_size++;
         }
     }
@@ -61,7 +97,7 @@ for ($i = 0; $i < $count_projects; $i++) {
 }
 for ($i = 0; $i < count($hunter_summary); $i++){
     for ($j = 0; $j < $count_projects; $j++) {
-        $dbname = $project_array[$j];
+        $dbname = $project_array[$j]["project_db_name"];
         $dsn = 'mysql:host='.$host.';dbname='.$dbname;
         $pdo = new PDO($dsn, $user, $pwd);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -97,59 +133,6 @@ for ($i = 0; $i < count($hunter_summary); $i++){
             $facing_count = 0;
         }
         $hunter_summary[$i]["Hunted Facing Count"] += (int)$facing_count;
-        $sql = 'SELECT COUNT(*) FROM '.$dbname.'.probe a WHERE a.probe_processed_hunter_id = :account_id AND (a.probe_hunter_processed_time >= :start_datetime AND a.probe_hunter_processed_time <= :end_datetime)';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
-        $checked_count = $stmt->fetchColumn();
-        if ($checked_count == NULL) {
-            $checked_count = 0;
-        }
-        $hunter_summary[$i]["Checked Probe Count"] += (int)$checked_count;
-
-        $sql = 'SELECT COUNT(*) FROM '.$dbname.'.radar_sources a WHERE a.account_id = :account_id AND (a.creation_time >= :start_datetime AND a.creation_time <= :end_datetime)';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
-        $checked_count = $stmt->fetchColumn();
-        if ($checked_count == NULL) {
-            $checked_count = 0;
-        }
-        $hunter_summary[$i]["Radar Link Count"] += (int)$checked_count;
-
-        $sql = 'SELECT COUNT(*) FROM '.$dbname.'.reference_info a WHERE (a.reference_hunter_processed_time >= :start_datetime AND a.reference_hunter_processed_time <= :end_datetime) AND a.reference_processed_hunter_id = :account_id';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
-        $checked_count = $stmt->fetchColumn();
-        if ($checked_count == NULL) {
-            $checked_count = 0;
-        }
-        $hunter_summary[$i]["Checked Reference Count"] += (int)$checked_count;
-
-        $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE a.account_id = :account_id AND a.product_qa_status = "disapproved" AND a.product_qa_account_id IS NOT NULL AND (a.product_creation_time >= :start_datetime AND a.product_creation_time <= :end_datetime) AND a.product_status = 2';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
-        $error_count = $stmt->fetchColumn();
-        if ($error_count == NULL) {
-            $error_count = 0;
-        }
-        $hunter_summary[$i]["Disapproved Products"] += (int)$error_count;
-
-        $sql = "SELECT COUNT(*) FROM ".$dbname.".products a WHERE ( a.product_type = 'sku' OR a.product_type = 'brand' ) AND a.account_id = :account_id AND (a.product_previous IS NOT NULL OR a.product_alt_design_previous IS NOT NULL) AND a.product_qa_datetime >= :start_datetime AND a.product_qa_datetime <= :end_datetime AND a.product_status = 2";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
-        $error_count = $stmt->fetchColumn();
-        $hunter_summary[$i]["Rename Errors"] += (int)$error_count;
-        if ($error_count == NULL) {
-            $error_count = 0;
-        }
-
-        $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE a.account_id = :account_id AND a.product_qa_status = "disapproved" AND a.product_qa_account_id IS NULL AND (a.product_creation_time >= :start_datetime AND a.product_creation_time <= :end_datetime) AND a.product_status = 2';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
-        $error_count = $stmt->fetchColumn();
-        if ($error_count == NULL) {
-            $error_count = 0;
-        }
-        $hunter_summary[$i]["System Errors"] += (int)$error_count;
 
         $sql = "SELECT COUNT(DISTINCT a.product_id) FROM ".$dbname.".products a INNER JOIN ".$dbname.".product_qa_errors b ON a.product_id = b.product_id WHERE a.account_id = :account_id AND a.product_qa_datetime >= :start_datetime AND a.product_qa_datetime <= :end_datetime AND a.product_status = 2";
         $stmt = $pdo->prepare($sql);
@@ -159,18 +142,58 @@ for ($i = 0; $i < count($hunter_summary); $i++){
             $error_count = 0;
         }
         $hunter_summary[$i]["QA Errors"] += (int)$error_count;
+        $this_project_count = $brand_count + $sku_count + $dvc_count + $facing_count;
+        if ($this_project_count > 0) {
+            switch ($project_array[$j]["project_region"]) {
+                case 'AMER' : 
+                    $hunter_summary[$i]["AMER"]++; 
+                    break;
+                case 'EMEA' : 
+                    $hunter_summary[$i]["EMEA"]++; 
+                    break;
+                case 'APAC' : 
+                    $hunter_summary[$i]["APAC"]++; 
+                    break;
+                case 'DPG' : 
+                    $hunter_summary[$i]["DPG"]++; 
+                break;
+            }
+        }
         $pdo = NULL;
     }
 
     $total_count = ($hunter_summary[$i]["Brand Hunted"] * 1.5)  + $hunter_summary[$i]["SKU Hunted"] + (($hunter_summary[$i]["DVC Hunted"] + $hunter_summary[$i]["Hunted Facing Count"]) / 2);
+    $hunter_summary[$i]["Points"] = (int)$total_count;
     $monthly_accuracy = round(((($total_count - ($hunter_summary[$i]["QA Errors"] * 5) )/ $total_count) * 100),2);
-    if ($monthly_accuracy == NULL) {
+    if ($monthly_accuracy == NULL || is_nan($monthly_accuracy)) {
         $monthly_accuracy = 0;
     }
     $hunter_summary[$i]["Accuracy"] = $monthly_accuracy . '%';
 
     unset($hunter_summary[$i][probe_processed_hunter_id]);
 }
-$return_arr[] = array("hunter_summary"=>$hunter_summary);
+usort($hunter_summary, "cmp");
+for($i = 0; $i < count($hunter_summary); $i++) {
+    $hunter_summary[$i]["Rank"] = $i + 1;
+    $max = $hunter_summary[$i]["AMER"];
+    $region = 'AMER';
+    if ($max < $hunter_summary[$i]["EMEA"]){
+        $max = $hunter_summary[$i]["EMEA"];
+        $region = 'EMEA';
+    }
+    if ($max < $hunter_summary[$i]["APAC"]){
+        $max = $hunter_summary[$i]["APAC"];
+        $region = 'APAC';
+    }
+    if ($max < $hunter_summary[$i]["DPG"]){
+        $max = $hunter_summary[$i]["DPG"];
+        $region = 'DPG';
+    }
+    if ($max == 0) {
+        $region = 'N/A';
+    }
+    $hunter_summary[$i]['region'] = $region;
+}
+$return_arr[] = array("hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary));
 echo json_encode($return_arr);
 ?>
