@@ -35,7 +35,6 @@ const fetch_dashboard_info = () => {
         data: formData,
         dataType: "JSON",
         success: function (data) {
-            console.log(data[0].hunter_summary)
             if (data[0].current_info != null) {
                 if (data[0].current_info.Points != null) {
                     $('#total_points').html(data[0].current_info.Points);
