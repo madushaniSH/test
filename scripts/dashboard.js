@@ -3,6 +3,8 @@
 */
 
 const fetch_dashboard_info = () => {
+    document.getElementById("main_div").style.display = "none";
+    document.getElementById("loader").style.display = "block";
     let formData = new FormData();
     let d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -33,6 +35,7 @@ const fetch_dashboard_info = () => {
         data: formData,
         dataType: "JSON",
         success: function (data) {
+            console.log(data[0].hunter_summary)
             if (data[0].current_info != null) {
                 if (data[0].current_info.Points != null) {
                     $('#total_points').html(data[0].current_info.Points);
@@ -70,6 +73,8 @@ const fetch_dashboard_info = () => {
                     }
                 }
             }
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("main_div").style.display = "block";
         },
         error: function (data) {
             alert("Error fetching dashboard info. Please refresh");
@@ -81,7 +86,8 @@ const fetch_dashboard_info = () => {
 }
 
 jQuery(document).ready(function () {
+    fetch_dashboard_info();
     setInterval(function () {
         fetch_dashboard_info();
-    }, 5000);
+    }, 30000);
 });

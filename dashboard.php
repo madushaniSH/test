@@ -221,6 +221,8 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                 </nav>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    <div id="loader"></div>
+                    <div id="main_div">
                     <div class="row">
                         <div class="col-lg-6">
                             <!-- Basic Card Example -->
@@ -298,6 +300,8 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         <div class="col-md-1">
                                             <p>Rank</p>
                                         </div>
+                                        <div class="col-md-1">
+                                        </div>
                                         <div class="col">
                                             <p>Hunter</p>
                                         </div>
@@ -313,6 +317,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 </div>
                             </div>
                         </div>
+                    </div>
                     </div>
                 </div>
 
