@@ -42,6 +42,19 @@ $stmt->execute();
 $project_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $count_projects = count($project_array);
 $hunter_summary = array();
+$project_summary = array();
+$project_summary["AMER"]["name"] = 'AMER';
+$project_summary["AMER"]["productivity"] = 0;
+$project_summary["AMER"]["points"] = 0;
+$project_summary["EMEA"]["name"] = 'EMEA';
+$project_summary["EMEA"]["productivity"] = 0;
+$project_summary["EMEA"]["points"] = 0;
+$project_summary["APAC"]["name"] = 'APAC';
+$project_summary["APAC"]["productivity"] = 0;
+$project_summary["APAC"]["points"] = 0;
+$project_summary["DPG"]["name"] = 'DPG';
+$project_summary["DPG"]["productivity"] = 0;
+$project_summary["DPG"]["points"] = 0;
 $max_size = 0;
 $key = NULL;
 for ($i = 0; $i < $count_projects; $i++) {
@@ -143,18 +156,28 @@ for ($i = 0; $i < count($hunter_summary); $i++){
             $error_count = 0;
         }
         $hunter_summary[$i]["QA Errors"] += (int)$error_count;
+        $this_project_productivity = ($brand_count * 1.5) + ($sku_count * 1) + ($dvc_count * 0.5) + ($facing_count * 0.5);
+        $this_project_points = $this_project_productivity - ($error_count * 5);
         switch ($hunter_summary[$i]["project_region"][$j]) {
             case 'AMER' : 
                 $hunter_summary[$i]["AMER"]++; 
+                $project_summary["AMER"]["productivity"] += $this_project_productivity;
+                $project_summary["AMER"]["points"] += $this_project_points;
                 break;
             case 'EMEA' : 
                 $hunter_summary[$i]["EMEA"]++; 
+                $project_summary["EMEA"]["productivity"] += $this_project_productivity;
+                $project_summary["EMEA"]["points"] += $this_project_points;
                 break;
             case 'APAC' : 
                 $hunter_summary[$i]["APAC"]++; 
+                $project_summary["APAC"]["productivity"] += $this_project_productivity;
+                $project_summary["APAC"]["points"] += $this_project_points;
                 break;
             case 'DPG' : 
                 $hunter_summary[$i]["DPG"]++; 
+                $project_summary["DPG"]["productivity"] += $this_project_productivity;
+                $project_summary["DPG"]["points"] += $this_project_points;
             break;
         }
         $pdo = NULL;
@@ -162,7 +185,9 @@ for ($i = 0; $i < count($hunter_summary); $i++){
 
 
     $total_count = ($hunter_summary[$i]["Brand Hunted"] * 1.5)  + $hunter_summary[$i]["SKU Hunted"] + (($hunter_summary[$i]["DVC Hunted"] + $hunter_summary[$i]["Hunted Facing Count"]) / 2);
-    $hunter_summary[$i]["Points"] = (int)$total_count;
+    $hunter_summary[$i]["productivity"] = (int)$total_count;
+    $points = $total_count - ($hunter_summary[$i]["QA Errors"] * 5);
+    $hunter_summary[$i]["Points"] = (int)$points;
     $monthly_accuracy = round(((($total_count - ($hunter_summary[$i]["QA Errors"] * 5) )/ $total_count) * 100),2);
     if ($monthly_accuracy == NULL || is_nan($monthly_accuracy)) {
         $monthly_accuracy = 0;
@@ -171,9 +196,13 @@ for ($i = 0; $i < count($hunter_summary); $i++){
 
 }
 usort($hunter_summary, "custom_sort");
+usort($project_summary, "custom_sort_projects");
 // Define the custom sort function
 function custom_sort($a,$b) {
     return $a['Points']< $b['Points'];
+}
+function custom_sort_projects($a,$b) {
+    return $a['points']< $b['points'];
 }
 for($i = 0; $i < count($hunter_summary); $i++) {
     $hunter_summary[$i]["Rank"] = $i + 1;
@@ -200,6 +229,9 @@ for($i = 0; $i < count($hunter_summary); $i++) {
     }
     unset($hunter_summary[$i][probe_processed_hunter_id]);
 }
-$return_arr[] = array("hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary));
+for($i = 0; $i < count($project_summary); $i++) {
+    $project_summary[$i]["Rank"] = $i + 1;
+}
+$return_arr[] = array("hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary), "project_summary"=>$project_summary);
 echo json_encode($return_arr);
 ?>

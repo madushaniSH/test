@@ -39,6 +39,9 @@ const fetch_dashboard_info = () => {
                 if (data[0].current_info.Points != null) {
                     $('#total_points').html(data[0].current_info.Points);
                 }
+                if (data[0].current_info.productivity != null) {
+                    $('#productivity').html(data[0].current_info.productivity);
+                }
                 if (data[0].current_info.Accuracy != null) {
                     $('#overall_accuracy').html(data[0].current_info.Accuracy);
                 }
@@ -47,12 +50,18 @@ const fetch_dashboard_info = () => {
                 }
             }
             let max_size = data[0].hunter_summary.length;
+            let project_size = data[0].project_summary.length;
+            $('#project_section').empty();
+            for (let i = 0; i < project_size; i++) {
+                let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].project_summary[i].Rank + '</p></div><div class="col"><p>' + data[0].project_summary[i].name + '</p></div><div class="col"><p>' + data[0].project_summary[i].productivity + '</p></div><div class="col"><p>' + data[0].project_summary[i].points + '</p></div>';
+                $('#project_section').append(html);
+            }
             let flag = false;
             $('#leader_board_section').empty();
             for (let i = 0; i < max_size; i++) {
                 if (i < 3) {
                     if (data[0].hunter_summary[i].Points > 5) {
-                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
+                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].productivity + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
                         $('#leader_board_section').append(html);
                     } else {
                         flag = true;
@@ -65,7 +74,7 @@ const fetch_dashboard_info = () => {
             if (!flag) {
                 for (let i = max_size - 1; i > 0; i--) {
                     if (i > max_size - 4) {
-                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
+                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].productivity + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
                         $('#bottom_board_section').append(html);
                     } else {
                         break;

@@ -239,6 +239,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                             <div class="row">
                                                 <div class="col-md-3">
                                                     <p><i class="far fa-user text-dark"></i> Account Name</p>
+                                                    <p><i class="fas fa-briefcase text-secondary"></i> Productivity</p>
                                                     <p><i class="far fa-star text-primary"></i> Total Points</p>
                                                     <p><i class="fas fa-bullseye text-info"></i> Overall Accuracy</p>
                                                     <p><i class="fas fa-trophy text-success"></i> Ranking</p>
@@ -247,6 +248,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                                     <p class="text-dark">
                                                         <?php echo $user_information->name;?>
                                                     </p>
+                                                    <p class="text-secondary"><span id="productivity"> N / A</span></p>
                                                     <p class="text-primary"><span id="total_points"> N / A</span></p>
                                                     <p class="text-info"><span id="overall_accuracy"> N / A</span></p>
                                                     <p class="text-success"><span id="ranking"> N / A</span></p>
@@ -254,6 +256,32 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Total Points by Region</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <p>Rank</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>Region</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>Productivity</p>
+                                        </div>
+                                        <div class="col">
+                                            <p class="text-primary">Points</p>
+                                        </div>
+                                    </div>
+                                        <div id="project_section">
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -281,7 +309,10 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                             <p>Region</p>
                                         </div>
                                         <div class="col">
-                                            <p>Points</p>
+                                            <p>Productivity</p>
+                                        </div>
+                                        <div class="col">
+                                            <p class="text-success">Points</p>
                                         </div>
                                     </div>
                                     <div id="leader_board_section">
@@ -309,7 +340,10 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                             <p>Region</p>
                                         </div>
                                         <div class="col">
-                                            <p>Points</p>
+                                            <p>Productivity</p>
+                                        </div>
+                                        <div class="col">
+                                            <p class="text-danger">Points</p>
                                         </div>
                                     </div>
                                     <div id="bottom_board_section">
