@@ -68,9 +68,6 @@ for ($i = 0; $i < $count_projects; $i++) {
         }
         if(!$found) {
             $hunter_summary[$max_size]["probe_processed_hunter_id"] = $this_project_hunters[$j]["probe_processed_hunter_id"];
-            if ($hunter_summary[$max_size]["probe_processed_hunter_id"] == $_SESSION['id']) {
-                $key =  $max_size;
-            }
             $sql = 'SELECT a.account_profile_picture_location, CONCAT (a.account_first_name," ", a.account_last_name) AS name FROM user_db.accounts a WHERE  a.account_id = :id';
             $stmt = $pdo->prepare($sql);
             $stmt->execute(['id'=>$hunter_summary[$max_size]["probe_processed_hunter_id"]]);
@@ -163,6 +160,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         $pdo = NULL;
     }
 
+
     $total_count = ($hunter_summary[$i]["Brand Hunted"] * 1.5)  + $hunter_summary[$i]["SKU Hunted"] + (($hunter_summary[$i]["DVC Hunted"] + $hunter_summary[$i]["Hunted Facing Count"]) / 2);
     $hunter_summary[$i]["Points"] = (int)$total_count;
     $monthly_accuracy = round(((($total_count - ($hunter_summary[$i]["QA Errors"] * 5) )/ $total_count) * 100),2);
@@ -171,7 +169,6 @@ for ($i = 0; $i < count($hunter_summary); $i++){
     }
     $hunter_summary[$i]["Accuracy"] = $monthly_accuracy . '%';
 
-    unset($hunter_summary[$i][probe_processed_hunter_id]);
 }
 usort($hunter_summary, "custom_sort");
 // Define the custom sort function
@@ -198,6 +195,10 @@ for($i = 0; $i < count($hunter_summary); $i++) {
         $region = 'N/A';
     }
     $hunter_summary[$i]['region'] = $region;
+    if ($hunter_summary[$i]["probe_processed_hunter_id"] == $_SESSION['id']) {
+        $key =  $i;
+    }
+    unset($hunter_summary[$i][probe_processed_hunter_id]);
 }
 $return_arr[] = array("hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary));
 echo json_encode($return_arr);

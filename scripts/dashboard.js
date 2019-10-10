@@ -89,5 +89,5 @@ jQuery(document).ready(function () {
     fetch_dashboard_info();
     setInterval(function () {
         fetch_dashboard_info();
-    }, 30000);
+    }, 36000000);
 });
