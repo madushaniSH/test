@@ -35,9 +35,9 @@ $stmt->execute(['project_name'=>$_POST['project_name']]);
 $row_count = $stmt->rowCount();
 
 if ($row_count == 0) {
-    $sql = 'INSERT INTO projects (project_name, project_region, project_db_name) VALUES (:project_name, :project_region, :project_db_name)';
+    $sql = 'INSERT INTO projects (project_name, project_region, project_db_name, project_language) VALUES (:project_name, :project_region, :project_db_name, :project_language)';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['project_name'=>$_POST['project_name'], 'project_region'=>$_POST['project_region'], 'project_db_name'=>$_POST['project_database']]);
+    $stmt->execute(['project_name'=>$_POST['project_name'], 'project_region'=>$_POST['project_region'], 'project_db_name'=>$_POST['project_database'], 'project_language'=>$_POST['project_type']]);
 
     $sql = 'CREATE DATABASE IF NOT EXISTS '.$_POST['project_database'].' DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci';
     $stmt  = $pdo->prepare($sql);

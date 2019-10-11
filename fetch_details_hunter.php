@@ -59,9 +59,19 @@ for ($i = 0; $i < $count_projects; $i++) {
     }
     $pdo = NULL;
 }
+$weight = 0;
 for ($i = 0; $i < count($hunter_summary); $i++){
     for ($j = 0; $j < $count_projects; $j++) {
         $dbname = $project_array[$j];
+        $sql = 'SELECT project_language FROM `project_db`.projects WHERE project_name = :project_name';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(["project_name"=>$dbname]);
+        $project_lang = $stmt->fetchColumn();
+        if ($project_lang == "english") {
+            $weight = 1;
+        } else if ($project_lang == "non_english") {
+            $weight = 2;
+        }
         $dsn = 'mysql:host='.$host.';dbname='.$dbname;
         $pdo = new PDO($dsn, $user, $pwd);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -72,7 +82,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         if ($brand_count == NULL) {
             $brand_count = 0;
         }
-        $hunter_summary[$i]["Brand Hunted"] += (int)$brand_count;
+        $hunter_summary[$i]["Brand Hunted"] += (int)($brand_count * $weight);
         $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE a.product_type ="sku" AND a.account_id = :account_id AND (a.product_creation_time >= :start_datetime AND a.product_creation_time <= :end_datetime) AND a.product_status = 2';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
@@ -80,7 +90,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         if ($sku_count == NULL) {
             $sku_count = 0;
         }
-        $hunter_summary[$i]["SKU Hunted"] += (int)$sku_count;
+        $hunter_summary[$i]["SKU Hunted"] += (int)($sku_count * $weight );
         $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE product_type ="dvc" AND a.account_id = :account_id AND (a.product_creation_time >= :start_datetime AND a.product_creation_time <= :end_datetime) AND a.product_status = 2';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
@@ -88,7 +98,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         if ($dvc_count == NULL) {
             $dvc_count = 0;
         }
-        $hunter_summary[$i]["DVC Hunted"] += (int)$dvc_count;
+        $hunter_summary[$i]["DVC Hunted"] += (int)($dvc_count * $weight);
         $sql = 'SELECT SUM(a.product_facing_count) FROM '.$dbname.'.products a WHERE a.account_id = :account_id AND (a.product_creation_time >= :start_datetime AND a.product_creation_time <= :end_datetime) AND a.product_status = 2';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
@@ -96,7 +106,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         if ($facing_count == NULL) {
             $facing_count = 0;
         }
-        $hunter_summary[$i]["Hunted Facing Count"] += (int)$facing_count;
+        $hunter_summary[$i]["Hunted Facing Count"] += (int)($facing_count* $weight); 
         $sql = 'SELECT COUNT(*) FROM '.$dbname.'.probe a WHERE a.probe_processed_hunter_id = :account_id AND (a.probe_hunter_processed_time >= :start_datetime AND a.probe_hunter_processed_time <= :end_datetime)';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);

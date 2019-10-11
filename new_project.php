@@ -273,6 +273,19 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 <span id="project_region_error" class="error-popup"></span>
                             </div>
                         </div>
+                         <div class="form-check" id="type_section">
+                         <div class="row">
+                         <div class="col-md-3">
+                            <input type="radio" class="form-check-input" id="english_project" name="lang">
+                            <label class="form-check-label" for="english_project">English Project</label>
+                        </div>
+                         <div class="col-md-3">
+                            <input type="radio" class="form-check-input" id="non_english_project" name="lang">
+                            <label class="form-check-label" for="non_english_project">Non English Project</label>
+                        </div>
+                        <span id="project_lang_error" class="error-popup"></span>
+                        </div>
+                        </div>
                         <button type="button" class="btn btn-success" onclick="validate_project_form();">Submit</button>
                         <a href="dashboard.php" class="btn btn-outline-dark">Back to Product Hunt</a>
                     </form>

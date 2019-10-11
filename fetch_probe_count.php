@@ -37,6 +37,16 @@ catch(PDOException $e){
     exit();
 }
 
+$weight = 0;
+$sql = 'SELECT project_language FROM `project_db`.projects WHERE project_name = :project_name';
+$stmt = $pdo->prepare($sql);
+$stmt->execute(["project_name"=>$dbname]);
+$project_lang = $stmt->fetchColumn();
+if ($project_lang == "english") {
+    $weight = 1;
+} else if ($project_lang == "non_english") {
+    $weight = 2;
+}
 if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $sql = "SELECT count(*) FROM probe_queue a INNER JOIN probe b ON a.probe_key_id = b.probe_key_id WHERE a.probe_being_handled = 0 AND b.probe_ticket_id =:ticket";
     $stmt = $pdo->prepare($sql);
@@ -285,7 +295,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
         $mon_error_type_count = $stmt->fetchColumn();
-        $total_count = ($mon_brand_count * 1.5) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2);
+        $total_count = ($mon_brand_count * 1.5) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2) * $weight;
         $mon_accuracy = round(((($total_count - ($mon_error_type_count * 1)) / $total_count) * 100), 2);
     }
 } else {
@@ -329,7 +339,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
         $mon_error_type_count = $stmt->fetchColumn();
-        $total_count = ($mon_brand_count * 1.5) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2);
+        $total_count = ($mon_brand_count * 1.5) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2) * $weight;
         $mon_accuracy = round(((($total_count - ($mon_error_type_count * 1)) / $total_count) * 100), 2);
     }
 }
