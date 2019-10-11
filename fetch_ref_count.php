@@ -298,7 +298,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
         $stmt->execute(['start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
         $mon_error_type_count = $stmt->fetchColumn();
         $total_count = ($mon_brand_count * 1.5) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2);
-        $mon_accuracy = round(((($total_count - ($mon_error_type_count * 5)) / $total_count) * 100), 2);
+        $mon_accuracy = round(((($total_count - ($mon_error_type_count * 1)) / $total_count) * 100), 2);
     }
 } else {
     $cycle_start = $_POST['start_time'];
@@ -342,7 +342,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
         $stmt->execute(['account_id'=>$_SESSION['id'], 'start_datetime'=>$cycle_start, 'end_datetime'=>$cycle_end]);
         $mon_error_type_count = $stmt->fetchColumn();
         $total_count = ($mon_brand_count * 1.5) + ($mon_sku_count) + (($mon_facing_count  + $mon_dvc_count) / 2);
-        $mon_accuracy = round(((($total_count - ($mon_error_type_count * 5)) / $total_count) * 100), 2);
+        $mon_accuracy = round(((($total_count - ($mon_error_type_count * 1)) / $total_count) * 100), 2);
     }
 }
 
