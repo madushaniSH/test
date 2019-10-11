@@ -26,6 +26,11 @@ for ($i = 0; $i < $count_projects; $i++) {
     $dsn = 'mysql:host='.$host.';dbname='.$dbname;
     $pdo = new PDO($dsn, $user, $pwd);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $sql = 'SELECT project_language FROM `project_db`.projects WHERE project_name = :project_name';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(["project_name"=>$dbname]);
+    $project_lang = $stmt->fetch(PDO::FETCH_OBJ);
+    $project_language = $project_lang->project_language;
     $sql = 'SELECT DISTINCT probe_processed_hunter_id, account_gid FROM (SELECT DISTINCT b.probe_processed_hunter_id, a.account_gid FROM '.$dbname.'.probe b INNER JOIN user_db.accounts a ON b.probe_processed_hunter_id = a.account_id UNION ALL SELECT DISTINCT c.radar_hunter_id AS "probe_processed_hunter_id", a.account_gid FROM '.$dbname.'.radar_hunt c INNER JOIN user_db.accounts a ON c.radar_hunter_id = a.account_id UNION ALL SELECT DISTINCT d.reference_processed_hunter_id AS "probe_processed_hunter_id", a.account_gid FROM '.$dbname.'.reference_info d INNER JOIN user_db.accounts a ON d.reference_processed_hunter_id = a.account_id) t3';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
@@ -36,6 +41,11 @@ for ($i = 0; $i < $count_projects; $i++) {
         for ($k = 0; $k < count($hunter_summary); $k++) {
             if ($hunter_summary[$k]["probe_processed_hunter_id"] == $this_project_hunters[$j]["probe_processed_hunter_id"]) {
                 $found = true;
+                if ($project_language == "english") {
+                    $hunter_summary[$k]["project_weight"][$i] = 1;
+                } else if ($project_language == "non_english") {                
+                    $hunter_summary[$k]["project_weight"][$i] = 2;
+                }
                 break;
             }
         }
@@ -54,24 +64,20 @@ for ($i = 0; $i < $count_projects; $i++) {
             $hunter_summary[$max_size]["System Errors"] = 0;
             $hunter_summary[$max_size]["QA Errors"] = 0;
             $hunter_summary[$max_size]["Accuracy"] = 0;
+            if ($project_language == "english") {
+                $hunter_summary[$max_size]["project_weight"][$i] = 1;
+            } else if ($project_language == "non_english") {                
+                $hunter_summary[$max_size]["project_weight"][$i] = 2;
+            }
             $max_size++;
         }
     }
     $pdo = NULL;
 }
-$weight = 0;
 for ($i = 0; $i < count($hunter_summary); $i++){
     for ($j = 0; $j < $count_projects; $j++) {
+        $weight =  $hunter_summary[$i]["project_weight"][$j];
         $dbname = $project_array[$j];
-        $sql = 'SELECT project_language FROM `project_db`.projects WHERE project_name = :project_name';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(["project_name"=>$dbname]);
-        $project_language = $stmt->fetchColumn();
-        if ($project_language == "english") {
-            $weight = 1;
-        } else if ($project_language == "non_english") {
-            $weight = 2;
-        }
         $dsn = 'mysql:host='.$host.';dbname='.$dbname;
         $pdo = new PDO($dsn, $user, $pwd);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -179,6 +185,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
     }
     $hunter_summary[$i]["Accuracy"] = $monthly_accuracy . '%';
 
+    unset($hunter_summary[$i][project_weight]);
     unset($hunter_summary[$i][probe_processed_hunter_id]);
 }
 $return_arr[] = array("hunter_summary"=>$hunter_summary);
