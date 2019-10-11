@@ -75,10 +75,10 @@ for ($i = 0; $i < $count_projects; $i++) {
                 $project_count = $hunter_summary[$k]["project_count"];
                 $hunter_summary[$k]["projects"][$project_count] = $dbname;
                 $hunter_summary[$k]["project_region"][$project_count] = $project_array[$i]["project_region"];
-                if ($project_array[$k]["project_language"] == "english") {
-                    $hunter_summary[$max_size]["project_weight"][$project_count] = 1;
-                } else if ($project_array[$k]["project_language"] == "non_english") {                
-                    $hunter_summary[$max_size]["project_weight"][$project_count] = 2;
+                if ($project_array[$i]["project_language"] == "english") {
+                    $hunter_summary[$k]["project_weight"][$project_count] = 1;
+                } else if ($project_array[$i]["project_language"] == "non_english") {                
+                    $hunter_summary[$k]["project_weight"][$project_count] = 2;
                 }
                 $hunter_summary[$k]["project_count"]++;
                 break;
@@ -106,9 +106,9 @@ for ($i = 0; $i < $count_projects; $i++) {
             $hunter_summary[$k]["project_count"] = 0;
             $project_count = $hunter_summary[$k]["project_count"];
             $hunter_summary[$max_size]["projects"][$project_count] = $dbname;
-            if ($project_array[$k]["project_language"] == "english") {
+            if ($project_array[$i]["project_language"] == "english") {
                 $hunter_summary[$max_size]["project_weight"][$project_count] = 1;
-            } else if ($project_array[$k]["project_language"] == "non_english") {                
+            } else if ($project_array[$i]["project_language"] == "non_english") {                
                 $hunter_summary[$max_size]["project_weight"][$project_count] = 2;
             }
             $hunter_summary[$max_size]["project_region"][$project_count] = $project_array[$i]["project_region"];
