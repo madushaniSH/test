@@ -166,7 +166,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
             $error_count = 0;
         }
         $hunter_summary[$i]["QA Errors"] += (int)$error_count;
-        $this_project_productivity = ($brand_count * 1.5) + ($sku_count * 1) + ($dvc_count * 0.5) + ($facing_count * 0.5);
+        $this_project_productivity = ($brand_count * 1.5) + ($sku_count * 1) + ($dvc_count * 0.5) + ($facing_count * 0.5) * $hunter_summary[$i]["project_weight"][$j];
         $this_project_points = $this_project_productivity - ($error_count * 5);
         switch ($hunter_summary[$i]["project_region"][$j]) {
             case 'AMER' : 
