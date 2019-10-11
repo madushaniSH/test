@@ -66,10 +66,10 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         $sql = 'SELECT project_language FROM `project_db`.projects WHERE project_name = :project_name';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(["project_name"=>$dbname]);
-        $project_lang = $stmt->fetchColumn();
-        if ($project_lang == "english") {
+        $project_language = $stmt->fetchColumn();
+        if ($project_language == "english") {
             $weight = 1;
-        } else if ($project_lang == "non_english") {
+        } else if ($project_language == "non_english") {
             $weight = 2;
         }
         $dsn = 'mysql:host='.$host.';dbname='.$dbname;
