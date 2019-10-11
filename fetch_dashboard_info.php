@@ -157,7 +157,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         }
         $hunter_summary[$i]["QA Errors"] += (int)$error_count;
         $this_project_productivity = ($brand_count * 1.5) + ($sku_count * 1) + ($dvc_count * 0.5) + ($facing_count * 0.5);
-        $this_project_points = $this_project_productivity - ($error_count * 1);
+        $this_project_points = $this_project_productivity - ($error_count * 5);
         switch ($hunter_summary[$i]["project_region"][$j]) {
             case 'AMER' : 
                 $hunter_summary[$i]["AMER"]++; 
@@ -186,7 +186,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
 
     $total_count = ($hunter_summary[$i]["Brand Hunted"] * 1.5)  + $hunter_summary[$i]["SKU Hunted"] + (($hunter_summary[$i]["DVC Hunted"] + $hunter_summary[$i]["Hunted Facing Count"]) / 2);
     $hunter_summary[$i]["productivity"] = (int)$total_count;
-    $points = $total_count - ($hunter_summary[$i]["QA Errors"] * 1);
+    $points = $total_count - ($hunter_summary[$i]["QA Errors"] * 5);
     $hunter_summary[$i]["Points"] = (int)$points;
     $monthly_accuracy = round(((($total_count - ($hunter_summary[$i]["QA Errors"] * 1) )/ $total_count) * 100),2);
     if ($monthly_accuracy == NULL || is_nan($monthly_accuracy)) {
