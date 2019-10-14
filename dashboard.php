@@ -288,7 +288,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     </div>
 
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 my-3">
                             <!-- Basic Card Example -->
                             <div class="card">
                                 <div class="card-header py-3">
@@ -321,7 +321,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 my-3">
                             <div class="card">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-danger">Bottom Three Hunters</h6>
@@ -348,6 +348,20 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                     </div>
                                     <div id="bottom_board_section">
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-lg-6">
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Error Type Chart</h6>
+                                </div>
+                                <div class="card-body">
+                                <p id="display_message_chart" class="hide"> Yay, you got no errors!</p>
+                                 <canvas id="error_type_chart" class="hide"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -394,6 +408,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
     <!-- Custom scripts for all pages-->
     <script src="scripts/sb-admin-2.min.js"></script>
 
-    <script src="scripts/dashboard.js"></script>
+   <script src="vendor/chart.js/Chart.min.js"></script>
+   <script src="scripts/dashboard.js"></script>
 
 </body>

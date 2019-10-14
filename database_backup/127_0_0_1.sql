@@ -1038,7 +1038,7 @@ CREATE TABLE `accounts` (
   `account_gid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `account_nic` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `account_email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `account_latest_login_date_time` datetime NOT NULL,
+  `account_latest_login_date_time` datetime NULL,
   `account_current_active` tinyint(1) NOT NULL DEFAULT 0,
   `account_password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `account_password_reset_request` tinyint(1) NOT NULL DEFAULT 0,

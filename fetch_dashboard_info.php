@@ -55,6 +55,7 @@ $project_summary["APAC"]["points"] = 0;
 $project_summary["DPG"]["name"] = 'DPG';
 $project_summary["DPG"]["productivity"] = 0;
 $project_summary["DPG"]["points"] = 0;
+$error_chart = array();
 $max_size = 0;
 $key = NULL;
 for ($i = 0; $i < $count_projects; $i++) {
@@ -103,8 +104,8 @@ for ($i = 0; $i < $count_projects; $i++) {
             $hunter_summary[$max_size]["AMER"] = 0;
             $hunter_summary[$max_size]["APAC"] = 0;
             $hunter_summary[$max_size]["DPG"] = 0;
-            $hunter_summary[$k]["project_count"] = 0;
-            $project_count = $hunter_summary[$k]["project_count"];
+            $hunter_summary[$max_size]["project_count"] = 0;
+            $project_count = $hunter_summary[$max_size]["project_count"];
             $hunter_summary[$max_size]["projects"][$project_count] = $dbname;
             if ($project_array[$i]["project_language"] == "english") {
                 $hunter_summary[$max_size]["project_weight"][$project_count] = 1;
@@ -112,7 +113,8 @@ for ($i = 0; $i < $count_projects; $i++) {
                 $hunter_summary[$max_size]["project_weight"][$project_count] = 2;
             }
             $hunter_summary[$max_size]["project_region"][$project_count] = $project_array[$i]["project_region"];
-            $hunter_summary[$k]["project_count"]++;
+            $hunter_summary[$max_size]["project_count"]++;
+            $hunter_summary[$max_size]["error_sum_index"] = 0;
             $max_size++;
         }
     }
@@ -168,6 +170,35 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         $hunter_summary[$i]["QA Errors"] += (int)$error_count;
         $this_project_productivity = (($brand_count * 1.5) + ($sku_count * 1) + ($dvc_count * 0.5) + ($facing_count * 0.5)) * $hunter_summary[$i]["project_weight"][$j];
         $this_project_points = $this_project_productivity - ($error_count * 5);
+
+        if ($hunter_summary[$i]["probe_processed_hunter_id"] == $_SESSION['id']) {
+            $sql = "SELECT COUNT(a.product_id) as 'count', b.error_id FROM ".$dbname.".products a INNER JOIN ".$dbname.".product_qa_errors b ON a.product_id = b.product_id WHERE a.account_id = :account_id AND a.product_qa_datetime >= :start_datetime AND a.product_qa_datetime <= :end_datetime AND a.product_status = 2 GROUP BY b.error_id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
+            $error_summary = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            for($l = 0; $l < count($error_summary); $l++) {
+                $current_index = $hunter_summary[$i]["error_sum_index"];
+                $found = false;
+                for ($m = 0; $m < $current_index; $m++) {
+                   if ($error_summary[$l]["error_id"] == $error_chart[$m]["error_id"]) {
+                       $error_chart[$m]["count"] += $error_summary[$l]["count"];
+                       $found = true;
+                       break;
+                   }
+                }
+                if(!$found) {
+                    $sql = 'SELECT a.project_error_name FROM '.$dbname.'.project_errors a WHERE a.project_error_id = :error_id';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute(['error_id'=>(int)$error_summary[$l]["error_id"]]);
+                    $error_info = $stmt->fetch(PDO::FETCH_OBJ);
+                    $error_chart[$current_index]["error_name"] = $error_info->project_error_name;
+                    $error_chart[$current_index]["error_id"] = (int)$error_summary[$l]["error_id"];
+                    $error_chart[$current_index]["count"] = (int)$error_summary[$l]["count"];
+                    $hunter_summary[$i]["error_sum_index"]++;
+                }
+            }
+        }
+
         switch ($hunter_summary[$i]["project_region"][$j]) {
             case 'AMER' : 
                 $hunter_summary[$i]["AMER"]++; 
@@ -242,6 +273,6 @@ for($i = 0; $i < count($hunter_summary); $i++) {
 for($i = 0; $i < count($project_summary); $i++) {
     $project_summary[$i]["Rank"] = $i + 1;
 }
-$return_arr[] = array("hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary), "project_summary"=>$project_summary);
+$return_arr[] = array("hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary), "project_summary"=>$project_summary, "error_chart"=>$error_chart);
 echo json_encode($return_arr);
 ?>

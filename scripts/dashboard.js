@@ -81,6 +81,45 @@ const fetch_dashboard_info = () => {
                     }
                 }
             }
+            console.log(data[0].error_chart);
+            /* If there are errors draw a stacked barchart */
+            if (data[0].error_chart.length > 0) {
+                document.getElementById('display_message_chart').classList.add('hide');
+                document.getElementById('error_type_chart').classList.remove('hide');
+                let ctx = document.getElementById('error_type_chart').getContext('2d');
+                let myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        datasets: [{
+                            label: '# of Errors',
+                            backgroundColor: "#4e73df",
+                            hoverBackgroundColor: "#2e59d9",
+                            borderColor: "#4e73df",
+                        }],
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+                for (let m = 0; m < data[0].error_chart.length; m++) {
+                    myChart.data.labels.push(data[0].error_chart[m].error_name);
+                    let color = getRandomColor();
+                    myChart.data.datasets.forEach((dataset) => {
+                        dataset.data.push(data[0].error_chart[m].count);
+                    });
+                }
+                myChart.update();
+
+            } else {
+                document.getElementById('display_message_chart').classList.remove('hide');
+                document.getElementById('error_type_chart').classList.add('hide');
+            }
             document.getElementById("loader").style.display = "none";
             document.getElementById("main_div").style.display = "block";
         },
@@ -91,6 +130,14 @@ const fetch_dashboard_info = () => {
         contentType: false,
         processData: false
     });
+}
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }
 
 jQuery(document).ready(function () {
