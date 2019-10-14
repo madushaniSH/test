@@ -86,23 +86,18 @@ const fetch_dashboard_info = () => {
                 document.getElementById('error_type_chart').classList.remove('hide');
                 let ctx = document.getElementById('error_type_chart').getContext('2d');
                 let myChart = new Chart(ctx, {
-                    type: 'bar',
+                    type: 'doughnut',
                     data: {
                         datasets: [{
                             label: '# of Errors',
-                            backgroundColor: "#4e73df",
-                            hoverBackgroundColor: "#2e59d9",
-                            borderColor: "#4e73df",
+                            backgroundColor: [],
+                            hoverBackgroundColor: [],
+                            borderColor: [],
                         }],
                     },
                     options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true,
-                                    stepSize: 1
-                                }
-                            }]
+                        animation: {
+                            animateRotate: true,
                         }
                     }
                 });
@@ -112,9 +107,11 @@ const fetch_dashboard_info = () => {
                     myChart.data.datasets.forEach((dataset) => {
                         dataset.data.push(data[0].error_chart[m].count);
                     });
+                    myChart.data.datasets[0].backgroundColor.push(color);
+                    myChart.data.datasets[0].hoverBackgroundColor.push(color);
+                    myChart.data.datasets[0].borderColor.push(color);
                 }
                 myChart.update();
-
             } else {
                 document.getElementById('display_message_chart').classList.remove('hide');
                 document.getElementById('error_type_chart').classList.add('hide');

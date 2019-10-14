@@ -356,7 +356,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                         </div>
                     </div>
                     <div class="row my-3">
-                        <div class="col-lg-8">
+                        <div class="col-lg-6">
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
