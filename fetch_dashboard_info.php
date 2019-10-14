@@ -45,15 +45,22 @@ $hunter_summary = array();
 $project_summary = array();
 $project_summary["AMER"]["name"] = 'AMER';
 $project_summary["AMER"]["productivity"] = 0;
+$project_summary["AMER"]["error_count"] = 0;
 $project_summary["AMER"]["points"] = 0;
+
 $project_summary["EMEA"]["name"] = 'EMEA';
 $project_summary["EMEA"]["productivity"] = 0;
+$project_summary["EMEA"]["error_count"] = 0;
 $project_summary["EMEA"]["points"] = 0;
+
 $project_summary["APAC"]["name"] = 'APAC';
 $project_summary["APAC"]["productivity"] = 0;
+$project_summary["APAC"]["error_count"] = 0;
 $project_summary["APAC"]["points"] = 0;
+
 $project_summary["DPG"]["name"] = 'DPG';
 $project_summary["DPG"]["productivity"] = 0;
+$project_summary["DPG"]["error_count"] = 0;
 $project_summary["DPG"]["points"] = 0;
 $error_chart = array();
 $max_size = 0;
@@ -170,6 +177,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         $hunter_summary[$i]["QA Errors"] += (int)$error_count;
         $this_project_productivity = (($brand_count * 1.5) + ($sku_count * 1) + ($dvc_count * 0.5) + ($facing_count * 0.5)) * $hunter_summary[$i]["project_weight"][$j];
         $this_project_points = $this_project_productivity - ($error_count * 5);
+        $this_project_errors = $error_count;
 
         if ($hunter_summary[$i]["probe_processed_hunter_id"] == $_SESSION['id']) {
             $sql = "SELECT COUNT(a.product_id) as 'count', b.error_id FROM ".$dbname.".products a INNER JOIN ".$dbname.".product_qa_errors b ON a.product_id = b.product_id WHERE a.account_id = :account_id AND a.product_qa_datetime >= :start_datetime AND a.product_qa_datetime <= :end_datetime AND a.product_status = 2 GROUP BY b.error_id";
@@ -204,21 +212,25 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $hunter_summary[$i]["AMER"]++; 
                 $project_summary["AMER"]["productivity"] += $this_project_productivity;
                 $project_summary["AMER"]["points"] += $this_project_points;
+                $project_summary["AMER"]["error_count"] += $this_project_errors;
                 break;
             case 'EMEA' : 
                 $hunter_summary[$i]["EMEA"]++; 
                 $project_summary["EMEA"]["productivity"] += $this_project_productivity;
                 $project_summary["EMEA"]["points"] += $this_project_points;
+                $project_summary["EMEA"]["error_count"] += $this_project_errors;
                 break;
             case 'APAC' : 
                 $hunter_summary[$i]["APAC"]++; 
                 $project_summary["APAC"]["productivity"] += $this_project_productivity;
                 $project_summary["APAC"]["points"] += $this_project_points;
+                $project_summary["APAC"]["error_count"] += $this_project_errors;
                 break;
             case 'DPG' : 
                 $hunter_summary[$i]["DPG"]++; 
                 $project_summary["DPG"]["productivity"] += $this_project_productivity;
                 $project_summary["DPG"]["points"] += $this_project_points;
+                $project_summary["DPG"]["error_count"] += $this_project_errors;
             break;
         }
         $pdo = NULL;
@@ -236,6 +248,28 @@ for ($i = 0; $i < count($hunter_summary); $i++){
     $hunter_summary[$i]["Accuracy"] = $monthly_accuracy;
 
 }
+if ($project_summary["AMER"]["productivity"] != 0 ) {
+    $project_summary["AMER"]["accuracy"] = round((($project_summary["AMER"]["productivity"] - $project_summary["AMER"]["error_count"]) / $project_summary["AMER"]["productivity"] * 100),2);
+} else {
+    $project_summary["AMER"]["accuracy"] = 0; 
+}
+
+if ($project_summary["EMEA"]["productivity"] != 0 ) {
+    $project_summary["EMEA"]["accuracy"] = round((($project_summary["EMEA"]["productivity"] - $project_summary["EMEA"]["error_count"]) / $project_summary["EMEA"]["productivity"] * 100),2);
+} else {
+    $project_summary["EMEA"]["accuracy"] = 0; 
+}
+if ($project_summary["APAC"]["productivity"] != 0 ) {
+    $project_summary["APAC"]["accuracy"] = round((($project_summary["APAC"]["productivity"] - $project_summary["APAC"]["error_count"]) / $project_summary["APAC"]["productivity"] * 100),2);
+} else {
+    $project_summary["APAC"]["accuracy"] = 0; 
+}
+if ($project_summary["DPG"]["productivity"] != 0 ) {
+    $project_summary["DPG"]["accuracy"] = round((($project_summary["DPG"]["productivity"] - $project_summary["DPG"]["error_count"]) / $project_summary["DPG"]["productivity"] * 100),2);
+} else {
+    $project_summary["DPG"]["accuracy"] = 0; 
+}
+
 usort($hunter_summary, "custom_sort");
 usort($project_summary, "custom_sort_projects");
 // Define the custom sort function

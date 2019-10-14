@@ -43,7 +43,7 @@ const fetch_dashboard_info = () => {
                     $('#productivity').html(data[0].current_info.productivity);
                 }
                 if (data[0].current_info.Accuracy != null) {
-                    $('#overall_accuracy').html(data[0].current_info.Accuracy);
+                    $('#overall_accuracy').html(data[0].current_info.Accuracy + ' %');
                 }
                 if (data[0].current_info.Rank != null) {
                     $('#ranking').html(data[0].current_info.Rank + " / " + data[0].total);
@@ -53,7 +53,7 @@ const fetch_dashboard_info = () => {
             let project_size = data[0].project_summary.length;
             $('#project_section').empty();
             for (let i = 0; i < project_size; i++) {
-                let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].project_summary[i].Rank + '</p></div><div class="col"><p>' + data[0].project_summary[i].name + '</p></div><div class="col"><p>' + data[0].project_summary[i].productivity + '</p></div><div class="col"><p>' + data[0].project_summary[i].points + '</p></div>';
+                let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].project_summary[i].Rank + '</p></div><div class="col"><p>' + data[0].project_summary[i].name + '</p></div><div class="col"><p>' + data[0].project_summary[i].productivity + '</p></div><div class="col"><p> '+ data[0].project_summary[i].accuracy + ' %' +'</p></div><div class="col"><p>' + data[0].project_summary[i].points + '</p></div>';
                 $('#project_section').append(html);
             }
             let flag = false;
@@ -81,8 +81,6 @@ const fetch_dashboard_info = () => {
                     }
                 }
             }
-            console.log(data[0].error_chart);
-            /* If there are errors draw a stacked barchart */
             if (data[0].error_chart.length > 0) {
                 document.getElementById('display_message_chart').classList.add('hide');
                 document.getElementById('error_type_chart').classList.remove('hide');
@@ -101,7 +99,8 @@ const fetch_dashboard_info = () => {
                         scales: {
                             yAxes: [{
                                 ticks: {
-                                    beginAtZero: true
+                                    beginAtZero: true,
+                                    stepSize: 1
                                 }
                             }]
                         }
