@@ -489,14 +489,14 @@ function update_ref_count() {
             cycle_start.setUTCDate(16);
             cycle_start.setUTCHours(4, 30, 0, 0)
             cycle_start.setUTCMonth(cycle_start.getMonth() - 1);
-            cycle_end.setUTCDate(15);
+            cycle_end.setUTCDate(16);
             cycle_end.setUTCHours(4, 30, 0, 0);
         } else {
             cycle_start.setUTCDate(16);
             cycle_start.setUTCDate(16);
             cycle_start.setUTCHours(4, 30, 0, 0)
             cycle_end.setUTCMonth(cycle_start.getMonth() + 1);
-            cycle_end.setUTCDate(15);
+            cycle_end.setUTCDate(16);
             cycle_end.setUTCHours(4, 30, 0, 0)
         }
         formData.append('start_time', cycle_start.toISOString().slice(0, 19).replace('T', ' '));
