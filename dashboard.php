@@ -351,7 +351,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                             </div>
                         </div>
                     </div>
-                    <div class="row my-3 hide">
+                    <div class="row my-3 ">
                         <div class="col">
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
@@ -390,7 +390,12 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                  </div>
                                  <div class = "row my-3">
                                  <div class="col">
-                                    <div class="table-responsive">
+                                    <div class="hide" id="load_section">
+                                        <div class="spinner-border text-success" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive hide" id="table_section">
                                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>

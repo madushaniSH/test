@@ -53,7 +53,7 @@ const fetch_dashboard_info = () => {
             let project_size = data[0].project_summary.length;
             $('#project_section').empty();
             for (let i = 0; i < project_size; i++) {
-                let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].project_summary[i].Rank + '</p></div><div class="col"><p>' + data[0].project_summary[i].name + '</p></div><div class="col"><p>' + data[0].project_summary[i].productivity + '</p></div><div class="col"><p> '+ data[0].project_summary[i].accuracy + ' %' +'</p></div><div class="col"><p>' + data[0].project_summary[i].points + '</p></div>';
+                let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].project_summary[i].Rank + '</p></div><div class="col"><p>' + data[0].project_summary[i].name + '</p></div><div class="col"><p>' + data[0].project_summary[i].productivity + '</p></div><div class="col"><p> ' + data[0].project_summary[i].accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].project_summary[i].points + '</p></div>';
                 $('#project_section').append(html);
             }
             let flag = false;
@@ -98,7 +98,7 @@ const fetch_dashboard_info = () => {
                     options: {
                         animation: {
                             animateRotate: true,
-                        } ,
+                        },
                     }
                 });
                 for (let m = 0; m < data[0].error_chart.length; m++) {
@@ -127,13 +127,44 @@ const fetch_dashboard_info = () => {
         processData: false
     });
 }
-function getRandomColor() {
+const getRandomColor = () => {
     var letters = '0123456789ABCDEF'.split('');
     var color = '#';
-    for (var i = 0; i < 6; i++ ) {
+    for (var i = 0; i < 6; i++) {
         color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+}
+
+const fetch_hunter_products = () => {
+    const project_region = $('#project_region').val();
+    const start_datetime = $('#datetime_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    const end_datetime = $('#datetime_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    const load_section = document.getElementById('load_section');
+    const table_section = document.getElementById('table_section');
+    if (project_region != '' && start_datetime != '' && end_datetime != '') {
+       load_section.classList.remove('hide') ;
+       table_section.classList.add('hide') ;
+       let formData = new FormData();
+       formData.append('project_region', project_region);
+       formData.append('start_datetime', start_datetime);
+       formData.append('end_datetime', end_datetime);
+        jQuery.ajax({
+            url: "fetch_hunter_product_summary.php",
+            type: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: function (data) {
+                console.log(data[0].summary);
+            },
+            error: function (data) {
+                alert("Error fetching product_information. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
 }
 
 jQuery(document).ready(function () {
@@ -152,4 +183,5 @@ jQuery(document).ready(function () {
         width: '100%',
     });
     $('#dataTable').DataTable();
+    fetch_hunter_products();
 });
