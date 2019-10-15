@@ -98,7 +98,7 @@ const fetch_dashboard_info = () => {
                     options: {
                         animation: {
                             animateRotate: true,
-                        }
+                        } ,
                     }
                 });
                 for (let m = 0; m < data[0].error_chart.length; m++) {
@@ -141,4 +141,15 @@ jQuery(document).ready(function () {
     setInterval(function () {
         fetch_dashboard_info();
     }, 36000000);
+    $('#datetime_filter').daterangepicker({
+        "opens": "right",
+        "drops": "up"
+    });
+    jQuery('#project_region').select2({
+        width: '100%',
+    });
+    jQuery('#project_name').select2({
+        width: '100%',
+    });
+    $('#dataTable').DataTable();
 });

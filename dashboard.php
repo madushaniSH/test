@@ -1,10 +1,8 @@
-
 <?php
 /*
     Filename: probe_qa.php
     Author: Malika Liyanage
 */
-
 session_start();
 // If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['logged_in'])) {
@@ -16,18 +14,14 @@ if (!isset($_SESSION['logged_in'])) {
 	    exit();
     }
 }
-
 // unset the variable out from session. out is used to store error messages from details.php
 if (isset($_SESSION['out'])) {
     unset($_SESSION['out']);
 }
-
 // Current settings to connect to the user account database
 require('user_db_connection.php');
-
 // Setting up the DSN
 $dsn = 'mysql:host='.$host.';dbname='.$dbname;
-
 /*
     Attempts to connect to the databse, if no connection was estabishled
     kills the script
@@ -38,13 +32,11 @@ try{
     // setting the PDO error mode to exception
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 }
-
 catch(PDOException $e){
     // throws error message
     echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
     exit();
 }
-
 $sql = 'SELECT account_gid, account_nic, account_email, CONCAT (account_first_name," ",account_last_name) AS name, account_profile_picture_location FROM accounts WHERE account_id = :id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['id'=>$_SESSION['id']]);
@@ -98,7 +90,6 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                 echo"
             <!-- Divider -->
             <hr class=\"sidebar-divider\">
-
             <!-- Heading -->
             <div class=\"sidebar-heading\">
                 Management Tools
@@ -108,19 +99,16 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     <i class=\"fas fa-meteor fa-2x\"></i>   
                     <span>Create New Project</span></a>
             </li>
-
             <li class=\"nav-item\">
                 <a class=\"nav-link\" href=\"upload_probe.php\">
                     <i class=\"fas fa-rocket fa-2x\"></i>
                     <span>Upload Probes</span></a>
             </li>
-
             <li class=\"nav-item\">
                 <a class=\"nav-link\" href=\"export_projects.php\">
                     <i class=\"fas fa-file-export fa-2x\"></i>
                     <span>Export Project</span></a>
             </li>
-
             <li class=\"nav-item\">
                 <a class=\"nav-link\" href=\"show_active.php\">
                     <i class=\"fas fa-users fa-2x\"></i>
@@ -128,13 +116,11 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
             </li>
             "
             ;
-
             }
             if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT'){
                 echo"
             <!-- Divider -->
             <hr class=\"sidebar-divider\">
-
             <!-- Heading -->
             <div class=\"sidebar-heading\">
                 Hunter Tools
@@ -144,13 +130,11 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     <i class=\"fas fa-th-list fa-2x\"></i>
                     <span>Probe Hunt</span></a>
             </li>
-
             <li class=\"nav-item\">
                 <a class=\"nav-link\" href=\"radar.php\">
                     <i class=\"fas fa-satellite-dish fa-2x\"></i>
                     <span>Radar Hunt</span></a>
             </li>
-
             <li class=\"nav-item\">
                 <a class=\"nav-link\" href=\"ref_hunt.php\">
                     <i class=\"fas fa-book fa-2x\"></i>
@@ -158,13 +142,11 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
             </li>
             "
             ;
-
             }
             if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT Analyst'){
                 echo"
             <!-- Divider -->
             <hr class=\"sidebar-divider\">
-
             <!-- Heading -->
             <div class=\"sidebar-heading\">
                 Analyst Tools
@@ -369,6 +351,65 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                             </div>
                         </div>
                     </div>
+                    <div class="row my-3">
+                        <div class="col">
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Product Details</h6>
+                                </div>
+                                <div class="card-body">
+                                 <div class="row">
+                                <div class="col-md-2">
+                                    <label for="project_region">Select Project Region</label>
+                                    <select name="project_region" id="project_region" class="form-control">
+                                        <option value="AMER" selected >AMER</option>
+                                        <option value="EMEA">EMEA</option>
+                                        <option value="APAC">APAC</option>
+                                        <option value="DPG">DPG</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label for="project_name">Select Project Name</label>
+                                    <select name="project_name" id="project_name" class="form-control">
+                                    </select>
+                                </div>
+                                </div>
+                                 <div class="row my-3">
+                                <div class="col-md-4">                                
+                                    <label for="datetime_filter">Date Range</label>
+                                    <input id="datetime_filter" type="text" name="datetimes" value="" />
+                                </div>
+                                 </div>
+                                 <div class="row">
+                                 <div class="col">
+                                    <button class="btn btn-success btn-icon-split">
+                                    <span class="text">Fetch Details</span>
+                                    </button>
+                                 </div>
+                                 </div>
+                                 <div class = "row my-3">
+                                 <div class="col">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Project Name</th>
+                                                    <th>Date</th>
+                                                    <th>Brands Hunted</th>
+                                                    <th>SKU Hunted</th>
+                                                    <th>DVC Hunted</th>
+                                                    <th>Facing Hunted</th>
+                                                    <th>Error Count</th>
+                                               </tr>
+                                            </thead>
+                                        </table>
+                                 </div>
+                                 </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
 
@@ -411,6 +452,12 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
     <!-- Custom scripts for all pages-->
     <script src="scripts/sb-admin-2.min.js"></script>
 
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
+  <script src="vendor/datatables/jquery.dataTables.min.js"></script>
    <script src="vendor/chart.js/Chart.min.js"></script>
    <script src="scripts/dashboard.js"></script>
 
