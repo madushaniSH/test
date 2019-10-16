@@ -81,14 +81,14 @@ for ($i = 0; $i < count($project_array); $i++) {
         }
         $sql = 'SELECT SUM(a.product_facing_count) FROM '.$dbname.'.products a WHERE a.account_id = :account_id AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'date'=>$date]);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'date'=>$date]);
         $facing_count = $stmt->fetchColumn();
         if ($facing_count == NULL) {
             $facing_count = 0;
         }
         $sql = "SELECT COUNT(a.product_id) FROM ".$dbname.".products a INNER JOIN ".$dbname.".product_qa_errors b ON a.product_id = b.product_id WHERE a.account_id = :account_id AND DATE(a.product_qa_datetime) = :date AND a.product_status = 2";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'date'=>$date]);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'date'=>$date]);
         $error_count = $stmt->fetchColumn();
         if ($error_count == NULL) {
             $error_count = 0;
