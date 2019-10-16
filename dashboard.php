@@ -401,11 +401,11 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                                 <tr>
                                                     <th>Project Name</th>
                                                     <th>Date</th>
-                                                    <th>Brands Hunted</th>
-                                                    <th>SKU Hunted</th>
-                                                    <th>DVC Hunted</th>
-                                                    <th>Facing Hunted</th>
-                                                    <th>Error Count</th>
+                                                    <th>Brands Hunted <span class="table_count_button" id="brand_count"></span></th>
+                                                    <th>SKU Hunted <span class="table_count_button" id="sku_count"></span></th>
+                                                    <th>DVC Hunted <span class="table_count_button" id="dvc_count"></span></th>
+                                                    <th>Facing Hunted <span class="table_count_button" id="facing_count"></span></th>
+                                                    <th>Error Count <span class="table_count_button" id="error_count"></span></th>
                                                </tr>
                                             </thead>
                                         </table>

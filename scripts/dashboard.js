@@ -158,6 +158,11 @@ const fetch_hunter_products = () => {
             dataType: "JSON",
             success: function (data) {
                 table.clear().draw();
+                let sku_total_count = 0;
+                let brand_total_count = 0;
+                let dvc_total_count = 0;
+                let facing_total_count = 0;
+                let error_total_count = 0;
                 for (let i = 0; i < data[0].summary.length; i++) {
                     table.row.add([
                         data[0].summary[i].project_name,
@@ -168,8 +173,17 @@ const fetch_hunter_products = () => {
                         data[0].summary[i].facing,
                         data[0].summary[i].errors,
                     ]).draw(false);
+                    sku_total_count += data[0].summary[i].sku;
+                    brand_total_count += data[0].summary[i].brand;
+                    dvc_total_count += data[0].summary[i].dvc;
+                    facing_total_count += data[0].summary[i].facing;
+                    error_total_count += data[0].summary[i].errors;
                 }
-
+                document.getElementById('sku_count').innerHTML = sku_total_count;
+                document.getElementById('brand_count').innerHTML = brand_total_count;
+                document.getElementById('dvc_count').innerHTML = dvc_total_count;
+                document.getElementById('facing_count').innerHTML = facing_total_count;
+                document.getElementById('error_count').innerHTML = error_total_count;
                 load_section.classList.add('hide');
                 table_section.classList.remove('hide');
             },
