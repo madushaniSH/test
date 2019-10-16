@@ -172,6 +172,7 @@ const fetch_hunter_products = () => {
                         data[0].summary[i].dvc,
                         data[0].summary[i].facing,
                         data[0].summary[i].errors,
+                        data[0].summary[i].product_info,
                     ]).draw(false);
                     sku_total_count += data[0].summary[i].sku;
                     brand_total_count += data[0].summary[i].brand;
@@ -215,5 +216,46 @@ jQuery(document).ready(function () {
     $('#fetch_details_hunter').click(() => {
         fetch_hunter_products();
     });
-    table = $('#dataTable').DataTable({});
+    table = $('#dataTable').DataTable({
+        "columnDefs": [
+            {
+                "data": null,
+                "defaultContent": "<button class='btn btn-success'><i class='fas fa-search-plus'></i></button>",
+                "targets": -1
+            }
+        ]
+    });
+    let product_table = $('#product_data_table').DataTable({
+        "columnDefs": [
+            {
+                "data": null,
+                "defaultContent": "<button class='btn btn-danger'><i class='fas fa-glasses'></i></button>",
+                "targets": -1
+            }
+        ]
+    });
+    $('#dataTable tbody').on('click', 'button', function () {
+        let data = table.row($(this).parents('tr')).data();
+        $('#product_detail_modal_title').html(data[0] + ' ' + data[1]);
+        product_table.clear().draw();
+        for (let i = 0; i < data[7][0].length; i++) {
+            product_table.row.add([
+                data[7][0][i].product_name,
+                data[7][0][i].product_alt_design_name,
+                data[7][0][i].product_type,
+                data[7][0][i].product_creation_time,
+                data[7][0][i].product_qa_datetime,
+                data[7][0][i].product_qa_status,
+                data[7][0][i].error_string,
+                data[7][0][i].error_url
+            ]).draw(false);
+        }
+        $('#product_detail_modal').modal('show');
+    });
+    $('#product_data_table tbody').on('click', 'button', function () {
+        let data = product_table.row($(this).parents('tr')).data();
+        if (data[7] != '') {
+            window.open(data[7]);
+        }
+    });
 });

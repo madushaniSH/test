@@ -94,6 +94,11 @@ for ($i = 0; $i < count($project_array); $i++) {
             $error_count = 0;
         }
         if ($sku_count != 0 || $brand_count != 0 || $dvc_count != 0 || $facing_count != 0 || $error_count != 0){
+            $sql = 'SELECT a.product_id, a.product_name, a.product_alt_design_name, a.product_type, a.product_creation_time, a.product_qa_datetime, a.product_qa_status FROM '.$dbname.'.products a WHERE (DATE(a.product_creation_time) = :date OR DATE(a.product_qa_datetime) = :date) AND a.account_id = :id';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['id'=>$_SESSION['id'], 'date'=>$date]);
+            $product_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             $summary[$count] = array_fill_keys(array('project_name','date','sku', 'brand', 'dvc', 'facing', 'errors'),'');
             $summary[$count][project_name] = $dbname;
             $summary[$count][date] = $date;
@@ -102,6 +107,35 @@ for ($i = 0; $i < count($project_array); $i++) {
             $summary[$count]['dvc'] = (int)$dvc_count;
             $summary[$count]['facing'] = (int)$facing_count;
             $summary[$count]['errors'] = (int)$error_count;
+
+            for ($k = 0; $k < count($product_info); $k++) {
+                $sql = 'SELECT a.project_error_image_location FROM '.$dbname.'.project_error_images a WHERE a.product_id = :product_id LIMIT 1';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['product_id'=>$product_info[$k][product_id]]);
+                $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
+                $file_info = $stmt->fetch(PDO::FETCH_OBJ);
+                $error_image_path = '';
+                if ($row_count != 0) {
+                    $error_image_path = substr($file_info->project_error_image_location, 0, strrpos($file_info->project_error_image_location, '/') );
+                } 
+                $sql = 'SELECT a.project_error_name FROM '.$dbname.'.product_qa_errors b INNER JOIN '.$dbname.'.project_errors a ON b.error_id = a.project_error_id WHERE b.product_id = :product_id';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['product_id'=>$product_info[$k][product_id]]);
+                $qa_errors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $error_string = '';
+                for ($j = 0; $j < count($qa_errors); $j++) {
+                    $error_string .= $qa_errors[$j][project_error_name].',';
+                }
+                if ($error_string != '') {
+                    $error_string = rtrim($error_string, ",");
+                } 
+                $product_info[$k]["error_string"] = $error_string;
+                $product_info[$k]["error_url"] = $error_image_path;
+            }
+
+            $summary[$count]['product_info'] = array();
+            array_push($summary[$count]['product_info'], $product_info);
+
             $count++;
         }
     }

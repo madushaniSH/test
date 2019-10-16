@@ -406,6 +406,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                                     <th>DVC Hunted <span class="table_count_button" id="dvc_count"></span></th>
                                                     <th>Facing Hunted <span class="table_count_button" id="facing_count"></span></th>
                                                     <th>Error Count <span class="table_count_button" id="error_count"></span></th>
+                                                    <th>Explore</th>
                                                </tr>
                                             </thead>
                                         </table>
@@ -423,6 +424,38 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
         </div>
 
     </div>
+    </div>
+    <!-- Product Detail Modal-->
+    <div class="modal fade" id="product_detail_modal" tabindex="-1" role="dialog" aria-labelledby="product_detail_modal_title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="product_detail_modal_title"></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered" id="product_data_table" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Alt Name</th>
+                                <th>Type</th>
+                                <th>Creation Time</th>
+                                <th>QA Time</th>
+                                <th>QA Status</th>
+                                <th>QA Errors</th>
+                                <th>Error URL</th>
+                           </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- End of Page Wrapper -->
     <!-- Logout Modal-->
