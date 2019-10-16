@@ -247,7 +247,7 @@ jQuery(document).ready(function () {
                 data[7][0][i].product_qa_datetime,
                 data[7][0][i].product_qa_status,
                 data[7][0][i].error_string,
-                data[7][0][i].error_url
+                "google.com"
             ]).draw(false);
         }
         $('#product_detail_modal').modal('show');
