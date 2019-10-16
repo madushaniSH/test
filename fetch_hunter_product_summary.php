@@ -113,11 +113,7 @@ for ($i = 0; $i < count($project_array); $i++) {
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute(['product_id'=>$product_info[$k][product_id]]);
                 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
-                $file_info = $stmt->fetch(PDO::FETCH_OBJ);
-                $error_image_path = '';
-                if ($row_count != 0) {
-                    $error_image_path = substr($file_info->project_error_image_location, 0, strrpos($file_info->project_error_image_location, '/') );
-                } 
+                $file_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $sql = 'SELECT a.project_error_name FROM '.$dbname.'.product_qa_errors b INNER JOIN '.$dbname.'.project_errors a ON b.error_id = a.project_error_id WHERE b.product_id = :product_id';
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute(['product_id'=>$product_info[$k][product_id]]);
@@ -130,7 +126,7 @@ for ($i = 0; $i < count($project_array); $i++) {
                     $error_string = rtrim($error_string, ",");
                 } 
                 $product_info[$k]["error_string"] = $error_string;
-                $product_info[$k]["error_url"] = $error_image_path;
+                $product_info[$k]["error_url"] = $file_info;
             }
 
             $summary[$count]['product_info'] = array();

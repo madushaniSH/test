@@ -237,6 +237,8 @@ jQuery(document).ready(function () {
     $('#dataTable tbody').on('click', 'button', function () {
         let data = table.row($(this).parents('tr')).data();
         $('#product_detail_modal_title').html(data[0] + ' ' + data[1]);
+
+                console.log(data[7][0])
         product_table.clear().draw();
         for (let i = 0; i < data[7][0].length; i++) {
             product_table.row.add([
@@ -247,15 +249,15 @@ jQuery(document).ready(function () {
                 data[7][0][i].product_qa_datetime,
                 data[7][0][i].product_qa_status,
                 data[7][0][i].error_string,
-                "google.com"
+                data[7][0][i].error_url,
             ]).draw(false);
         }
         $('#product_detail_modal').modal('show');
     });
     $('#product_data_table tbody').on('click', 'button', function () {
         let data = product_table.row($(this).parents('tr')).data();
-        if (data[7] != '') {
-            window.open(data[7]);
+        for (let j = 0; j < data[7].length; j++) {
+            window.open(data[7][j].project_error_image_location);
         }
     });
 });
