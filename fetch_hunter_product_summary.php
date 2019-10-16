@@ -48,18 +48,16 @@ $end_date_for_loop = $end->modify('+1 day');
 $interval = DateInterval::createFromDateString('1 day');
 $period = new DatePeriod($begin, $interval, $end_date_for_loop);
 $summary = array();
+$count = 0;
 
 for ($i = 0; $i < count($project_array); $i++) {
     $dbname = $project_array[$i]["project_db_name"];
     $dsn = 'mysql:host='.$host.';dbname='.$dbname;
     $pdo = new PDO($dsn, $user, $pwd);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $summary[info][$i]['project_name'] = $dbname;
 
-    $count = 0;
     foreach ($period as $dt) {
         $date = $dt->format("Y-m-d");
-        $summary[info][$i][$count] = array_fill_keys(array('sku', 'brand', 'dvc', 'facing', 'errors'),0);
         $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE a.product_type ="sku" AND a.account_id = :account_id AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['account_id'=>$_SESSION['id'], 'date'=>$date]);
@@ -81,12 +79,32 @@ for ($i = 0; $i < count($project_array); $i++) {
         if ($dvc_count == NULL) {
             $dvc_count = 0;
         }
-        $summary[info][$i][$count][date] = $date;
-        $summary[info][$i][$count]['sku'] = $sku_count;
-        $summary[info][$i][$count]['brand'] = $brand_count;
-        $summary[info][$i][$count]['dvc'] = $dvc_count;
+        $sql = 'SELECT SUM(a.product_facing_count) FROM '.$dbname.'.products a WHERE a.account_id = :account_id AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'date'=>$date]);
+        $facing_count = $stmt->fetchColumn();
+        if ($facing_count == NULL) {
+            $facing_count = 0;
+        }
+        $sql = "SELECT COUNT(a.product_id) FROM ".$dbname.".products a INNER JOIN ".$dbname.".product_qa_errors b ON a.product_id = b.product_id WHERE a.account_id = :account_id AND DATE(a.product_qa_datetime) = :date AND a.product_status = 2";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'date'=>$date]);
+        $error_count = $stmt->fetchColumn();
+        if ($error_count == NULL) {
+            $error_count = 0;
+        }
+        if ($sku_count != 0 || $brand_count != 0 || $dvc_count != 0 || $facing_count != 0 || $error_count != 0){
+            $summary[$count] = array_fill_keys(array('project_name','date','sku', 'brand', 'dvc', 'facing', 'errors'),'');
+            $summary[$count][project_name] = $dbname;
+            $summary[$count][date] = $date;
+            $summary[$count]['sku'] = (int)$sku_count;
+            $summary[$count]['brand'] = (int)$brand_count;
+            $summary[$count]['dvc'] = (int)$dvc_count;
+            $summary[$count]['facing'] = (int)$facing_count;
+            $summary[$count]['errors'] = (int)$error_count;
+            $count++;
+        }
     }
-    
 }
 
 $return_arr[] = array("summary"=>$summary);

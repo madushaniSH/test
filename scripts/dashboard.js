@@ -2,6 +2,8 @@
     Author: Malika Liyanage
 */
 
+let table;
+
 const fetch_dashboard_info = () => {
     document.getElementById("main_div").style.display = "none";
     document.getElementById("loader").style.display = "block";
@@ -143,19 +145,33 @@ const fetch_hunter_products = () => {
     const load_section = document.getElementById('load_section');
     const table_section = document.getElementById('table_section');
     if (project_region != '' && start_datetime != '' && end_datetime != '') {
-       load_section.classList.remove('hide') ;
-       table_section.classList.add('hide') ;
-       let formData = new FormData();
-       formData.append('project_region', project_region);
-       formData.append('start_datetime', start_datetime);
-       formData.append('end_datetime', end_datetime);
+        load_section.classList.remove('hide');
+        table_section.classList.add('hide');
+        let formData = new FormData();
+        formData.append('project_region', project_region);
+        formData.append('start_datetime', start_datetime);
+        formData.append('end_datetime', end_datetime);
         jQuery.ajax({
             url: "fetch_hunter_product_summary.php",
             type: "POST",
             data: formData,
             dataType: "JSON",
             success: function (data) {
-                console.log(data[0].summary);
+                table.clear().draw();
+                for (let i = 0; i < data[0].summary.length; i++) {
+                    table.row.add([
+                        data[0].summary[i].project_name,
+                        data[0].summary[i].date,
+                        data[0].summary[i].brand,
+                        data[0].summary[i].sku,
+                        data[0].summary[i].dvc,
+                        data[0].summary[i].facing,
+                        data[0].summary[i].errors,
+                    ]).draw(false);
+                }
+
+                load_section.classList.add('hide');
+                table_section.classList.remove('hide');
             },
             error: function (data) {
                 alert("Error fetching product_information. Please refresh");
@@ -182,6 +198,8 @@ jQuery(document).ready(function () {
     jQuery('#project_name').select2({
         width: '100%',
     });
-    $('#dataTable').DataTable();
-    //fetch_hunter_products();
+    $('#fetch_details_hunter').click(() => {
+        fetch_hunter_products();
+    });
+    table = $('#dataTable').DataTable({});
 });

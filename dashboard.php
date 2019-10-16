@@ -356,7 +356,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Under Construction :)</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Product Details</h6>
                                 </div>
                                 <div class="card-body">
                                  <div class="row">
@@ -383,7 +383,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                  </div>
                                  <div class="row">
                                  <div class="col">
-                                    <button class="btn btn-success btn-icon-split">
+                                    <button class="btn btn-success btn-icon-split" id="fetch_details_hunter">
                                     <span class="text">Fetch Details</span>
                                     </button>
                                  </div>
@@ -462,8 +462,10 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
-  <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-   <script src="vendor/chart.js/Chart.min.js"></script>
-   <script src="scripts/dashboard.js"></script>
+    <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet"/>
+    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="scripts/dashboard.js"></script>
 
 </body>
