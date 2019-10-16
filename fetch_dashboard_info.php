@@ -241,10 +241,14 @@ for ($i = 0; $i < count($hunter_summary); $i++){
     $hunter_summary[$i]["productivity"] = (int)$total_count;
     $points = $total_count - ($hunter_summary[$i]["QA Errors"] * 5);
     $hunter_summary[$i]["Points"] = (int)$points;
-    $monthly_accuracy = round(((($total_count - ($hunter_summary[$i]["QA Errors"] * 1) )/ $total_count) * 100),2);
-    if ($monthly_accuracy == NULL || is_nan($monthly_accuracy)) {
+    if ($total_count == 0) {
         $monthly_accuracy = 0;
-    }
+    } else {
+        $monthly_accuracy = round(((($total_count - ($hunter_summary[$i]["QA Errors"] * 1) )/ $total_count) * 100),2);
+        if ($monthly_accuracy == NULL || is_nan($monthly_accuracy)) {
+            $monthly_accuracy = 0;
+        }
+    }   
     $hunter_summary[$i]["Accuracy"] = $monthly_accuracy;
 
 }

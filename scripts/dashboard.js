@@ -183,5 +183,5 @@ jQuery(document).ready(function () {
         width: '100%',
     });
     $('#dataTable').DataTable();
-    fetch_hunter_products();
+    //fetch_hunter_products();
 });
