@@ -371,7 +371,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 </div>
                                 <div class="col">
                                     <label for="project_name">Select Project Name</label>
-                                    <select name="project_name" id="project_name" class="form-control">
+                                    <select name="project_name" id="project_name" class="form-control" multiple="multiple">
                                     </select>
                                 </div>
                                 </div>
@@ -382,19 +382,21 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 </div>
                                  </div>
                                  <div class="row">
-                                 <div class="col">
+                                 <div class="col-md-2">
                                     <button class="btn btn-success btn-icon-split" id="fetch_details_hunter">
                                     <span class="text">Fetch Details</span>
                                     </button>
-                                 </div>
-                                 </div>
-                                 <div class = "row my-3">
-                                 <div class="col">
+                                </div>
+                                 <div class="col-md-2">
                                     <div class="hide" id="load_section">
                                         <div class="spinner-border text-success" role="status">
                                         <span class="sr-only">Loading...</span>
                                         </div>
                                     </div>
+                                 </div>
+                                 </div>
+                                 <div class = "row my-3">
+                                 <div class="col">
                                     <div class="table-responsive hide" id="table_section">
                                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                             <thead>

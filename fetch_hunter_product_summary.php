@@ -36,10 +36,25 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT project_db_name FROM `project_db`.projects WHERE project_region = :region';
-$stmt = $pdo->prepare($sql);
-$stmt->execute(['region'=>$_POST['project_region']]);
-$project_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$custom_project_list_flag = false;
+
+if (trim($_POST['project_list']) != '') {
+    // getting the list of projects into an array from the passes string.
+    $project_list = explode(",",$_POST['project_list']);
+}
+
+// gets the users custom project list if it is not empty
+if (count($project_list) > 0) {
+    $project_array = $project_list;
+    $custom_project_list_flag = true;
+
+} else {
+    $sql = 'SELECT project_db_name FROM `project_db`.projects WHERE project_region = :region';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['region'=>$_POST['project_region']]);
+    $project_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
 $begin = new DateTime(strval($_POST['start_datetime']));
 $end = new DateTime(strval($_POST['end_datetime']));
@@ -51,7 +66,11 @@ $summary = array();
 $count = 0;
 
 for ($i = 0; $i < count($project_array); $i++) {
-    $dbname = $project_array[$i]["project_db_name"];
+    if (!$custom_project_list_flag) {
+        $dbname = $project_array[$i]["project_db_name"];
+    } else {
+        $dbname = $project_array[$i];
+    }
     $dsn = 'mysql:host='.$host.';dbname='.$dbname;
     $pdo = new PDO($dsn, $user, $pwd);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -137,6 +156,6 @@ for ($i = 0; $i < count($project_array); $i++) {
     }
 }
 
-$return_arr[] = array("summary"=>$summary);
+$return_arr[] = array("summary"=>$summary, "debug"=>$project_list);
 echo json_encode($return_arr);
 ?>

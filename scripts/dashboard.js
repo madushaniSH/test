@@ -4,6 +4,38 @@
 
 let table;
 
+/*
+    This function fetches the project list from the db using an ajax call according to the region selected in 
+    "project_region" select box. The fetched list is then rendered on the multiple selection
+    select box "project_name". 
+*/
+const fetch_project_list = () => {
+    const project_region = $('#project_region').val();
+    if (project_region != '') {
+        let formData = new FormData();
+        formData.append('project_region', project_region);
+        jQuery.ajax({
+            url: "fetch_project_list_by_region.php",
+            type: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: function (data) {
+                // removes all current options present in the select element
+                $('#project_name').empty();
+                for (let i = 0; i < data[0].project_info.length; i++) {
+                    $('#project_name').append('<option value="' + data[0].project_info[i].name + '">' + data[0].project_info[i].name + "</option>");
+                }
+            },
+            error: function (data) {
+                alert("Error fetching project info. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
+
 const fetch_dashboard_info = () => {
     document.getElementById("main_div").style.display = "none";
     document.getElementById("loader").style.display = "block";
@@ -140,6 +172,7 @@ const getRandomColor = () => {
 
 const fetch_hunter_products = () => {
     const project_region = $('#project_region').val();
+    const project_list = $('#project_name').val();
     const start_datetime = $('#datetime_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
     const end_datetime = $('#datetime_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
     const load_section = document.getElementById('load_section');
@@ -149,6 +182,7 @@ const fetch_hunter_products = () => {
         table_section.classList.add('hide');
         let formData = new FormData();
         formData.append('project_region', project_region);
+        formData.append('project_list', project_list);
         formData.append('start_datetime', start_datetime);
         formData.append('end_datetime', end_datetime);
         jQuery.ajax({
@@ -157,6 +191,7 @@ const fetch_hunter_products = () => {
             data: formData,
             dataType: "JSON",
             success: function (data) {
+                console.log(data[0].debug)
                 table.clear().draw();
                 let sku_total_count = 0;
                 let brand_total_count = 0;
@@ -199,6 +234,11 @@ const fetch_hunter_products = () => {
 }
 
 jQuery(document).ready(function () {
+    fetch_project_list();
+    // when a new project region is selected fetches an updated project list
+    $('#project_region').on('select2:select', function (e) {
+        fetch_project_list();
+    });
     fetch_dashboard_info();
     setInterval(function () {
         fetch_dashboard_info();
@@ -237,8 +277,6 @@ jQuery(document).ready(function () {
     $('#dataTable tbody').on('click', 'button', function () {
         let data = table.row($(this).parents('tr')).data();
         $('#product_detail_modal_title').html(data[0] + ' ' + data[1]);
-
-                console.log(data[7][0])
         product_table.clear().draw();
         for (let i = 0; i < data[7][0].length; i++) {
             product_table.row.add([
