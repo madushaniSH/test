@@ -398,11 +398,15 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                  <div class = "row my-3">
                                  <div class="col">
                                     <div class="table-responsive hide" id="table_section">
+                                        <label for="hunter_filter">Select Hunter GID</label>
+                                        <select name="hunter_filter" id="hunter_filter" class="form-control">
+                                        </select>
                                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <th>Project Name</th>
                                                     <th>Date</th>
+                                                    <th>Hunter GID</th>
                                                     <th>Brands Hunted <span class="table_count_button" id="brand_count"></span></th>
                                                     <th>SKU Hunted <span class="table_count_button" id="sku_count"></span></th>
                                                     <th>DVC Hunted <span class="table_count_button" id="dvc_count"></span></th>

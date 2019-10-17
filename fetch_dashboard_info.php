@@ -35,7 +35,6 @@ catch(PDOException $e){
     echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
     exit();
 }
-
 $sql = 'SELECT project_db_name, project_region, project_language FROM `project_db`.projects WHERE 1';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();

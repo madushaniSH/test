@@ -162,9 +162,9 @@ const fetch_dashboard_info = () => {
     });
 }
 const getRandomColor = () => {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
+    let letters = '0123456789ABCDEF'.split('');
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
         color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
@@ -191,7 +191,6 @@ const fetch_hunter_products = () => {
             data: formData,
             dataType: "JSON",
             success: function (data) {
-                console.log(data[0].debug)
                 table.clear().draw();
                 let sku_total_count = 0;
                 let brand_total_count = 0;
@@ -202,6 +201,7 @@ const fetch_hunter_products = () => {
                     table.row.add([
                         data[0].summary[i].project_name,
                         data[0].summary[i].date,
+                        data[0].summary[i].user_gid,
                         data[0].summary[i].brand,
                         data[0].summary[i].sku,
                         data[0].summary[i].dvc,
@@ -214,6 +214,10 @@ const fetch_hunter_products = () => {
                     dvc_total_count += data[0].summary[i].dvc;
                     facing_total_count += data[0].summary[i].facing;
                     error_total_count += data[0].summary[i].errors;
+                    // if hunter gid doesnot exist in the select box adds it
+                    if (!($("#hunter_filter option[value='" + data[0].summary[i].user_gid + "']").length > 0)) {
+                        $('#hunter_filter').append('<option value="' + data[0].summary[i].user_gid + '">' + data[0].summary[i].user_gid + "</option>");
+                    }
                 }
                 document.getElementById('sku_count').innerHTML = sku_total_count;
                 document.getElementById('brand_count').innerHTML = brand_total_count;
@@ -253,7 +257,12 @@ jQuery(document).ready(function () {
     jQuery('#project_name').select2({
         width: '100%',
     });
+    jQuery('#hunter_filter').select2({
+        width: '50%',
+    });
     $('#fetch_details_hunter').click(() => {
+        $('#hunter_filter').empty();
+        $('#hunter_filter').append('<option value="">None</option>');
         fetch_hunter_products();
     });
     table = $('#dataTable').DataTable({
@@ -274,28 +283,43 @@ jQuery(document).ready(function () {
             }
         ]
     });
+    // searches for hunter gid and redraws table
+    $("#hunter_filter").change(function () {
+        const hunter_gid = $('#hunter_filter').val();
+        if (hunter_gid == "" || hunter_gid == null) {
+            table
+                .column(2)
+                .search("", true, false)
+                .draw();
+        } else {
+            table
+                .column(2)
+                .search(hunter_gid, true, false)
+                .draw();
+        }
+    });
     $('#dataTable tbody').on('click', 'button', function () {
         let data = table.row($(this).parents('tr')).data();
-        $('#product_detail_modal_title').html(data[0] + ' ' + data[1]);
+        $('#product_detail_modal_title').html(data[0] + ' ' + data[1] + ' ' + data[2]);
         product_table.clear().draw();
-        for (let i = 0; i < data[7][0].length; i++) {
+        for (let i = 0; i < data[8][0].length; i++) {
             product_table.row.add([
-                data[7][0][i].product_name,
-                data[7][0][i].product_alt_design_name,
-                data[7][0][i].product_type,
-                data[7][0][i].product_creation_time,
-                data[7][0][i].product_qa_datetime,
-                data[7][0][i].product_qa_status,
-                data[7][0][i].error_string,
-                data[7][0][i].error_url,
+                data[8][0][i].product_name,
+                data[8][0][i].product_alt_design_name,
+                data[8][0][i].product_type,
+                data[8][0][i].product_creation_time,
+                data[8][0][i].product_qa_datetime,
+                data[8][0][i].product_qa_status,
+                data[8][0][i].error_string,
+                data[8][0][i].error_url,
             ]).draw(false);
         }
         $('#product_detail_modal').modal('show');
     });
     $('#product_data_table tbody').on('click', 'button', function () {
         let data = product_table.row($(this).parents('tr')).data();
-        for (let j = 0; j < data[7].length; j++) {
-            window.open(data[7][j].project_error_image_location);
+        for (let j = 0; j < data[8].length; j++) {
+            window.open(data[8][j].project_error_image_location);
         }
     });
 });
