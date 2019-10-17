@@ -263,6 +263,7 @@ jQuery(document).ready(function () {
     $('#fetch_details_hunter').click(() => {
         $('#hunter_filter').empty();
         $('#hunter_filter').append('<option value="">None</option>');
+        $("#hunter_filter").val('').trigger("change");
         fetch_hunter_products();
     });
     table = $('#dataTable').DataTable({
@@ -318,8 +319,8 @@ jQuery(document).ready(function () {
     });
     $('#product_data_table tbody').on('click', 'button', function () {
         let data = product_table.row($(this).parents('tr')).data();
-        for (let j = 0; j < data[8].length; j++) {
-            window.open(data[8][j].project_error_image_location);
+        for (let j = 0; j < data[7].length; j++) {
+            window.open(data[7][j].project_error_image_location);
         }
     });
 });
