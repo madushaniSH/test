@@ -283,6 +283,9 @@ if($_SESSION['role'] === 'Admin'){
                         <div id="fetch_project_section">
                             <div class="row" id="export_button_selection">
                                 <div class="col">
+                                    <button class="btn btn-success" onclick="show_productivity_info();"><i class="fas fa-chart-line fa-2x"></i> Get Hunter Productivity</button>
+                                </div>
+                                <div class="col">
                                     <button class="btn btn-success" onclick="show_product_info();"><i class="fab fa-product-hunt fa-2x"></i> Get Hunted Products</button>
                                 </div>
                                 <div class="col">
@@ -313,6 +316,11 @@ if($_SESSION['role'] === 'Admin'){
                                     </select>
                                 </div>
                             </div>
+                            <div id="generate_productivity_section" class="row hide">
+                                <div class="col">
+                                    <input id="datetime_filter_productivity" type="text" name="datetimes" value="" />
+                                </div>
+                            </div>
                             <div id="generate_csv_section" class="row hide">
                                 <div class="col">
                                     <input id="datetime_filter" type="text" name="datetimes" value="" />
@@ -320,6 +328,8 @@ if($_SESSION['role'] === 'Admin'){
                             </div>
                             <div id="export_final">
                                 <button class="btn btn-primary hide" id="export_button" onclick="fetch_details()"><i class="fas fa-download fa-3x"></i></button>
+                                <button class="btn btn-primary hide" id="export_button_productivity" onclick="fetch_details_productivity()"><i class="fas fa-download"></i> Fetch Productivity Final Count</button>
+                                <button class="btn btn-primary hide" id="export_button_productivity_single" onclick="fetch_details_productivity_single()"><i class="fas fa-download"></i> Fetch Productivity Single Count</button>
                             </div>
                         </div>
 

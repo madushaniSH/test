@@ -99,6 +99,48 @@ const special = () => {
     });
 }
 
+const fetch_details_productivity = () => {
+    let formData = new FormData();
+    formData.append("start_datetime", start_datetime );
+    formData.append("end_datetime", end_datetime);
+    jQuery.ajax({
+        url: 'fetch_productivity_final.php',
+        type: 'POST',
+        data: formData,
+        dataType: 'JSON',
+        success: function (data) {
+            JSONToCSVConvertor(data[0].hunter_summary, "Productivity Final Count " + start_datetime + ' ' + end_datetime, true);
+        },
+        error: function (data) {
+            alert("Error assigning probe. Please refresh");
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+}
+
+const fetch_details_productivity_single = () => {
+    let formData = new FormData();
+    formData.append("start_datetime", start_datetime );
+    formData.append("end_datetime", end_datetime);
+    jQuery.ajax({
+        url: 'fetch_productivity_single.php',
+        type: 'POST',
+        data: formData,
+        dataType: 'JSON',
+        success: function (data) {
+            JSONToCSVConvertor(data[0].summary, "Productivity Single Count " + start_datetime + ' ' + end_datetime, true);
+        },
+        error: function (data) {
+            alert("Error assigning probe. Please refresh");
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+}
+
 
 // gets projects details from server in json format
 function fetch_details() {
@@ -190,7 +232,11 @@ function validate_ticket_id() {
 }
 
 function show_product_info() {
+    const generate_productivity_section = document.getElementById('generate_productivity_section');
+    generate_productivity_section.classList.add('hide');
     var project_select = document.getElementById('project_select');
+    document.getElementById('export_button_productivity').classList.add('hide');
+    document.getElementById('export_button_productivity_single').classList.add('hide');
     $("#project_name").select2({
         width: '100%',
         multiple: false
@@ -200,8 +246,22 @@ function show_product_info() {
     $("#project_name").select2().val("").trigger("change");
 }
 
+const show_productivity_info = () => {
+    const generate_productivity_section = document.getElementById('generate_productivity_section');
+    generate_productivity_section.classList.remove('hide');
+    const project_select = document.getElementById('project_select');
+    project_select.classList.add('hide');
+    document.getElementById('ticket_section').classList.add('hide');
+    document.getElementById('generate_csv_section').classList.add('hide');
+    document.getElementById('export_button').classList.add('hide');
+}
+
 function show_probe_info() {
+    const generate_productivity_section = document.getElementById('generate_productivity_section');
+    generate_productivity_section.classList.add('hide');
     var project_select = document.getElementById('project_select');
+    document.getElementById('export_button_productivity').classList.add('hide');
+    document.getElementById('export_button_productivity_single').classList.add('hide');
     $("#project_name").select2({
         width: '100%',
         multiple: false
@@ -212,7 +272,11 @@ function show_probe_info() {
 }
 
 function show_hunter_info() {
+    const generate_productivity_section = document.getElementById('generate_productivity_section');
+    generate_productivity_section.classList.add('hide');
     var project_select = document.getElementById('project_select');
+    document.getElementById('export_button_productivity').classList.add('hide');
+    document.getElementById('export_button_productivity_single').classList.add('hide');
     $("#project_name").select2({
         width: '100%',
         multiple: true
@@ -291,7 +355,31 @@ jQuery(document).ready(function () {
             format: 'M/DD HH:mm A',
         }
     });
+    $('#datetime_filter_productivity').daterangepicker({
+        timePicker: true,
+        startDate: moment().startOf('hour'),
+        endDate: moment().startOf('hour').add(8, 'hour'),
+        locale: {
+            format: 'M/DD HH:mm A',
+        }
+    });
     $('#datetime_filter').on('apply.daterangepicker', function (ev, picker) {
         validate_date_time();
+    });
+    $('#datetime_filter_productivity').on('apply.daterangepicker', function (ev, picker) {
+        start_datetime = $('#datetime_filter_productivity').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm:ss');
+        end_datetime = $('#datetime_filter_productivity').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm:ss');
+        let export_button = document.getElementById('export_button_productivity');
+        let export_button_single = document.getElementById('export_button_productivity_single');
+        if (start_datetime != '' && end_datetime != '') {
+            export_button.classList.remove('hide');
+            export_button_single.classList.remove('hide');
+            filter_picked = true;
+
+        } else {
+            export_button.classList.add('hide');
+            export_button_single.classList.add('hide');
+            filter_picked = false;
+        }
     });
 });
