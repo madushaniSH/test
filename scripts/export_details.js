@@ -80,15 +80,15 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
 
 const special = () => {
     let formData = new FormData();
-    formData.append("start_datetime", '2019-10-15 00:00:00');
-    formData.append("end_datetime", '2019-11-16 00:00:00');
+    formData.append("start_datetime", '2019-09-16 04:30:00');
+    formData.append("end_datetime", '2019-10-16 04:30:00');
     jQuery.ajax({
         url: 'special.php',
         type: 'POST',
         data: formData,
         dataType: 'JSON',
         success: function (data) {
-            JSONToCSVConvertor(data[0].hunter_summary, " Monthly Summary 2019-09-16 00:00:00 to 2019-10-15 00:00:00", true);
+            JSONToCSVConvertor(data[0].hunter_summary, " Monthly Summary 2019-09-16 04:30:00 to 2019-10-16 04:30:00", true);
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
