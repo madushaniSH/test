@@ -828,11 +828,6 @@ function validate_ticket_name() {
             probe_hunt_counter.classList.remove('hide');
             hunter_counter.classList.remove('hide');
             selected_ticket = ticket;
-            if (p_name == 'GMI_US') {
-                document.getElementById('target_message').classList.remove('hide');
-            } else {
-                document.getElementById('target_message').classList.add('hide');
-            }
         }
     }
 }

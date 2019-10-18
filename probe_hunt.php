@@ -419,32 +419,6 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                         </div>
                         <div class="row">
                             <div id="probe_hunt_counter" class="col hide">
-                                <div class="row text-center hide" id="target_message">
-                                    <div class="col">
-                                        <div class="spinner-grow text-primary text-center" role="status">
-                                            <span class="sr-only">Loading...</span>
-                                        </div>
-                                        <div class="spinner-grow text-secondary text-center" role="status">
-                                            <span class="sr-only">Loading...</span>
-                                        </div>
-                                        <div class="spinner-grow text-success text-center" role="status">
-                                            <span class="sr-only">Loading...</span>
-                                        </div>
-                                        <div class="spinner-grow text-danger text-center" role="status">
-                                            <span class="sr-only">Loading...</span>
-                                        </div>
-                                        <div class="spinner-grow text-warning text-center" role="status">
-                                            <span class="sr-only">Loading...</span>
-                                        </div>
-                                        <div class="spinner-grow text-info text-center" role="status">
-                                            <span class="sr-only">Loading...</span>
-                                        </div>
-                                        <div class="spinner-grow text-dark text-center" role="status">
-                                            <span class="sr-only">Loading...</span>
-                                        </div>
-                                        <?php if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ){ echo "<p>Todays Target : Checked <span id =\"pro_count\"></span> probe(s) out of <span class=\"tot_count\">6000</span></p>";} else {echo "<p>Todays Target : Checked <span id =\"pro_count\"></span> probe(s) out of <span class=\"tot_count\">120</span></p>";} ?>
-                                    </div>
-                                </div>
                                 <div class="row text-center">
                                     <div class="col">
                                         <div class="counter">
