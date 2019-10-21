@@ -98,7 +98,8 @@ if ($row_count == 0) {
     (10, \"Flavour Can't Find\"),
     (11, \"Container Type Can't Find\"),
     (12, \"Sub Brand Can't Find\"),
-    (13, \"Brand Not Found\")";
+    (13, \"Brand Not Found\"),
+    (14, \"Partially Visible\")";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 
