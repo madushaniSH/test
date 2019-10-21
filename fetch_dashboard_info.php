@@ -45,21 +45,25 @@ $project_summary = array();
 $project_summary["AMER"]["name"] = 'AMER';
 $project_summary["AMER"]["productivity"] = 0;
 $project_summary["AMER"]["error_count"] = 0;
+$project_summary["AMER"]["rename_count"] = 0;
 $project_summary["AMER"]["points"] = 0;
 
 $project_summary["EMEA"]["name"] = 'EMEA';
 $project_summary["EMEA"]["productivity"] = 0;
 $project_summary["EMEA"]["error_count"] = 0;
+$project_summary["EMEA"]["rename_count"] = 0;
 $project_summary["EMEA"]["points"] = 0;
 
 $project_summary["APAC"]["name"] = 'APAC';
 $project_summary["APAC"]["productivity"] = 0;
+$project_summary["APAC"]["rename_count"] = 0;
 $project_summary["APAC"]["error_count"] = 0;
 $project_summary["APAC"]["points"] = 0;
 
 $project_summary["DPG"]["name"] = 'DPG';
 $project_summary["DPG"]["productivity"] = 0;
 $project_summary["DPG"]["error_count"] = 0;
+$project_summary["DPG"]["rename_count"] = 0;
 $project_summary["DPG"]["points"] = 0;
 $error_chart = array();
 $max_size = 0;
@@ -105,6 +109,8 @@ for ($i = 0; $i < $count_projects; $i++) {
             $hunter_summary[$max_size]["DVC Hunted"] = 0;
             $hunter_summary[$max_size]["Hunted Facing Count"] = 0;
             $hunter_summary[$max_size]["QA Errors"] = 0;
+            $hunter_summary[$max_size]["Rename Errors"] = 0;
+            $hunter_summary[$max_size]["System Errors"] = 0;
             $hunter_summary[$max_size]["Accuracy"] = 0;
             $hunter_summary[$max_size]["EMEA"] = 0;
             $hunter_summary[$max_size]["AMER"] = 0;
@@ -174,9 +180,31 @@ for ($i = 0; $i < count($hunter_summary); $i++){
             $error_count = 0;
         }
         $hunter_summary[$i]["QA Errors"] += (int)$error_count;
+
+        $sql = "SELECT COUNT(*) FROM ".$dbname.".products a WHERE ( a.product_type = 'sku' OR a.product_type = 'brand' ) AND a.account_id = :account_id AND (a.product_previous IS NOT NULL) AND a.product_qa_datetime >= :start_datetime AND a.product_qa_datetime <= :end_datetime AND a.product_status = 2";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
+        $rename_count = $stmt->fetchColumn();
+        if ($rename_count == NULL) {
+            $rename_count = 0;
+        }
+        $hunter_summary[$i]["Rename Errors"] += (int)$rename_count;
+
+        $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE a.account_id = :account_id AND a.product_qa_status = "disapproved" AND a.product_qa_account_id IS NULL AND (a.product_creation_time >= :start_datetime AND a.product_creation_time <= :end_datetime) AND a.product_status = 2';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
+        $system_errors = $stmt->fetchColumn();
+        if ($system_errors == NULL) {
+            $system_errors = 0;
+        }
+        $hunter_summary[$i]["System Errors"] += (int)$system_errors;
+
+
         $this_project_productivity = (($brand_count * 1.5) + ($sku_count * 1) + ($dvc_count * 0.5) + ($facing_count * 0.5)) * $hunter_summary[$i]["project_weight"][$j];
-        $this_project_points = $this_project_productivity - ($error_count * 5);
-        $this_project_errors = $error_count;
+        $this_project_points = $this_project_productivity - ((($error_count + $system_errors) * 5) + $rename_count);
+        $this_project_errors = $error_count + $system_errors;
+
+        $this_project_rename = $rename_count;
 
         if ($hunter_summary[$i]["probe_processed_hunter_id"] == $_SESSION['id']) {
             $sql = "SELECT COUNT(a.product_id) as 'count', b.error_id FROM ".$dbname.".products a INNER JOIN ".$dbname.".product_qa_errors b ON a.product_id = b.product_id WHERE a.account_id = :account_id AND a.product_qa_datetime >= :start_datetime AND a.product_qa_datetime <= :end_datetime AND a.product_status = 2 GROUP BY b.error_id";
@@ -212,24 +240,28 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["AMER"]["productivity"] += $this_project_productivity;
                 $project_summary["AMER"]["points"] += $this_project_points;
                 $project_summary["AMER"]["error_count"] += $this_project_errors;
+                $project_summary["AMER"]["rename_count"] += $this_project_rename;
                 break;
             case 'EMEA' : 
                 $hunter_summary[$i]["EMEA"]++; 
                 $project_summary["EMEA"]["productivity"] += $this_project_productivity;
                 $project_summary["EMEA"]["points"] += $this_project_points;
                 $project_summary["EMEA"]["error_count"] += $this_project_errors;
+                $project_summary["EMEA"]["rename_count"] += $this_project_rename;
                 break;
             case 'APAC' : 
                 $hunter_summary[$i]["APAC"]++; 
                 $project_summary["APAC"]["productivity"] += $this_project_productivity;
                 $project_summary["APAC"]["points"] += $this_project_points;
                 $project_summary["APAC"]["error_count"] += $this_project_errors;
+                $project_summary["APAC"]["rename_count"] += $this_project_rename;
                 break;
             case 'DPG' : 
                 $hunter_summary[$i]["DPG"]++; 
                 $project_summary["DPG"]["productivity"] += $this_project_productivity;
                 $project_summary["DPG"]["points"] += $this_project_points;
                 $project_summary["DPG"]["error_count"] += $this_project_errors;
+                $project_summary["DPG"]["rename_count"] += $this_project_rename;
             break;
         }
         $pdo = NULL;
@@ -238,39 +270,53 @@ for ($i = 0; $i < count($hunter_summary); $i++){
 
     $total_count = ($hunter_summary[$i]["Brand Hunted"] * 1.5)  + $hunter_summary[$i]["SKU Hunted"] + (($hunter_summary[$i]["DVC Hunted"] + $hunter_summary[$i]["Hunted Facing Count"]) / 2);
     $hunter_summary[$i]["productivity"] = (int)$total_count;
-    $points = $total_count - ($hunter_summary[$i]["QA Errors"] * 5);
+    $points = $total_count - ((($hunter_summary[$i]["QA Errors"] + $hunter_summary[$i]["System Errors"])  * 5) + $hunter_summary[$i]["Rename Errors"]);
     $hunter_summary[$i]["Points"] = (int)$points;
     if ($total_count == 0) {
         $monthly_accuracy = 0;
+        $rename_accuracy = 0;
     } else {
-        $monthly_accuracy = round(((($total_count - ($hunter_summary[$i]["QA Errors"] * 1) )/ $total_count) * 100),2);
+        $monthly_accuracy = round(((($total_count - ($hunter_summary[$i]["QA Errors"] + $hunter_summary[$i]["System Errors"] * 1) )/ $total_count) * 100),2);
         if ($monthly_accuracy == NULL || is_nan($monthly_accuracy)) {
             $monthly_accuracy = 0;
         }
+        $rename_accuracy = round(((($total_count - ($hunter_summary[$i]["Rename Errors"] * 1) )/ $total_count) * 100),2);
+        if ($rename_accuracy == NULL || is_nan($rename_accuracy)) {
+            $rename_accuracy = 0;
+        }
     }   
     $hunter_summary[$i]["Accuracy"] = $monthly_accuracy;
+    $hunter_summary[$i]["rename_accuracy"] = $rename_accuracy;
 
 }
 if ($project_summary["AMER"]["productivity"] != 0 ) {
     $project_summary["AMER"]["accuracy"] = round((($project_summary["AMER"]["productivity"] - $project_summary["AMER"]["error_count"]) / $project_summary["AMER"]["productivity"] * 100),2);
+    $project_summary["AMER"]["rename_accuracy"] = round((($project_summary["AMER"]["productivity"] - $project_summary["AMER"]["rename_count"]) / $project_summary["AMER"]["productivity"] * 100),2);
 } else {
     $project_summary["AMER"]["accuracy"] = 0; 
+    $project_summary["AMER"]["rename_accuracy"] = 0; 
 }
 
 if ($project_summary["EMEA"]["productivity"] != 0 ) {
     $project_summary["EMEA"]["accuracy"] = round((($project_summary["EMEA"]["productivity"] - $project_summary["EMEA"]["error_count"]) / $project_summary["EMEA"]["productivity"] * 100),2);
+    $project_summary["EMEA"]["rename_accuracy"] = round((($project_summary["EMEA"]["productivity"] - $project_summary["EMEA"]["rename_count"]) / $project_summary["EMEA"]["productivity"] * 100),2);
 } else {
     $project_summary["EMEA"]["accuracy"] = 0; 
+    $project_summary["EMEA"]["rename_accuracy"] = 0; 
 }
 if ($project_summary["APAC"]["productivity"] != 0 ) {
     $project_summary["APAC"]["accuracy"] = round((($project_summary["APAC"]["productivity"] - $project_summary["APAC"]["error_count"]) / $project_summary["APAC"]["productivity"] * 100),2);
+    $project_summary["APAC"]["rename_accuracy"] = round((($project_summary["APAC"]["productivity"] - $project_summary["APAC"]["rename_count"]) / $project_summary["APAC"]["productivity"] * 100),2);
 } else {
     $project_summary["APAC"]["accuracy"] = 0; 
+    $project_summary["APAC"]["rename_accuracy"] = 0; 
 }
 if ($project_summary["DPG"]["productivity"] != 0 ) {
     $project_summary["DPG"]["accuracy"] = round((($project_summary["DPG"]["productivity"] - $project_summary["DPG"]["error_count"]) / $project_summary["DPG"]["productivity"] * 100),2);
+    $project_summary["DPG"]["rename_accuracy"] = round((($project_summary["DPG"]["productivity"] - $project_summary["DPG"]["rename_count"]) / $project_summary["DPG"]["productivity"] * 100),2);
 } else {
     $project_summary["DPG"]["accuracy"] = 0; 
+    $project_summary["DPG"]["rename_accuracy"] = 0; 
 }
 
 usort($hunter_summary, "custom_sort");

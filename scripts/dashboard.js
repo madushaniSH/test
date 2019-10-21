@@ -9,8 +9,8 @@ let table;
     "project_region" select box. The fetched list is then rendered on the multiple selection
     select box "project_name". 
 */
-const fetch_project_list = () => {
-    const project_region = $('#project_region').val();
+const fetch_project_list = (region_element, project_name_element) => {
+    const project_region = $('#'+region_element).val();
     if (project_region != '') {
         let formData = new FormData();
         formData.append('project_region', project_region);
@@ -21,9 +21,9 @@ const fetch_project_list = () => {
             dataType: "JSON",
             success: function (data) {
                 // removes all current options present in the select element
-                $('#project_name').empty();
+                $('#'+project_name_element).empty();
                 for (let i = 0; i < data[0].project_info.length; i++) {
-                    $('#project_name').append('<option value="' + data[0].project_info[i].name + '">' + data[0].project_info[i].name + "</option>");
+                    $('#'+project_name_element).append('<option value="' + data[0].project_info[i].name + '">' + data[0].project_info[i].name + "</option>");
                 }
             },
             error: function (data) {
@@ -82,12 +82,15 @@ const fetch_dashboard_info = () => {
                 if (data[0].current_info.Rank != null) {
                     $('#ranking').html(data[0].current_info.Rank + " / " + data[0].total);
                 }
+                if (data[0].current_info.rename_accuracy != null) {
+                    $('#rename_accuracy').html(data[0].current_info.rename_accuracy + " %");
+                }
             }
             let max_size = data[0].hunter_summary.length;
             let project_size = data[0].project_summary.length;
             $('#project_section').empty();
             for (let i = 0; i < project_size; i++) {
-                let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].project_summary[i].Rank + '</p></div><div class="col"><p>' + data[0].project_summary[i].name + '</p></div><div class="col"><p>' + data[0].project_summary[i].productivity + '</p></div><div class="col"><p> ' + data[0].project_summary[i].accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].project_summary[i].points + '</p></div>';
+                let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].project_summary[i].Rank + '</p></div><div class="col"><p>' + data[0].project_summary[i].name + '</p></div><div class="col"><p>' + data[0].project_summary[i].productivity + '</p></div><div class="col"><p> ' + data[0].project_summary[i].accuracy + ' %' + '</p></div><div class="col-md-3"><p> ' + data[0].project_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].project_summary[i].points + '</p></div></div>';
                 $('#project_section').append(html);
             }
             let flag = false;
@@ -95,7 +98,7 @@ const fetch_dashboard_info = () => {
             for (let i = 0; i < max_size; i++) {
                 if (i < 3) {
                     if (data[0].hunter_summary[i].Points > 5) {
-                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].productivity + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
+                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col-md-2"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].productivity + '</p></div><div class="col-md-3"><p> ' + data[0].hunter_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
                         $('#leader_board_section').append(html);
                     } else {
                         flag = true;
@@ -108,7 +111,7 @@ const fetch_dashboard_info = () => {
             if (!flag) {
                 for (let i = max_size - 1; i > 0; i--) {
                     if (i > max_size - 4) {
-                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].productivity + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
+                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col-md-2"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].productivity + '</p></div><div class="col-md-3"><p> ' + data[0].hunter_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
                         $('#bottom_board_section').append(html);
                     } else {
                         break;
@@ -238,10 +241,14 @@ const fetch_hunter_products = () => {
 }
 
 jQuery(document).ready(function () {
-    fetch_project_list();
+    fetch_project_list('project_region', 'project_name');
+    fetch_project_list('project_region_error_type', 'project_name_error_type');
     // when a new project region is selected fetches an updated project list
     $('#project_region').on('select2:select', function (e) {
-        fetch_project_list();
+        fetch_project_list('project_region', 'project_name');
+    });
+    $('#project_region_error_type').on('select2:select', function (e) {
+        fetch_project_list('project_region_error_type', 'project_name_error_type');
     });
     fetch_dashboard_info();
     setInterval(function () {
@@ -251,10 +258,20 @@ jQuery(document).ready(function () {
         "opens": "right",
         "drops": "up"
     });
+    $('#datetime_filter_error_type').daterangepicker({
+        "opens": "right",
+        "drops": "up"
+    });
     jQuery('#project_region').select2({
         width: '100%',
     });
+    jQuery('#project_region_error_type').select2({
+        width: '100%',
+    });
     jQuery('#project_name').select2({
+        width: '100%',
+    });
+    jQuery('#project_name_error_type').select2({
         width: '100%',
     });
     jQuery('#hunter_filter').select2({

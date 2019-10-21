@@ -100,8 +100,17 @@ for ($i = 0; $i < count($project_array); $i++) {
             if ($error_count == NULL) {
                 $error_count = 0;
             }
+
+            $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE a.account_id = :account_id AND a.product_qa_status = "disapproved" AND a.product_qa_account_id IS NULL AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['account_id'=>$project_hunters[$m][id], 'date'=>$date]);
+            $system_errors = $stmt->fetchColumn();
+            if ($system_errors == NULL) {
+                $system_errors = 0;
+            }
+
             if ($sku_count != 0 || $brand_count != 0 || $dvc_count != 0 || $facing_count != 0 || $error_count != 0){
-                $summary[$count] = array_fill_keys(array('date', 'region','user_gid', 'project_name','Brand', 'SKU', 'DVC', 'Facing', 'Error Count'),'');
+                $summary[$count] = array_fill_keys(array('date', 'region', 'language','user_gid', 'project_name','Brand', 'SKU', 'DVC', 'Facing', 'Error Count', 'System Errors'),'');
                 $summary[$count][project_name] = $dbname;
                 $summary[$count][region] = $project_array[$i][project_region];
                 $summary[$count][language] = $project_array[$i][project_language];
@@ -112,6 +121,7 @@ for ($i = 0; $i < count($project_array); $i++) {
                 $summary[$count]['DVC'] = (int)$dvc_count;
                 $summary[$count]['Facing'] = (int)$facing_count;
                 $summary[$count]['Error Count'] = (int)$error_count;
+                $summary[$count]['System Errors'] = (int)$system_errors;
                 $count++;
             }
         }

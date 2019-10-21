@@ -219,11 +219,12 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         </div>
                                         <div class="col">
                                             <div class="row">
-                                                <div class="col-md-3">
+                                                <div class="col-md-4">
                                                     <p><i class="far fa-user text-dark"></i> Account Name</p>
                                                     <p><i class="fas fa-briefcase text-secondary"></i> Productivity</p>
                                                     <p><i class="far fa-star text-primary"></i> Total Points</p>
-                                                    <p><i class="fas fa-bullseye text-info"></i> Overall Accuracy</p>
+                                                    <p><i class="fas fa-file-signature text-info"></i> Naming Accuracy</p>
+                                                    <p><i class="fas fa-bullseye text-danger"></i> Overall Accuracy</p>
                                                     <p><i class="fas fa-trophy text-success"></i> Ranking</p>
                                                 </div>
                                                 <div class="col-md-7">
@@ -232,7 +233,8 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                                     </p>
                                                     <p class="text-secondary"><span id="productivity"> N / A</span></p>
                                                     <p class="text-primary"><span id="total_points"> N / A</span></p>
-                                                    <p class="text-info"><span id="overall_accuracy"> N / A</span></p>
+                                                    <p class="text-info"><span id="rename_accuracy"> N / A</span></p>
+                                                    <p class="text-danger"><span id="overall_accuracy"> N / A</span></p>
                                                     <p class="text-success"><span id="ranking"> N / A</span></p>
                                                 </div>
                                             </div>
@@ -261,6 +263,9 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         <div class="col">
                                             <p>Accuracy</p>
                                         </div>
+                                        <div class="col-md-3">
+                                            <p>Naming Accuracy</p>
+                                        </div>
                                         <div class="col">
                                             <p class="text-primary">Points</p>
                                         </div>
@@ -287,7 +292,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         </div>
                                         <div class="col-md-1">
                                         </div>
-                                        <div class="col">
+                                        <div class="col-md-2">
                                             <p>Hunter</p>
                                         </div>
                                         <div class="col">
@@ -295,6 +300,9 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         </div>
                                         <div class="col">
                                             <p>Productivity</p>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <p>Naming Accuracy</p>
                                         </div>
                                         <div class="col">
                                             <p class="text-success">Points</p>
@@ -318,7 +326,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         </div>
                                         <div class="col-md-1">
                                         </div>
-                                        <div class="col">
+                                        <div class="col-md-2">
                                             <p>Hunter</p>
                                         </div>
                                         <div class="col">
@@ -326,6 +334,9 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         </div>
                                         <div class="col">
                                             <p>Productivity</p>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <p>Naming Accuracy</p>
                                         </div>
                                         <div class="col">
                                             <p class="text-danger">Points</p>
@@ -422,6 +433,54 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                             </div>
                         </div>
                     </div>
+                    </div>
+                    <div class="row my-3 hide">
+                        <div class="col">
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Project Error Type Details</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label for="project_region_error_type">Select Project Region</label>
+                                            <select name="project_region_error_type" id="project_region_error_type" class="form-control">
+                                                <option value="AMER" selected >AMER</option>
+                                                <option value="EMEA">EMEA</option>
+                                                <option value="APAC">APAC</option>
+                                                <option value="DPG">DPG</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <label for="project_name_error_type">Select Project Name</label>
+                                            <select name="project_name_error_type" id="project_name_error_type" class="form-control" multiple="multiple">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row my-3">
+                                        <div class="col-md-4">
+                                            <label for="datetime_filter_error_type">Date Range</label>
+                                            <input id="datetime_filter_error_type" type="text" name="datetimes" value="" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <button class="btn btn-success btn-icon-split" id="">
+                                                <span class="text">Fetch Details</span>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="hide" id="load_section">
+                                                <div class="spinner-border text-success" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
