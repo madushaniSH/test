@@ -37,7 +37,7 @@ catch(PDOException $e){
 }
 
 
-$sql = 'SELECT project_db_name, project_region FROM `project_db`.projects WHERE 1';
+$sql = 'SELECT project_db_name, project_region, project_language FROM `project_db`.projects WHERE 1';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $project_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -104,6 +104,7 @@ for ($i = 0; $i < count($project_array); $i++) {
                 $summary[$count] = array_fill_keys(array('date', 'region','user_gid', 'project_name','Brand', 'SKU', 'DVC', 'Facing', 'Error Count'),'');
                 $summary[$count][project_name] = $dbname;
                 $summary[$count][region] = $project_array[$i][project_region];
+                $summary[$count][language] = $project_array[$i][project_language];
                 $summary[$count][user_gid] = $project_hunters[$m][account_gid];
                 $summary[$count][date] = $date;
                 $summary[$count]['SKU'] = (int)$sku_count;
