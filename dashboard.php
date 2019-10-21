@@ -224,7 +224,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                                     <p><i class="fas fa-briefcase text-secondary"></i> Productivity</p>
                                                     <p><i class="far fa-star text-primary"></i> Total Points</p>
                                                     <p><i class="fas fa-file-signature text-info"></i> Naming Accuracy</p>
-                                                    <p><i class="fas fa-bullseye text-danger"></i> Overall Accuracy</p>
+                                                    <p><i class="fas fa-bullseye text-success"></i> Overall Accuracy</p>
                                                     <p><i class="fas fa-trophy text-success"></i> Ranking</p>
                                                 </div>
                                                 <div class="col-md-7">
@@ -234,7 +234,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                                     <p class="text-secondary"><span id="productivity"> N / A</span></p>
                                                     <p class="text-primary"><span id="total_points"> N / A</span></p>
                                                     <p class="text-info"><span id="rename_accuracy"> N / A</span></p>
-                                                    <p class="text-danger"><span id="overall_accuracy"> N / A</span></p>
+                                                    <p class="text-success"><span id="overall_accuracy"> N / A</span></p>
                                                     <p class="text-success"><span id="ranking"> N / A</span></p>
                                                 </div>
                                             </div>
@@ -298,11 +298,11 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         <div class="col">
                                             <p>Region</p>
                                         </div>
-                                        <div class="col">
-                                            <p>Productivity</p>
-                                        </div>
                                         <div class="col-md-3">
                                             <p>Naming Accuracy</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>Accuracy</p>
                                         </div>
                                         <div class="col">
                                             <p class="text-success">Points</p>
@@ -332,11 +332,11 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         <div class="col">
                                             <p>Region</p>
                                         </div>
-                                        <div class="col">
-                                            <p>Productivity</p>
-                                        </div>
                                         <div class="col-md-3">
                                             <p>Naming Accuracy</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>Accuracy</p>
                                         </div>
                                         <div class="col">
                                             <p class="text-danger">Points</p>

@@ -87,6 +87,7 @@ for ($i = 0; $i < $count_projects; $i++) {
             $hunter_summary[$max_size]["Hunted Facing Count"] = 0;
             $hunter_summary[$max_size]["Total Count"] = 0;
             $hunter_summary[$max_size]["Error Count"] = 0;
+            $hunter_summary[$max_size]["Rename Errors"] = 0;
             $hunter_summary[$max_size]["System Errors"] = 0;
             $hunter_summary[$max_size]["Accuracy"] = 0;
             $hunter_summary[$max_size]["EMEA"] = 0;
@@ -165,6 +166,16 @@ for ($i = 0; $i < count($hunter_summary); $i++){
             $system_errors = 0;
         }
         $hunter_summary[$i]["System Errors"] += (int)$system_errors;
+
+        $sql = "SELECT COUNT(*) FROM ".$dbname.".products a WHERE ( a.product_type = 'sku' OR a.product_type = 'brand' ) AND a.account_id = :account_id AND (a.product_previous IS NOT NULL) AND a.product_qa_datetime >= :start_datetime AND a.product_qa_datetime <= :end_datetime AND a.product_status = 2";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
+        $rename_count = $stmt->fetchColumn();
+        if ($rename_count == NULL) {
+            $rename_count = 0;
+        }
+        $hunter_summary[$i]["Rename Errors"] += (int)$rename_count;
+
         $this_project_productivity = (($brand_count * 1.5) + ($sku_count * 1) + ($dvc_count * 0.5) + ($facing_count * 0.5)) * $hunter_summary[$i]["project_weight"][$j];
         $this_project_points = $this_project_productivity - ($error_count * 5);
         $this_project_errors = $error_count;
@@ -196,8 +207,13 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         if ($monthly_accuracy == NULL || is_nan($monthly_accuracy)) {
             $monthly_accuracy = 0;
         }
+        $rename_accuracy = round(((($total_count - ($hunter_summary[$i]["Rename Errors"]) )/ $total_count) * 100),2);
+        if ($rename_accuracy == NULL || is_nan($rename_accuracy)) {
+            $rename_accuracy = 0;
+        }
     }   
     $hunter_summary[$i]["Accuracy"] = $monthly_accuracy;
+    $hunter_summary[$i]["Rename Accuracy"] = $rename_accuracy;
 
 }
 

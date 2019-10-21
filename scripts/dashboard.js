@@ -98,7 +98,7 @@ const fetch_dashboard_info = () => {
             for (let i = 0; i < max_size; i++) {
                 if (i < 3) {
                     if (data[0].hunter_summary[i].Points > 5) {
-                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col-md-2"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].productivity + '</p></div><div class="col-md-3"><p> ' + data[0].hunter_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
+                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col-md-2"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col-md-3"><p> ' + data[0].hunter_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p> ' + data[0].hunter_summary[i].Accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
                         $('#leader_board_section').append(html);
                     } else {
                         flag = true;
@@ -111,7 +111,7 @@ const fetch_dashboard_info = () => {
             if (!flag) {
                 for (let i = max_size - 1; i > 0; i--) {
                     if (i > max_size - 4) {
-                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col-md-2"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].productivity + '</p></div><div class="col-md-3"><p> ' + data[0].hunter_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
+                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col-md-2"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col-md-3"><p> ' + data[0].hunter_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p> ' + data[0].hunter_summary[i].Accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
                         $('#bottom_board_section').append(html);
                     } else {
                         break;
