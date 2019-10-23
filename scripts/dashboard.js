@@ -206,13 +206,30 @@ const fetch_project_error_lists = () => {
                         type: 'horizontalBar',
                         options: {
                             scales: {
-                                xAxes: [{ stacked: true }],
-                                yAxes: [{ stacked: true }]
+                                xAxes: [
+                                    {
+                                        stacked: true,
+                                        ticks: {
+                                            fontColor: "white",
+                                        }
+                                    }
+                                ],
+                                yAxes: [
+                                    {
+                                        stacked: true,
+                                        ticks: {
+                                            fontColor: "white",
+                                        }
+                                    }
+                                ],
                             },
                             responsive: true,
                             maintainAspectRatio: false,
                             legend: {
-                                position: 'right'
+                                position: 'right',
+                                labels: {
+                                    fontColor: "white",
+                                }
                             },
                         },
 

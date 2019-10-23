@@ -17,3 +17,23 @@
     width: 1300px;
     margin-left: 15%;
 }
+
+.card {
+    background-color: transparent !important;
+    color: white;
+}
+
+.modal-content {
+    background-image: url('../images/dashboard.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+}
+
+#dataTable {
+    color: white;
+}
+
+#product_data_table {
+    color: white;
+}
