@@ -12,3 +12,8 @@
     border-radius: 1vw;
     background: lightslategrey;
 }
+
+#error_type_chart_project {
+    width: 1300px;
+    margin-left: 15%;
+}

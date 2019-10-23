@@ -434,7 +434,10 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                         </div>
                     </div>
                     </div>
-                    <div class="row my-3 hide">
+                    <?php
+                    if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Supervisor') {
+                    echo '
+                    <div class="row my-3">
                         <div class="col">
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
@@ -466,22 +469,32 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                     </div>
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <button class="btn btn-success btn-icon-split" id="">
+                                            <button class="btn btn-success btn-icon-split" id="fetch_project_error_lists">
                                                 <span class="text">Fetch Details</span>
                                             </button>
                                         </div>
                                         <div class="col-md-2">
-                                            <div class="hide" id="load_section">
+                                            <div class="hide" id="load_section_error_type">
                                                 <div class="spinner-border text-success" role="status">
                                                 <span class="sr-only">Loading...</span>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="row my-3">
+                                        <p id="display_message_error_type_chart" class="hide"> ¯\_(ツ)_/¯ 0 errors found. You can help increse this number</p>
+                                    </div>
+                                    <div class="row my-3">
+                                        <div id="chart-container">
+                                            <canvas id="error_type_chart_project" class="hide"></canvas>
                                         </div>
                                     </div>
                                  </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>';
+                    }
+                    ?>
                 </div>
 
             </div>

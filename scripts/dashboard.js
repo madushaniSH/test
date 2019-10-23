@@ -10,7 +10,7 @@ let table;
     select box "project_name". 
 */
 const fetch_project_list = (region_element, project_name_element) => {
-    const project_region = $('#'+region_element).val();
+    const project_region = $('#' + region_element).val();
     if (project_region != '') {
         let formData = new FormData();
         formData.append('project_region', project_region);
@@ -21,9 +21,9 @@ const fetch_project_list = (region_element, project_name_element) => {
             dataType: "JSON",
             success: function (data) {
                 // removes all current options present in the select element
-                $('#'+project_name_element).empty();
+                $('#' + project_name_element).empty();
                 for (let i = 0; i < data[0].project_info.length; i++) {
-                    $('#'+project_name_element).append('<option value="' + data[0].project_info[i].name + '">' + data[0].project_info[i].name + "</option>");
+                    $('#' + project_name_element).append('<option value="' + data[0].project_info[i].name + '">' + data[0].project_info[i].name + "</option>");
                 }
             },
             error: function (data) {
@@ -173,6 +173,106 @@ const getRandomColor = () => {
     return color;
 }
 
+const fetch_project_error_lists = () => {
+    document.getElementById('display_message_error_type_chart').classList.add('hide');
+    const project_region = $('#project_region_error_type').val();
+    const project_list = $('#project_name_error_type').val();
+    const start_datetime = $('#datetime_filter_error_type').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm:ss');
+    const end_datetime = $('#datetime_filter_error_type').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm:ss');
+    const load_section = document.getElementById('load_section_error_type');
+    if (project_region != '' && start_datetime != '' && end_datetime != '') {
+        load_section.classList.remove('hide');
+        let formData = new FormData();
+        formData.append('project_region', project_region);
+        formData.append('project_list', project_list);
+        formData.append('start_datetime', start_datetime);
+        formData.append('end_datetime', end_datetime);
+        jQuery.ajax({
+            url: "fetch_dashboard_error_list.php",
+            type: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: function (data) {
+                console.log(data[0].summary);
+                document.getElementById("chart-container").innerHTML = '&nbsp;';
+                document.getElementById("chart-container").innerHTML = '<canvas id="error_type_chart_project"></canvas>';
+                if (data[0].summary.length > 0) {
+                    document.getElementById('display_message_error_type_chart').classList.add('hide');
+                    document.getElementById('error_type_chart_project').classList.remove('hide');
+                    document.getElementById('error_type_chart_project').innerHTML = '';
+                    let ctx = document.getElementById('error_type_chart_project').getContext('2d');
+                    let myChart = new Chart(ctx, {
+                        data: [],
+                        type: 'horizontalBar',
+                        options: {
+                            scales: {
+                                xAxes: [{ stacked: true }],
+                                yAxes: [{ stacked: true }]
+                            },
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            legend: {
+                                position: 'right'
+                            },
+                        },
+
+                    });
+                    let this_dataset = [];
+                    for (let m = 0; m < data[0].summary.length; m++) {
+                        myChart.data.labels.push(data[0].summary[m].error_name);
+                        for (let n = 0; n < data[0].summary[m].hunter_info.length; n++) {
+                            this_dataset = {
+                                label: [],
+                                data: [],
+                            };
+                            let found = false;
+                            myChart.data.datasets.forEach(dataset => {
+                                if (dataset.label == data[0].summary[m].hunter_info[n].hunter_gid) {
+                                    found = true;
+                                }
+                            });
+                            if (!found) {
+                                this_dataset.label.push(data[0].summary[m].hunter_info[n].hunter_gid);
+                                myChart.data.datasets.push(this_dataset);
+                            }
+                        }
+                    }
+                    myChart.data.datasets.forEach(dataset => {
+                        let color = getRandomColor();
+                        dataset.backgroundColor = color;
+                        for (let m = 0; m < data[0].summary.length; m++) {
+                            let found = false;
+                            for (let n = 0; n < data[0].summary[m].hunter_info.length; n++) {
+                                if (dataset.label == data[0].summary[m].hunter_info[n].hunter_gid) {
+                                    found = true;
+                                    dataset.data.push(data[0].summary[m].hunter_info[n].error_count);
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                dataset.data.push(0);
+                            }
+                        }
+                    });
+                    myChart.update();
+                    myChart.render();
+                } else {
+                    document.getElementById('display_message_error_type_chart').classList.remove('hide');
+                    document.getElementById('error_type_chart_project').classList.add('hide');
+                }
+                load_section.classList.add('hide');
+            },
+            error: function (data) {
+                alert("Error fetching product_information. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
+
+
 const fetch_hunter_products = () => {
     const project_region = $('#project_region').val();
     const project_list = $('#project_name').val();
@@ -260,7 +360,13 @@ jQuery(document).ready(function () {
     });
     $('#datetime_filter_error_type').daterangepicker({
         "opens": "right",
-        "drops": "up"
+        "drops": "up",
+        timePicker: true,
+        startDate: moment().startOf('hour'),
+        endDate: moment().startOf('hour').add(8, 'hour'),
+        locale: {
+            format: 'M/DD HH:mm A',
+        }
     });
     jQuery('#project_region').select2({
         width: '100%',
@@ -282,6 +388,9 @@ jQuery(document).ready(function () {
         $('#hunter_filter').append('<option value="">None</option>');
         $("#hunter_filter").val('').trigger("change");
         fetch_hunter_products();
+    });
+    $('#fetch_project_error_lists').click(() => {
+        fetch_project_error_lists();
     });
     table = $('#dataTable').DataTable({
         "columnDefs": [
