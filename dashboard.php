@@ -220,7 +220,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         <div class="col">
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <p><i class="far fa-user text-dark"></i> Account Name</p>
+                                                    <p><i class="far fa-user"></i> Account Name</p>
                                                     <p><i class="fas fa-briefcase text-secondary"></i> Productivity</p>
                                                     <p><i class="far fa-star text-primary"></i> Total Points</p>
                                                     <p><i class="fas fa-file-signature text-info"></i> Naming Accuracy</p>
@@ -228,10 +228,10 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                                     <p><i class="fas fa-trophy text-success"></i> Ranking</p>
                                                 </div>
                                                 <div class="col-md-7">
-                                                    <p class="text-dark">
+                                                    <p>
                                                         <?php echo $user_information->name;?>
                                                     </p>
-                                                    <p class="text-secondary"><span id="productivity"> N / A</span></p>
+                                                    <p><span id="productivity"> N / A</span></p>
                                                     <p class="text-primary"><span id="total_points"> N / A</span></p>
                                                     <p class="text-info"><span id="rename_accuracy"> N / A</span></p>
                                                     <p class="text-success"><span id="overall_accuracy"> N / A</span></p>
