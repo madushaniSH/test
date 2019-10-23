@@ -98,7 +98,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
         $error_count = $stmt->fetchColumn();
-        $hunter_summary[$i]["rename_error_count"]++;
+        $hunter_summary[$i]["rename_error_count"] += $error_count;
     }
     unset($hunter_summary[$i][probe_processed_hunter_id]);
     unset($hunter_summary[$i][project_count]);
