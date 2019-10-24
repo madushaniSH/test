@@ -577,6 +577,8 @@ const save_radar_source = (save_radar, close_radar) => {
                 formData.append('manu_link', manu_link);
                 formData.append('product_link', product_link);
                 formData.append('facings', facings);
+                const resubmitted_product = document.getElementById('resubmitted_product').checked;
+                formData.append('resubmitted_product', resubmitted_product);
                 status_element.disabled = true;
                 document.getElementById('source').disabled = true;
                 jQuery.ajax({
@@ -696,6 +698,7 @@ const reset_hunt_information = () => {
     document.getElementById('product_type_error').innerHTML = '';
     document.getElementById('facing_error').innerHTML = '';
     document.getElementById('manu_link_error').innerHTML = '';
+    document.getElementById('resubmitted_product').checked = false;
 }
 
 const reset_radar_form = () => {
@@ -707,6 +710,7 @@ const reset_radar_form = () => {
     document.getElementById('status').disabled = false;
     document.getElementById('server_success').innerHTML = '';
     product_count = 0;
+    document.getElementById('resubmitted_product').checked = false;
 }
 
 const show_dvc_options = () => {

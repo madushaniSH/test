@@ -96,61 +96,61 @@ try {
     $fetched_info;
     $fetched_count = 0;
 
-    if ($product_type == 'brand' ||$product_type == 'sku') {
-        $sql = 'SELECT product_id, product_creation_time, product_type FROM products WHERE product_name = :product_name AND product_type = :product_type AND (product_qa_status = "pending" OR product_qa_status = "approved" )';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['product_name'=>trim($_POST['product_name']), 'product_type'=>$_POST['product_type']]);
-        $fetched_count = $stmt->rowCount();
-        $fetched_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } else if ($product_type == 'dvc') {
-        $sql = 'SELECT product_id, product_creation_time, product_type FROM products WHERE product_alt_design_name = :product_alt_design_name AND product_type = :product_type AND (product_qa_status = "pending" OR product_qa_status = "approved" )';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['product_alt_design_name'=>$alt_design_name, 'product_type'=>$_POST['product_type']]);
-        $fetched_count = $stmt->rowCount();
-        $fetched_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } else if ($product_type == 'facing') {
-        $fetched_count = 1;
-    }
+    if ($_POST['resubmitted_product'] !== "true") {
+        if ($product_type == 'brand' ||$product_type == 'sku') {
+            $sql = 'SELECT product_id, product_creation_time, product_type FROM products WHERE product_name = :product_name AND product_type = :product_type AND (product_qa_status = "pending" OR product_qa_status = "approved" )';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['product_name'=>trim($_POST['product_name']), 'product_type'=>$_POST['product_type']]);
+            $fetched_count = $stmt->rowCount();
+            $fetched_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else if ($product_type == 'dvc') {
+            $sql = 'SELECT product_id, product_creation_time, product_type FROM products WHERE product_alt_design_name = :product_alt_design_name AND product_type = :product_type AND (product_qa_status = "pending" OR product_qa_status = "approved" )';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['product_alt_design_name'=>$alt_design_name, 'product_type'=>$_POST['product_type']]);
+            $fetched_count = $stmt->rowCount();
+            $fetched_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else if ($product_type == 'facing') {
+            $fetched_count = 1;
+        }
 
-    if ($fetched_count != 1) {
-        $min_date_time;
-        $min_product_id;
-        $insert_index;
-        $error_id;
-        for ($i = 0; $i < count($fetched_info); $i++){
-            if ($i == 0) {
-                $min_date_time = $fetched_info[$i][product_creation_time];
-                $min_product_id = $fetched_info[$i][product_id];
-            } else {
-                if ($min_date_time > $fetched_info[$i][product_creation_time]) {
+        if ($fetched_count != 1) {
+            $min_date_time;
+            $min_product_id;
+            $insert_index;
+            $error_id;
+            for ($i = 0; $i < count($fetched_info); $i++){
+                if ($i == 0) {
                     $min_date_time = $fetched_info[$i][product_creation_time];
                     $min_product_id = $fetched_info[$i][product_id];
+                } else {
+                    if ($min_date_time > $fetched_info[$i][product_creation_time]) {
+                        $min_date_time = $fetched_info[$i][product_creation_time];
+                        $min_product_id = $fetched_info[$i][product_id];
+                    }
+                }
+                if ($fetched_info[$i][product_id] == $last_id) {
+                    $insert_index = $i;
                 }
             }
-            if ($fetched_info[$i][product_id] == $last_id) {
-                $insert_index = $i;
+
+            if ($fetched_info[$insert_index][product_creation_time] != $min_date_time || $fetched_info[$insert_index][product_id] != $min_product_id){
+                if ($fetched_info[$insert_index][product_type] == 'brand') {
+                    $error_id = 14;
+                    $duplicate_error = 'Duplicate BRAND, Error Count Increased';
+                } else if ($fetched_info[$insert_index][product_type] == 'sku') {
+                    $error_id = 2;
+                    $duplicate_error = 'Duplicate SKU, Error Count Increased';
+                } else if ($fetched_info[$insert_index][product_type] == 'dvc') {
+                    $error_id = 8;
+                    $duplicate_error = 'Duplicate DVC, Error Count Increased';
+                }
+                $is_duplicate = true;
+                $sql = 'UPDATE products SET product_qa_status = "disapproved" WHERE product_id = :product_id';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['product_id'=>$fetched_info[$insert_index][product_id]]);
             }
         }
-
-        if ($fetched_info[$insert_index][product_creation_time] != $min_date_time || $fetched_info[$insert_index][product_id] != $min_product_id){
-            if ($fetched_info[$insert_index][product_type] == 'brand') {
-                $error_id = 14;
-                $duplicate_error = 'Duplicate BRAND, Error Count Increased';
-            } else if ($fetched_info[$insert_index][product_type] == 'sku') {
-                $error_id = 2;
-                $duplicate_error = 'Duplicate SKU, Error Count Increased';
-            } else if ($fetched_info[$insert_index][product_type] == 'dvc') {
-                $error_id = 8;
-                $duplicate_error = 'Duplicate DVC, Error Count Increased';
-            }
-            $is_duplicate = true;
-            $sql = 'UPDATE products SET product_qa_status = "disapproved" WHERE product_id = :product_id';
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute(['product_id'=>$fetched_info[$insert_index][product_id]]);
-        }
-
     }
-
     if ($_POST['status'] == 2 && !$is_duplicate) {
         $sql = 'INSERT INTO probe_qa_queue (product_id) VALUES (:product_id)';
         $stmt = $pdo->prepare($sql);

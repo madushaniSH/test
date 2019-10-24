@@ -321,6 +321,7 @@ function reset_hunt_information() {
     document.getElementById('facing_error').innerHTML = '';
     document.getElementById('manu_link_error').innerHTML = '';
     document.getElementById('product_comment').value = '';
+    document.getElementById('resubmitted_product').checked = false;
 }
 
 function validate_probe_submission() {
@@ -384,6 +385,8 @@ function validate_probe_submission() {
             var manu_link = document.getElementById('manu_link').value.trim();
             var product_link = document.getElementById('product_link').value.trim();
             const product_comment = document.getElementById('product_comment').value.trim();
+            const resubmitted_product = document.getElementById('resubmitted_product').checked;
+            formData.append('resubmitted_product', resubmitted_product);
             formData.append('product_comment', product_comment);
             formData.append('facings', facings);
 
@@ -667,6 +670,8 @@ function add_probe_product() {
     var manu_link = document.getElementById('manu_link').value.trim();
     var product_link = document.getElementById('product_link').value.trim();
     const product_comment = document.getElementById('product_comment').value.trim();
+    const resubmitted_product = document.getElementById('resubmitted_product').checked;
+    formData.append('resubmitted_product', resubmitted_product);
     formData.append('product_comment', product_comment);
     formData.append('facings', facings);
 

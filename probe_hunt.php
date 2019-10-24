@@ -546,6 +546,15 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                                 <span id="product_comment_error" class="error-popup"></span>
                                             </div>
                                         </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-5">
+                                                <div class="checkbox">
+                                                    <label class="check_box_container">Resubmitted Product
+                                                    <input type="checkbox" id="resubmitted_product">
+                                                    <span class="check_box_checkmark"></span>
+                                                </div>
+                                                </div>
+                                            </div>
                                         <div class="row" id="facing_count">
                                             <div class="form-group col-md-5">
                                                 <label for="num_facings">Number of Facings: <span id="output"></span></label>
@@ -578,7 +587,11 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                             </div>
                                         </div>
                                         <div>
-                                            <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <button type="button" class="btn btn-outline-primary" onclick="add_probe_product();">+ Product</button>
+                                                </div>
+                                            </div>
                                             <button type="button" class="btn btn-outline-danger hide" id="cancel_product" onclick="cancel_product_button();">Save Changes</button>
                                         </div>
                                         <div id="probe_product_count_section">
