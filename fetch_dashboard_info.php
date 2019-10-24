@@ -210,26 +210,29 @@ for ($i = 0; $i < count($hunter_summary); $i++){
             $sql = "SELECT COUNT(a.product_id) as 'count', b.error_id FROM ".$dbname.".products a INNER JOIN ".$dbname.".product_qa_errors b ON a.product_id = b.product_id WHERE a.account_id = :account_id AND a.product_qa_datetime >= :start_datetime AND a.product_qa_datetime <= :end_datetime AND a.product_status = 2 GROUP BY b.error_id";
             $stmt = $pdo->prepare($sql);
             $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
-            $error_summary = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            for($l = 0; $l < count($error_summary); $l++) {
-                $current_index = $hunter_summary[$i]["error_sum_index"];
-                $found = false;
-                for ($m = 0; $m < $current_index; $m++) {
-                   if ($error_summary[$l]["error_id"] == $error_chart[$m]["error_id"]) {
-                       $error_chart[$m]["count"] += $error_summary[$l]["count"];
-                       $found = true;
-                       break;
-                   }
-                }
-                if(!$found) {
-                    $sql = 'SELECT a.project_error_name FROM '.$dbname.'.project_errors a WHERE a.project_error_id = :error_id';
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute(['error_id'=>(int)$error_summary[$l]["error_id"]]);
-                    $error_info = $stmt->fetch(PDO::FETCH_OBJ);
-                    $error_chart[$current_index]["error_name"] = $error_info->project_error_name;
-                    $error_chart[$current_index]["error_id"] = (int)$error_summary[$l]["error_id"];
-                    $error_chart[$current_index]["count"] = (int)$error_summary[$l]["count"];
-                    $hunter_summary[$i]["error_sum_index"]++;
+            $rowCount = $stmt->rowCount();
+            if ($rowCount > 0) {
+                $error_summary = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                for($l = 0; $l < count($error_summary); $l++) {
+                    $current_index = $hunter_summary[$i]["error_sum_index"];
+                    $found = false;
+                    for ($m = 0; $m < $current_index; $m++) {
+                       if ($error_summary[$l]["error_id"] == $error_chart[$m]["error_id"]) {
+                           $error_chart[$m]["count"] += $error_summary[$l]["count"];
+                           $found = true;
+                           break;
+                       }
+                    }
+                    if(!$found) {
+                        $sql = 'SELECT a.project_error_name FROM '.$dbname.'.project_errors a WHERE a.project_error_id = :error_id';
+                        $stmt = $pdo->prepare($sql);
+                        $stmt->execute(['error_id'=>(int)$error_summary[$l]["error_id"]]);
+                        $error_info = $stmt->fetch(PDO::FETCH_OBJ);
+                        $error_chart[$current_index]["error_name"] = $error_info->project_error_name;
+                        $error_chart[$current_index]["error_id"] = (int)$error_summary[$l]["error_id"];
+                        $error_chart[$current_index]["count"] = (int)$error_summary[$l]["count"];
+                        $hunter_summary[$i]["error_sum_index"]++;
+                    }
                 }
             }
         }
@@ -356,6 +359,6 @@ for($i = 0; $i < count($hunter_summary); $i++) {
 for($i = 0; $i < count($project_summary); $i++) {
     $project_summary[$i]["Rank"] = $i + 1;
 }
-$return_arr[] = array("hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary), "project_summary"=>$project_summary, "error_chart"=>$error_chart);
+$return_arr[] = array("warning"=>$warning, "hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary), "project_summary"=>$project_summary, "error_chart"=>$error_chart);
 echo json_encode($return_arr);
 ?>
