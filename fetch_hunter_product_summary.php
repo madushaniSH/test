@@ -36,8 +36,6 @@ catch(PDOException $e){
     exit();
 }
 
-$custom_project_list_flag = false;
-
 if (trim($_POST['project_list']) != '') {
     // getting the list of projects into an array from the passes string.
     $project_list = explode(",",$_POST['project_list']);
@@ -45,9 +43,9 @@ if (trim($_POST['project_list']) != '') {
 
 // gets the users custom project list if it is not empty
 if (count($project_list) > 0) {
-    $project_array = $project_list;
-    $custom_project_list_flag = true;
-    
+    for ($i = 0; $i < count($project_list); $i++) {
+        $project_array[$i]["project_db_name"] = $project_list[$i];
+    }
 } else {
     $sql = 'SELECT project_db_name FROM `project_db`.projects WHERE project_region = :region';
     $stmt = $pdo->prepare($sql);
@@ -66,11 +64,7 @@ $count = 0;
 $role = '';
 
 for ($i = 0; $i < count($project_array); $i++) {
-    if (!$custom_project_list_flag) {
-        $dbname = $project_array[$i]["project_db_name"];
-    } else {
-        $dbname = $project_array[$i];
-    }
+    $dbname = $project_array[$i]["project_db_name"];
     $dsn = 'mysql:host='.$host.';dbname='.$dbname;
     $pdo = new PDO($dsn, $user, $pwd);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

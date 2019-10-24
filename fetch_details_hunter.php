@@ -18,6 +18,7 @@ require('user_db_connection.php');
 
 // getting the list of projects into an array from the passes string.
 $project_array = explode(",",$_POST['project_name']);
+$project_array = array_map('trim', $project_array);
 $count_projects = count($project_array);
 $hunter_summary = array();
 $max_size = 0;
@@ -26,7 +27,7 @@ for ($i = 0; $i < $count_projects; $i++) {
     $dsn = 'mysql:host='.$host.';dbname='.$dbname;
     $pdo = new PDO($dsn, $user, $pwd);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = 'SELECT project_language FROM `project_db`.projects WHERE project_name = :project_name';
+    $sql = 'SELECT project_language FROM `project_db`.projects WHERE project_db_name = :project_name';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(["project_name"=>$dbname]);
     $project_lang = $stmt->fetch(PDO::FETCH_OBJ);
