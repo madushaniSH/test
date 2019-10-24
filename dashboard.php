@@ -361,6 +361,24 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 </div>
                             </div>
                         </div>
+                        <?php
+                        if ($_SESSION['role'] == 'Admin') {
+                        echo '
+                            <div class="col-lg-6">
+                                <!-- Basic Card Example -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Project Error Comparisons</h6>
+                                    </div>
+                                    <div class="card-body">
+                                    <p id="display_message_chart_project_comp" class="hide"> Yay, you got no errors!</p>
+                                     <canvas id="error_type_chart_project_comp" class="hide"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            ';
+                        }
+                        ?>
                     </div>
                     <div class="row my-3 ">
                         <div class="col">
@@ -481,7 +499,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         </div>
                                     </div>
                                     <div class="row my-3">
-                                        <p id="display_message_error_type_chart" class="hide"> ¯\_(ツ)_/¯ 0 errors found. You can help increse this number</p>
+                                        <p id="display_message_error_type_chart" class="hide"> ¯\_(ツ)_/¯ 0 errors found. You can help increase this number</p>
                                     </div>
                                     <div class="row my-3">
                                         <div id="chart-container">
@@ -577,6 +595,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet"/>
     <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
     <script src="scripts/dashboard.js"></script>
 
 </body>

@@ -43,27 +43,32 @@ $project_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $count_projects = count($project_array);
 $hunter_summary = array();
 $project_summary = array();
+$is_admin = '';
 $project_summary["AMER"]["name"] = 'AMER';
 $project_summary["AMER"]["productivity"] = 0;
 $project_summary["AMER"]["error_count"] = 0;
+$project_summary["AMER"]["system_error_count"] = 0;
 $project_summary["AMER"]["rename_count"] = 0;
 $project_summary["AMER"]["points"] = 0;
 
 $project_summary["EMEA"]["name"] = 'EMEA';
 $project_summary["EMEA"]["productivity"] = 0;
 $project_summary["EMEA"]["error_count"] = 0;
+$project_summary["EMEA"]["system_error_count"] = 0;
 $project_summary["EMEA"]["rename_count"] = 0;
 $project_summary["EMEA"]["points"] = 0;
 
 $project_summary["APAC"]["name"] = 'APAC';
 $project_summary["APAC"]["productivity"] = 0;
 $project_summary["APAC"]["rename_count"] = 0;
+$project_summary["APAC"]["system_error_count"] = 0;
 $project_summary["APAC"]["error_count"] = 0;
 $project_summary["APAC"]["points"] = 0;
 
 $project_summary["DPG"]["name"] = 'DPG';
 $project_summary["DPG"]["productivity"] = 0;
 $project_summary["DPG"]["error_count"] = 0;
+$project_summary["DPG"]["system_error_count"] = 0;
 $project_summary["DPG"]["rename_count"] = 0;
 $project_summary["DPG"]["points"] = 0;
 $error_chart = array();
@@ -204,6 +209,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         $this_project_productivity = (($brand_count * 1.5) + ($sku_count * 1) + ($dvc_count * 0.5) + ($facing_count * 0.5)) * $hunter_summary[$i]["project_weight"][$j];
         $this_project_points = $this_project_productivity - ((($error_count + $system_errors) * 5) + $rename_count);
         $this_project_errors = $error_count + $system_errors;
+        $this_project_system_errors = $system_errors;
 
         $this_project_rename = $rename_count;
 
@@ -245,6 +251,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["AMER"]["points"] += $this_project_points;
                 $project_summary["AMER"]["error_count"] += $this_project_errors;
                 $project_summary["AMER"]["rename_count"] += $this_project_rename;
+                $project_summary["AMER"]["system_error_count"] += $this_project_system_errors;
                 break;
             case 'EMEA' : 
                 $hunter_summary[$i]["EMEA"]++; 
@@ -252,6 +259,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["EMEA"]["points"] += $this_project_points;
                 $project_summary["EMEA"]["error_count"] += $this_project_errors;
                 $project_summary["EMEA"]["rename_count"] += $this_project_rename;
+                $project_summary["EMEA"]["system_error_count"] += $this_project_system_errors;
                 break;
             case 'APAC' : 
                 $hunter_summary[$i]["APAC"]++; 
@@ -259,6 +267,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["APAC"]["points"] += $this_project_points;
                 $project_summary["APAC"]["error_count"] += $this_project_errors;
                 $project_summary["APAC"]["rename_count"] += $this_project_rename;
+                $project_summary["APAC"]["system_error_count"] += $this_project_system_errors;
                 break;
             case 'DPG' : 
                 $hunter_summary[$i]["DPG"]++; 
@@ -266,6 +275,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["DPG"]["points"] += $this_project_points;
                 $project_summary["DPG"]["error_count"] += $this_project_errors;
                 $project_summary["DPG"]["rename_count"] += $this_project_rename;
+                $project_summary["DPG"]["system_error_count"] += $this_project_system_errors;
             break;
         }
         $pdo = NULL;
@@ -360,6 +370,11 @@ for($i = 0; $i < count($hunter_summary); $i++) {
 for($i = 0; $i < count($project_summary); $i++) {
     $project_summary[$i]["Rank"] = $i + 1;
 }
-$return_arr[] = array("warning"=>$warning, "hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary), "project_summary"=>$project_summary, "error_chart"=>$error_chart);
+
+if ($_SESSION['role'] === 'Admin') {
+    $is_admin = 'yes';
+}
+
+$return_arr[] = array("warning"=>$warning, "hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary), "project_summary"=>$project_summary, "error_chart"=>$error_chart, "is_admin"=>$is_admin);
 echo json_encode($return_arr);
 ?>

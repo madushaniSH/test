@@ -149,9 +149,96 @@ const fetch_dashboard_info = () => {
                     myChart.data.datasets[0].borderColor.push(color);
                 }
                 myChart.update();
+                myChart.render();
             } else {
                 document.getElementById('display_message_chart').classList.remove('hide');
                 document.getElementById('error_type_chart').classList.add('hide');
+            }
+            if (data[0].is_admin != '') {
+                let ctx = document.getElementById('error_type_chart_project_comp').getContext('2d');
+                let myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: [
+                        ],
+                        datasets: []
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            position: "bottom",
+                            labels: {
+                                fontColor: "white",
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: "Overall Errors from " + cycle_start.toISOString().slice(0, 19).replace('T', ' ') + " to " + cycle_end.toISOString().slice(0, 19).replace('T', ' '),
+                            fontColor: "white"
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    fontColor: "white"
+                                }
+                            }],
+                            xAxes: [{
+                                ticks: {
+                                    fontColor: "white"
+                                }
+                            }]
+                        },
+                        plugins: {
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                color: 'white',
+                                formatter: Math.round,
+                                font: {
+                                    weight: 'bold',
+                                },
+                            }
+                        }
+
+                    }
+                });
+                color = getRandomColor();
+                let this_dataset = {
+                    label: 'Error Count',
+                    borderWidth: 2,
+                    backgroundColor: color,
+                    data: []
+                }
+                for (let i = 0; i < project_size; i++) {
+                    myChart.data.labels.push(data[0].project_summary[i].name);
+                    this_dataset.data.push(data[0].project_summary[i].error_count - data[0].project_summary[i].system_error_count)
+                }
+                myChart.data.datasets.push(this_dataset);
+                color = getRandomColor();
+                this_dataset = {
+                    label: 'Rename Error Count',
+                    borderWidth: 2,
+                    backgroundColor: color,
+                    data: []
+                }
+                for (let i = 0; i < project_size; i++) {
+                    this_dataset.data.push(data[0].project_summary[i].rename_count)
+                }
+                myChart.data.datasets.push(this_dataset);
+                color = getRandomColor();
+                this_dataset = {
+                    label: 'System Error Count',
+                    borderWidth: 2,
+                    backgroundColor: color,
+                    data: []
+                }
+                for (let i = 0; i < project_size; i++) {
+                    this_dataset.data.push(data[0].project_summary[i].system_error_count)
+                }
+                myChart.data.datasets.push(this_dataset);
+                myChart.update();
+                myChart.render();
             }
             document.getElementById("loader").style.display = "none";
             document.getElementById("main_div").style.display = "block";
