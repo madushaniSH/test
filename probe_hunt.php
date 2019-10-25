@@ -273,6 +273,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                 </nav>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    <div class="card shadow mb-4">
                     <div class="row">
                         <div id="hunter_counter" class="col hide">
                             <div class="downArrow bounce" id="arrow_sec">
@@ -394,7 +395,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     </div>
                     <div id="probe_hunt_section">
                         <div class="row">
-                            <div class="col">
+                                <div class="card-body">
                                 <label for="project_name">Select Project Name</label>
                                 <select name="project_name" id="project_name" class="form-control">
                                     <option value="" selected disabled>Select</option>
@@ -479,6 +480,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                         </div>
                     </div>
                 </div>
+</div>
                 <div class="modal hide fade modal-form" id="add_probe" tabindex="-1" role="dialog" aria-labelledby="add_probe_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
                     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div class="modal-content">

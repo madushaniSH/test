@@ -35,6 +35,7 @@ button:focus {
 .dashboard-btn:hover {
     background: #7D6B91;
     color: gold;
+
 }
 
 .dashboard-btn:hover .fas {
@@ -495,4 +496,23 @@ button:focus {
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+}
+
+.card {
+    background-color: transparent;
+    backdrop-filter: blur(1vw);
+}
+
+.modal-backdrop {
+    position: unset;
+}
+
+.counter {
+    background-color: transparent;
+    color: white;
+    font-weight: bolder;
+}
+
+.qa_button {
+    background-color: transparent;
 }

@@ -9,9 +9,10 @@ html, body {margin: 0; height: 100%; overflow-x: hidden; overflow-y: auto}
 #probe_upload_section {
     width: 50%;
     margin: 0 auto;
-    background-color: white;
-    margin-top: 4vw;
-    padding: 2vw;
+    background-color: transparent;
+    color: white;
+    margin-top: 2vw;
+    padding: 1vw;
 }
 
 #probe_upload_section #project_name {
@@ -72,4 +73,12 @@ html, body {margin: 0; height: 100%; overflow-x: hidden; overflow-y: auto}
     color: white;
     border-radius: 75px;
     padding: 0.4vw;
+}
+
+.card {
+    margin-top: 10%;
+}
+.container-fluid {
+    padding-left: 15% !important;
+    padding-right: 15% !important;
 }

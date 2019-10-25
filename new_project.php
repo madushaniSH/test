@@ -248,6 +248,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                            <div class="card">
                     <form method="POST" id="create-project-form">
                         <div class="form-row">
                             <i class="fas fa-meteor fa-3x"></i>
@@ -290,6 +291,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                         <a href="dashboard.php" class="btn btn-outline-dark">Back to Product Hunt</a>
                     </form>
                 </div>
+        </div>
             </div>
         </div>
     </div>

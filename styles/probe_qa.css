@@ -173,6 +173,7 @@
 .overall-counter {
     color: black;
 }
+
 .card {
     background-color: transparent;
     backdrop-filter: blur(1vw);
@@ -183,4 +184,14 @@
 
 .modal-backdrop {
     position: unset;
+}
+
+.counter {
+    background-color: transparent;
+    color: white;
+    font-weight: bolder;
+}
+
+.qa_button {
+    background-color: transparent;
 }

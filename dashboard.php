@@ -267,7 +267,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                             <p>Naming Accuracy</p>
                                         </div>
                                         <div class="col">
-                                            <p class="text-primary">Points</p>
+                                            <p class="text-success">Points</p>
                                         </div>
                                     </div>
                                         <div id="project_section">

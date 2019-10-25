@@ -271,6 +271,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                 </nav>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+            <div class="card">
                     <div id="fetch_project_section">
                         <div class="row" id="project_select">
                             <div class="col">
@@ -293,6 +294,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                             </div>
                         </div>
 
+                    </div>
                     </div>
                     <!-- /.container-fluid -->
                 </div>

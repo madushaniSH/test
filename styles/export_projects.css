@@ -1,7 +1,8 @@
 #fetch_project_section {
     width: 50%;
     margin: 0 auto;
-    background-color: white;
+    background-color: transparent;
+    color: white;
     margin-top: 4vw;
     padding: 2vw;
 }
@@ -42,4 +43,11 @@ html, body {margin: 0; height: 100%; overflow-x: hidden; overflow-y: auto}
     background-image: url('images/sup_wallpaper.jpg');
     background-repeat: no-repeat;
     background-size: cover;
+}
+.card {
+    margin-top: 5%;
+}
+.container-fluid {
+    padding-left: 5% !important;
+    padding-right: 5% !important;
 }

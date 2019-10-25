@@ -269,6 +269,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    <div class="card">
                     <div id="probe_upload_section">
                         <div class="row">
                             <div class="col">
@@ -333,6 +334,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 <span id="radar_process_success" class="success-popup"></span>
                             </div>
                         </div>
+</div>
                     </div>
                     <div class="modal hide fade modal-form" id="add_ticket" tabindex="-1" role="dialog" aria-labelledby="add_ticket_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
                         <div class="modal-dialog modal-dialog-centered modal-md" role="document">

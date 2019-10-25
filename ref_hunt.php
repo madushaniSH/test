@@ -274,6 +274,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                 </nav>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    <div class="card shadow mb-4">
                     <div class="row">
                         <div id="hunter_counter" class="col hide">
                             <div class="downArrow bounce" id="arrow_sec">
@@ -470,6 +471,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 <p class="error-popup" id="probe_message"></p>
                             </div>
                         </div>
+</div>
                     </div>
                     <div class="modal hide fade modal-form" id="add_reference" tabindex="-1" role="dialog" aria-labelledby="add_reference_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
                         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">

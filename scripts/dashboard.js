@@ -2,6 +2,7 @@
     Author: Malika Liyanage
 */
 
+Chart.plugins.unregister(ChartDataLabels);
 let table;
 
 /*

@@ -9,10 +9,22 @@ html, body {margin: 0; height: 100%; overflow-x: hidden; overflow-y: auto}
 #create-project-form {
     width: 50%;
     margin: 0 auto;
-    background-color: white;
-    padding: 2vw;
-    margin-top: 10%;
+    background-color: transparent;
+    color: white;
+    padding: 1vw;
 }    
 #type_section {
     margin-bottom: 1vw;
+}
+
+.card {
+    margin-top: 10%;
+}
+.card form{
+    padding: 1vw;
+}
+
+.container-fluid {
+    padding-left: 15% !important;
+    padding-right: 15% !important;
 }

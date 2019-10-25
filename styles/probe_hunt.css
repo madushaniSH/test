@@ -12,8 +12,7 @@ html, body {margin: 0; height: 100%; overflow-x: hidden; overflow-y: auto}
     background-color: white;
     opacity: 0.95;
     margin-top: 0.5vw;
-    padding: 2vw;
-    margin-bottom: 1.5vw;
+    margin-bottom: 0.5vw;
 }
 
 #hunter_counter {
@@ -282,4 +281,15 @@ html, body {margin: 0; height: 100%; overflow-x: hidden; overflow-y: auto}
     margin: 0 auto;
     margin-top : 1vw;
     margin-bottom: 1vw;
+}
+
+#probe_hunt_section {
+    background-color: transparent;
+    color: white;
+}
+
+.counter {
+    background-color: transparent;
+    color: white;
+    font-weight: bolder;
 }

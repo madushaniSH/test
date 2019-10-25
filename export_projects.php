@@ -271,6 +271,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                 </nav>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+            <div class="card">
                     <?php
 if($_SESSION['role'] === 'Admin'){
     echo "
@@ -332,7 +333,7 @@ if($_SESSION['role'] === 'Admin'){
                                 <button class="btn btn-primary hide" id="export_button_productivity_single" onclick="fetch_details_productivity_single()"><i class="fas fa-download"></i> Fetch Productivity Single Count</button>
                             </div>
                         </div>
-
+                        </div>
                 </div>
                 <!-- /.container-fluid -->
             </div>
