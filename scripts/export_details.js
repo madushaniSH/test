@@ -177,6 +177,10 @@ function fetch_details() {
                 dataType: 'JSON',
                 success: function (data) {
                     JSONToCSVConvertor(data[0].probe_details, p_name + " " + $("#ticket_name option[value='" + selected_ticket + "']").text() + " Probe Details " + start_datetime + " - " + end_datetime, true);
+                    console.log(data[0].warning)
+                    if (data[0].reference_details.length != 0) {
+                        JSONToCSVConvertor(data[0].reference_details, p_name + " " + $("#ticket_name option[value='" + selected_ticket + "']").text() + " Reference Details " + start_datetime + " - " + end_datetime, true);
+                    }
                 },
                 error: function (data) {
                     alert("Error assigning probe. Please refresh");
