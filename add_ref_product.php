@@ -50,7 +50,7 @@ $product_link = trim($_POST['product_link']);
 if ($product_link == '') {
     $product_link = NULL;
 }
-if (isset($_POST['alt_design_name']) && $_POST['alt_design_name'] != '') {
+if (isset($_POST['alt_design_name']) && $_POST['alt_design_name'] != '' && $_POST['product_type'] == 'dvc') {
     $alt_design_name = trim($_POST['alt_design_name']);
 } else {
     $alt_design_name = NULL;
