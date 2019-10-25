@@ -182,5 +182,5 @@
 }
 
 .modal-backdrop {
-    position: relative;
+    position: unset;
 }
