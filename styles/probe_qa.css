@@ -180,3 +180,7 @@
 .card-body {
     padding: 0;
 }
+
+.modal-backdrop {
+    position: relative;
+}
