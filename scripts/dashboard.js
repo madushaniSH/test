@@ -164,6 +164,7 @@ const fetch_dashboard_info = () => {
                         ],
                         datasets: []
                     },
+                    plugins: [ChartDataLabels],
                     options: {
                         responsive: true,
                         legend: {
