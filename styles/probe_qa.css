@@ -9,7 +9,6 @@
 
 
 #probe_qa_options {
-    margin-top: 1vw;
     text-align: center;
 }
 
@@ -41,7 +40,7 @@
     margin: 0 auto;
     background-color: white;
     margin-top: 1vw;
-    padding: 2vw;
+    padding: 0.5vw;
 }
 
 .overall-counter {
@@ -118,7 +117,7 @@
 }
 
 #options_hunt {
-    margin-top: 1vw;
+    margin-top: 0.4vw;
 }
 
 /* Style the tab content */
@@ -155,4 +154,29 @@
 #tab_buttons{
     background: white;
     padding: 0.4vw;
+}
+#over_counter_section {
+    color: white;
+    background: transparent;
+}
+
+#probe_hunt_section {
+    color: white;
+    background: transparent;
+}
+
+
+#qa_probe .modal-content{
+    color: gray;
+}
+
+.overall-counter {
+    color: black;
+}
+.card {
+    background-color: transparent;
+    backdrop-filter: blur(1vw);
+}
+.card-body {
+    padding: 0;
 }

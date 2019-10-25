@@ -272,6 +272,8 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                 </nav>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                            <div class="card shadow mb-4">
+                                <div class="card-body">
     <div id="over_counter_section">
         <div class="row">
             <div class="col">
@@ -452,6 +454,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                 </div>
             </div>
         </div>
+                    </div>
         <div class="row">
             <div id="probe_qa_options" class="col hide">
             <p class="error-popup" id="probe_qa_message"></p>
