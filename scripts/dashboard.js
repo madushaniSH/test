@@ -133,41 +133,140 @@ const fetch_dashboard_info = () => {
                     }
                 }
             }
-            if (data[0].error_chart.length > 0) {
-                document.getElementById('display_message_chart').classList.add('hide');
-                document.getElementById('error_type_chart').classList.remove('hide');
-                let ctx = document.getElementById('error_type_chart').getContext('2d');
-                let myChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        datasets: [{
-                            label: '# of Errors',
-                            backgroundColor: [],
-                            hoverBackgroundColor: [],
-                            borderColor: [],
-                        }],
-                    },
-                    options: {
-                        animation: {
-                            animateRotate: true,
+            if (data[0].is_super !== 'yes') {
+                if (data[0].error_chart.length > 0) {
+                    document.getElementById('display_message_chart').classList.add('hide');
+                    document.getElementById('error_type_chart').classList.remove('hide');
+                    let ctx = document.getElementById('error_type_chart').getContext('2d');
+                    let myChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            datasets: [{
+                                label: '# of Errors',
+                                backgroundColor: [],
+                                hoverBackgroundColor: [],
+                                borderColor: [],
+                            }],
                         },
+                        options: {
+                            animation: {
+                                animateRotate: true,
+                            },
+                        }
+                    });
+                    for (let m = 0; m < data[0].error_chart.length; m++) {
+                        myChart.data.labels.push(data[0].error_chart[m].error_name);
+                        let color = getRandomColor();
+                        myChart.data.datasets.forEach((dataset) => {
+                            dataset.data.push(data[0].error_chart[m].count);
+                        });
+                        myChart.data.datasets[0].backgroundColor.push(color);
+                        myChart.data.datasets[0].hoverBackgroundColor.push(color);
+                        myChart.data.datasets[0].borderColor.push(color);
+                    }
+                    myChart.update();
+                    myChart.render();
+                } else {
+                    document.getElementById('display_message_chart').classList.remove('hide');
+                    document.getElementById('error_type_chart').classList.add('hide');
+                }
+            } else {
+                let ctx = document.getElementById('product_chart').getContext('2d');
+                let myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: [
+                        ],
+                        datasets: []
+                    },
+                    plugins: [ChartDataLabels],
+                    options: {
+                        responsive: true,
+                        legend: {
+                            position: "bottom",
+                            labels: {
+                                fontColor: "white",
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: "Product Count (without Project Language Weight) " + cycle_start.toISOString().slice(0, 19).replace('T', ' ') + " to " + cycle_end.toISOString().slice(0, 19).replace('T', ' '),
+                            fontColor: "white"
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    fontColor: "white"
+                                }
+                            }],
+                            xAxes: [{
+                                ticks: {
+                                    fontColor: "white"
+                                }
+                            }]
+                        },
+                        plugins: {
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                color: 'white',
+                                formatter: Math.round,
+                                font: {
+                                    weight: 'bold',
+                                },
+                            }
+                        }
+
                     }
                 });
-                for (let m = 0; m < data[0].error_chart.length; m++) {
-                    myChart.data.labels.push(data[0].error_chart[m].error_name);
-                    let color = getRandomColor();
-                    myChart.data.datasets.forEach((dataset) => {
-                        dataset.data.push(data[0].error_chart[m].count);
-                    });
-                    myChart.data.datasets[0].backgroundColor.push(color);
-                    myChart.data.datasets[0].hoverBackgroundColor.push(color);
-                    myChart.data.datasets[0].borderColor.push(color);
+                color = getRandomColor();
+                let this_dataset = {
+                    label: 'Brand Count',
+                    borderWidth: 2,
+                    backgroundColor: color,
+                    data: []
                 }
+                for (let i = 0; i < project_size; i++) {
+                    myChart.data.labels.push(data[0].project_summary[i].name);
+                    this_dataset.data.push(data[0].project_summary[i].brand)
+                }
+                myChart.data.datasets.push(this_dataset);
+                color = getRandomColor();
+                this_dataset = {
+                    label: 'SKU Count',
+                    borderWidth: 2,
+                    backgroundColor: color,
+                    data: []
+                }
+                for (let i = 0; i < project_size; i++) {
+                    this_dataset.data.push(data[0].project_summary[i].sku)
+                }
+                myChart.data.datasets.push(this_dataset);
+                color = getRandomColor();
+                this_dataset = {
+                    label: 'DVC Count',
+                    borderWidth: 2,
+                    backgroundColor: color,
+                    data: []
+                }
+                for (let i = 0; i < project_size; i++) {
+                    this_dataset.data.push(data[0].project_summary[i].dvc)
+                }
+                myChart.data.datasets.push(this_dataset);
+                color = getRandomColor();
+                this_dataset = {
+                    label: 'Facing Count',
+                    borderWidth: 2,
+                    backgroundColor: color,
+                    data: []
+                }
+                for (let i = 0; i < project_size; i++) {
+                    this_dataset.data.push(data[0].project_summary[i].facing)
+                }
+                myChart.data.datasets.push(this_dataset);
                 myChart.update();
                 myChart.render();
-            } else {
-                document.getElementById('display_message_chart').classList.remove('hide');
-                document.getElementById('error_type_chart').classList.add('hide');
             }
             if (data[0].is_admin != '') {
                 let ctx = document.getElementById('error_type_chart_project_comp').getContext('2d');

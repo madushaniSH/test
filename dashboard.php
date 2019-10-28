@@ -351,19 +351,41 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                             </div>
                         </div>
                     </div>
-                    <div class="row my-3">
-                        <div class="col-lg-6">
-                            <!-- Basic Card Example -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Error Type Chart</h6>
-                                </div>
-                                <div class="card-body">
-                                <p id="display_message_chart" class="hide"> Yay, you got no errors!</p>
-                                 <canvas id="error_type_chart" class="hide"></canvas>
+                    <?php
+                    if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor'){
+                        echo '
+                        <div class="row my-3">
+                         <div class="col-lg-6">
+                                <!-- Basic Card Example -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Product Count By Region</h6>
+                                    </div>
+                                    <div class="card-body">
+                                    <p id="display_message_product_chart" class="hide"> Overall Count is 0, get back to work soldier!</p>
+                                     <canvas id="product_chart" class="hide"></canvas>
+                                    </div>
                                 </div>
                             </div>
+                        ';
+                        }else {
+                        echo '
+                        <div class="row my-3">
+                            <div class="col-lg-6">
+                                <!-- Basic Card Example -->
+                                <div class="card shadow mb-4">
+                                  <div class="card-header py-3">
+                                      <h6 class="m-0 font-weight-bold text-primary">Error Type Chart</h6>
+                                  </div>
+                                  <div class="card-body">
+                                  <p id="display_message_chart" class="hide"> Overall Error Count is 0, please increase this!</p>
+                                    <canvas id="error_type_chart" class="hide"></canvas>
+                                  </div>
+                            </div>
                         </div>
+                        ';
+                        }
+                        ?>
                         <?php
                         if ($_SESSION['role'] == 'Admin') {
                         echo '

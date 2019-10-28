@@ -54,6 +54,11 @@ $project_summary["AMER"]["system_error_count"] = 0;
 $project_summary["AMER"]["rename_count"] = 0;
 $project_summary["AMER"]["points"] = 0;
 $project_summary["AMER"]["resubmit_count"] = 0;
+$project_summary["AMER"]["brand"] = 0;
+$project_summary["AMER"]["sku"] = 0;
+$project_summary["AMER"]["dvc"] = 0;
+$project_summary["AMER"]["facing"] = 0;
+
 
 // this makes the html for rendering region name in the table
 $project_summary["EMEA"]["styling"] = '<i class="fas fa-chess-knight fa-2x"></i> ';
@@ -64,6 +69,10 @@ $project_summary["EMEA"]["system_error_count"] = 0;
 $project_summary["EMEA"]["rename_count"] = 0;
 $project_summary["EMEA"]["points"] = 0;
 $project_summary["EMEA"]["resubmit_count"] = 0;
+$project_summary["EMEA"]["brand"] = 0;
+$project_summary["EMEA"]["sku"] = 0;
+$project_summary["EMEA"]["dvc"] = 0;
+$project_summary["EMEA"]["facing"] = 0;
 
 // this makes the html for rendering region name in the table
 $project_summary["APAC"]["styling"] = '<i class="fab fa-wolf-pack-battalion fa-2x"></i> ';
@@ -74,6 +83,10 @@ $project_summary["APAC"]["system_error_count"] = 0;
 $project_summary["APAC"]["error_count"] = 0;
 $project_summary["APAC"]["points"] = 0;
 $project_summary["APAC"]["resubmit_count"] = 0;
+$project_summary["APAC"]["brand"] = 0;
+$project_summary["APAC"]["sku"] = 0;
+$project_summary["APAC"]["dvc"] = 0;
+$project_summary["APAC"]["facing"] = 0;
 
 // this makes the html for rendering region name in the table
 $project_summary["DPG"]["name"] = 'DPG';
@@ -84,6 +97,10 @@ $project_summary["DPG"]["system_error_count"] = 0;
 $project_summary["DPG"]["rename_count"] = 0;
 $project_summary["DPG"]["points"] = 0;
 $project_summary["DPG"]["resubmit_count"] = 0;
+$project_summary["DPG"]["brand"] = 0;
+$project_summary["DPG"]["sku"] = 0;
+$project_summary["DPG"]["dvc"] = 0;
+$project_summary["DPG"]["facing"] = 0;
 $error_chart = array();
 $max_size = 0;
 $key = NULL;
@@ -278,6 +295,10 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["AMER"]["rename_count"] += $this_project_rename;
                 $project_summary["AMER"]["system_error_count"] += $this_project_system_errors;
                 $project_summary["AMER"]["resubmit_count"] += $this_project_resubmit;
+                $project_summary["AMER"]["brand"] += $brand_count;
+                $project_summary["AMER"]["sku"] += $sku_count;
+                $project_summary["AMER"]["dvc"] += $dvc_count;
+                $project_summary["AMER"]["facing"] += $facing_count;
                 break;
             case 'EMEA' : 
                 $hunter_summary[$i]["EMEA"]++; 
@@ -287,6 +308,10 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["EMEA"]["rename_count"] += $this_project_rename;
                 $project_summary["EMEA"]["system_error_count"] += $this_project_system_errors;
                 $project_summary["EMEA"]["resubmit_count"] += $this_project_resubmit;
+                $project_summary["EMEA"]["brand"] += $brand_count;
+                $project_summary["EMEA"]["sku"] += $sku_count;
+                $project_summary["EMEA"]["dvc"] += $dvc_count;
+                $project_summary["EMEA"]["facing"] += $facing_count;
                 break;
             case 'APAC' : 
                 $hunter_summary[$i]["APAC"]++; 
@@ -296,6 +321,10 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["APAC"]["rename_count"] += $this_project_rename;
                 $project_summary["APAC"]["system_error_count"] += $this_project_system_errors;
                 $project_summary["APAC"]["resubmit_count"] += $this_project_resubmit;
+                $project_summary["APAC"]["brand"] += $brand_count;
+                $project_summary["APAC"]["sku"] += $sku_count;
+                $project_summary["APAC"]["dvc"] += $dvc_count;
+                $project_summary["APAC"]["facing"] += $facing_count;
                 break;
             case 'DPG' : 
                 $hunter_summary[$i]["DPG"]++; 
@@ -305,6 +334,10 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["DPG"]["rename_count"] += $this_project_rename;
                 $project_summary["DPG"]["system_error_count"] += $this_project_system_errors;
                 $project_summary["DPG"]["resubmit_count"] += $this_project_resubmit;
+                $project_summary["DPG"]["brand"] += $brand_count;
+                $project_summary["DPG"]["sku"] += $sku_count;
+                $project_summary["DPG"]["dvc"] += $dvc_count;
+                $project_summary["DPG"]["facing"] += $facing_count;
             break;
         }
         $pdo = NULL;
@@ -403,7 +436,11 @@ for($i = 0; $i < count($project_summary); $i++) {
 if ($_SESSION['role'] === 'Admin') {
     $is_admin = 'yes';
 }
+$is_super = '';
+if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor') {
+    $is_super = 'yes';
+}
 
-$return_arr[] = array("warning"=>$warning, "hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary), "project_summary"=>$project_summary, "error_chart"=>$error_chart, "is_admin"=>$is_admin);
+$return_arr[] = array("warning"=>$warning, "hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary), "project_summary"=>$project_summary, "error_chart"=>$error_chart, "is_admin"=>$is_admin, "is_super"=>$is_super);
 echo json_encode($return_arr);
 ?>
