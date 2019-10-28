@@ -91,7 +91,14 @@ const fetch_dashboard_info = () => {
             let project_size = data[0].project_summary.length;
             $('#project_section').empty();
             for (let i = 0; i < project_size; i++) {
-                let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].project_summary[i].Rank + '</p></div><div class="col"><p>' + data[0].project_summary[i].name + '</p></div><div class="col"><p>' + data[0].project_summary[i].productivity + '</p></div><div class="col"><p> ' + data[0].project_summary[i].accuracy + ' %' + '</p></div><div class="col-md-3"><p> ' + data[0].project_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].project_summary[i].points + '</p></div></div>';
+                let rank_style = '';
+                switch (data[0].project_summary[i].Rank) {
+                    case 1: rank_style = '<span style="color:#D6AF36;">'; break;
+                    case 2: rank_style = '<span style="color:silver;">'; break;
+                    case 3: rank_style = '<span style="color:#824A02;">'; break;
+                    default: rank_style = '<span>'; break;
+                }
+                let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].project_summary[i].Rank + '</p></div><div class="col-md-2"><p>' + rank_style + data[0].project_summary[i].styling + data[0].project_summary[i].name + '</span>' + '</p></div><div class="col"><p>' + data[0].project_summary[i].productivity + '</p></div><div class="col"><p>' + data[0].project_summary[i].resubmit_count + '</p></div><div class="col"><p> ' + data[0].project_summary[i].accuracy + ' %' + '</p></div><div class="col-md-2"><p> ' + data[0].project_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].project_summary[i].points + '</p></div></div>';
                 $('#project_section').append(html);
             }
             let flag = false;
@@ -99,7 +106,14 @@ const fetch_dashboard_info = () => {
             for (let i = 0; i < max_size; i++) {
                 if (i < 3) {
                     if (data[0].hunter_summary[i].Points > 5) {
-                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col-md-2"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col-md-3"><p> ' + data[0].hunter_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p> ' + data[0].hunter_summary[i].Accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
+                        let rank_style = '';
+                        switch (data[0].hunter_summary[i].Rank) {
+                            case 1: rank_style = '<span style="color:#D6AF36;"><i class="fas fa-crown"></i> '; break;
+                            case 2: rank_style = '<span style="color:silver;"> '; break;
+                            case 3: rank_style = '<span style="color:#824A02;"> '; break;
+                            default: rank_style = '<span>'; break;
+                        }
+                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col-md-3"><p>' + rank_style + data[0].hunter_summary[i].name + '</span>' + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col-md-3"><p> ' + data[0].hunter_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p> ' + data[0].hunter_summary[i].Accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
                         $('#leader_board_section').append(html);
                     } else {
                         flag = true;
@@ -112,7 +126,7 @@ const fetch_dashboard_info = () => {
             if (!flag) {
                 for (let i = max_size - 1; i > 0; i--) {
                     if (i > max_size - 4) {
-                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col-md-2"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col-md-3"><p> ' + data[0].hunter_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p> ' + data[0].hunter_summary[i].Accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
+                        let html = '<hr class="divider my-0"> <div class="row my-2"><div class="col-md-1"><p> #' + data[0].hunter_summary[i].Rank + '</p></div><div class="col-md-1"><img class="img-profile rounded-circle leader_board_pic" src="' + data[0].hunter_summary[i].pic_location + '"></div><div class="col-md-3"><p>' + data[0].hunter_summary[i].name + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].region + '</p></div><div class="col-md-3"><p> ' + data[0].hunter_summary[i].rename_accuracy + ' %' + '</p></div><div class="col"><p> ' + data[0].hunter_summary[i].Accuracy + ' %' + '</p></div><div class="col"><p>' + data[0].hunter_summary[i].Points + '</p></div></div>';
                         $('#bottom_board_section').append(html);
                     } else {
                         break;
@@ -237,6 +251,17 @@ const fetch_dashboard_info = () => {
                 }
                 for (let i = 0; i < project_size; i++) {
                     this_dataset.data.push(data[0].project_summary[i].system_error_count)
+                }
+                myChart.data.datasets.push(this_dataset);
+                color = getRandomColor();
+                this_dataset = {
+                    label: 'Resubmit Count',
+                    borderWidth: 2,
+                    backgroundColor: color,
+                    data: []
+                }
+                for (let i = 0; i < project_size; i++) {
+                    this_dataset.data.push(data[0].project_summary[i].resubmit_count)
                 }
                 myChart.data.datasets.push(this_dataset);
                 myChart.update();

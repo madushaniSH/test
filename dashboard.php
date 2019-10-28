@@ -254,16 +254,19 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         <div class="col-md-1">
                                             <p>Rank</p>
                                         </div>
-                                        <div class="col">
+                                        <div class="col-md-2">
                                             <p>Region</p>
                                         </div>
                                         <div class="col">
                                             <p>Productivity</p>
                                         </div>
                                         <div class="col">
+                                            <p>Resubmit Count</p>
+                                        </div>
+                                        <div class="col">
                                             <p>Accuracy</p>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <p>Naming Accuracy</p>
                                         </div>
                                         <div class="col">
@@ -292,7 +295,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         </div>
                                         <div class="col-md-1">
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <p>Hunter</p>
                                         </div>
                                         <div class="col">
@@ -326,7 +329,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         </div>
                                         <div class="col-md-1">
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <p>Hunter</p>
                                         </div>
                                         <div class="col">

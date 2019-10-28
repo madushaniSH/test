@@ -44,33 +44,46 @@ $count_projects = count($project_array);
 $hunter_summary = array();
 $project_summary = array();
 $is_admin = '';
+
+// this makes the html for rendering region name in the table
+$project_summary["AMER"]["styling"] = '<i class="fas fa-flag-usa fa-2x"></i> ';
 $project_summary["AMER"]["name"] = 'AMER';
 $project_summary["AMER"]["productivity"] = 0;
 $project_summary["AMER"]["error_count"] = 0;
 $project_summary["AMER"]["system_error_count"] = 0;
 $project_summary["AMER"]["rename_count"] = 0;
 $project_summary["AMER"]["points"] = 0;
+$project_summary["AMER"]["resubmit_count"] = 0;
 
+// this makes the html for rendering region name in the table
+$project_summary["EMEA"]["styling"] = '<i class="fas fa-chess-knight fa-2x"></i> ';
 $project_summary["EMEA"]["name"] = 'EMEA';
 $project_summary["EMEA"]["productivity"] = 0;
 $project_summary["EMEA"]["error_count"] = 0;
 $project_summary["EMEA"]["system_error_count"] = 0;
 $project_summary["EMEA"]["rename_count"] = 0;
 $project_summary["EMEA"]["points"] = 0;
+$project_summary["EMEA"]["resubmit_count"] = 0;
 
+// this makes the html for rendering region name in the table
+$project_summary["APAC"]["styling"] = '<i class="fab fa-wolf-pack-battalion fa-2x"></i> ';
 $project_summary["APAC"]["name"] = 'APAC';
 $project_summary["APAC"]["productivity"] = 0;
 $project_summary["APAC"]["rename_count"] = 0;
 $project_summary["APAC"]["system_error_count"] = 0;
 $project_summary["APAC"]["error_count"] = 0;
 $project_summary["APAC"]["points"] = 0;
+$project_summary["APAC"]["resubmit_count"] = 0;
 
+// this makes the html for rendering region name in the table
 $project_summary["DPG"]["name"] = 'DPG';
+$project_summary["DPG"]["styling"] = '<i class="fas fa-spa fa-2x"></i> ';
 $project_summary["DPG"]["productivity"] = 0;
 $project_summary["DPG"]["error_count"] = 0;
 $project_summary["DPG"]["system_error_count"] = 0;
 $project_summary["DPG"]["rename_count"] = 0;
 $project_summary["DPG"]["points"] = 0;
+$project_summary["DPG"]["resubmit_count"] = 0;
 $error_chart = array();
 $max_size = 0;
 $key = NULL;
@@ -117,6 +130,7 @@ for ($i = 0; $i < $count_projects; $i++) {
             $hunter_summary[$max_size]["QA Errors"] = 0;
             $hunter_summary[$max_size]["Rename Errors"] = 0;
             $hunter_summary[$max_size]["System Errors"] = 0;
+            $hunter_summary[$max_size]["Resubmit Count"] = 0;
             $hunter_summary[$max_size]["Accuracy"] = 0;
             $hunter_summary[$max_size]["EMEA"] = 0;
             $hunter_summary[$max_size]["AMER"] = 0;
@@ -196,6 +210,16 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         }
         $hunter_summary[$i]["Rename Errors"] += (int)$rename_count;
 
+
+        $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE a.account_id = :account_id AND (a.product_creation_time >= :start_datetime AND a.product_creation_time <= :end_datetime) AND a.product_status = 2 AND a.product_submit_status = "resubmit"';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
+        $resubmit_count = $stmt->fetchColumn();
+        if ($resubmit_count == NULL) {
+            $resubmit_count = 0;
+        }
+        $hunter_summary[$i]["Resubmit Count"] += (int)$resubmit_count;
+
         $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE a.account_id = :account_id AND a.product_qa_status = "disapproved" AND a.product_qa_account_id IS NULL AND (a.product_creation_time >= :start_datetime AND a.product_creation_time <= :end_datetime) AND a.product_status = 2';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['account_id'=>$hunter_summary[$i][probe_processed_hunter_id], 'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
@@ -212,6 +236,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         $this_project_system_errors = $system_errors;
 
         $this_project_rename = $rename_count;
+        $this_project_resubmit = $resubmit_count;
 
         if ($hunter_summary[$i]["probe_processed_hunter_id"] == $_SESSION['id']) {
             $sql = "SELECT COUNT(a.product_id) as 'count', b.error_id FROM ".$dbname.".products a INNER JOIN ".$dbname.".product_qa_errors b ON a.product_id = b.product_id WHERE a.account_id = :account_id AND a.product_qa_datetime >= :start_datetime AND a.product_qa_datetime <= :end_datetime AND a.product_status = 2 GROUP BY b.error_id";
@@ -252,6 +277,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["AMER"]["error_count"] += $this_project_errors;
                 $project_summary["AMER"]["rename_count"] += $this_project_rename;
                 $project_summary["AMER"]["system_error_count"] += $this_project_system_errors;
+                $project_summary["AMER"]["resubmit_count"] += $this_project_resubmit;
                 break;
             case 'EMEA' : 
                 $hunter_summary[$i]["EMEA"]++; 
@@ -260,6 +286,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["EMEA"]["error_count"] += $this_project_errors;
                 $project_summary["EMEA"]["rename_count"] += $this_project_rename;
                 $project_summary["EMEA"]["system_error_count"] += $this_project_system_errors;
+                $project_summary["EMEA"]["resubmit_count"] += $this_project_resubmit;
                 break;
             case 'APAC' : 
                 $hunter_summary[$i]["APAC"]++; 
@@ -268,6 +295,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["APAC"]["error_count"] += $this_project_errors;
                 $project_summary["APAC"]["rename_count"] += $this_project_rename;
                 $project_summary["APAC"]["system_error_count"] += $this_project_system_errors;
+                $project_summary["APAC"]["resubmit_count"] += $this_project_resubmit;
                 break;
             case 'DPG' : 
                 $hunter_summary[$i]["DPG"]++; 
@@ -276,6 +304,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
                 $project_summary["DPG"]["error_count"] += $this_project_errors;
                 $project_summary["DPG"]["rename_count"] += $this_project_rename;
                 $project_summary["DPG"]["system_error_count"] += $this_project_system_errors;
+                $project_summary["DPG"]["resubmit_count"] += $this_project_resubmit;
             break;
         }
         $pdo = NULL;

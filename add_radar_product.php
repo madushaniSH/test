@@ -150,7 +150,14 @@ try {
                 $stmt->execute(['product_id'=>$fetched_info[$insert_index][product_id]]);
             }
         }
+    } else {
+        $pdo->beginTransaction();
+        $sql = 'UPDATE products SET product_submit_status = "resubmit" WHERE product_id = :product_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['product_id'=>$last_id]);
+        $pdo->commit();
     }
+
     if ($_POST['status'] == 2 && !$is_duplicate) {
         $sql = 'INSERT INTO probe_qa_queue (product_id) VALUES (:product_id)';
         $stmt = $pdo->prepare($sql);

@@ -226,6 +226,7 @@ const save_ref_info = (save_product, close_reference) => {
     const project_name = project_name_element.options[project_name_element.selectedIndex].value;
     const status_element = document.getElementById('status');
     const status = status_element.options[status_element.selectedIndex].value;
+    const resubmitted_product = document.getElementById('resubmitted_product').checked;
     const facings = document.getElementById("num_facings").value;
     let manu_link = document.getElementById('manu_link').value.trim();
     const product_link = document.getElementById('product_link').value.trim();
@@ -247,6 +248,7 @@ const save_ref_info = (save_product, close_reference) => {
                     manu_link = '';
                 }
                 let formData = new FormData();
+                formData.append('resubmitted_product', resubmitted_product);
                 formData.append('project_name', p_name);
                 formData.append('status', status);
                 formData.append('product_name', product_name);

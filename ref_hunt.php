@@ -628,6 +628,15 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                                         <span id="alt_design_name_error" class="error-popup"></span>
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                    <div class="form-group col-md-5">
+                                                    <div class="checkbox">
+                                                        <label class="check_box_container">Resubmitted Product
+                                                        <input type="checkbox" id="resubmitted_product">
+                                                        <span class="check_box_checkmark"></span>
+                                                    </div>
+                                                    </div>
+                                                </div>
                                                 <div class="row" id="facing_count">
                                                     <div class="form-group col-md-5">
                                                         <label for="num_facings">Number of Facings: <span id="output"></span></label>
