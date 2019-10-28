@@ -406,89 +406,175 @@ const fetch_project_error_lists = () => {
             data: formData,
             dataType: "JSON",
             success: function (data) {
-                console.log(data[0].summary);
                 document.getElementById("chart-container").innerHTML = '&nbsp;';
                 document.getElementById("chart-container").innerHTML = '<canvas id="error_type_chart_project"></canvas>';
-                if (data[0].summary.length > 0) {
-                    document.getElementById('display_message_error_type_chart').classList.add('hide');
-                    document.getElementById('error_type_chart_project').classList.remove('hide');
-                    document.getElementById('error_type_chart_project').innerHTML = '';
-                    let ctx = document.getElementById('error_type_chart_project').getContext('2d');
-                    let myChart = new Chart(ctx, {
-                        data: [],
-                        type: 'horizontalBar',
-                        options: {
-                            scales: {
-                                xAxes: [
-                                    {
-                                        stacked: true,
-                                        ticks: {
-                                            fontColor: "white",
+                if (data[0].region_error_count == 0 && data[0].summary.length == 0) {
+                    document.getElementById('display_message_error_type_chart').classList.remove('hide');
+                    document.getElementById('error_type_chart_project').classList.add('hide');
+                } else {
+                    if (data[0].summary.length > 0) {
+                        document.getElementById('display_message_error_type_chart').classList.add('hide');
+                        document.getElementById('error_type_chart_project').classList.remove('hide');
+                        document.getElementById('error_type_chart_project').innerHTML = '';
+                        let ctx = document.getElementById('error_type_chart_project').getContext('2d');
+                        let myChart = new Chart(ctx, {
+                            data: [],
+                            type: 'horizontalBar',
+                            options: {
+                                scales: {
+                                    xAxes: [
+                                        {
+                                            stacked: true,
+                                            ticks: {
+                                                fontColor: "white",
+                                            }
                                         }
-                                    }
-                                ],
-                                yAxes: [
-                                    {
-                                        stacked: true,
-                                        ticks: {
-                                            fontColor: "white",
+                                    ],
+                                    yAxes: [
+                                        {
+                                            stacked: true,
+                                            ticks: {
+                                                fontColor: "white",
+                                            }
                                         }
+                                    ],
+                                },
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        fontColor: "white",
                                     }
-                                ],
+                                },
                             },
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            legend: {
-                                position: 'right',
-                                labels: {
-                                    fontColor: "white",
-                                }
-                            },
-                        },
 
-                    });
-                    let this_dataset = [];
-                    for (let m = 0; m < data[0].summary.length; m++) {
-                        myChart.data.labels.push(data[0].summary[m].error_name);
-                        for (let n = 0; n < data[0].summary[m].hunter_info.length; n++) {
+                        });
+                        let this_dataset = [];
+                        for (let m = 0; m < data[0].summary.length; m++) {
+                            myChart.data.labels.push(data[0].summary[m].error_name);
+                            for (let n = 0; n < data[0].summary[m].hunter_info.length; n++) {
+                                this_dataset = {
+                                    label: [],
+                                    data: [],
+                                };
+                                let found = false;
+                                myChart.data.datasets.forEach(dataset => {
+                                    if (dataset.label == data[0].summary[m].hunter_info[n].hunter_gid) {
+                                        found = true;
+                                    }
+                                });
+                                if (!found) {
+                                    this_dataset.label.push(data[0].summary[m].hunter_info[n].hunter_gid);
+                                    myChart.data.datasets.push(this_dataset);
+                                }
+                            }
+                        }
+                        myChart.data.datasets.forEach(dataset => {
+                            let color = getRandomColor();
+                            dataset.backgroundColor = color;
+                            for (let m = 0; m < data[0].summary.length; m++) {
+                                let found = false;
+                                for (let n = 0; n < data[0].summary[m].hunter_info.length; n++) {
+                                    if (dataset.label == data[0].summary[m].hunter_info[n].hunter_gid) {
+                                        found = true;
+                                        dataset.data.push(data[0].summary[m].hunter_info[n].error_count);
+                                        break;
+                                    }
+                                }
+                                if (!found) {
+                                    dataset.data.push(0);
+                                }
+                            }
+                        });
+                        myChart.update();
+                        myChart.render();
+                    }
+                    if (data[0].project_summary.length > 0) {
+                        document.getElementById('display_message_error_type_chart').classList.add('hide');
+                        document.getElementById('error_type_chart_project').classList.remove('hide');
+                        document.getElementById('error_type_chart_project').innerHTML = '';
+                        let ctx = document.getElementById('error_type_chart_project').getContext('2d');
+                        let myChart = new Chart(ctx, {
+                            data: [],
+                            type: 'horizontalBar',
+                            options: {
+                                scales: {
+                                    xAxes: [
+                                        {
+                                            stacked: true,
+                                            ticks: {
+                                                fontColor: "white",
+                                            }
+                                        }
+                                    ],
+                                    yAxes: [
+                                        {
+                                            stacked: true,
+                                            ticks: {
+                                                fontColor: "white",
+                                            }
+                                        }
+                                    ],
+                                },
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        fontColor: "white",
+                                    }
+                                },
+                            },
+
+                        });
+                        let this_dataset = [];
+                        for (let m = 0; m < data[0].project_summary.length; m++) {
                             this_dataset = {
                                 label: [],
                                 data: [],
+                                backgroundColor: ''
                             };
-                            let found = false;
-                            myChart.data.datasets.forEach(dataset => {
-                                if (dataset.label == data[0].summary[m].hunter_info[n].hunter_gid) {
-                                    found = true;
+                            let color = getRandomColor();
+                            this_dataset.backgroundColor = color;
+                            this_dataset.label.push(data[0].project_summary[m].region);
+                            for (let n = 0; n < data[0].project_summary[m].errors.length; n++) {
+                                let found = false;
+                                myChart.data.labels.forEach(label => {
+                                    if (data.label == data[0].project_summary[m].errors[n].error_name) {
+                                        found = true;
+                                    }
+                                })
+                                if (!found) {
+                                    myChart.data.labels.push(data[0].project_summary[m].errors[n].error_name);
+                                }
+                            }
+                            myChart.data.datasets.push(this_dataset);
+                        }
+                        let this_data = [];
+                        for (let m = 0; m < data[0].project_summary.length; m++) {
+                            this_data = [];
+                            myChart.data.labels.forEach(label => {
+                                let label_found = false;
+                                for (let n = 0; n < data[0].project_summary[m].errors.length; n++) {
+                                    if (label == data[0].project_summary[m].errors[n].error_name) {
+                                        this_data.push(data[0].project_summary[m].errors[n].error_count);
+                                        label_found = true;
+                                    }
+                                }
+                                if (!label_found) {
+                                    this_data.push(0);
                                 }
                             });
-                            if (!found) {
-                                this_dataset.label.push(data[0].summary[m].hunter_info[n].hunter_gid);
-                                myChart.data.datasets.push(this_dataset);
-                            }
-                        }
-                    }
-                    myChart.data.datasets.forEach(dataset => {
-                        let color = getRandomColor();
-                        dataset.backgroundColor = color;
-                        for (let m = 0; m < data[0].summary.length; m++) {
-                            let found = false;
-                            for (let n = 0; n < data[0].summary[m].hunter_info.length; n++) {
-                                if (dataset.label == data[0].summary[m].hunter_info[n].hunter_gid) {
-                                    found = true;
-                                    dataset.data.push(data[0].summary[m].hunter_info[n].error_count);
-                                    break;
+                            myChart.data.datasets.forEach(dataset => {
+                                if (dataset.label == data[0].project_summary[m].region) {
+                                    dataset.data = this_data;
                                 }
-                            }
-                            if (!found) {
-                                dataset.data.push(0);
-                            }
+                            });
                         }
-                    });
-                    myChart.update();
-                    myChart.render();
-                } else {
-                    document.getElementById('display_message_error_type_chart').classList.remove('hide');
-                    document.getElementById('error_type_chart_project').classList.add('hide');
+                        myChart.update();
+                        myChart.render();
+                    }
                 }
                 load_section.classList.add('hide');
             },
@@ -530,6 +616,7 @@ const fetch_hunter_products = () => {
                 let dvc_total_count = 0;
                 let facing_total_count = 0;
                 let error_total_count = 0;
+                let rename_total_count = 0;
                 for (let i = 0; i < data[0].summary.length; i++) {
                     table.row.add([
                         data[0].summary[i].project_name,
@@ -540,6 +627,7 @@ const fetch_hunter_products = () => {
                         data[0].summary[i].dvc,
                         data[0].summary[i].facing,
                         data[0].summary[i].errors,
+                        data[0].summary[i].rename,
                         data[0].summary[i].product_info,
                     ]).draw(false);
                     sku_total_count += data[0].summary[i].sku;
@@ -547,6 +635,7 @@ const fetch_hunter_products = () => {
                     dvc_total_count += data[0].summary[i].dvc;
                     facing_total_count += data[0].summary[i].facing;
                     error_total_count += data[0].summary[i].errors;
+                    rename_total_count += data[0].summary[i].rename;
                     // if hunter gid doesnot exist in the select box adds it
                     if (!($("#hunter_filter option[value='" + data[0].summary[i].user_gid + "']").length > 0)) {
                         $('#hunter_filter').append('<option value="' + data[0].summary[i].user_gid + '">' + data[0].summary[i].user_gid + "</option>");
@@ -557,6 +646,7 @@ const fetch_hunter_products = () => {
                 document.getElementById('dvc_count').innerHTML = dvc_total_count;
                 document.getElementById('facing_count').innerHTML = facing_total_count;
                 document.getElementById('error_count').innerHTML = error_total_count;
+                document.getElementById('rename_count').innerHTML = rename_total_count;
                 load_section.classList.add('hide');
                 table_section.classList.remove('hide');
             },
@@ -654,21 +744,58 @@ jQuery(document).ready(function () {
                 .search(hunter_gid, true, false)
                 .draw();
         }
+        let data = table.rows({ search: 'applied' }).data()
+        let sku_total_count = 0;
+        let brand_total_count = 0;
+        let dvc_total_count = 0;
+        let facing_total_count = 0;
+        let error_total_count = 0;
+        let rename_total_count = 0;
+        if (hunter_gid != '') {
+            for (let i = 0; i < data.length; i++) {
+                sku_total_count += data[i][4];
+                brand_total_count += data[i][3];
+                dvc_total_count += data[i][5];
+                facing_total_count += data[i][6];
+                error_total_count += data[i][7];
+                rename_total_count += data[i][8];
+            }
+        } else {
+            data = table.rows().data();
+            if (data.length != 0) {
+                for (let i = 0; i < data.length; i++) {
+                    sku_total_count += data[i][4];
+                    brand_total_count += data[i][3];
+                    dvc_total_count += data[i][5];
+                    facing_total_count += data[i][6];
+                    error_total_count += data[i][7];
+                    rename_total_count += data[i][8];
+                }
+            }
+        }
+        if (data.length != 0) {
+            document.getElementById('sku_count').innerHTML = sku_total_count;
+            document.getElementById('brand_count').innerHTML = brand_total_count;
+            document.getElementById('dvc_count').innerHTML = dvc_total_count;
+            document.getElementById('facing_count').innerHTML = facing_total_count;
+            document.getElementById('error_count').innerHTML = error_total_count;
+            document.getElementById('rename_count').innerHTML = rename_total_count;
+        }
     });
     $('#dataTable tbody').on('click', 'button', function () {
         let data = table.row($(this).parents('tr')).data();
         $('#product_detail_modal_title').html(data[0] + ' ' + data[1] + ' ' + data[2]);
         product_table.clear().draw();
-        for (let i = 0; i < data[8][0].length; i++) {
+        for (let i = 0; i < data[9][0].length; i++) {
             product_table.row.add([
-                data[8][0][i].product_name,
-                data[8][0][i].product_alt_design_name,
-                data[8][0][i].product_type,
-                data[8][0][i].product_creation_time,
-                data[8][0][i].product_qa_datetime,
-                data[8][0][i].product_qa_status,
-                data[8][0][i].error_string,
-                data[8][0][i].error_url,
+                data[9][0][i].product_name,
+                data[9][0][i].product_alt_design_name,
+                data[9][0][i].product_type,
+                data[9][0][i].product_creation_time,
+                data[9][0][i].product_qa_datetime,
+                data[9][0][i].product_qa_status,
+                data[9][0][i].error_string,
+                data[9][0][i].error_url,
             ]).draw(false);
         }
         $('#product_detail_modal').modal('show');

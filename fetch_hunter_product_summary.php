@@ -124,15 +124,20 @@ for ($i = 0; $i < count($project_array); $i++) {
             if ($error_count == NULL) {
                 $error_count = 0;
             }
-            if ($sku_count != 0 || $brand_count != 0 || $dvc_count != 0 || $facing_count != 0 || $error_count != 0){
+            $sql = "SELECT COUNT(*) FROM ".$dbname.".products a WHERE ( a.product_type = 'sku' OR a.product_type = 'brand' ) AND a.account_id = :account_id AND (a.product_previous IS NOT NULL) AND DATE(a.product_qa_datetime) = :date AND a.product_status = 2";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['account_id'=>$project_hunters[$m][id], 'date'=>$date]);
+            $rename_count = $stmt->fetchColumn();
+            if ($rename_count == NULL) {
+                $rename_count = 0;
+            }
+            if ($sku_count != 0 || $brand_count != 0 || $dvc_count != 0 || $facing_count != 0 || $error_count != 0 || $rename_count != 0){
                 $sql = 'SELECT a.product_id, a.product_name, a.product_alt_design_name, a.product_type, a.product_creation_time, a.product_qa_datetime, a.product_qa_status FROM '.$dbname.'.products a WHERE (DATE(a.product_creation_time) = :date OR DATE(a.product_qa_datetime) = :date) AND a.account_id = :id';
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute(['id'=>$project_hunters[$m][id], 'date'=>$date]);
                 $product_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
-                
-                
-                $summary[$count] = array_fill_keys(array('project_name','date','sku', 'brand', 'dvc', 'facing', 'errors'),'');
+                $summary[$count] = array_fill_keys(array('project_name','date','sku', 'brand', 'dvc', 'facing', 'rename','errors'),'');
                 $summary[$count][project_name] = $dbname;
                 $summary[$count][user_gid] = $project_hunters[$m][account_gid];
                 $summary[$count][date] = $date;
@@ -140,6 +145,7 @@ for ($i = 0; $i < count($project_array); $i++) {
                 $summary[$count]['brand'] = (int)$brand_count;
                 $summary[$count]['dvc'] = (int)$dvc_count;
                 $summary[$count]['facing'] = (int)$facing_count;
+                $summary[$count]['rename'] = (int)$rename_count;
                 $summary[$count]['errors'] = (int)$error_count;
                 
                 for ($k = 0; $k < count($product_info); $k++) {

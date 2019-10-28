@@ -466,6 +466,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                                     <th>DVC Hunted <span class="table_count_button" id="dvc_count"></span></th>
                                                     <th>Facing Hunted <span class="table_count_button" id="facing_count"></span></th>
                                                     <th>Error Count <span class="table_count_button" id="error_count"></span></th>
+                                                    <th>Rename Count <span class="table_count_button" id="rename_count"></span></th>
                                                     <th>Explore</th>
                                                </tr>
                                             </thead>
@@ -492,7 +493,8 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         <div class="col-md-2">
                                             <label for="project_region_error_type">Select Project Region</label>
                                             <select name="project_region_error_type" id="project_region_error_type" class="form-control">
-                                                <option value="AMER" selected >AMER</option>
+                                                <option value="ALL" selected >ALL</option>
+                                                <option value="AMER" >AMER</option>
                                                 <option value="EMEA">EMEA</option>
                                                 <option value="APAC">APAC</option>
                                                 <option value="DPG">DPG</option>
