@@ -526,7 +526,9 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                         </div>
                                     </div>
                                     <div class="row my-3">
-                                        <p id="display_message_error_type_chart" class="hide"> ¯\_(ツ)_/¯ 0 errors found. You can help increase this number</p>
+                                        <div id="display_message_error_type_chart" class="hide">
+                                        <p> ¯\_(ツ)_/¯ 0 errors found.</p>
+                                        <img src="images/tenor.gif">
                                     </div>
                                     <div class="row my-3">
                                         <div id="chart-container">
@@ -541,7 +543,6 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     }
                     ?>
                 </div>
-
             </div>
             <!-- /.container-fluid -->
         </div>
