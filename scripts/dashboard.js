@@ -541,7 +541,7 @@ const fetch_project_error_lists = () => {
                             for (let n = 0; n < data[0].project_summary[m].errors.length; n++) {
                                 let found = false;
                                 myChart.data.labels.forEach(label => {
-                                    if (data.label == data[0].project_summary[m].errors[n].error_name) {
+                                    if (label == data[0].project_summary[m].errors[n].error_name) {
                                         found = true;
                                     }
                                 })

@@ -246,7 +246,6 @@ for ($i = 0; $i < count($hunter_summary); $i++){
         }
         $hunter_summary[$i]["System Errors"] += (int)$system_errors;
 
-
         $this_project_productivity = (($brand_count * 1.5) + ($sku_count * 1) + ($dvc_count * 0.5) + ($facing_count * 0.5)) * $hunter_summary[$i]["project_weight"][$j];
         $this_project_points = $this_project_productivity - ((($error_count + $system_errors) * 5) + $rename_count);
         $this_project_errors = $error_count + $system_errors;
