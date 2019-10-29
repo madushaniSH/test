@@ -378,7 +378,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                       <h6 class="m-0 font-weight-bold text-primary">Error Type Chart</h6>
                                   </div>
                                   <div class="card-body">
-                                  <p id="display_message_chart" class="hide"> Overall Error Count is 0, please increase this!</p>
+                                  <p id="display_message_chart" class="hide"> Overall Error Count is 0</p>
                                     <canvas id="error_type_chart" class="hide"></canvas>
                                   </div>
                             </div>
