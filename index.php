@@ -17,6 +17,10 @@ if (!isset($_SESSION['logged_in'])) {
         header('Location: dashboard.php');
     }
 
+    if ($_SESSION['role'] === 'ODA') {
+        header('Location: oda_dashboard.php');
+    }
+
 // unset the variable out from session. out is used to store error messages from details.php
 if(isset($_SESSION['out'])){
     unset($_SESSION['out']);
@@ -57,7 +61,7 @@ if(isset($_SESSION['out'])){
     </div>
 </nav>
 <?php
-if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'Training') {
+if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'Training' || $_SESSION['role'] == 'ODA Supervisor') {
     echo "
 <a href=\"products.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
@@ -66,7 +70,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SES
     Products and Brands
 </a>";
 }
-if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor') {
+if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'ODA Supervisor') {
     echo "
 <a href=\"add_new_user.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
@@ -75,13 +79,23 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor') {
     Add new user
 </a>";
 }
-if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT' || $_SESSION['role'] === 'SRT Analyst'){
+if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor'){
     echo"
 <a href=\"dashboard.php\" class=\"btn btn-lg dashboard-btn\">
     <span>
         <i class=\"fas fa-dragon fa-2x\"></i>
     </span>
     Product Hunt
+</a>
+";
+}
+if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'ODA Supervisor'){
+    echo "
+<a href=\"oda_dashboard.php\" class=\"btn btn-lg dashboard-btn\">
+    <span>
+        <i class=\"fas fa-puzzle-piece fa-2x\"></i>
+    </span>
+    ODA
 </a>
 ";
 }

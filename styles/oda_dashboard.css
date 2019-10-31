@@ -1,0 +1,40 @@
+#content {
+    background-image: url('../images/dashboard.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.table_count_button {
+    margin-left: 0.3vw;
+    padding: 0.1vw 0.2vw;
+    color: white;
+    border-radius: 1vw;
+    background: lightslategrey;
+}
+
+#error_type_chart_project {
+    width: 1300px;
+    margin-left: 15%;
+}
+
+.card {
+    background-color: transparent !important;
+    backdrop-filter: blur(1vw);
+    color: white;
+}
+
+.modal-content {
+    background-image: url('../images/dashboard.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+}
+
+#product_csv_upload_section {
+    margin-top: 1.4vw;
+}
+
+#selected_project_name {
+    color: orangered;
+    font-weight: bold;
+}
