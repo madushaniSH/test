@@ -353,6 +353,51 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     </div>
                     <?php
                     if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor'){
+                        echo'
+                    <div class="row my-3 ">
+                        <div class="col">
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Hunter Details</h6>
+                                </div>
+                                <div class="card-body">
+                                 <div class = "row my-3">
+                                 <div class="col">
+                                    <div class="table-responsive">
+                                        <label for="hunter_filter_rank">Filter Hunter Name</label>
+                                        <select name="hunter_filter_rank" id="hunter_filter_rank" class="form-control">
+                                        <option value="" selected>None</option>
+                                        </select>
+                                        <label for="hunter_filter_region">Filter by Region</label>
+                                        <select name="hunter_filter_rank" id="hunter_filter_region" class="form-control">
+                                        <option value="" selected>All</option>
+                                        </select>
+                                        <table class="table table-bordered" id="dataTableHunter" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Rank</th>
+                                                    <th>Hunter</th>
+                                                    <th>Region</th>
+                                                    <th>Productivity</th>
+                                                    <th>Naming Accuracy</th>
+                                                    <th>Accuracy</th>
+                                                    <th>Points</th>
+                                               </tr>
+                                            </thead>
+                                        </table>
+                                 </div>
+                                 </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    ';
+                    }
+                    ?>
+                    <?php
+                    if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor'){
                         echo '
                         <div class="row my-3">
                          <div class="col-lg-6">
@@ -387,7 +432,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                         }
                         ?>
                         <?php
-                        if ($_SESSION['role'] == 'Admin') {
+                        if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Supervisor') {
                         echo '
                             <div class="col-lg-6">
                                 <!-- Basic Card Example -->

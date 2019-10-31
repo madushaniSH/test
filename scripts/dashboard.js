@@ -4,6 +4,7 @@
 
 Chart.plugins.unregister(ChartDataLabels);
 let table;
+let hunter_table;
 
 /*
     This function fetches the project list from the db using an ajax call according to the region selected in 
@@ -269,6 +270,25 @@ const fetch_dashboard_info = () => {
                 myChart.render();
             }
             if (data[0].is_admin != '') {
+                hunter_table.clear().draw();
+                for (let i = 0; i < data[0].hunter_summary.length; i++) {
+                    hunter_table.row.add([
+                        data[0].hunter_summary[i].Rank,
+                        data[0].hunter_summary[i].name,
+                        data[0].hunter_summary[i].region,
+                        data[0].hunter_summary[i].productivity,
+                        data[0].hunter_summary[i].rename_accuracy,
+                        data[0].hunter_summary[i].Accuracy,
+                        data[0].hunter_summary[i].Points,
+                    ]).draw(false);
+                    // if hunter gid doesnot exist in the select box adds it
+                    if (!($("#hunter_filter_rank option[value='" + data[0].hunter_summary[i].name + "']").length > 0)) {
+                        $('#hunter_filter_rank').append('<option value="' + data[0].hunter_summary[i].name + '">' + data[0].hunter_summary[i].name + "</option>");
+                    }
+                    if (!($("#hunter_filter_region option[value='" + data[0].hunter_summary[i].region + "']").length > 0)) {
+                        $('#hunter_filter_region').append('<option value="' + data[0].hunter_summary[i].region + '">' + data[0].hunter_summary[i].region + "</option>");
+                    }
+                }
                 let ctx = document.getElementById('error_type_chart_project_comp').getContext('2d');
                 let myChart = new Chart(ctx, {
                     type: 'bar',
@@ -661,6 +681,8 @@ const fetch_hunter_products = () => {
 }
 
 jQuery(document).ready(function () {
+    hunter_table = $('#dataTableHunter').DataTable({
+    });
     fetch_project_list('project_region', 'project_name');
     fetch_project_list('project_region_error_type', 'project_name_error_type');
     // when a new project region is selected fetches an updated project list
@@ -703,6 +725,12 @@ jQuery(document).ready(function () {
     jQuery('#hunter_filter').select2({
         width: '50%',
     });
+    jQuery('#hunter_filter_rank').select2({
+        width: '50%',
+    });
+    jQuery('#hunter_filter_region').select2({
+        width: '25%',
+    });
     $('#fetch_details_hunter').click(() => {
         $('#hunter_filter').empty();
         $('#hunter_filter').append('<option value="">None</option>');
@@ -729,6 +757,34 @@ jQuery(document).ready(function () {
                 "targets": -1
             }
         ]
+    });
+    $("#hunter_filter_rank").change(function () {
+        const hunter_gid = $('#hunter_filter_rank').val();
+        if (hunter_gid == "" || hunter_gid == null) {
+            hunter_table
+                .column(1)
+                .search("", true, false)
+                .draw();
+        } else {
+            hunter_table
+                .column(1)
+                .search(hunter_gid, true, false)
+                .draw();
+        }
+    });
+    $("#hunter_filter_region").change(function () {
+        const hunter_gid = $('#hunter_filter_region').val();
+        if (hunter_gid == "" || hunter_gid == null) {
+            hunter_table
+                .column(2)
+                .search("", true, false)
+                .draw();
+        } else {
+            hunter_table
+                .column(2)
+                .search(hunter_gid, true, false)
+                .draw();
+        }
     });
     // searches for hunter gid and redraws table
     $("#hunter_filter").change(function () {

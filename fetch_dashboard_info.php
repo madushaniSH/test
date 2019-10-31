@@ -432,12 +432,10 @@ for($i = 0; $i < count($project_summary); $i++) {
     $project_summary[$i]["Rank"] = $i + 1;
 }
 
-if ($_SESSION['role'] === 'Admin') {
-    $is_admin = 'yes';
-}
 $is_super = '';
 if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor') {
     $is_super = 'yes';
+    $is_admin = 'yes';
 }
 
 $return_arr[] = array("warning"=>$warning, "hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary), "project_summary"=>$project_summary, "error_chart"=>$error_chart, "is_admin"=>$is_admin, "is_super"=>$is_super);

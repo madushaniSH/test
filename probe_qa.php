@@ -455,6 +455,8 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
             </div>
         </div>
                     </div>
+                    </div>
+                    </div>
         <div class="row">
             <div id="probe_qa_options" class="col hide">
             <p class="error-popup" id="probe_qa_message"></p>
