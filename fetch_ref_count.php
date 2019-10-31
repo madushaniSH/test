@@ -167,7 +167,7 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
     $stmt->execute(['ticket'=>$_POST['ticket']]); 
     $number_of_handled_rows = $stmt->fetchColumn(); 
 
-    $sql = 'SELECT reference_queue_id FROM reference_queue WHERE account_id = :account_id';
+    $sql = 'SELECT reference_queue_id, reference_info_key_id FROM reference_queue WHERE account_id = :account_id';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$_SESSION['id']]);
     $ref_queue_info = $stmt->fetch(PDO::FETCH_OBJ);
