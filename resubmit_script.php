@@ -46,8 +46,14 @@
       $dsn = 'mysql:host='.$host.';dbname='.$dbname;
       $pdo = new PDO($dsn, $user, $pwd);
       echo "<p>".$dbname."</p>";
-      $sql = "ALTER TABLE `products` ADD `product_submit_status` ENUM('resubmit','normal') NOT NULL DEFAULT 'normal'";
-     $stmt = $pdo->prepare($sql);
-     $stmt->execute();
+    $sql = 'CREATE TABLE IF NOT EXISTS `product_client_category` (
+    `product_client_category_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `product_id` int(11) NOT NULL,
+    `client_category_id` int(11) NOT NULL,
+    CONSTRAINT '.$dbname.'_PRODCUT_CLIENT_CAT_CLIENT_CAT_ID FOREIGN KEY (`client_category_id`) REFERENCES `client_category` (`client_category_id`),
+    CONSTRAINT '.$dbname.'_PRODCUT_CLIENT_CAT_PRODUCT_ID FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(); 
   }
 ?>

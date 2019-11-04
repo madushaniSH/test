@@ -2,10 +2,10 @@
 let this_selection_info = {
     project_name: '',
     ticket_selection: [],
-}
+};
 
 const get_ticket_list = () => {
-    if (this_selection_info.project_name != "") {
+    if (this_selection_info.project_name !== "") {
         let formData = new FormData();
         formData.append("project_name", this_selection_info.project_name);
         jQuery.ajax({
@@ -40,32 +40,32 @@ const get_ticket_list = () => {
             processData: false
         });
     }
-}
+};
 
 const fetch_client_cat = () => {
-    if (this_selection_info.project_name != '' && this_selection_info.ticket_selection.length != 0) {
+    if (this_selection_info.project_name !== '' && this_selection_info.ticket_selection.length !== 0) {
         let formData = new FormData();
         formData.append("project_name", this_selection_info.project_name);
-        formData.append("project_name", this_selection_info.ticket_selection);
         jQuery.ajax({
             url: "fetch_client_cat.php",
             type: "POST",
             data: formData,
             dataType: "JSON",
             success: function (data) {
+                console.log(data);
                 // adding missing options
-                for (var i = 0; i < data[0].ticket_list.length; i++) {
+                for (let i = 0; i < data[0].client_cat_info.length; i++) {
                     if (
-                        !$("#ticket").find(
-                            'option[value="' + data[0].ticket_list[i].project_ticket_system_id + '"]'
+                        !$("#client_category").find(
+                            'option[value="' + data[0].client_cat_info[i].client_category_name + '"]'
                         ).length
                     ) {
                         // Append it to the select
-                        $("#ticket").append(
+                        $("#client_category").append(
                             '<option value="' +
-                            data[0].ticket_list[i].project_ticket_system_id +
+                            data[0].client_cat_info[i].client_category_name +
                             '">' +
-                            data[0].ticket_list[i].ticket_id +
+                            data[0].client_cat_info[i].client_category_name +
                             "</option>"
                         );
                     }
@@ -79,13 +79,13 @@ const fetch_client_cat = () => {
             processData: false
         });
     }    
-}
+};
 const validate_ticket_name = () => {
     // this makes an array  containing ticket ids
     const ticket_options = $('#ticket').val();
     const client_cat = document.getElementById('client_cat');
-    $('#client_cat').empty();
-    if (ticket_options.length != 0) {
+    $('#client_category').empty();
+    if (ticket_options.length > 0) {
         this_selection_info.ticket_selection = ticket_options;
         fetch_client_cat();
         client_cat.classList.remove('hide');
@@ -93,21 +93,24 @@ const validate_ticket_name = () => {
         this_selection_info.ticket_selection = [];
         client_cat.classList.add('hide');
     }
-}
+};
 
 const validate_project_name = () => {
     const project_name = $('#project_name').val();
     const ticket_section = document.getElementById('ticket_section');
-    if (project_name != '') {
+    const client_cat = document.getElementById('client_cat');
+    if (project_name !== '') {
         this_selection_info.project_name = project_name;
         $('#ticket').empty();
         get_ticket_list();
         ticket_section.classList.remove('hide');
+        client_cat.classList.add('hide');
     } else {
         ticket_section.classList.add('hide');
         this_selection_info.project_name = '';
+        client_cat.classList.add('hide');
     }
-}
+};
 
 
 $(document).ready(function () {

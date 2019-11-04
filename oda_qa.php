@@ -66,6 +66,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <link href="styles/sb-admin-2.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="styles/oda_dashboard.css" />
+    <link rel="stylesheet" type="text/css" href="styles/oda_qa.css" />
 </head>
 
 <body id="page-top">
