@@ -2,6 +2,44 @@
 let this_selection_info = {
     project_name: '',
     ticket_selection: [],
+    client_cat: '',
+};
+
+// function which adds the hide class the passed element
+const hideElement = (elementName) => {
+    const element = document.getElementById(elementName);
+    element.classList.add('hide');
+};
+
+// function which removes the hide class the passed element
+const showElement = (elementName) => {
+    const element = document.getElementById(elementName);
+    element.classList.remove('hide');
+};
+
+const update_oda_qa_count = () => {
+    if (this_selection_info.project_name !== '' && this_selection_info.ticket_selection.length !== 0 && this_selection_info.client_cat !== '') {
+        let formData = new FormData();
+        formData.append('project_name', this_selection_info.project_name);
+        formData.append('ticket', this_selection_info.ticket_selection);
+        formData.append('client_cat', this_selection_info.client_cat);
+        jQuery.ajax({
+            url: "fetch_oda_qa_count.php",
+            type: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (data) {
+                alert("Error fetching probe information. Please refresh");
+                clearInterval(request);
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
 };
 
 const get_ticket_list = () => {
@@ -52,7 +90,6 @@ const fetch_client_cat = () => {
             data: formData,
             dataType: "JSON",
             success: function (data) {
-                console.log(data);
                 // adding missing options
                 for (let i = 0; i < data[0].client_cat_info.length; i++) {
                     if (
@@ -70,6 +107,7 @@ const fetch_client_cat = () => {
                         );
                     }
                 }
+                validate_client_cat();
             },
             error: function (data) {
                 alert("Error assigning probe. Please refresh");
@@ -78,37 +116,50 @@ const fetch_client_cat = () => {
             contentType: false,
             processData: false
         });
-    }    
+    }
 };
+
+const validate_client_cat = () => {
+    const client_category = $('#client_category').val();
+    if (client_category !== '') {
+        showElement('qa_section');
+        this_selection_info.client_cat = client_category;
+    } else {
+        hideElement('qa_section');
+        this_selection_info.client_cat = '';
+    }
+};
+
 const validate_ticket_name = () => {
     // this makes an array  containing ticket ids
     const ticket_options = $('#ticket').val();
-    const client_cat = document.getElementById('client_cat');
     $('#client_category').empty();
     if (ticket_options.length > 0) {
         this_selection_info.ticket_selection = ticket_options;
         fetch_client_cat();
-        client_cat.classList.remove('hide');
+        showElement('client_cat');
+        hideElement('qa_section');
     } else {
         this_selection_info.ticket_selection = [];
-        client_cat.classList.add('hide');
+        hideElement('client_cat');
+        hideElement('qa_section');
     }
 };
 
 const validate_project_name = () => {
     const project_name = $('#project_name').val();
-    const ticket_section = document.getElementById('ticket_section');
-    const client_cat = document.getElementById('client_cat');
     if (project_name !== '') {
         this_selection_info.project_name = project_name;
         $('#ticket').empty();
         get_ticket_list();
-        ticket_section.classList.remove('hide');
-        client_cat.classList.add('hide');
+        showElement('ticket_section');
+        hideElement('client_cat');
+        hideElement('qa_section');
     } else {
-        ticket_section.classList.add('hide');
         this_selection_info.project_name = '';
-        client_cat.classList.add('hide');
+        hideElement('ticket_section');
+        hideElement('client_cat');
+        hideElement('qa_section');
     }
 };
 
@@ -128,5 +179,8 @@ $(document).ready(function () {
     });
     $("#ticket").change(function () {
         validate_ticket_name();
+    });
+    $("#client_category").change(function () {
+        validate_client_cat();
     });
 });

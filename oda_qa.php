@@ -66,6 +66,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <link href="styles/sb-admin-2.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="styles/oda_dashboard.css" />
+    <link rel="stylesheet" type="text/css" href="styles/probe_hunt.css" />
     <link rel="stylesheet" type="text/css" href="styles/oda_qa.css" />
 </head>
 
@@ -198,6 +199,66 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                                 </div>
                             </div>
                         </div>
+                         <div id="qa_section" class="hide">
+                             <div class="row">
+                                 <div class="col">
+                                     <div id="toggle_section">
+                                         <!-- Rounded switch -->
+                                     <label for="toggle">Reference QA</label>
+                                     <label class="switch" id="toggle">
+                                         <input type="checkbox" id="qa_type_toggle">
+                                         <span class="slider round"></span>
+                                     </label>
+                                     </div>
+                                 </div>
+                             </div>
+                             <div class="row text-center" id="counters">
+                                 <div class="col">
+                                     <div class="counter overall-counter">
+                                         <i class="fas fa-clipboard-list fa-2x"></i>
+                                         <h2 id="current_brand_count" class="timer count-title count-number">
+                                             <div class="spinner-border text-success" role="status">
+                                                 <span class="sr-only">Loading...</span>
+                                             </div>
+                                         </h2>
+                                         <p class="count-text ">Pending Brand Count</p>
+                                     </div>
+                                 </div>
+                                 <div class="col">
+                                     <div class="counter overall-counter">
+                                         <i class="fas fa-clipboard-list fa-2x"></i>
+                                         <h2 id="current_sku_count" class="timer count-title count-number">
+                                             <div class="spinner-border text-success" role="status">
+                                                 <span class="sr-only">Loading...</span>
+                                             </div>
+                                         </h2>
+                                         <p class="count-text ">Pending SKU Count</p>
+                                     </div>
+                                 </div>
+                                 <div class="col">
+                                     <div class="counter overall-counter">
+                                         <i class="fas fa-clipboard-list fa-2x"></i>
+                                         <h2 id="current_dvc_count" class="timer count-title count-number">
+                                             <div class="spinner-border text-success" role="status">
+                                                 <span class="sr-only">Loading...</span>
+                                             </div>
+                                         </h2>
+                                         <p class="count-text ">Pending DVC Count</p>
+                                     </div>
+                                 </div>
+                                 <div class="col">
+                                     <div class="counter overall-counter">
+                                         <i class="fas fa-clipboard-list fa-2x"></i>
+                                         <h2 id="current_facing_count" class="timer count-title count-number">
+                                             <div class="spinner-border text-success" role="status">
+                                                 <span class="sr-only">Loading...</span>
+                                             </div>
+                                         </h2>
+                                         <p class="count-text ">Pending Facing Count</p>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
                     </div>
             </div>
             <!-- /.container-fluid -->
