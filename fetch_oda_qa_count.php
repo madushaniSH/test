@@ -70,7 +70,8 @@ foreach($ticket_array as $ticket) {
 }
 
 try {
-    $sql = 'SELECT COUNT(*) FROM products p
+    $sql = 'SELECT COUNT(*) FROM oda_queue oq
+        INNER  JOIN products p ON oq.product_id = p.product_id
         LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id 
         LEFT OUTER JOIN probe pr ON ppi.probe_product_info_key_id = pr.probe_key_id 
         LEFT  JOIN product_client_category pcc on p.product_id = pcc.product_id
@@ -87,7 +88,8 @@ try {
     $stmt->execute(['client_category' => (int)$_POST['client_cat']]);
     $brand_count = $stmt->fetchColumn();
 
-    $sql = 'SELECT COUNT(*) FROM products p
+    $sql = 'SELECT COUNT(*) FROM oda_queue oq
+        INNER  JOIN products p ON oq.product_id = p.product_id
         LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id 
         LEFT OUTER JOIN probe pr ON ppi.probe_product_info_key_id = pr.probe_key_id 
         LEFT  JOIN product_client_category pcc on p.product_id = pcc.product_id
@@ -104,11 +106,12 @@ try {
     $stmt->execute(['client_category' => (int)$_POST['client_cat']]);
     $sku_count = $stmt->fetchColumn();
 
-    $sql = 'SELECT COUNT(*) FROM products p
+    $sql = 'SELECT COUNT(*) FROM oda_queue oq
+        INNER  JOIN products p ON oq.product_id = p.product_id
         LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id 
         LEFT OUTER JOIN probe pr ON ppi.probe_product_info_key_id = pr.probe_key_id 
         LEFT  JOIN product_client_category pcc on p.product_id = pcc.product_id
-        LEFT OUTER JOIN ref_product_info rpi on p.product_id = rpi.product_id
+        LEFT JOIN ref_product_info rpi on p.product_id = rpi.product_id
         LEFT OUTER JOIN reference_info ri on rpi.reference_info_id = ri.reference_info_id
         LEFT OUTER JOIN  radar_sources rs on p.product_id = rs.radar_product_id
         LEFT OUTER JOIN  radar_hunt rh ON rs.radar_hunt_id = rh.radar_hunt_id
@@ -121,11 +124,29 @@ try {
     $stmt->execute(['client_category' => (int)$_POST['client_cat']]);
     $dvc_count = $stmt->fetchColumn();
 
+    $sql = 'SELECT COUNT(*) FROM oda_queue oq
+        INNER  JOIN products p ON oq.product_id = p.product_id
+        LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id 
+        LEFT OUTER JOIN probe pr ON ppi.probe_product_info_key_id = pr.probe_key_id 
+        LEFT  JOIN product_client_category pcc on p.product_id = pcc.product_id
+        LEFT JOIN ref_product_info rpi on p.product_id = rpi.product_id
+        LEFT OUTER JOIN reference_info ri on rpi.reference_info_id = ri.reference_info_id
+        LEFT OUTER JOIN  radar_sources rs on p.product_id = rs.radar_product_id
+        LEFT OUTER JOIN  radar_hunt rh ON rs.radar_hunt_id = rh.radar_hunt_id
+        WHERE
+        p.product_type = "facing" AND (' . $ticket_query_string . '
+        ) AND (' . $product_type_query_string . '
+        ) AND  pcc.client_category_id = :client_category
+        AND p.product_qa_status = "approved"';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['client_category' => (int)$_POST['client_cat']]);
+    $facing_count = $stmt->fetchColumn();
+
 
 } catch (PDOException $e) {
     $warning = $e->getMessage();
 }
 
-$return_arr[] = array("brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count" =>$dvc_count);
+$return_arr[] = array("brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count" =>$dvc_count, "facing_count"=>$facing_count);
 echo json_encode($return_arr);
 
