@@ -54,6 +54,15 @@
     CONSTRAINT '.$dbname.'_PRODCUT_CLIENT_CAT_PRODUCT_ID FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(); 
+
+    $stmt->execute();
+      $sql = 'CREATE TABLE IF NOT EXISTS  `oda_queue` (
+  `oda_queue_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `account_id` int(11) DEFAULT NULL,
+  `qa_being_handled` tinyint(1) NOT NULL DEFAULT \'0\'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute();
   }
 ?>

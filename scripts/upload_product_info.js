@@ -104,6 +104,7 @@ function upload_product_info(event) {
                 data: formData,
                 dataType: "JSON",
                 success: function (data) {
+                    console.log(data);
                     if (data[0].result.length > 0) {
                         JSONToCSVConvertor(data[0].result, "Missed Product List", true);
                         $('#display_message').html(data[0].result.length + ' products have been not found. Please check the downloaded csv file for more info');

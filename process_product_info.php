@@ -113,6 +113,6 @@ $pdo->commit();
 } catch (PDOException $e) {
     $warning = $e->getMessage();
 }
-$return_arr[] = array('info'=>$warning, "result"=>$result);
+$return_arr[] = array('info'=>$csvAsArray, "result"=>$result);
 echo json_encode($return_arr);
 ?>

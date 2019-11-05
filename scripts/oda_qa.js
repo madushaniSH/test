@@ -3,6 +3,7 @@ let this_selection_info = {
     project_name: '',
     ticket_selection: [],
     client_cat: '',
+    referenceQaSelected: false
 };
 
 // function which adds the hide class the passed element
@@ -18,11 +19,12 @@ const showElement = (elementName) => {
 };
 
 const update_oda_qa_count = () => {
-    if (this_selection_info.project_name !== '' && this_selection_info.ticket_selection.length !== 0 && this_selection_info.client_cat !== '') {
+    if (this_selection_info.project_name !== '' && this_selection_info.ticket_selection.length !== 0 && this_selection_info.client_cat !== '' && this_selection_info.client_cat != null) {
         let formData = new FormData();
         formData.append('project_name', this_selection_info.project_name);
         formData.append('ticket', this_selection_info.ticket_selection);
         formData.append('client_cat', this_selection_info.client_cat);
+        formData.append('reference_qa', this_selection_info.referenceQaSelected);
         jQuery.ajax({
             url: "fetch_oda_qa_count.php",
             type: "POST",
@@ -90,23 +92,27 @@ const fetch_client_cat = () => {
             data: formData,
             dataType: "JSON",
             success: function (data) {
+                $("#client_category").append(
+                    '<option value="" selected disabled>Select</option>'
+                );
                 // adding missing options
                 for (let i = 0; i < data[0].client_cat_info.length; i++) {
                     if (
                         !$("#client_category").find(
-                            'option[value="' + data[0].client_cat_info[i].client_category_name + '"]'
+                            'option[value="' + data[0].client_cat_info[i].client_category_id + '"]'
                         ).length
                     ) {
                         // Append it to the select
                         $("#client_category").append(
                             '<option value="' +
-                            data[0].client_cat_info[i].client_category_name +
+                            data[0].client_cat_info[i].client_category_id +
                             '">' +
                             data[0].client_cat_info[i].client_category_name +
                             "</option>"
                         );
                     }
                 }
+                $("#client_category").val("");
                 validate_client_cat();
             },
             error: function (data) {
@@ -121,7 +127,8 @@ const fetch_client_cat = () => {
 
 const validate_client_cat = () => {
     const client_category = $('#client_category').val();
-    if (client_category !== '') {
+    console.log(client_category);
+    if (client_category !== '' && client_category !== null) {
         showElement('qa_section');
         this_selection_info.client_cat = client_category;
     } else {
@@ -183,4 +190,7 @@ $(document).ready(function () {
     $("#client_category").change(function () {
         validate_client_cat();
     });
+    setInterval(function () {
+        update_oda_qa_count();
+    }, 1000);
 });
