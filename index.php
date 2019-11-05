@@ -99,6 +99,16 @@ if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'ODA Supervisor'){
 </a>
 ";
 }
+if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'dashboard_display'){
+    echo "
+<a href=\"dashboard_display.php\" class=\"btn btn-lg dashboard-btn\">
+    <span>
+        <i class=\"fas fa-tv fa-2x\"></i>
+    </span>
+    Display
+</a>
+";
+}
 require ('footer.php');
 ?>
 </body>
