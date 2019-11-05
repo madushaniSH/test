@@ -73,6 +73,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
             <div class="container-fluid">
                 <div id="loader"></div>
                 <div id="main_div">
+                    <div id="slideshow">
                     <div class="row">
                         <div class="col">
                             <!-- Basic Card Example -->
@@ -111,8 +112,8 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-lg-6 my-3">
+                    <div class="row" id="top">
+                        <div class="col">
                             <!-- Basic Card Example -->
                             <div class="card">
                                 <div class="card-header py-3">
@@ -148,7 +149,9 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6 my-3">
+                    </div>
+                    <div class="row" id="bottom">
+                    <div class="col">
                             <div class="card">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-danger">Bottom Three Hunters</h6>
@@ -181,6 +184,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 </div>
                             </div>
                         </div>
+                    </div>
                     </div>
                     <?php
                     if($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor'){
@@ -501,5 +505,6 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
 <script src="vendor/chart.js/Chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
 <script src="scripts/dashboard.js"></script>
+<script src="scripts/display.js"></script>
 
 </body>
