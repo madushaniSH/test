@@ -2,6 +2,14 @@
     font-size: 1.6vw;
 }
 
+#top {
+    font-size: 2vw;
+}
+
+#bottom {
+    font-size: 2vw;
+}
+
 #slideshow {
     margin: 50px auto;
     position: relative;
