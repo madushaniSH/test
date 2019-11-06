@@ -3,7 +3,25 @@ let this_selection_info = {
     project_name: '',
     ticket_selection: [],
     client_cat: '',
-    referenceQaSelected: false
+    referenceQaSelected: false,
+    selectedProductType: '',
+};
+
+const assign_brand = () => {
+    this_selection_info.selectedProductType = 'brand';
+    get_probe_qa_info('brand');
+};
+const assign_sku = () => {
+    this_selection_info.selectedProductType = 'sku';
+    get_probe_qa_info('sku');
+};
+const assign_dvc = () => {
+    this_selection_info.selectedProductType = 'dvc';
+    get_probe_qa_info('dvc');
+};
+const assign_facing = () => {
+    this_selection_info.selectedProductType = 'facing';
+    get_probe_qa_info('facing');
 };
 
 // function which adds the hide class the passed element
@@ -17,6 +35,39 @@ const showElement = (elementName) => {
     const element = document.getElementById(elementName);
     element.classList.remove('hide');
 };
+
+const get_probe_qa_info = (product_type) => {
+    const sku_brand_name = $("#brand_name").val();
+    let sku_dvc_name = $("#dvc_product_name").val();
+    if (sku_dvc_name == null) {
+        sku_dvc_name = $("#dvc_name").val() + ' %';
+    }
+    const sku_facing_name = $("#facing_name").val();
+    let formData = new FormData();
+    formData.append('project_name', this_selection_info.project_name);
+    formData.append('ticket', this_selection_info.ticket_selection);
+    formData.append('client_cat', this_selection_info.client_cat);
+    formData.append('reference_qa', this_selection_info.referenceQaSelected);
+    formData.append("sku_brand_name", sku_brand_name);
+    formData.append("sku_dvc_name", sku_dvc_name);
+    formData.append("sku_facing_name", sku_facing_name);
+    formData.append("product_type", product_type);
+    jQuery.ajax({
+        url: "assign_oda_product.php",
+        type: "POST",
+        data: formData,
+        dataType: "JSON",
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (data) {
+            alert("Error assigning probe. Please refresh");
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+}
 
 const get_product_name_list = (product_type, select_element) => {
      if (this_selection_info.project_name !== '' && this_selection_info.ticket_selection.length !== 0 && this_selection_info.client_cat !== '' && this_selection_info.client_cat != null) {
@@ -100,7 +151,6 @@ const get_brand_list = (product_type, select_element) => {
             data: formData,
             dataType: "JSON",
             success: function (data) {
-                console.log(data);
                 // adding missing options
                 let selected_val = $("#" + select_element).val();
                 if (data[0].brand_rows !== null) {
@@ -181,6 +231,45 @@ const update_oda_qa_count = () => {
             data: formData,
             dataType: "JSON",
             success: function (data) {
+                let probe_count = parseInt(data[0].processing_probe_row, 10);
+                let product_type = data[0].product_type;
+                let display_message = "";
+
+                if (product_type === "brand" && probe_count === 1) {
+                    document.getElementById("dvc_qa_button").disabled = true;
+                    document.getElementById("sku_qa_button").disabled = true;
+                    document.getElementById("brand_qa_button").disabled = false;
+                    document.getElementById("facing_qa_button").disabled = true;
+                    display_message = product_type.toUpperCase() + " already assigned";
+                } else if (product_type === "sku" && probe_count === 1) {
+                    document.getElementById("dvc_qa_button").disabled = true;
+                    document.getElementById("sku_qa_button").disabled = false;
+                    document.getElementById("brand_qa_button").disabled = true;
+                    document.getElementById("facing_qa_button").disabled = true;
+                    display_message = product_type.toUpperCase() + " already assigned";
+                } else if (product_type === "dvc" && probe_count === 1) {
+                    document.getElementById("dvc_qa_button").disabled = false;
+                    document.getElementById("sku_qa_button").disabled = true;
+                    document.getElementById("brand_qa_button").disabled = true;
+                    document.getElementById("facing_qa_button").disabled = true;
+                    display_message = product_type.toUpperCase() + " already assigned";
+                } else if (product_type === "facing" && probe_count === 1) {
+                    document.getElementById("dvc_qa_button").disabled = true;
+                    document.getElementById("sku_qa_button").disabled = true;
+                    document.getElementById("brand_qa_button").disabled = true;
+                    document.getElementById("facing_qa_button").disabled = false;
+                    display_message = product_type.toUpperCase() + " already assigned";
+                }
+                else {
+                    document.getElementById("sku_qa_button").disabled = false;
+                    document.getElementById("dvc_qa_button").disabled = false;
+                    document.getElementById("brand_qa_button").disabled = false;
+                    document.getElementById("facing_qa_button").disabled = false;
+                    display_message = "";
+                }
+
+                $("#probe_qa_message").html(display_message);
+
                 $("#current_brand_count").empty();
                 $("#current_brand_count").html(data[0].brand_count);
                 const brand_count = parseInt(data[0].brand_user_count, 10);
@@ -323,7 +412,7 @@ const validate_toggle = () => {
 
 const validate_client_cat = () => {
     const client_category = $('#client_category').val();
-    console.log(client_category);
+    //console.log(client_category);
     if (client_category !== '' && client_category !== null) {
         showElement('qa_section');
         this_selection_info.client_cat = client_category;
@@ -400,7 +489,32 @@ $(document).ready(function () {
     });
     $("#qa_type_toggle").click(function () {
         validate_toggle();
-        console.log('vood');
+    });
+    jQuery('#brand_name').on("change", function (e) {
+        jQuery('#current_sku_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('sku_qa_button').disabled = true;
+    });
+    jQuery('#facing_name').on("change", function (e) {
+        jQuery('#current_facing_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('facing_qa_button').disabled = true;
+    });
+    jQuery('#dvc_name').on("change", function (e) {
+        jQuery('#current_dvc_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('dvc_qa_button').disabled = true;
+    });
+    jQuery('#dvc_product_name').on("change", function (e) {
+        jQuery('#current_dvc_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('dvc_qa_button').disabled = true;
+    });
+    jQuery('#ticket').on("change", function (e) {
+        jQuery('#current_brand_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('dvc_qa_button').disabled = true;
+        jQuery('#current_sku_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('sku_qa_button').disabled = true;
+        jQuery('#current_dvc_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('dvc_qa_button').disabled = true;
+        jQuery('#current_facing_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>")
+        document.getElementById('facing_qa_button').disabled = true;
     });
     setInterval(function () {
         update_oda_qa_count();

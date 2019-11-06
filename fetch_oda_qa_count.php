@@ -136,6 +136,12 @@ $sku_filtered_count = fetch_count_oda_queue($pdo, "sku", $ticket_query_string, $
 $dvc_filtered_count = fetch_count_oda_queue($pdo, "dvc", $ticket_query_string, $product_type_query_string, $client_category_string, $dvc_optional_query);
 $facing_fitered_count = fetch_count_oda_queue($pdo, "facing", $ticket_query_string, $product_type_query_string, $client_category_string, $facing_optional_query);
 
-$return_arr[] = array("brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count" =>$dvc_count, "facing_count"=>$facing_count, "brand_filtered_count"=>$brand_filtered_count, "sku_filtered_count"=>$sku_filtered_count, "dvc_filtered_count"=>$dvc_filtered_count, "facing_filtered_count"=>$facing_fitered_count);
+$sql = 'SELECT oq.oda_queue_id, p.product_type FROM oda_queue oq INNER JOIN products p ON p.product_id = oq.product_id WHERE oq.account_id = :account_id';
+$stmt = $pdo->prepare($sql);
+$stmt->execute(['account_id'=>$account_id]);
+$queue_info = $stmt->fetch(PDO::FETCH_OBJ);
+$rowCount = $stmt->rowCount(PDO::FETCH_OBJ);
+
+$return_arr[] = array("processing_probe_row" => $rowCount, "product_type" => $queue_info->product_type,"brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count" =>$dvc_count, "facing_count"=>$facing_count, "brand_filtered_count"=>$brand_filtered_count, "sku_filtered_count"=>$sku_filtered_count, "dvc_filtered_count"=>$dvc_filtered_count, "facing_filtered_count"=>$facing_fitered_count);
 echo json_encode($return_arr);
 

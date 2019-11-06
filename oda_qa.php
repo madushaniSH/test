@@ -356,24 +356,16 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                                  </div>
                              </div>
                          </div>
+                            <p class="error-popup text-center" id="probe_qa_message"></p>
                         </div>
                     </div>
-                    <div class="row">
-                        <div id="probe_qa_options" class="col hide">
-                            <p class="error-popup" id="probe_qa_message"></p>
-                            <button class="btn" id="exit_btn" onclick="window.location.href='dashboard.php'"><i
-                                        class="fas fa-chevron-circle-left fa-3x"></i><br>Exit</i></button>
-                        </div>
-                         </div>
                     </div>
             </div>
             <!-- /.container-fluid -->
         </div>
 
     </div>
-    </div>
-    <!-- End of Page Wrapper -->
-    <!-- Logout Modal-->
+
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
