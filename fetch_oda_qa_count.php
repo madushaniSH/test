@@ -3,6 +3,46 @@
     Filename: fetch_oda_count.php
     Author: Malika Liyanage
 */
+function fetch_count_oda_queue($pdo, $product_type, $ticket_query_string, $product_type_query_string, $client_category_string, $optional_query = '1') {
+    try {
+        $sql = 'SELECT COUNT(*) FROM oda_queue oq
+        INNER  JOIN products p ON oq.product_id = p.product_id
+        LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id 
+        LEFT OUTER JOIN probe pr ON ppi.probe_product_info_key_id = pr.probe_key_id 
+        LEFT  JOIN product_client_category pcc on p.product_id = pcc.product_id
+        LEFT OUTER JOIN ref_product_info rpi on p.product_id = rpi.product_id
+        LEFT OUTER JOIN reference_info ri on rpi.reference_info_id = ri.reference_info_id
+        LEFT OUTER JOIN  radar_sources rs on p.product_id = rs.radar_product_id
+        LEFT OUTER JOIN  radar_hunt rh ON rs.radar_hunt_id = rh.radar_hunt_id
+        WHERE
+        p.product_type = :product_type AND (' . $ticket_query_string . '
+        ) AND (' . $product_type_query_string . '
+        ) AND ' . $client_category_string . '
+        AND p.product_qa_status = "approved" AND ' . $optional_query;
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['product_type' => $product_type]);
+        $product_count = $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        $product_count = $e->getMessage();
+    }
+    return $product_count;
+}
+
+function make_optional_query ($account_id, $brand_name, $flag = "true", $is_dvc = "false") {
+    if ($flag === "true") {
+        $search_term = '"'.$brand_name.' %"';
+    } else {
+        $search_term = '"'.$brand_name.'"';
+    }
+    if ($is_dvc == "true") {
+        $search_string = ' p.product_alt_design_name LIKE '.$search_term;
+    } else {
+        $search_string = ' p.product_name LIKE '.$search_term;
+    }
+    $query_string = ' (oq.qa_being_handled = 0 or oq.account_id = '.(int)$account_id.') AND'.$search_string;
+    return $query_string;
+}
+
 session_start();
 // If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['logged_in'])) {
@@ -42,6 +82,7 @@ $ticket_string = trim($_POST['ticket']);
 $ticket_array = explode(",", $ticket_string);
 $ticket_query_string = '';
 $product_type_query_string = '';
+$client_category_string = '';
 $ref_flag = false;
 
 if ($_POST['reference_qa'] === 'false') {
@@ -50,6 +91,12 @@ if ($_POST['reference_qa'] === 'false') {
 } else if ($_POST['reference_qa'] === 'true') {
     $product_type_query_string = ' product_hunt_type = "reference"';
     $ref_flag = true;
+}
+
+if ((int)$_POST['client_cat'] === 0) {
+    $client_category_string = ' 1';
+} else {
+    $client_category_string = ' pcc.client_category_id = '.(int)$_POST['client_cat'];
 }
 
 // making ticket string to be used in select query
@@ -69,84 +116,26 @@ foreach($ticket_array as $ticket) {
     }
 }
 
-try {
-    $sql = 'SELECT COUNT(*) FROM oda_queue oq
-        INNER  JOIN products p ON oq.product_id = p.product_id
-        LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id 
-        LEFT OUTER JOIN probe pr ON ppi.probe_product_info_key_id = pr.probe_key_id 
-        LEFT  JOIN product_client_category pcc on p.product_id = pcc.product_id
-        LEFT OUTER JOIN ref_product_info rpi on p.product_id = rpi.product_id
-        LEFT OUTER JOIN reference_info ri on rpi.reference_info_id = ri.reference_info_id
-        LEFT OUTER JOIN  radar_sources rs on p.product_id = rs.radar_product_id
-        LEFT OUTER JOIN  radar_hunt rh ON rs.radar_hunt_id = rh.radar_hunt_id
-        WHERE
-        p.product_type = "brand" AND (' . $ticket_query_string . '
-        ) AND (' . $product_type_query_string . '
-        ) AND  pcc.client_category_id = :client_category
-        AND p.product_qa_status = "approved"';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['client_category' => (int)$_POST['client_cat']]);
-    $brand_count = $stmt->fetchColumn();
 
-    $sql = 'SELECT COUNT(*) FROM oda_queue oq
-        INNER  JOIN products p ON oq.product_id = p.product_id
-        LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id 
-        LEFT OUTER JOIN probe pr ON ppi.probe_product_info_key_id = pr.probe_key_id 
-        LEFT  JOIN product_client_category pcc on p.product_id = pcc.product_id
-        LEFT JOIN ref_product_info rpi on p.product_id = rpi.product_id
-        LEFT OUTER JOIN reference_info ri on rpi.reference_info_id = ri.reference_info_id
-        LEFT OUTER JOIN  radar_sources rs on p.product_id = rs.radar_product_id
-        LEFT OUTER JOIN  radar_hunt rh ON rs.radar_hunt_id = rh.radar_hunt_id
-        WHERE
-        p.product_type = "sku" AND (' . $ticket_query_string . '
-        ) AND (' . $product_type_query_string . '
-        ) AND  pcc.client_category_id = :client_category
-        AND p.product_qa_status = "approved"';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['client_category' => (int)$_POST['client_cat']]);
-    $sku_count = $stmt->fetchColumn();
+$brand_count = fetch_count_oda_queue($pdo, "brand", $ticket_query_string, $product_type_query_string, $client_category_string);
+$sku_count = fetch_count_oda_queue($pdo, "sku", $ticket_query_string, $product_type_query_string, $client_category_string);
+$dvc_count = fetch_count_oda_queue($pdo, "dvc", $ticket_query_string, $product_type_query_string, $client_category_string);
+$facing_count = fetch_count_oda_queue($pdo, "facing", $ticket_query_string, $product_type_query_string, $client_category_string);
 
-    $sql = 'SELECT COUNT(*) FROM oda_queue oq
-        INNER  JOIN products p ON oq.product_id = p.product_id
-        LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id 
-        LEFT OUTER JOIN probe pr ON ppi.probe_product_info_key_id = pr.probe_key_id 
-        LEFT  JOIN product_client_category pcc on p.product_id = pcc.product_id
-        LEFT JOIN ref_product_info rpi on p.product_id = rpi.product_id
-        LEFT OUTER JOIN reference_info ri on rpi.reference_info_id = ri.reference_info_id
-        LEFT OUTER JOIN  radar_sources rs on p.product_id = rs.radar_product_id
-        LEFT OUTER JOIN  radar_hunt rh ON rs.radar_hunt_id = rh.radar_hunt_id
-        WHERE
-        p.product_type = "dvc" AND (' . $ticket_query_string . '
-        ) AND (' . $product_type_query_string . '
-        ) AND  pcc.client_category_id = :client_category
-        AND p.product_qa_status = "approved"';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['client_category' => (int)$_POST['client_cat']]);
-    $dvc_count = $stmt->fetchColumn();
+$account_id = $_SESSION['id'];
+$sku_brand_name = $_POST['sku_brand_name'];
+$dvc_brand_name = $_POST['sku_dvc_name'];
+$facing_brand_name = $_POST['sku_facing_name'];
 
-    $sql = 'SELECT COUNT(*) FROM oda_queue oq
-        INNER  JOIN products p ON oq.product_id = p.product_id
-        LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id 
-        LEFT OUTER JOIN probe pr ON ppi.probe_product_info_key_id = pr.probe_key_id 
-        LEFT  JOIN product_client_category pcc on p.product_id = pcc.product_id
-        LEFT JOIN ref_product_info rpi on p.product_id = rpi.product_id
-        LEFT OUTER JOIN reference_info ri on rpi.reference_info_id = ri.reference_info_id
-        LEFT OUTER JOIN  radar_sources rs on p.product_id = rs.radar_product_id
-        LEFT OUTER JOIN  radar_hunt rh ON rs.radar_hunt_id = rh.radar_hunt_id
-        WHERE
-        p.product_type = "facing" AND (' . $ticket_query_string . '
-        ) AND (' . $product_type_query_string . '
-        ) AND  pcc.client_category_id = :client_category
-        AND p.product_qa_status = "approved"';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['client_category' => (int)$_POST['client_cat']]);
-    $facing_count = $stmt->fetchColumn();
+$sku_optional_query = make_optional_query($account_id, $sku_brand_name);
+$dvc_optional_query = make_optional_query($account_id, $dvc_brand_name, $_POST['dvc_flag'], "true");
+$facing_optional_query = make_optional_query($account_id, $facing_brand_name);
 
+$brand_filtered_count = $brand_count;
+$sku_filtered_count = fetch_count_oda_queue($pdo, "sku", $ticket_query_string, $product_type_query_string, $client_category_string, $sku_optional_query);
+$dvc_filtered_count = fetch_count_oda_queue($pdo, "dvc", $ticket_query_string, $product_type_query_string, $client_category_string, $dvc_optional_query);
+$facing_fitered_count = fetch_count_oda_queue($pdo, "facing", $ticket_query_string, $product_type_query_string, $client_category_string, $facing_optional_query);
 
-} catch (PDOException $e) {
-    $warning = $e->getMessage();
-}
-
-$return_arr[] = array("brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count" =>$dvc_count, "facing_count"=>$facing_count);
+$return_arr[] = array("brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count" =>$dvc_count, "facing_count"=>$facing_count, "brand_filtered_count"=>$brand_filtered_count, "sku_filtered_count"=>$sku_filtered_count, "dvc_filtered_count"=>$dvc_filtered_count, "facing_filtered_count"=>$facing_fitered_count);
 echo json_encode($return_arr);
 

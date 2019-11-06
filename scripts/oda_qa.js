@@ -18,20 +18,207 @@ const showElement = (elementName) => {
     element.classList.remove('hide');
 };
 
-const update_oda_qa_count = () => {
+const get_product_name_list = (product_type, select_element) => {
+     if (this_selection_info.project_name !== '' && this_selection_info.ticket_selection.length !== 0 && this_selection_info.client_cat !== '' && this_selection_info.client_cat != null) {
+        let sku_dvc_name = $("#dvc_name").val();
+         if (sku_dvc_name !== '' || sku_dvc_name != null) {
+             let formData = new FormData();
+             formData.append('project_name', this_selection_info.project_name);
+             formData.append('ticket', this_selection_info.ticket_selection);
+             formData.append('client_cat', this_selection_info.client_cat);
+             formData.append('reference_qa', this_selection_info.referenceQaSelected);
+             formData.append('product_type', product_type);
+             formData.append('dvc_name', sku_dvc_name);
+             jQuery.ajax({
+                 url: "get_oda_dvc_products.php",
+                 type: "POST",
+                 data: formData,
+                 dataType: "JSON",
+                 success: function (data) {
+                     // adding missing options
+                     let selected_val = $("#" + select_element).val();
+                     for (var i = 0; i < data[0].brand_rows.length; i++) {
+                         if (
+                             !$("#" + select_element).find(
+                                 'option[value="' + data[0].brand_rows[i].name + '"]'
+                             ).length
+                         ) {
+                             // Append it to the select
+                             $("#" + select_element).append(
+                                 '<option value="' +
+                                 data[0].brand_rows[i].name +
+                                 '">' +
+                                 data[0].brand_rows[i].name +
+                                 "</option>"
+                             );
+                         }
+                     }
+                     if (selected_val != '') {
+                         $("#" + select_element).val(selected_val).change();
+                     }
+
+                     var element = document.getElementById(select_element).options;
+                     var found = true;
+                     for (var i = 0; i < element.length; i++) {
+                         found = false;
+                         for (var j = 0; j < data[0].brand_rows.length; j++) {
+                             if (data[0].brand_rows[j].name == element[i].value) {
+                                 found = true;
+                                 break;
+                             }
+                         }
+                         if (!found) {
+                             document
+                                 .getElementById(select_element)
+                                 .remove(document.getElementById(select_element)[i]);
+                         }
+                     }
+                 },
+                 error: function (data) {
+                     alert("Error assigning probe. Please refresh");
+                 },
+                 cache: false,
+                 contentType: false,
+                 processData: false
+             });
+         }
+    }
+}
+
+
+const get_brand_list = (product_type, select_element) => {
     if (this_selection_info.project_name !== '' && this_selection_info.ticket_selection.length !== 0 && this_selection_info.client_cat !== '' && this_selection_info.client_cat != null) {
         let formData = new FormData();
         formData.append('project_name', this_selection_info.project_name);
         formData.append('ticket', this_selection_info.ticket_selection);
         formData.append('client_cat', this_selection_info.client_cat);
         formData.append('reference_qa', this_selection_info.referenceQaSelected);
+        formData.append('product_type', product_type);
+        jQuery.ajax({
+            url: "get_oda_brand_list.php",
+            type: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: function (data) {
+                console.log(data);
+                // adding missing options
+                let selected_val = $("#" + select_element).val();
+                if (data[0].brand_rows !== null) {
+                    for (var i = 0; i < data[0].brand_rows.length; i++) {
+                        if (
+                            !$("#" + select_element).find(
+                                'option[value="' + data[0].brand_rows[i].name + '"]'
+                            ).length
+                        ) {
+                            // Append it to the select
+                            $("#" + select_element).append(
+                                '<option value="' +
+                                data[0].brand_rows[i].name +
+                                '">' +
+                                data[0].brand_rows[i].name +
+                                "</option>"
+                            );
+                        }
+                    }
+                    if (selected_val != '') {
+                        $("#" + select_element).val(selected_val).change();
+                    }
+
+                    var element = document.getElementById(select_element).options;
+                    var found = true;
+                    for (var i = 0; i < element.length; i++) {
+                        found = false;
+                        for (var j = 0; j < data[0].brand_rows.length; j++) {
+                            if (data[0].brand_rows[j].name == element[i].value) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            document
+                                .getElementById(select_element)
+                                .remove(document.getElementById(select_element)[i]);
+                        }
+                    }
+                }
+            },
+            error: function (data) {
+                alert("Error assigning probe. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
+}
+
+const update_oda_qa_count = () => {
+    if (this_selection_info.project_name !== '' && this_selection_info.ticket_selection.length !== 0 && this_selection_info.client_cat !== '' && this_selection_info.client_cat != null) {
+        get_brand_list("dvc", "dvc_name");
+        get_brand_list("facing", "facing_name");
+        get_brand_list("sku", "brand_name");
+        get_product_name_list("dvc", "dvc_product_name");
+        let dvcProductNameSelected = "false";
+        let formData = new FormData();
+        const sku_brand_name = $("#brand_name").val();
+        let sku_dvc_name = $("#dvc_product_name").val();
+        if (sku_dvc_name === null) {
+            sku_dvc_name = $("#dvc_name").val();
+            dvcProductNameSelected = "true";
+        }
+        const sku_facing_name = $('#facing_name').val();
+        formData.append('project_name', this_selection_info.project_name);
+        formData.append('ticket', this_selection_info.ticket_selection);
+        formData.append('client_cat', this_selection_info.client_cat);
+        formData.append('reference_qa', this_selection_info.referenceQaSelected);
+        formData.append("sku_brand_name", sku_brand_name);
+        formData.append("sku_dvc_name", sku_dvc_name);
+        formData.append("sku_facing_name", sku_facing_name);
+        formData.append("dvc_flag", dvcProductNameSelected);
         jQuery.ajax({
             url: "fetch_oda_qa_count.php",
             type: "POST",
             data: formData,
             dataType: "JSON",
             success: function (data) {
-                console.log(data);
+                $("#current_brand_count").empty();
+                $("#current_brand_count").html(data[0].brand_count);
+                const brand_count = parseInt(data[0].brand_user_count, 10);
+                if (brand_count === 0 && product_type !== "brand") {
+                    document.getElementById("brand_qa_button").disabled = true;
+                }
+                $("#current_sku_count").empty();
+                $("#current_sku_count").html(data[0].sku_count);
+                const sku_count = parseInt(data[0].brand_sku_count, 10);
+                if (sku_count === 0 && product_type !== "sku") {
+                    document.getElementById("sku_qa_button").disabled = true;
+                }
+                $("#current_dvc_count").empty();
+                $("#current_dvc_count").html(data[0].dvc_count);
+                const dvc_count = parseInt(data[0].brand_dvc_count, 10);
+                if (dvc_count === 0 && product_type !== "dvc") {
+                    document.getElementById("dvc_qa_button").disabled = true;
+                }
+
+                $("#current_facing_count").empty();
+                $("#current_facing_count").html(data[0].facing_count);
+                const facing_count = parseInt(data[0].facing_sku_count, 10);
+                if (facing_count === 0 && product_type !== "facing") {
+                    document.getElementById("facing_qa_button").disabled = true;
+                }
+
+                $("#current_brand_count_2").empty();
+                $("#current_brand_count_2").html(data[0].brand_filtered_count);
+
+                $("#current_sku_count_2").empty();
+                $("#current_sku_count_2").html(data[0].sku_filtered_count);
+
+                $("#current_dvc_count_2").empty();
+                $("#current_dvc_count_2").html(data[0].dvc_filtered_count);
+
+
+                $("#current_facing_count_2").empty();
+                $("#current_facing_count_2").html(data[0].facing_filtered_count);
             },
             error: function (data) {
                 alert("Error fetching probe information. Please refresh");
@@ -125,6 +312,15 @@ const fetch_client_cat = () => {
     }
 };
 
+const validate_toggle = () => {
+    const toggleState = document.getElementById('qa_type_toggle').checked;
+    if (toggleState) {
+        this_selection_info.referenceQaSelected = true;
+    } else {
+        this_selection_info.referenceQaSelected = false;
+    }
+};
+
 const validate_client_cat = () => {
     const client_category = $('#client_category').val();
     console.log(client_category);
@@ -181,6 +377,18 @@ $(document).ready(function () {
     $('#client_category').select2({
         width: '50%',
     });
+    $('#brand_name').select2({
+        width: '100%',
+    });
+    $('#dvc_name').select2({
+        width: '100%',
+    });
+    $('#facing_name').select2({
+        width: '100%',
+    });
+    $('#dvc_product_name').select2({
+        width: '100%',
+    });
     $("#project_name").change(function () {
         validate_project_name();
     });
@@ -189,6 +397,10 @@ $(document).ready(function () {
     });
     $("#client_category").change(function () {
         validate_client_cat();
+    });
+    $("#qa_type_toggle").click(function () {
+        validate_toggle();
+        console.log('vood');
     });
     setInterval(function () {
         update_oda_qa_count();

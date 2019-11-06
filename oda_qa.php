@@ -104,7 +104,6 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <li class=\"nav-item\">
                 <a class=\"nav-link\" href=\"upload_product_info.php\">
-                    <i class=\"fas fa-meteor\"></i>   
                     <span>Upload Product Information</span></a>
             </li>
             "
@@ -258,6 +257,113 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                                      </div>
                                  </div>
                              </div>
+                             <div class="row">
+                                 <div class="col">
+                                 </div>
+                                 <div class="col">
+                                     <label for="brand_name">Select Brand Name</label>
+                                     <select name="brand_name" id="brand_name" class="form-control">
+                                     </select>
+                                     <span id="brand_name_error" class="error-popup"></span>
+                                 </div>
+                                 <div class="col">
+                                     <label for="dvc_name">Select Brand Name</label>
+                                     <select name="dvc_name" id="dvc_name" class="form-control">
+                                     </select>
+                                     <span id="dvc_name_error" class="error-popup"></span>
+                                 </div>
+                                 <div class="col">
+                                     <label for="facing_name">Select Brand Name</label>
+                                     <select name="facing_name" id="facing_name" class="form-control">
+                                     </select>
+                                     <span id="facing_name_error" class="error-popup"></span>
+                                 </div>
+                             </div>
+                             <div class="row">
+                                 <div class="col">
+                                 </div>
+                                 <div class="col">
+                                 </div>
+                                 <div class="col">
+                                     <label for="dvc_product_name">Select Product Name</label>
+                                     <select name="dvc_product_name" id="dvc_product_name" class="form-control">
+                                     </select>
+                                     <span id="dvc_name_error" class="error-popup"></span>
+                                 </div>
+                                 <div class="col">
+                                 </div>
+                             </div>
+                             <div class="row">
+                                 <div id="probe_qa_counter" class="col">
+                                     <div class="row text-center">
+                                         <div class="col">
+                                             <button type="button" id="brand_qa_button" class="btn qa_button" onclick="assign_brand();">
+                                                 <div class="counter">
+                                                     <i class="far fa-copyright fa-2x"></i>
+                                                     <h2 id="current_brand_count_2" class="timer count-title count-number">
+                                                         <div class="spinner-border text-success" role="status">
+                                                             <span class="sr-only">Loading...</span>
+                                                         </div>
+                                                     </h2>
+                                                     <p class="count-text ">Remaining Brands</p>
+                                                 </div>
+                                             </button>
+                                         </div>
+
+                                         <div class="col">
+                                             <button type="button" id="sku_qa_button" class="btn qa_button" onclick="assign_sku();">
+                                                 <div class="counter">
+                                                     <i class="fas fa-boxes fa-2x"></i>
+                                                     <h2 id="current_sku_count_2" class="timer count-title count-number">
+                                                         <div class="spinner-border text-success" role="status">
+                                                             <span class="sr-only">Loading...</span>
+                                                         </div>
+                                                     </h2>
+                                                     <p class="count-text ">Remaining SKU</p>
+                                                 </div>
+                                             </button>
+                                         </div>
+
+                                         <div class="col">
+                                             <button type="button" id="dvc_qa_button" class="btn qa_button" onclick="assign_dvc();">
+                                                 <div class="counter">
+                                                     <i class="fas fa-eye fa-2x"></i>
+                                                     <h2 id="current_dvc_count_2" class="timer count-title count-number">
+                                                         <div class="spinner-border text-success" role="status">
+                                                             <span class="sr-only">Loading...</span>
+                                                         </div>
+                                                     </h2>
+                                                     <p class="count-text ">Remaining DVC</p>
+                                                 </div>
+                                             </button>
+                                         </div>
+
+
+                                         <div class="col">
+                                             <button type="button" id="facing_qa_button" class="btn qa_button" onclick="assign_facing();">
+                                                 <div class="counter">
+                                                     <i class="fas fa-eye fa-2x"></i>
+                                                     <h2 id="current_facing_count_2" class="timer count-title count-number">
+                                                         <div class="spinner-border text-success" role="status">
+                                                             <span class="sr-only">Loading...</span>
+                                                         </div>
+                                                     </h2>
+                                                     <p class="count-text ">Remaining Facings</p>
+                                                 </div>
+                                             </button>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="probe_qa_options" class="col hide">
+                            <p class="error-popup" id="probe_qa_message"></p>
+                            <button class="btn" id="exit_btn" onclick="window.location.href='dashboard.php'"><i
+                                        class="fas fa-chevron-circle-left fa-3x"></i><br>Exit</i></button>
+                        </div>
                          </div>
                     </div>
             </div>
