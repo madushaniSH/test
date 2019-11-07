@@ -24,8 +24,8 @@
       Attempts to connect to the databse, if no connection was estabishled
       kills the script
   */
-  $user = 'malika';
-  $pwd = 'ma12qwqw';
+  $user = 'root';
+  $pwd = '$$Ma12qwqwsr4';
   try{
       // Creating a new PDO instance
       $pdo = new PDO($dsn, $user, $pwd);
