@@ -125,9 +125,71 @@ try {
         $queue_info = $stmt->fetch(PDO::FETCH_OBJ);
         $last_id = $queue_info->oda_queue_id;
     }
+    $sql = 'SELECT p.product_hunt_type FROM products p INNER JOIN oda_queue oq on oq.product_id = p.product_id WHERE oq.oda_queue_id = :id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['id' => $last_id]);
+    $hunt_type_info = $stmt->fetch(PDO::FETCH_OBJ);
+    $hunt_type = $hunt_type_info->product_hunt_type;
+
+    if ($hunt_type == 'probe') {
+        $sql = 'SELECT project_tickets.ticket_id, client_category.client_category_name,
+       products.product_type, products.product_name, products.product_alt_design_name, products.product_alt_design_previous,
+       products.product_facing_count, products.manufacturer_link, products.product_link , products.product_creation_time 
+        FROM  oda_queue 
+            INNER JOIN products ON oda_queue.product_id = products.product_id 
+            INNER JOIN probe_product_info ON products.product_id = probe_product_info.probe_product_info_product_id 
+            LEFT JOIN probe ON probe.probe_key_id = probe_product_info.probe_product_info_key_id 
+            LEFT JOIN product_client_category ON products.product_id = product_client_category.product_id
+            LEFT JOIN client_category ON product_client_category.client_category_id = client_category.client_category_id
+            LEFT JOIN brand ON brand.brand_id = probe.brand_id 
+            INNER JOIN project_tickets ON probe.probe_ticket_id = project_tickets.project_ticket_system_id 
+        WHERE oda_queue.oda_queue_id = :oda_queue_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['oda_queue_id'=>$last_id]);
+        $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
+    }
+    if ($hunt_type == 'radar') {
+        $sql = 'SELECT radar_sources.radar_source_link, project_tickets.ticket_id, client_category.client_category_name AS "radar_category", 
+       radar_hunt.radar_brand, products.product_type, products.product_name, products.product_alt_design_name, 
+       products.product_alt_design_previous, products.product_facing_count, products.manufacturer_link, 
+       products.product_link, products.product_creation_time 
+        FROM oda_queue 
+            INNER JOIN products ON oda_queue.product_id = products.product_id 
+            LEFT JOIN product_client_category ON products.product_id = product_client_category.product_id
+            LEFT JOIN client_category ON product_client_category.client_category_id = client_category.client_category_id
+            INNER JOIN radar_sources ON products.product_id = radar_sources.radar_product_id 
+            INNER JOIN radar_hunt ON radar_sources.radar_hunt_id = radar_hunt.radar_hunt_id 
+            INNER JOIN project_tickets ON project_tickets.project_ticket_system_id = radar_hunt.radar_ticket_id 
+        WHERE oda_queue.oda_queue_id = :oda_queue_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['oda_queue_id'=>$last_id]);
+        $radar_info = $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    if ($hunt_type == 'reference') {
+        $sql = 'SELECT a.reference_recognition_level, a.reference_ean, a.reference_short_name, client_category.client_category_name, 
+       a.reference_sub_category, a.reference_brand, a.reference_sub_brand, a.reference_manufacturer, 
+       a.reference_base_size, a.reference_size, a.reference_measurement_unit, a.reference_container_type, 
+       a.reference_agg_level, a.reference_segment, a.reference_count_upc2, a.reference_flavor_detail, 
+       a.reference_case_pack, a.reference_multi_pack, project_tickets.ticket_id, products.product_type,
+       products.product_name, products.product_alt_design_name, products.product_alt_design_previous, 
+       products.product_facing_count, products.manufacturer_link, products.product_link, products.product_creation_time 
+        FROM oda_queue 
+            INNER JOIN products ON oda_queue.product_id = products.product_id 
+            LEFT JOIN product_client_category ON products.product_id = product_client_category.product_id
+            LEFT JOIN client_category ON product_client_category.client_category_id = client_category.client_category_id
+            INNER JOIN ref_product_info ON ref_product_info.product_id = products.product_id 
+            INNER JOIN reference_info a ON a.reference_info_id = ref_product_info.reference_info_id 
+            INNER JOIN project_tickets ON a.reference_ticket_id = project_tickets.project_ticket_system_id 
+        WHERE oda_queue.oda_queue_id = :oda_queue_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['oda_queue_id'=>$last_id]);
+        $ref_info = $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
 } catch (PDOException $e) {
     $warning = $e->getMessage();
 }
 
-$return_arr[] = array("probe_info"=>$warning, "radar_info"=>$radar_info, "ref_info"=>$ref_info);
+$return_arr[] = array("hunt_type"=>$hunt_type,"probe_info"=>$probe_info, "radar_info"=>$radar_info, "ref_info"=>$ref_info);
 echo json_encode($return_arr);

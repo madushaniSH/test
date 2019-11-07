@@ -57,7 +57,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Dashboard</title>
+    <title>ODA QA</title>
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -366,6 +366,271 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 
     </div>
 
+    <div class="modal hide fade modal-form" id="qa_probe" tabindex="-1" role="dialog"
+         aria-labelledby="qa_probe_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="qa_probe_title"></h5>
+                    <button type="button" class="close" id="close_probe_title" data-dismiss="modal" aria-label="Close" onclick="unassign_probe();">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="POST" id="qa_form">
+                        <div class="sticky-top" id="tab_buttons">
+                            <button class="tablinks" onclick="return open_tab(event, 'ref_hunt_information')" id="def_tab">QA Form</button>
+                            <button class="tablinks hide" onclick="return open_tab(event, 'ref_information')" id="ref_tab">Reference Information</button>
+                        </div>
+                        <div id="ref_information" class="tabcontent">
+                            <div class="row">
+                                <div class="form-group col-md-2">
+                                    <label for="ref_recognition">Level:</label>
+                                    <input type="text" id="ref_recognition" class="form-control" readonly>
+                                </div>
+                                <div class="form-group col-md-10">
+                                    <label for="ref_short_name">Short Name:</label>
+                                    <input type="text" id="ref_short_name" class="form-control"readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="ref_sub_brand">Sub Brand:</label>
+                                    <input type="text" id="ref_sub_brand" class="form-control"readonly>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="ref_manufacturer">Manufacturer:</label>
+                                    <input type="text" id="ref_manufacturer" class="form-control"readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="ref_category">Category:</label>
+                                    <input type="text" id="ref_category" class="form-control"readonly>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="ref_sub_category">Sub Category:</label>
+                                    <input type="text" id="ref_sub_category" class="form-control"readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-3">
+                                    <label for="ref_base_size">Base Size:</label>
+                                    <input type="text" id="ref_base_size" class="form-control"readonly>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="ref_size">Size:</label>
+                                    <input type="text" id="ref_size" class="form-control"readonly>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="ref_measurement_unit">Unit:</label>
+                                    <input type="text" id="ref_measurement_unit" class="form-control"readonly>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="ref_container_type">Container Type:</label>
+                                    <input type="text" id="ref_container_type" class="form-control"readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="ref_agg_level">Agg Level:</label>
+                                    <input type="text" id="ref_agg_level" class="form-control"readonly>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="ref_segment">Segment:</label>
+                                    <input type="text" id="ref_segment" class="form-control"readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="ref_upc2">UPC2 Count:</label>
+                                    <input type="text" id="ref_upc2" class="form-control"readonly>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="ref_flavor_detail">Flavor Detail:</label>
+                                    <input type="text" id="ref_flavor_detail" class="form-control"readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="ref_case_pack">Case Pack:</label>
+                                    <input type="text" id="ref_case_pack" class="form-control"readonly>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="ref_multi_pack">Multi Pack:</label>
+                                    <input type="text" id="ref_multi_pack" class="form-control"readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="ref_hunt_information" class="tabcontent">
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="product_name">Product Name:</label>
+                                        <input type="text" id="product_name" class="form-control" readonly>
+                                        <span id="name_error" class="error-popup"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="form-group hide" id="alt_name_section">
+                                        <label for="alt_name">Alternative Design Name:</label>
+                                        <input type="text" id="alt_name" class="form-control" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <p id="product_source_button">Go to Product Source</p>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <p id="suggestion_source_button" class="hide">Go to Suggestion Source</p>
+                                </div>
+                            </div>
+                            <p class="border-bottom my-3"></p>
+                            <div class="form-row" id="rename_section">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="product_rename">Product Re-Name:</label>
+                                        <input type="text" id="product_rename" class="form-control">
+                                        <span id="product_rename_error" class="error-popup"></span>
+                                        <span id="product_dup_rename_error" class="error-popup"></span>
+                                        <div class="alert alert-warning fade show hide" role="alert" id="rename_alert" >
+                                            <strong>Warning!</strong> This will overwrite the existing Product Name
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="form-group hide" id="alt_rename_section">
+                                        <label for="product_alt_rename">Product Alternative Re-Name:</label>
+                                        <input type="text" id="product_alt_rename" class="form-control">
+                                        <span id="product_alt_rename_error" class="error-popup"></span>
+                                        <span id="product_alt_dup_rename_error" class="error-popup"></span>
+                                        <div class="alert alert-warning fade show hide" role="alert" id="dvc_rename_alert" >
+                                            <strong>Warning!</strong> This will overwrite the existing Alternative Design Name
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="form-group hide" id="manu_link_section">
+                                        <label for="manu_link">Manufacturer Link <span id="manu_source_button"></span> </label>
+                                        <input type="text" id="manu_link" class="form-control">
+                                        <span id="manu_error" class="error-popup"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col col-md-7">
+                                    <div class="form-group">
+                                        <p>Error Type  <button type="button" class="btn btn-outline-danger add-error"  data-toggle="modal" data-target="#qa_error">Add Error</button></p>
+                                        <select name="error_qa" id="error_qa" class="form-control" multiple="multiple">
+
+                                        </select>
+                                        <span id="error_qa_error" class="error-popup"></span>
+                                        <p id="error_facing_error" class="error-popup"></p>
+                                        <p id="error_link_error" class="error-popup"></p>
+                                    </div>
+                                </div>
+                                <div class="col col-md-4">
+                                    <div class="form-group">
+                                        <label for="num_facings">Number of Facings: <span id="output"></span></label>
+                                        <div class="slidecontainer">
+                                            <input type="range" min="0" max="5" value="0" class="modal-slider" id="num_facings">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                var slider = document.getElementById("num_facings");
+                                var output = document.getElementById("output");
+                                output.innerHTML = slider.value; // Display the default slider value
+
+                                // Update the current slider value (each time you drag the slider handle)
+                                slider.oninput = function() {
+                                    output.innerHTML = this.value;
+                                }
+                            </script>
+                            <div class="form-row">
+                                <div class="col">
+                                    <p>Status</p>
+                                    <div class="form-check form-check-inline">
+                                        <label class="btn btn-success">
+                                            <input class="form-check-input" type="radio" name="approve_status" id="approve" value="approve">
+                                            <label class="form-check-label" for="approve">Approved</label>
+                                            <i class="fas fa-check-square"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <label class="btn btn-danger">
+                                            <input class="form-check-input" type="radio" name="approve_status" id="disapprove" value="disapprove">
+                                            <label class="form-check-label" for="disapprove">Disapproved</label>
+                                            <i class="fas fa-times-circle"></i>
+                                        </label>
+                                    </div>
+                                    <span id="status_error" class="error-popup"></span>
+                                </div>
+                            </div>
+                            <div class="form-row hide" id="error_image_section">
+                                <div class="col">
+                                    <label class="colcontrol-label">
+                                        Image Attachment(s)
+                                    </label>
+                                    <div class="col">
+                                <span class="btn btn-default btn-file">
+                                    <input id="error_images" name="error_images" type="file" class="file" multiple data-show-caption="true">
+                                </span>
+                                    </div>
+                                    <span id="image_error" class="error-popup"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="unassign_probe();">Cancel</button>
+                            <button type="button" class="btn btn-success" value="Submit" onclick="validate_qa_form();">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="modal hide fade modal-form" id="qa_error" tabindex="-1" role="dialog"
+         aria-labelledby="qa_error_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="qa_error_title">Add New Error Type</h5>
+                    <button type="button" class="close" id="close_error_form" data-dismiss="modal" aria-label="Close" onclick="clear_error_form()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="new_error_form">
+                        <div class="form-row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="error_new_name">New Error Type:</label>
+                                    <input type="text" id="error_new_name" class="form-control">
+                                    <span id="error_new_error" class="error-popup"></span>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="clear_error_form()">Cancel</button>
+                    <button type="button" class="btn btn-success" value="Submit" onclick="validate_new_error_type();">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

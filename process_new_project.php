@@ -151,16 +151,20 @@ if ($row_count == 0) {
         `product_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `product_name` varchar(255) NOT NULL,
         `product_previous` varchar(255) DEFAULT NULL,
+        `product_qa_previous` varchar(255) DEFAULT NULL,
         `product_type` enum(\'brand\',\'sku\',\'dvc\', \'facing\') NOT NULL,
         `product_status` int(11) DEFAULT NULL,
         `product_alt_design_name` varchar(255) DEFAULT NULL,
         `product_alt_design_previous` varchar(255) DEFAULT NULL,
+        `product_alt_design_qa_previous` varchar(255) DEFAULT NULL,
         `product_comment` varchar(255) DEFAULT NULL,
         `product_facing_count` int(11) NOT NULL DEFAULT 0,
         `product_creation_time` datetime NOT NULL DEFAULT current_timestamp(),
         `account_id` int(11) NOT NULL,
         `product_qa_account_id` int(11) DEFAULT NULL,
         `product_qa_datetime` datetime DEFAULT NULL,
+        `product_oda_account_id` int(11) DEFAULT NULL,
+        `product_oda_datetime` datetime DEFAULT NULL,
         `product_qa_status` enum(\'pending\',\'approved\',\'disapproved\') NOT NULL DEFAULT \'pending\',
         `manufacturer_link` varchar(2083) DEFAULT NULL,
         `product_link` varchar(2083) DEFAULT NULL,
@@ -168,6 +172,7 @@ if ($row_count == 0) {
         `product_submit_status` enum(\'resubmit\',\'normal\') NOT NULL DEFAULT \'normal\',
          CONSTRAINT '.$dbname.'_PRODUCT_ACCOUNT_ID FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`),
          CONSTRAINT '.$dbname.'_PRODUCT_QA_ACCOUNT_ID FOREIGN KEY (`product_qa_account_id`) REFERENCES `user_db`.`accounts` (`account_id`),
+         CONSTRAINT '.$dbname.'_PRODUCT_ODA_ACCOUNT_ID FOREIGN KEY (`product_oda_account_id`) REFERENCES `user_db`.`accounts` (`account_id`),
          CONSTRAINT '.$dbname.'_PRODUCT_STATUS FOREIGN KEY (`product_status`) REFERENCES `probe_status` (`probe_status_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;';
     $stmt = $pdo->prepare($sql);
@@ -353,6 +358,16 @@ if ($row_count == 0) {
   `product_id` int(11) NOT NULL,
   `account_id` int(11) DEFAULT NULL,
   `qa_being_handled` tinyint(1) NOT NULL DEFAULT \'0\'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+
+    $sql = 'CREATE TABLE `product_oda_errors` (
+  `product_oda_error_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `error_id` int(11) NOT NULL,
+   CONSTRAINT '.$dbname.'_ODA_ERROR_ID FOREIGN KEY (`error_id`) REFERENCES `project_errors` (`project_error_id`),
+   CONSTRAINT '.$dbname.'_ODA_ERROR_PR_ID FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();

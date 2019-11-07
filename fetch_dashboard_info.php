@@ -45,6 +45,36 @@ $hunter_summary = array();
 $project_summary = array();
 $is_admin = '';
 
+$project_summary["Test"]["name"] = 'Test';
+$project_summary["Test"]["styling"] = '<i class="fas fa-robot fa-2x"></i> ';
+$project_summary["Test"]["productivity"] = 100000;
+$project_summary["Test"]["error_count"] = 5000;
+$project_summary["Test"]["system_error_count"] = 500;
+$project_summary["Test"]["rename_count"] = 2000;
+$project_summary["Test"]["points"] = 1000000000;
+$project_summary["Test"]["resubmit_count"] = 42069;
+$project_summary["Test"]["brand"] = 1000;
+$project_summary["Test"]["sku"] = 1000;
+$project_summary["Test"]["dvc"] = 1000;
+$project_summary["Test"]["facing"] = 1000;
+$project_summary["Test"]["accuracy"] = 100;
+$project_summary["Test"]["rename_accuracy"] = 100;
+
+$project_summary["Test2"]["name"] = 'Test';
+$project_summary["Test2"]["styling"] = '<i class="fas fa-robot fa-2x"></i> ';
+$project_summary["Test2"]["productivity"] = -100000;
+$project_summary["Test2"]["error_count"] = 5000;
+$project_summary["Test2"]["system_error_count"] = 500;
+$project_summary["Test2"]["rename_count"] = 2000;
+$project_summary["Test2"]["points"] = 20000;
+$project_summary["Test2"]["resubmit_count"] = 42000;
+$project_summary["Test2"]["brand"] = 1000;
+$project_summary["Test2"]["sku"] = 1000;
+$project_summary["Test2"]["dvc"] = 1000;
+$project_summary["Test2"]["facing"] = 1000;
+$project_summary["Test2"]["accuracy"] = 100;
+$project_summary["Test2"]["rename_accuracy"] = 100;
+
 // this makes the html for rendering region name in the table
 $project_summary["AMER"]["styling"] = '<i class="fas fa-flag-usa fa-2x"></i> ';
 $project_summary["AMER"]["name"] = 'AMER';
