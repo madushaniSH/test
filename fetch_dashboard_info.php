@@ -468,6 +468,6 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor') {
     $is_admin = 'yes';
 }
 
-$return_arr[] = array("warning"=>$warning, "hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary), "project_summary"=>$project_summary, "error_chart"=>$error_chart, "is_admin"=>$is_admin, "is_super"=>$is_super);
+$return_arr[] = array("warning2"=>$warning2,"warning"=>$warning, "hunter_summary"=>$hunter_summary, "current_info"=>$hunter_summary[$key], "total"=>count($hunter_summary), "project_summary"=>$project_summary, "error_chart"=>$error_chart, "is_admin"=>$is_admin, "is_super"=>$is_super);
 echo json_encode($return_arr);
 ?>
