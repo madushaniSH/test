@@ -12,7 +12,7 @@ if (!isset($_SESSION['logged_in'])) {
 	header('Location: login_auth_one.php');
 	exit();
 }else{
-    if(!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor')){
+    if(!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] == "ODA Supervisor")){
         header('Location: index.php');
 	    exit();
     }
