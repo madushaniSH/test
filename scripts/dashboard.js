@@ -390,7 +390,7 @@ const fetch_dashboard_info = () => {
             document.getElementById("main_div").style.display = "block";
         },
         error: function (data) {
-            alert("Error fetching dashboard info. Please refresh");
+            alert("Error fetching main dashboard info. Please refresh");
         },
         cache: false,
         contentType: false,
