@@ -97,6 +97,11 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     <i class=\"fas fa-meteor fa-2x\"></i>   
                     <span>Upload Product Information</span></a>
             </li>
+            <li class=\"nav-item\">
+                <a class=\"nav-link\" href=\"export_prodcuts_oda.php\">
+                    <i class=\"fas fa-file-export fa-2x\"></i>   
+                    <span>Export Product Information</span></a>
+            </li>
             "
             ;
             }
@@ -156,7 +161,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                 </nav>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                
+                    <h2 class="text-center text-success">Under Construction :)</h2>
             </div>
             <!-- /.container-fluid -->
         </div>

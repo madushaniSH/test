@@ -104,6 +104,7 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
             </div>
             <li class=\"nav-item\">
                 <a class=\"nav-link\" href=\"upload_product_info.php\">
+                    <i class=\"fas fa-meteor\"></i>   
                     <span>Upload Product Information</span></a>
             </li>
             "
