@@ -25,7 +25,7 @@
       kills the script
   */
   $user = 'root';
-  $pwd = '$$Ma12qwqwsr4';
+  $pwd = '$$ma12qwqwSr4';
   try{
       // Creating a new PDO instance
       $pdo = new PDO($dsn, $user, $pwd);
