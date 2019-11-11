@@ -564,6 +564,14 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                                 }
                             </script>
                             <div class="form-row">
+                                <div class="col col-md-7">
+                                    <div class="form-group">
+                                        <label for="product_comment">Product Comment </label>
+                                        <input type="text" id="product_comment" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
                                 <div class="col">
                                     <p>Status</p>
                                     <div class="form-check form-check-inline">

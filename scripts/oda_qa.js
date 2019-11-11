@@ -109,6 +109,7 @@ function validate_qa_form() {
     var disapprove_button = document.getElementById("disapprove");
     var error_images = document.getElementById("error_images").files;
     var manu_link = document.getElementById('manu_link').value.trim();
+    let product_comment = document.getElementById('product_comment').value.trim();
     if (this_selection_info.selectedProductType === "brand" || this_selection_info.selectedProductType === "sku") {
         if (product_rename === "") {
             document.getElementById("product_rename_error").innerHTML =
@@ -177,6 +178,7 @@ function validate_qa_form() {
         formData.append("product_rename", product_rename);
         formData.append("product_alt_rename", product_alt_rename);
         formData.append("error_qa", error_qa);
+        formData.append("product_comment", product_comment);
         formData.append("num_facings", document.getElementById("num_facings").value);
         console.log(document.getElementById("num_facings").value);
         formData.append("manu_link", manu_link);

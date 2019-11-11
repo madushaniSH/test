@@ -33,7 +33,7 @@ catch(PDOException $e){
     echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
     exit();
 }
-$sql = 'SELECT products.product_id, product_hunt_type AS "Product Hunt Type",probe.probe_id AS "Probe ID", radar_sources.radar_source_link AS "Radar Source Link", reference_info.reference_ean AS "Reference EAN" ,brand.brand_name AS "Brand", radar_hunt.radar_brand AS "Radar Brand", reference_info.reference_brand AS "Reference Brand", products.product_alt_design_name AS "Alternative Design Name", products.product_name AS "English Product Name" , products.product_previous AS "Previous English Product Name", products.product_comment AS "Product Comment" ,products.product_type AS "Product Type", products.product_creation_time AS "Product Creation Time", client_category.client_category_name AS "Category", radar_hunt.radar_category AS "Radar Category", reference_info.reference_category AS "Reference Category",products.product_facing_count AS "Facing Count",products.account_id AS "hunter_gid", products.manufacturer_link AS "Manufacturer Link", products.product_link AS "Product Link",products.product_qa_account_id AS "qa_gid", products.product_qa_datetime AS "QA Time", products.product_qa_status AS "Product Status", products.product_submit_status AS "Product Submit Status"
+$sql = 'SELECT products.product_id, product_hunt_type AS "Product Hunt Type",probe.probe_id AS "Probe ID", radar_sources.radar_source_link AS "Radar Source Link", reference_info.reference_ean AS "Reference EAN" ,brand.brand_name AS "Brand", radar_hunt.radar_brand AS "Radar Brand", reference_info.reference_brand AS "Reference Brand", products.product_alt_design_name AS "Alternative Design Name", products.product_name AS "English Product Name" , products.product_previous AS "Previous English Product Name", products.product_comment AS "Product Comment" ,products.product_type AS "Product Type", products.product_creation_time AS "Product Creation Time", client_category.client_category_name AS "Category", radar_hunt.radar_category AS "Radar Category", reference_info.reference_category AS "Reference Category",products.product_facing_count AS "Facing Count",products.account_id AS "hunter_gid", products.manufacturer_link AS "Manufacturer Link", products.product_link AS "Product Link",products.product_qa_account_id AS "qa_gid", products.product_qa_datetime AS "QA Time", products.product_oda_comment AS "ODA Comment",products.product_qa_status AS "Product Status", products.product_submit_status AS "Product Submit Status"
 FROM products
 LEFT JOIN probe_product_info
 ON products.product_id = probe_product_info.probe_product_info_product_id
@@ -104,6 +104,9 @@ for ($i = 0; $i < count($hunted_product_info); $i++){
     }
     if ($hunted_product_info[$i]["Previous English Product Name"] == null){
         $hunted_product_info[$i]["Previous English Product Name"] = '';
+    }
+    if ($hunted_product_info[$i]["ODA Comment"] == null){
+        $hunted_product_info[$i]["ODA Comment"] = '';
     }
     $sql = 'SELECT b.account_gid FROM products INNER JOIN user_db.accounts b ON products.account_id = b.account_id WHERE b.account_id = :account_id AND products.product_id = :product_id';
     $stmt = $pdo->prepare($sql);
