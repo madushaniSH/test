@@ -58,6 +58,9 @@ $project_summary["AMER"]["brand"] = 0;
 $project_summary["AMER"]["sku"] = 0;
 $project_summary["AMER"]["dvc"] = 0;
 $project_summary["AMER"]["facing"] = 0;
+$project_summary["AMER"]["qa_count"] = 0;
+$project_summary["AMER"]["oda_errors"] = 0;
+$project_summary["AMER"]["qa_rename"] = 0;
 
 
 // this makes the html for rendering region name in the table
@@ -73,6 +76,9 @@ $project_summary["EMEA"]["brand"] = 0;
 $project_summary["EMEA"]["sku"] = 0;
 $project_summary["EMEA"]["dvc"] = 0;
 $project_summary["EMEA"]["facing"] = 0;
+$project_summary["EMEA"]["qa_count"] = 0;
+$project_summary["EMEA"]["oda_errors"] = 0;
+$project_summary["EMEA"]["qa_rename"] = 0;
 
 // this makes the html for rendering region name in the table
 $project_summary["APAC"]["styling"] = '<i class="fab fa-wolf-pack-battalion fa-2x"></i> ';
@@ -87,6 +93,9 @@ $project_summary["APAC"]["brand"] = 0;
 $project_summary["APAC"]["sku"] = 0;
 $project_summary["APAC"]["dvc"] = 0;
 $project_summary["APAC"]["facing"] = 0;
+$project_summary["APAC"]["qa_count"] = 0;
+$project_summary["APAC"]["oda_errors"] = 0;
+$project_summary["APAC"]["qa_rename"] = 0;
 
 // this makes the html for rendering region name in the table
 $project_summary["DPG"]["name"] = 'DPG';
@@ -101,6 +110,9 @@ $project_summary["DPG"]["brand"] = 0;
 $project_summary["DPG"]["sku"] = 0;
 $project_summary["DPG"]["dvc"] = 0;
 $project_summary["DPG"]["facing"] = 0;
+$project_summary["DPG"]["qa_count"] = 0;
+$project_summary["DPG"]["oda_errors"] = 0;
+$project_summary["DPG"]["qa_rename"] = 0;
 $error_chart = array();
 $max_size = 0;
 $key = NULL;
@@ -167,6 +179,45 @@ for ($i = 0; $i < $count_projects; $i++) {
             $max_size++;
         }
     }
+    $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products p WHERE p.product_qa_status = "approved" OR p.product_qa_status = "active" OR p.product_qa_status = "rejected" AND (p.product_qa_datetime >= :start_datetime AND p.product_qa_datetime <= :end_datetime)';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
+    $project_count = $stmt->fetchColumn();
+
+    $sql = "SELECT COUNT(a.product_id) FROM ".$dbname.".products a INNER JOIN ".$dbname.".product_oda_errors b ON a.product_id = b.product_id WHERE a.product_qa_datetime >= :start_datetime AND a.product_qa_datetime <= :end_datetime AND a.product_status = 2";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
+    $qa_errors = $stmt->fetchColumn();
+
+
+    $sql = "SELECT COUNT(*) FROM ".$dbname.".products a WHERE ( a.product_type = 'sku' OR a.product_type = 'brand' ) AND (a.product_qa_previous IS NOT NULL) AND a.product_qa_datetime >= :start_datetime AND a.product_qa_datetime <= :end_datetime AND a.product_status = 2";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
+    $rename_errors = $stmt->fetchColumn();
+
+    switch ($project_array[$i]['project_region']) {
+        case 'AMER' :
+            $project_summary["AMER"]["qa_count"] += $project_count;
+            $project_summary["AMER"]["oda_errors"] += $qa_errors;
+            $project_summary["AMER"]["qa_rename"] += $rename_errors;
+            break;
+        case 'EMEA' :
+            $project_summary["EMEA"]["qa_count"] += $project_count;
+            $project_summary["EMEA"]["oda_errors"] += $qa_errors;
+            $project_summary["EMEA"]["qa_rename"] += $rename_errors;
+            break;
+        case 'APAC' :
+            $project_summary["APAC"]["qa_count"] += $project_count;
+            $project_summary["APAC"]["oda_errors"] += $qa_errors;
+            $project_summary["APAC"]["qa_rename"] += $rename_errors;
+            break;
+        case 'DPG' :
+            $project_summary["DPG"]["qa_count"] += $project_count;
+            $project_summary["DPG"]["oda_errors"] += $qa_errors;
+            $project_summary["DPG"]["qa_rename"] += $rename_errors;
+            break;
+    }
+
     $pdo = NULL;
 }
 for ($i = 0; $i < count($hunter_summary); $i++){
@@ -372,27 +423,60 @@ if ($project_summary["AMER"]["productivity"] != 0 ) {
     $project_summary["AMER"]["rename_accuracy"] = 0; 
 }
 
+if ($project_summary["EMEA"]["qa_count"] != 0 ) {
+    $project_summary["EMEA"]["qa_accuracy"] = round((($project_summary["EMEA"]["qa_count"] - $project_summary["EMEA"]["oda_errors"]) / $project_summary["EMEA"]["qa_count"] * 100),2);
+    $project_summary["EMEA"]["qa_rename_accuracy"] = round((($project_summary["EMEA"]["qa_count"] - $project_summary["EMEA"]["qa_rename"]) / $project_summary["EMEA"]["qa_count"] * 100),2);
+} else {
+    $project_summary["EMEA"]["qa_accuracy"] = 0;
+    $project_summary["EMEA"]["qa_rename_accuracy"] = 0;
+}
+if ($project_summary["APAC"]["qa_count"] != 0 ) {
+    $project_summary["APAC"]["qa_accuracy"] = round((($project_summary["APAC"]["qa_count"] - $project_summary["APAC"]["oda_errors"]) / $project_summary["APAC"]["qa_count"] * 100),2);
+    $project_summary["APAC"]["qa_rename_accuracy"] = round((($project_summary["APAC"]["qa_count"] - $project_summary["APAC"]["qa_rename"]) / $project_summary["APAC"]["qa_count"] * 100),2);
+} else {
+    $project_summary["APAC"]["qa_accuracy"] = 0;
+    $project_summary["APAC"]["qa_rename_accuracy"] = 0;
+}
+if ($project_summary["DPG"]["qa_count"] != 0 ) {
+    $project_summary["DPG"]["qa_accuracy"] = round((($project_summary["DPG"]["qa_count"] - $project_summary["DPG"]["oda_errors"]) / $project_summary["DPG"]["qa_count"] * 100),2);
+    $project_summary["DPG"]["qa_rename_accuracy"] = round((($project_summary["DPG"]["qa_count"] - $project_summary["DPG"]["qa_rename"]) / $project_summary["DPG"]["qa_count"] * 100),2);
+} else {
+    $project_summary["DPG"]["qa_accuracy"] = 0;
+    $project_summary["DPG"]["qa_rename_accuracy"] = 0;
+}
+if ($project_summary["AMER"]["qa_count"] != 0 ) {
+    $project_summary["AMER"]["qa_accuracy"] = round((($project_summary["AMER"]["qa_count"] - $project_summary["AMER"]["oda_errors"]) / $project_summary["AMER"]["qa_count"] * 100),2);
+    $project_summary["AMER"]["qa_rename_accuracy"] = round((($project_summary["AMER"]["qa_count"] - $project_summary["AMER"]["qa_rename"]) / $project_summary["AMER"]["qa_count"] * 100),2);
+} else {
+    $project_summary["AMER"]["qa_accuracy"] = 0;
+    $project_summary["AMER"]["qa_rename_accuracy"] = 0;
+}
+
 if ($project_summary["EMEA"]["productivity"] != 0 ) {
     $project_summary["EMEA"]["accuracy"] = round((($project_summary["EMEA"]["productivity"] - $project_summary["EMEA"]["error_count"]) / $project_summary["EMEA"]["productivity"] * 100),2);
     $project_summary["EMEA"]["rename_accuracy"] = round((($project_summary["EMEA"]["productivity"] - $project_summary["EMEA"]["rename_count"]) / $project_summary["EMEA"]["productivity"] * 100),2);
 } else {
-    $project_summary["EMEA"]["accuracy"] = 0; 
-    $project_summary["EMEA"]["rename_accuracy"] = 0; 
+    $project_summary["EMEA"]["accuracy"] = 0;
+    $project_summary["EMEA"]["rename_accuracy"] = 0;
 }
 if ($project_summary["APAC"]["productivity"] != 0 ) {
     $project_summary["APAC"]["accuracy"] = round((($project_summary["APAC"]["productivity"] - $project_summary["APAC"]["error_count"]) / $project_summary["APAC"]["productivity"] * 100),2);
     $project_summary["APAC"]["rename_accuracy"] = round((($project_summary["APAC"]["productivity"] - $project_summary["APAC"]["rename_count"]) / $project_summary["APAC"]["productivity"] * 100),2);
 } else {
-    $project_summary["APAC"]["accuracy"] = 0; 
-    $project_summary["APAC"]["rename_accuracy"] = 0; 
+    $project_summary["APAC"]["accuracy"] = 0;
+    $project_summary["APAC"]["rename_accuracy"] = 0;
 }
 if ($project_summary["DPG"]["productivity"] != 0 ) {
     $project_summary["DPG"]["accuracy"] = round((($project_summary["DPG"]["productivity"] - $project_summary["DPG"]["error_count"]) / $project_summary["DPG"]["productivity"] * 100),2);
     $project_summary["DPG"]["rename_accuracy"] = round((($project_summary["DPG"]["productivity"] - $project_summary["DPG"]["rename_count"]) / $project_summary["DPG"]["productivity"] * 100),2);
 } else {
-    $project_summary["DPG"]["accuracy"] = 0; 
-    $project_summary["DPG"]["rename_accuracy"] = 0; 
+    $project_summary["DPG"]["accuracy"] = 0;
+    $project_summary["DPG"]["rename_accuracy"] = 0;
 }
+$project_summary["AMER"]["points"] -= (($project_summary["AMER"]["oda_errors"] * 5) + $project_summary["AMER"]["qa_rename"]);
+$project_summary["DPG"]["points"] -= (($project_summary["DPG"]["oda_errors"] * 5) + $project_summary["DPG"]["qa_rename"]);
+$project_summary["EMEA"]["points"] -= (($project_summary["EMEA"]["oda_errors"] * 5) + $project_summary["EMEA"]["qa_rename"]);
+$project_summary["APAC"]["points"] -= (($project_summary["APAC"]["oda_errors"] * 5) + $project_summary["APAC"]["qa_rename"]);
 
 usort($hunter_summary, "custom_sort");
 usort($project_summary, "custom_sort_projects");

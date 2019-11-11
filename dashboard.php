@@ -243,7 +243,10 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
@@ -264,17 +267,23 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                             <p>Resubmit Count</p>
                                         </div>
                                         <div class="col">
-                                            <p>Accuracy</p>
+                                            <p>Hunter Accuracy</p>
                                         </div>
                                         <div class="col-md-2">
-                                            <p>Naming Accuracy</p>
+                                            <p>Hunter Naming Accuracy</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>QA Accuracy</p>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <p>QA Naming Accuracy</p>
                                         </div>
                                         <div class="col">
                                             <p class="text-success">Points</p>
                                         </div>
                                     </div>
-                                        <div id="project_section">
-                                        </div>
+                                    <div id="project_section">
+                                    </div>
                                 </div>
                             </div>
                         </div>
