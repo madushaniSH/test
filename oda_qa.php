@@ -107,6 +107,11 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                     <i class=\"fas fa-meteor\"></i>   
                     <span>Upload Product Information</span></a>
             </li>
+             <li class=\"nav-item\">
+                <a class=\"nav-link\" href=\"export_products_oda.php\">
+                    <i class=\"fas fa-file-export\"></i>   
+                    <span>Export Product Information</span></a>
+            </li>
             "
             ;
             }
