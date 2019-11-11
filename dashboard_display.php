@@ -96,10 +96,16 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                             <p>Resubmit Count</p>
                                         </div>
                                         <div class="col">
-                                            <p>Accuracy</p>
+                                            <p>Hunter Accuracy</p>
                                         </div>
                                         <div class="col-md-2">
-                                            <p>Naming Accuracy</p>
+                                            <p>Hunter Naming Accuracy</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>QA Accuracy</p>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <p>QA Naming Accuracy</p>
                                         </div>
                                         <div class="col">
                                             <p class="text-success">Points</p>
