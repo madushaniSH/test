@@ -94,7 +94,7 @@ if ($_POST['reference_qa'] === 'false') {
 }
 
 if ((int)$_POST['client_cat'] === 0) {
-    $client_category_string = ' pcc.client_category_id IS NULL';
+    $client_category_string = ' 1';
 } else {
     $client_category_string = ' pcc.client_category_id = '.(int)$_POST['client_cat'];
 }

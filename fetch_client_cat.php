@@ -45,7 +45,7 @@ $client_cat_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
  * Array containing N/A value. This will then be added to the beginning of the client_cat_info array.
  * N/A value is used to represent products which do not have a client category
  * */
-$na_client_cat = array("client_category_id"=>0,"client_category_name"=>'NA');
+$na_client_cat = array("client_category_id"=>0,"client_category_name"=>'All');
 array_unshift($client_cat_info, $na_client_cat);
 
 $return_arr[] = array("client_cat_info"=>$client_cat_info);
