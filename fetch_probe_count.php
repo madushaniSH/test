@@ -42,6 +42,7 @@ $sql = 'SELECT project_language FROM `project_db`.projects WHERE project_name = 
 $stmt = $pdo->prepare($sql);
 $stmt->execute(["project_name"=>$dbname]);
 $project_lang = $stmt->fetchColumn();
+$weight = 1;
 if ($project_lang == "english") {
     $weight = 1;
 } else if ($project_lang == "non_english") {
