@@ -165,6 +165,7 @@ if ($row_count == 0) {
         `product_qa_datetime` datetime DEFAULT NULL,
         `product_oda_account_id` int(11) DEFAULT NULL,
         `product_oda_datetime` datetime DEFAULT NULL,
+        `product_oda_comment` varchar(500) DEFAULT NULL,
         `product_qa_status` enum(\'pending\',\'approved\',\'disapproved\', \'active\', \'rejected\') NOT NULL DEFAULT \'pending\',
         `manufacturer_link` varchar(2083) DEFAULT NULL,
         `product_link` varchar(2083) DEFAULT NULL,
