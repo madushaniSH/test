@@ -17,22 +17,20 @@ if (!isset($_SESSION['logged_in'])) {
 require('user_db_connection.php');
 $dbname = 'project_db';
 // Setting up the DSN
-$dsn = 'mysql:host='.$host.';dbname='.$dbname;
+$dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
 
 /*
 Attempts to connect to the databse, if no connection was estabishled
 kills the script
 */
-try{
+try {
     // Creating a new PDO instance
     $pdo = new PDO($dsn, $user, $pwd);
     // setting the PDO error mode to exception
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-}
-
-catch(PDOException $e){
+} catch (PDOException $e) {
     // throws error message
-    echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
+    echo "<p>Connection to database failed<br>Reason: " . $e->getMessage() . '</p>';
     exit();
 }
 
@@ -53,64 +51,64 @@ $count = 0;
 
 for ($i = 0; $i < count($project_array); $i++) {
     $dbname = $project_array[$i][project_db_name];
-    $dsn = 'mysql:host='.$host.';dbname='.$dbname;
+    $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
     $pdo = new PDO($dsn, $user, $pwd);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+
     $project_hunters = array();
-    $sql = 'SELECT DISTINCT probe_processed_hunter_id as "id", account_gid FROM (SELECT DISTINCT b.probe_processed_hunter_id, a.account_gid FROM '.$dbname.'.probe b INNER JOIN user_db.accounts a ON b.probe_processed_hunter_id = a.account_id INNER JOIN user_db.account_designations g ON g.account_id = a.account_id WHERE g.designation_id = 3  AND ( b.probe_hunter_processed_time >= :start_datetime AND b.probe_hunter_processed_time <= :end_datetime ) UNION ALL SELECT DISTINCT c.radar_hunter_id AS "probe_processed_hunter_id", a.account_gid FROM '.$dbname.'.radar_hunt c INNER JOIN user_db.accounts a ON c.radar_hunter_id = a.account_id INNER JOIN user_db.account_designations g ON g.account_id = a.account_id WHERE g.designation_id = 3 AND (c.radar_processed_time >= :start_datetime AND c.radar_processed_time <= :end_datetime )UNION ALL SELECT DISTINCT d.reference_processed_hunter_id AS "probe_processed_hunter_id", a.account_gid FROM '.$dbname.'.reference_info d INNER JOIN user_db.accounts a ON d.reference_processed_hunter_id = a.account_id INNER JOIN user_db.account_designations g ON g.account_id = a.account_id WHERE g.designation_id = 3 AND (d.reference_hunter_processed_time >= :start_datetime AND d.reference_hunter_processed_time <= :end_datetime) ) t3';
+    $sql = 'SELECT DISTINCT probe_processed_hunter_id as "id", account_gid FROM (SELECT DISTINCT b.probe_processed_hunter_id, a.account_gid FROM ' . $dbname . '.probe b INNER JOIN user_db.accounts a ON b.probe_processed_hunter_id = a.account_id INNER JOIN user_db.account_designations g ON g.account_id = a.account_id WHERE g.designation_id = 3  AND ( b.probe_hunter_processed_time >= :start_datetime AND b.probe_hunter_processed_time <= :end_datetime ) UNION ALL SELECT DISTINCT c.radar_hunter_id AS "probe_processed_hunter_id", a.account_gid FROM ' . $dbname . '.radar_hunt c INNER JOIN user_db.accounts a ON c.radar_hunter_id = a.account_id INNER JOIN user_db.account_designations g ON g.account_id = a.account_id WHERE g.designation_id = 3 AND (c.radar_processed_time >= :start_datetime AND c.radar_processed_time <= :end_datetime )UNION ALL SELECT DISTINCT d.reference_processed_hunter_id AS "probe_processed_hunter_id", a.account_gid FROM ' . $dbname . '.reference_info d INNER JOIN user_db.accounts a ON d.reference_processed_hunter_id = a.account_id INNER JOIN user_db.account_designations g ON g.account_id = a.account_id WHERE g.designation_id = 3 AND (d.reference_hunter_processed_time >= :start_datetime AND d.reference_hunter_processed_time <= :end_datetime) ) t3';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
+    $stmt->execute(['start_datetime' => strval($_POST['start_datetime']), 'end_datetime' => strval($_POST['end_datetime'])]);
     $project_hunters = $stmt->fetchAll(PDO::FETCH_ASSOC);
     for ($m = 0; $m < count($project_hunters); $m++) {
         foreach ($period as $dt) {
             $date = $dt->format("Y-m-d");
-            $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE a.product_type ="sku" AND a.account_id = :account_id AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
+            $sql = 'SELECT COUNT(*) FROM ' . $dbname . '.products a WHERE a.product_type ="sku" AND a.account_id = :account_id AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['account_id'=>$project_hunters[$m][id], 'date'=>$date]);
+            $stmt->execute(['account_id' => $project_hunters[$m][id], 'date' => $date]);
             $sku_count = $stmt->fetchColumn();
             if ($sku_count == NULL) {
                 $sku_count = 0;
             }
-            $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE a.product_type ="brand" AND a.account_id = :account_id AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
+            $sql = 'SELECT COUNT(*) FROM ' . $dbname . '.products a WHERE a.product_type ="brand" AND a.account_id = :account_id AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['account_id'=>$project_hunters[$m][id], 'date'=>$date]);
+            $stmt->execute(['account_id' => $project_hunters[$m][id], 'date' => $date]);
             $brand_count = $stmt->fetchColumn();
             if ($brand_count == NULL) {
                 $brand_count = 0;
             }
-            $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE a.product_type ="dvc" AND a.account_id = :account_id AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
+            $sql = 'SELECT COUNT(*) FROM ' . $dbname . '.products a WHERE a.product_type ="dvc" AND a.account_id = :account_id AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['account_id'=>$project_hunters[$m][id], 'date'=>$date]);
+            $stmt->execute(['account_id' => $project_hunters[$m][id], 'date' => $date]);
             $dvc_count = $stmt->fetchColumn();
             if ($dvc_count == NULL) {
                 $dvc_count = 0;
             }
-            $sql = 'SELECT SUM(a.product_facing_count) FROM '.$dbname.'.products a WHERE a.account_id = :account_id AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
+            $sql = 'SELECT SUM(a.product_facing_count) FROM ' . $dbname . '.products a WHERE a.account_id = :account_id AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['account_id'=>$project_hunters[$m][id], 'date'=>$date]);
+            $stmt->execute(['account_id' => $project_hunters[$m][id], 'date' => $date]);
             $facing_count = $stmt->fetchColumn();
             if ($facing_count == NULL) {
                 $facing_count = 0;
             }
-            $sql = "SELECT COUNT(a.product_id) FROM ".$dbname.".products a INNER JOIN ".$dbname.".product_qa_errors b ON a.product_id = b.product_id WHERE a.account_id = :account_id AND DATE(a.product_qa_datetime) = :date AND a.product_status = 2";
+            $sql = "SELECT COUNT(a.product_id) FROM " . $dbname . ".products a INNER JOIN " . $dbname . ".product_qa_errors b ON a.product_id = b.product_id WHERE a.account_id = :account_id AND DATE(a.product_qa_datetime) = :date AND a.product_status = 2";
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['account_id'=>$project_hunters[$m][id], 'date'=>$date]);
+            $stmt->execute(['account_id' => $project_hunters[$m][id], 'date' => $date]);
             $error_count = $stmt->fetchColumn();
             if ($error_count == NULL) {
                 $error_count = 0;
             }
 
-            $sql = 'SELECT COUNT(*) FROM '.$dbname.'.products a WHERE a.account_id = :account_id AND a.product_qa_status = "disapproved" AND a.product_qa_account_id IS NULL AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
+            $sql = 'SELECT COUNT(*) FROM ' . $dbname . '.products a WHERE a.account_id = :account_id AND a.product_qa_status = "disapproved" AND a.product_qa_account_id IS NULL AND (DATE(a.product_creation_time) = :date) AND a.product_status = 2';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['account_id'=>$project_hunters[$m][id], 'date'=>$date]);
+            $stmt->execute(['account_id' => $project_hunters[$m][id], 'date' => $date]);
             $system_errors = $stmt->fetchColumn();
             if ($system_errors == NULL) {
                 $system_errors = 0;
             }
 
-            if ($sku_count != 0 || $brand_count != 0 || $dvc_count != 0 || $facing_count != 0 || $error_count != 0){
-                $summary[$count] = array_fill_keys(array('date', 'region', 'language','user_gid', 'project_name','Brand', 'SKU', 'DVC', 'Facing', 'Error Count', 'System Errors'),'');
+            if ($sku_count != 0 || $brand_count != 0 || $dvc_count != 0 || $facing_count != 0 || $error_count != 0) {
+                $summary[$count] = array_fill_keys(array('date', 'region', 'language', 'user_gid', 'project_name', 'Brand', 'SKU', 'DVC', 'Facing', 'Error Count', 'System Errors'), '');
                 $summary[$count][project_name] = $dbname;
                 $summary[$count][region] = $project_array[$i][project_region];
                 $summary[$count][language] = $project_array[$i][project_language];
@@ -127,6 +125,6 @@ for ($i = 0; $i < count($project_array); $i++) {
         }
     }
 }
-$return_arr[] = array("summary"=>$summary);
+$return_arr[] = array("summary" => $summary);
 echo json_encode($return_arr);
 ?>

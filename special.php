@@ -111,6 +111,7 @@ $stmt->execute();
 $project_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $project_info_radar = $project_info;
 $project_info_ref = $project_info;
+$project_info_dates = $project_info;
 for ($i = 0; $i < count($project_info); $i++) {
     $dbname = $project_info[$i]["project_db_name"];
     $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
@@ -304,6 +305,169 @@ for ($i = 0; $i < count($project_info_ref); $i++) {
     unset($project_info_ref[$i]["project_db_name"]);
 }
 
-$return_arr[] = array("hunter_summary" => $project_info, "project_info_radar"=>$project_info_radar, "project_info_ref"=>$project_info_ref);
+$begin = new DateTime(strval($_POST['start_datetime']));
+$end = new DateTime(strval($_POST['end_datetime']));
+$end_date_for_loop = $end->modify('+1 day');
+
+$interval = DateInterval::createFromDateString('1 day');
+$period = new DatePeriod($begin, $interval, $end_date_for_loop);
+
+$count = 0;
+$summary = array();
+foreach ($period as $dt) {
+    $date = $dt->format("Y-m-d");
+    $summary[$count] = array(
+        "Date" => array(),
+        "AMER" => 'NA',
+        "EMEA" => 'NA',
+        "APAC" => 'NA',
+        "DPG" => 'NA',
+    );
+    $date_project_summary = array(
+        "AMER" => array(
+            "name" => "AMER",
+            "probe" => 0,
+            "radar" => 0,
+            "ref" => 0
+        ),
+        "EMEA" => array(
+            "name" => "EMEA",
+            "probe" => 0,
+            "radar" => 0,
+            "ref" => 0
+        ),
+        "DPG" => array(
+            "name" => "DPG",
+            "probe" => 0,
+            "radar" => 0,
+            "ref" => 0
+        ),
+        "APAC" => array(
+            "name" => "APAC",
+            "probe" => 0,
+            "radar" => 0,
+            "ref" => 0
+        )
+    );
+
+    $summary[$count]["Date"] = $date;
+    for ($i = 0; $i < count($project_info_dates); $i++) {
+        $dbname = $project_info_dates[$i]["project_db_name"];
+        $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
+        $pdo = new PDO($dsn, $user, $pwd);
+
+        $sql = 'SELECT COUNT(DISTINCT(probe_processed_hunter_id)) FROM probe WHERE DATE(probe_hunter_processed_time) = :date ';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['date' => $date]);
+        $hunter_count = $stmt->fetchColumn();
+
+        if ($hunter_count > 0) {
+            switch ($project_info_dates[$i]["project_region"]) {
+                case "AMER":
+                    $date_project_summary["AMER"]["probe"] += $hunter_count;
+                    break;
+                case "EMEA":
+                    $date_project_summary["EMEA"]["probe"] += $hunter_count;
+                    break;
+                case "DPG":
+                    $date_project_summary["DPG"]["probe"] += $hunter_count;
+                    break;
+                case "APAC":
+                    $date_project_summary["APAC"]["probe"] += $hunter_count;
+                    break;
+            }
+        }
+
+        $sql = 'SELECT COUNT(DISTINCT(account_id)) FROM radar_sources WHERE DATE(creation_time) = :date';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['date' => $date]);
+        $hunter_count = $stmt->fetchColumn();
+
+        if ($hunter_count > 0) {
+            if ($hunter_count > 0) {
+                switch ($project_info_dates[$i]["project_region"]) {
+                    case "AMER":
+                        $date_project_summary["AMER"]["radar"] += $hunter_count;
+                        break;
+                    case "EMEA":
+                        $date_project_summary["EMEA"]["radar"] += $hunter_count;
+                        break;
+                    case "DPG":
+                        $date_project_summary["DPG"]["radar"] += $hunter_count;
+                        break;
+                    case "APAC":
+                        $date_project_summary["APAC"]["radar"] += $hunter_count;
+                        break;
+                }
+            }
+        }
+
+        $sql = 'SELECT COUNT(DISTINCT(reference_processed_hunter_id)) FROM reference_info WHERE DATE(reference_hunter_processed_time) = :date';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['date' => $date]);
+        $hunter_count = $stmt->fetchColumn();
+
+        if ($hunter_count > 0) {
+            if ($hunter_count > 0) {
+                switch ($project_info_dates[$i]["project_region"]) {
+                    case "AMER":
+                        $date_project_summary["AMER"]["ref"] += $hunter_count;
+                        break;
+                    case "EMEA":
+                        $date_project_summary["EMEA"]["ref"] += $hunter_count;
+                        break;
+                    case "DPG":
+                        $date_project_summary["DPG"]["ref"] += $hunter_count;
+                        break;
+                    case "APAC":
+                        $date_project_summary["APAC"]["ref"] += $hunter_count;
+                        break;
+                }
+            }
+        }
+    }
+    foreach ($date_project_summary as $region) {
+        $out_string = '';
+        if ($region["probe"] > 0) {
+            $out_string .= 'probe';
+        }
+        if ($region["radar"] > 0) {
+            if ($out_string != '') {
+                $out_string .= '/';
+            }
+            $out_string .= 'radar';
+        }
+
+        if ($region["ref"] > 0) {
+            if ($out_string != '') {
+                $out_string .= '/';
+            }
+            $out_string .= 'reference';
+        }
+
+        if ($out_string == '') {
+            $out_string = 'NA';
+        }
+
+        switch ($region["name"]) {
+            case "AMER":
+                $summary[$count]["AMER"] = $out_string;
+                break;
+            case "EMEA":
+                $summary[$count]["EMEA"] = $out_string;
+                break;
+            case "DPG":
+                $summary[$count]["DPG"] = $out_string;
+                break;
+            case "APAC":
+                $summary[$count]["APAC"] = $out_string;
+                break;
+        }
+    }
+    $count++;
+}
+
+
+$return_arr[] = array("hunter_summary" => $project_info, "project_info_radar" => $project_info_radar, "project_info_ref" => $project_info_ref, "date" => $summary);
 echo json_encode($return_arr);
 ?>
