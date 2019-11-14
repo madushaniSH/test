@@ -1020,6 +1020,21 @@ const validate_toggle = () => {
     }
 };
 
+const validate_ticket_toggle = () => {
+    const ticketToggleState = document.getElementById('ticket_toggle').checked;
+    const ticketElement = document.getElementById('ticket');
+    if(ticketToggleState) {
+        for (let i = 0; i < ticketElement.length; i++) {
+            ticketElement.options[i].selected = true;
+        }
+    } else {
+        for (let i = 0; i < ticketElement.length; i++) {
+            ticketElement.options[i].selected = false;
+        }
+    }
+    $('#ticket').trigger('change');
+};
+
 const validate_client_cat = () => {
     const client_category = $('#client_category').val();
     //console.log(client_category);
@@ -1116,6 +1131,9 @@ $(document).ready(function () {
     });
     $("#qa_type_toggle").click(function () {
         validate_toggle();
+    });
+    $("#ticket_toggle").click(function () {
+        validate_ticket_toggle();
     });
     jQuery('#brand_name').on("change", function (e) {
         jQuery('#current_sku_count_2').html("<div class=\"spinner-border text-success\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>");

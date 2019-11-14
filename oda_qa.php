@@ -193,6 +193,16 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
                                     <select name="ticket" id="ticket" class="form-control" multiple>
                                     </select>
                                 </div>
+                                <div class="col">
+                                    <div id="toggle_section">
+                                        <!-- Rounded switch -->
+                                        <label for="toggle_tickets">All Tickets</label>
+                                        <label class="switch" id="toggle_tickets">
+                                            <input type="checkbox" id="ticket_toggle">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                             <div id="client_cat" class="hide">
                                 <div class="row">
