@@ -593,7 +593,87 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 </div>
                             </div>
                         </div>
-                    </div>';
+                    </div>
+                    </div>
+                     <div class="row my-3">
+                        <div class="col">
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Product Inquistor</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                             <div class="form-group">
+                                                <label for="product_name_filter">Search</label>
+                                                <input type="text" class="form-control" id="product_name_filter" aria-describedby="product_name_help" placeholder="Enter Product Name">
+                                                <small id="product_name_help" class="form-text text-muted">Search for Product Name in Database</small>
+                                              </div>
+                                        </div>
+                                        <div class="col-md-2 hide">
+                                            <label for="project_region_explorer">Select Project Region</label>
+                                            <select name="project_region_explorer" id="project_region_explorer" class="form-control">
+                                                <option value="ALL" >ALL</option>
+                                                <option value="AMER" >AMER</option>
+                                                <option value="EMEA">EMEA</option>
+                                                <option value="APAC">APAC</option>
+                                                <option value="DPG">DPG</option>
+                                            </select>
+                                        </div>
+                                        <div class="col hide">
+                                            <label for="project_name_explorer">Select Project Name</label>
+                                            <select name="project_name_explorer" id="project_name_explorer" class="form-control" multiple="multiple">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row my-3 hide">
+                                        <div class="col-md-4">
+                                            <label for="datetime_filter_explorer">Date Range</label>
+                                            <input id="datetime_filter_explorer" type="text" name="datetimes" value="" />
+                                        </div>
+                                    </div>
+                                    <div class="row my-3">
+                                        <div class="col-md-2">
+                                            <button class="btn btn-success btn-icon-split" id="fetch_project_explorer">
+                                                <span class="text">Fetch Details</span>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="hide" id="load_section_explorer">
+                                                <div class="spinner-border text-success" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </div>
+                                 <div class="row my-2 hide" id="result_section_products">
+                                    <div class="col">
+                                        <label for="project_filter_result">Filter by Project</label>
+                                        <select name="project_filter_result" id="project_filter_result" class="form-control">
+                                        <option value="" selected>All</option>
+                                        </select>
+                                        <table class="table table-bordered my-3" id="result_table_product" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                <th>Project Name</th>
+                                                <th>Ticket</th>
+                                                <th>Product Name</th>
+                                                <th>Product Alt Name</th>
+                                                <th>Product Hunt Type</th>
+                                                <th>Hunter GID</th>
+                                                <th>QA GID</th>
+                                                <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                         </table>
+                                    </div>
+                                 </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    ';
                     }
                     ?>
                 </div>

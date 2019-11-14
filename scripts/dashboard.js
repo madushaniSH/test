@@ -5,6 +5,7 @@
 Chart.plugins.unregister(ChartDataLabels);
 let table;
 let hunter_table;
+let result_table_product;
 
 /*
     This function fetches the project list from the db using an ajax call according to the region selected in 
@@ -680,8 +681,60 @@ const fetch_hunter_products = () => {
     }
 }
 
+const search_product_information = () => {
+    const product_name_section = document.getElementById('product_name_filter');
+    const product_name = product_name_section.value.trim();
+    const load_section_explorer = document.getElementById('load_section_explorer');
+    const result_table_product_section = document.getElementById('result_section_products');
+    if (product_name !== '') {
+        load_section_explorer.classList.remove('hide');
+        product_name_section.disabled = true;
+        let formData = new FormData();
+        formData.append('product_name', product_name);
+        jQuery.ajax({
+            url: "search_product_information.php",
+            type: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: function (data) {
+                product_name_section.disabled = false;
+                result_table_product.clear().draw();
+                for (let i = 0; i < data[0].return_details.length; i++) {
+                    result_table_product.row.add([
+                        data[0].return_details[i].project_name,
+                        data[0].return_details[i].ticket_id,
+                        data[0].return_details[i].product_name,
+                        data[0].return_details[i].alt_product_name,
+                        data[0].return_details[i].product_hunt_type,
+                        data[0].return_details[i].hunter_gid,
+                        data[0].return_details[i].qa_gid,
+                        data[0].return_details[i].status,
+                    ]).draw(false);
+                    if (!($("#project_filter_result option[value='" + data[0].return_details[i].project_name + "']").length > 0)) {
+                        $('#project_filter_result').append('<option value="' + data[0].return_details[i].project_name + '">' + data[0].return_details[i].project_name + "</option>");
+                    }
+                }
+                load_section_explorer.classList.add('hide');
+                result_table_product_section.classList.remove('hide');
+            },
+            error: function (data) {
+                alert("Error fetching product_information. Please refresh");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    } else {
+        load_section_explorer.classList.add('hide');
+        product_name_section.disabled = false;
+        result_table_product_section.classList.add('hide');
+    }
+};
+
 jQuery(document).ready(function () {
     hunter_table = $('#dataTableHunter').DataTable({
+    });
+    result_table_product = $('#result_table_product').DataTable({
     });
     fetch_project_list('project_region', 'project_name');
     fetch_project_list('project_region_error_type', 'project_name_error_type');
@@ -697,6 +750,10 @@ jQuery(document).ready(function () {
         fetch_dashboard_info();
     }, 36000000);
     $('#datetime_filter').daterangepicker({
+        "opens": "right",
+        "drops": "up"
+    });
+    $('#datetime_filter_explorer').daterangepicker({
         "opens": "right",
         "drops": "up"
     });
@@ -731,6 +788,15 @@ jQuery(document).ready(function () {
     jQuery('#hunter_filter_region').select2({
         width: '25%',
     });
+    jQuery('#project_region_explorer').select2({
+        width: '100%',
+    });
+    jQuery('#project_name_explorer').select2({
+        width: '100%',
+    });
+    jQuery('#project_filter_result').select2({
+        width: '50%',
+    });
     $('#fetch_details_hunter').click(() => {
         $('#hunter_filter').empty();
         $('#hunter_filter').append('<option value="">None</option>');
@@ -739,6 +805,9 @@ jQuery(document).ready(function () {
     });
     $('#fetch_project_error_lists').click(() => {
         fetch_project_error_lists();
+    });
+    $('#fetch_project_explorer').click(() => {
+        search_product_information();
     });
     table = $('#dataTable').DataTable({
         "columnDefs": [
@@ -860,6 +929,20 @@ jQuery(document).ready(function () {
         let data = product_table.row($(this).parents('tr')).data();
         for (let j = 0; j < data[7].length; j++) {
             window.open(data[7][j].project_error_image_location);
+        }
+    });
+    $("#project_filter_result").change(function () {
+        const project_name = $('#project_filter_result').val();
+        if (project_name == "" || project_name == null) {
+            result_table_product
+                .column(0)
+                .search("", true, false)
+                .draw();
+        } else {
+            result_table_product
+                .column(0)
+                .search(project_name, true, false)
+                .draw();
         }
     });
 });
