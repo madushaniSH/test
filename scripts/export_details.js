@@ -62,7 +62,7 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     // Now the little tricky part.
     // you can use either>> window.open(uri);
     // but this will not work in some browsers
-    // or you will not get the correct file extension    
+    // or you will not get the correct file extension
 
     //this trick will generate a temp <a /> tag
     var link = document.createElement("a");
