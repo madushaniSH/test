@@ -279,7 +279,6 @@ function compare_alt_rename() {
 }
 
 
-
 const display_qa_probe = () => {
     if ($('#product_name').val() !== "") {
         $("#qa_probe").modal("show");
@@ -368,7 +367,7 @@ const get_probe_qa_info = (product_type) => {
                         "</span>";
                 } else {
                     title_string +=
-                        ' <span id="client_category_title">' + 'NA' +  "</span>";
+                        ' <span id="client_category_title">' + 'NA' + "</span>";
                 }
                 if (data[0].probe_info.product_type != null) {
                     title_string +=
@@ -492,7 +491,7 @@ const get_probe_qa_info = (product_type) => {
                 } else {
                     title_string +=
                         ' <span id="client_category_title">' +
-                        + 'NA' +
+                        +'NA' +
                         "</span>";
                 }
                 if (data[0].ref_info.product_type != null) {
@@ -626,7 +625,8 @@ const unassign_probe = () => {
             url: "unassign_oda.php",
             type: "POST",
             data: formData,
-            success: function (data) { },
+            success: function (data) {
+            },
             error: function (data) {
                 alert("Error fetching probe information. Please refresh");
                 clearInterval(request);
@@ -807,10 +807,6 @@ const get_brand_list = (product_type, select_element) => {
 
 const update_oda_qa_count = () => {
     if (this_selection_info.project_name !== '' && this_selection_info.ticket_selection.length !== 0 && this_selection_info.client_cat !== '' && this_selection_info.client_cat != null) {
-        get_brand_list("dvc", "dvc_name");
-        get_brand_list("facing", "facing_name");
-        get_brand_list("sku", "brand_name");
-        get_product_name_list("dvc", "dvc_product_name");
         get_error_list();
         let dvcProductNameSelected = "false";
         let formData = new FormData();
@@ -1023,7 +1019,7 @@ const validate_toggle = () => {
 const validate_ticket_toggle = () => {
     const ticketToggleState = document.getElementById('ticket_toggle').checked;
     const ticketElement = document.getElementById('ticket');
-    if(ticketToggleState) {
+    if (ticketToggleState) {
         for (let i = 0; i < ticketElement.length; i++) {
             ticketElement.options[i].selected = true;
         }
@@ -1041,6 +1037,10 @@ const validate_client_cat = () => {
     if (client_category !== '' && client_category !== null) {
         showElement('qa_section');
         this_selection_info.client_cat = client_category;
+        get_brand_list("dvc", "dvc_name");
+        get_brand_list("facing", "facing_name");
+        get_brand_list("sku", "brand_name");
+        get_product_name_list("dvc", "dvc_product_name");
     } else {
         hideElement('qa_section');
         this_selection_info.client_cat = '';
@@ -1173,5 +1173,17 @@ $(document).ready(function () {
     });
     $("#product_alt_rename").on("change", function () {
         compare_alt_rename();
+    });
+    $("#dvc_name").on('select2:close', function () {
+        get_brand_list("dvc", "dvc_name");
+    });
+    $("#facing_name").on('select2:close', function () {
+        get_brand_list("facing", "facing_name");
+    });
+    $("#brand_name").on('select2:close', function () {
+        get_brand_list("sku", "brand_name");
+    });
+    $("#dvc_product_name").on('select2:close', function () {
+        get_product_name_list("dvc", "dvc_product_name");
     });
 });
