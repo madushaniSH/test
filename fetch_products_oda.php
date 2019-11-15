@@ -52,7 +52,7 @@ foreach($ticket_array as $ticket) {
     }
 }
 
-$sql = 'SELECT p.product_id , p.product_type AS "Product Type", p.product_name AS "Product Name", p.product_alt_design_name AS "Product Alt Design Name", p.product_hunt_type AS "Product Hunt Type", "" AS "Ticket ID" ,cc.client_category_name AS "Client Category Name", a.account_gid AS "ODA GID", p.product_oda_datetime AS "ODA Datetime", "" AS "Product ODA Errors" , p.product_oda_comment AS "ODA Comment",p.product_qa_status AS "Product Status" FROM products p
+$sql = 'SELECT p.product_id , p.product_type AS "Product Type", p.product_name AS "Product Name", p.product_alt_design_name AS "Product Alt Design Name", p.product_hunt_type AS "Product Hunt Type", "" AS "Ticket ID" ,cc.client_category_name AS "Client Category Name",p.product_creation_time AS "Product Creation Time" , a.account_gid AS "ODA GID", p.product_oda_datetime AS "ODA Datetime", "" AS "Product ODA Errors" , p.product_oda_comment AS "ODA Comment",p.product_qa_status AS "Product Status" FROM products p
         LEFT  JOIN product_client_category pcc on p.product_id = pcc.product_id
         LEFT JOIN client_category cc ON pcc.client_category_id = cc.client_category_id
     LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id 
