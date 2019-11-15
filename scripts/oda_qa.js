@@ -133,7 +133,7 @@ function validate_qa_form() {
         } else {
             document.getElementById("product_alt_rename_error").innerHTML = "";
         }
-    } else if (product_type != "facing") {
+    } else if (this_selection_info.selectedProductType != "facing") {
         is_valid_form = false;
     }
     if (!approve_button.checked && !disapprove_button.checked) {
