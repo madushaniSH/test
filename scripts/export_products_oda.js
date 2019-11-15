@@ -77,6 +77,21 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     document.body.removeChild(link);
 }
 
+const validate_ticket_toggle = () => {
+    const ticketToggleState = document.getElementById('ticket_toggle').checked;
+    const ticketElement = document.getElementById('ticket_name');
+    if (ticketToggleState) {
+        for (let i = 0; i < ticketElement.length; i++) {
+            ticketElement.options[i].selected = true;
+        }
+    } else {
+        for (let i = 0; i < ticketElement.length; i++) {
+            ticketElement.options[i].selected = false;
+        }
+    }
+    $('#ticket_name').trigger('change');
+};
+
 const fetch_details = () => {
     if (filter_picked) {
         let formData = new FormData();
@@ -185,5 +200,8 @@ jQuery(document).ready(() => {
     jQuery('#ticket_name').change(validate_ticket_id);
     $('#datetime_filter').on('apply.daterangepicker', function (ev, picker) {
         validate_date_time();
+    });
+    $("#ticket_toggle").click(function () {
+        validate_ticket_toggle();
     });
 });

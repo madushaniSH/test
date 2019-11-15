@@ -115,6 +115,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="./styles/oda_qa.css" />
     <title>Export Project</title>
 </head>
 
@@ -239,6 +240,13 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                     <label for="ticket_name">Select Ticket ID</label>
                                     <select name="ticket_name" id="ticket_name" class="form-control" multiple>
                                     </select>
+                                </div>
+                                <div class="col">
+                                    <label for="toggle_tickets">All Tickets</label>
+                                    <label class="switch" id="toggle_tickets">
+                                        <input type="checkbox" id="ticket_toggle">
+                                        <span class="slider round"></span>
+                                    </label>
                                 </div>
                             </div>
                             <div id="generate_csv_section" class="row hide">
