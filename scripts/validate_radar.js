@@ -563,6 +563,7 @@ const save_radar_source = (save_radar, close_radar) => {
                 const facings = document.getElementById("num_facings").value;
                 let manu_link = document.getElementById('manu_link').value.trim();
                 const product_link = document.getElementById('product_link').value.trim();
+                const product_comment = document.getElementById('product_comment').value.trim();
                 if (product_type != 'brand') {
                     manu_link = '';
                 }
@@ -573,6 +574,7 @@ const save_radar_source = (save_radar, close_radar) => {
                 formData.append('comment', comment);
                 formData.append('product_name', product_name);
                 formData.append('product_type', product_type);
+                formData.append('product_comment', product_comment);
                 formData.append('alt_design_name', alt_design_name);
                 formData.append('manu_link', manu_link);
                 formData.append('product_link', product_link);
@@ -689,6 +691,7 @@ const reset_hunt_information = () => {
     document.getElementById('product_name').value = '';
     document.getElementById('manu_link').value = '';
     document.getElementById('product_link').value = '';
+    document.getElementById('product_comment').value = '';
     document.getElementById('alt_design_name').value = '';
     document.getElementById("num_facings").value = 0;
     document.getElementById("output").innerHTML = 0;

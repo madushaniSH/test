@@ -200,6 +200,7 @@ const reset_hunt_information = () => {
     $("#product_type").val('').trigger('change');
     document.getElementById('product_name').value = '';
     document.getElementById('manu_link').value = '';
+    document.getElementById('product_comment').value = '';
     document.getElementById('product_link').value = '';
     document.getElementById('alt_design_name').value = '';
     document.getElementById("num_facings").value = 0;
@@ -231,6 +232,7 @@ const save_ref_info = (save_product, close_reference) => {
     let manu_link = document.getElementById('manu_link').value.trim();
     const product_link = document.getElementById('product_link').value.trim();
     const server_success = document.getElementById('server_success');
+    const product_comment = document.getElementById('product_comment').value.trim();
     if (status === '') {
         document.getElementById('status_error').innerHTML = 'Status must be selected';
         is_valid_form = false;
@@ -257,6 +259,7 @@ const save_ref_info = (save_product, close_reference) => {
                 formData.append('manu_link', manu_link);
                 formData.append('product_link', product_link);
                 formData.append('facings', facings);
+                formData.append('product_comment', product_comment);
                 status_element.disabled = true;
                 jQuery.ajax({
                     url: 'add_ref_product.php',

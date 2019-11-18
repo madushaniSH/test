@@ -534,11 +534,16 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                                     <span id="product_type_error" class="error-popup"></span>
                                                 </div>
                                             </div>
-                                            <div class="row hide" id="alt_design_info">
-                                                <div class="form-group col-md-5">
+                                            <div class="row">
+                                                <div class="form-group col-md-5 hide" id="alt_design_info" >
                                                     <label for="alt_design_name" id="alt_name_label">*Alternative Design Name:</label>
                                                     <input type="text" id="alt_design_name" class="form-control">
                                                     <span id="alt_design_name_error" class="error-popup"></span>
+                                                </div>
+                                                <div class="form-group col-md-5">
+                                                    <label for="product_comment">Product Comment:</label>
+                                                    <input type="text" id="product_comment" class="form-control">
+                                                    <span id="product_comment_error" class="error-popup"></span>
                                                 </div>
                                             </div>
                                             <div class="row">

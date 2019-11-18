@@ -58,7 +58,7 @@ products.product_status = 2
 AND
 (products.product_creation_time >= :start_datetime AND products.product_creation_time <= :end_datetime)
 AND
-(products.product_hunt_type = "probe" AND probe.probe_ticket_id = :ticket) || (products.product_hunt_type = "radar" AND radar_hunt.radar_ticket_id = :ticket) || (products.product_hunt_type = "reference" AND reference_info.reference_ticket_id = :ticket)';
+((products.product_hunt_type = "probe" AND probe.probe_ticket_id = :ticket) || (products.product_hunt_type = "radar" AND radar_hunt.radar_ticket_id = :ticket) || (products.product_hunt_type = "reference" AND reference_info.reference_ticket_id = :ticket))';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime']), "ticket"=>$_POST['ticket']]);
 $hunted_product_info = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -39,7 +39,7 @@ catch(PDOException $e){
 
 
 
-$weight = 0;
+$weight = 1;
 $sql = 'SELECT project_language FROM `project_db`.projects WHERE project_name = :project_name';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(["project_name"=>$dbname]);

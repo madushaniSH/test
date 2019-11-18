@@ -43,6 +43,7 @@ $error = '';
 $success = '';
 $product_type = $_POST['product_type'];
 $manu_link = trim($_POST['manu_link']);
+$product_comment = trim($_POST['product_comment']);
 if ($manu_link == '') {
     $manu_link = NULL;
 }
@@ -55,14 +56,17 @@ if (isset($_POST['alt_design_name']) && $_POST['alt_design_name'] != '' && $_POS
 } else {
     $alt_design_name = NULL;
 }
+if ($product_comment == '') {
+    $product_comment = NULL;
+}
 try {
     do {
         $flag = true;
         try{
             $pdo->beginTransaction();
-            $sql = 'INSERT INTO products (product_name, product_type, product_status, product_alt_design_name, product_facing_count, account_id, manufacturer_link, product_link, product_hunt_type) VALUES (:product_name, :product_type, :product_status, :product_alt_design_name, :product_facing_count, :account_id, :manufacturer_link, :product_link, :product_hunt_type)';
+            $sql = 'INSERT INTO products (product_name, product_type, product_status, product_alt_design_name, product_facing_count, account_id, manufacturer_link, product_link, product_hunt_type, product_comment) VALUES (:product_name, :product_type, :product_status, :product_alt_design_name, :product_facing_count, :account_id, :manufacturer_link, :product_link, :product_hunt_type, :product_comment)';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['product_name'=>trim($_POST['product_name']), 'product_type'=>$_POST['product_type'], 'product_status'=>$_POST['status'],'product_alt_design_name'=>$alt_design_name, 'product_facing_count'=>$_POST['facings'], 'account_id'=>$_SESSION['id'], 'manufacturer_link'=>$manu_link, 'product_link'=>$product_link, 'product_hunt_type'=>'reference']);
+            $stmt->execute(['product_name'=>trim($_POST['product_name']), 'product_type'=>$_POST['product_type'], 'product_status'=>$_POST['status'],'product_alt_design_name'=>$alt_design_name, 'product_facing_count'=>$_POST['facings'], 'account_id'=>$_SESSION['id'], 'manufacturer_link'=>$manu_link, 'product_link'=>$product_link, 'product_hunt_type'=>'reference', 'product_comment'=>$product_comment]);
             $last_id = $pdo->lastInsertId();
             $pdo->commit();
         } catch(Exception $e) {
