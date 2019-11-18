@@ -370,5 +370,4 @@ if ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' ) {
 $return_arr[] = array("number_of_added_brand"=> $number_of_added_brand,"number_of_added_sku"=> $number_of_added_sku, "number_of_added_dvc"=> $number_of_added_dvc, "number_of_added_facing"=> $number_of_added_facing, "number_of_rows" => $number_of_rows, "processing_probe_row" => $row_count, "number_of_handled_rows"=>$number_of_handled_rows, "ref_brand_count"=>$ref_brand_count, "brand_name"=>$brand_name, "brand_count"=>$brand_count, "sku_count"=>$sku_count, "dvc_count"=>$dvc_count, "checked_count"=>$checked_count, "error_count"=>$error_count, "system_error_count"=>$system_error_count, "facing_count"=>$facing_count, "number_of_products_added"=>$number_of_products_added, "rename_error_count"=>$rename_error_count, "error_type_count"=>$error_type_count, "mon_accuracy"=>$mon_accuracy);
 echo json_encode($return_arr);
 ?>
-sudo sed -i 's/http:\/\/ubuntu.uberglobalmirror.com\/archive\//http:\/\/lk.archive.ubuntu.com\/ubuntu\//' /etc/apt/sources.list
 

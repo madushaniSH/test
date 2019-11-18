@@ -774,7 +774,7 @@ jQuery(document).ready(function () {
     }, 36000000);
     setInterval(function () {
         fetch_server_info();
-    }, 500);
+    }, 1000);
     $('#datetime_filter').daterangepicker({
         "opens": "right",
         "drops": "up"
