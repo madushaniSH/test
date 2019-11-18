@@ -243,6 +243,33 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 </div>
                             </div>
                         </div>
+                        <?php
+                        if($_SESSION['role'] === 'Admin') {
+                            echo '
+                        <div class="col-lg-6">
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Server Info</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                            <div class="col-md-4">
+                                                    <p><i class="fas fa-microchip"></i> CPU Usage </p>
+                                                    <p><i class="fas fa-memory text-secondary"></i> Memory Usage </p>
+                                            </div>
+                                            <div class="col-md-7">
+                                                    <p class="text-primary"><span id="cpu"> N / A</span></p>
+                                                    <p class="text-info"><span id="memory"> N / A</span></p>
+                                            </div>
+                                            <a href="http://192.168.63.199:19999" class="btn btn-warning" target="_blank">Go to Monitor Dashboard</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        ';
+                        }
+                        ?>
                     </div>
 
                     <div class="row">
