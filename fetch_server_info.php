@@ -15,6 +15,8 @@ if (!isset($_SESSION['logged_in'])) {
     exit();
 }
 $is_admin = 0;
+$cpu = 0;
+$mem = 0;
 if ($_SESSION['role'] == 'Admin') {
     $is_admin = 1;
     function get_server_memory_usage()
@@ -126,7 +128,9 @@ if ($_SESSION['role'] == 'Admin') {
 
         return $load;
     }
+    $cpu = getServerLoad();
+    $mem = get_server_memory_usage();
 }
 
-$return_arr[] = array('grant' => $is_admin, 'cpu' => getServerLoad(), 'memory' => get_server_memory_usage());
+$return_arr[] = array('grant' => $is_admin, 'cpu' => $cpu, 'memory' => $mem);
 echo json_encode($return_arr);
