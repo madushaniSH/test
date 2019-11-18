@@ -254,14 +254,6 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                            <div class="col-md-4">
-                                                    <p><i class="fas fa-microchip"></i> CPU Usage </p>
-                                                    <p><i class="fas fa-memory text-secondary"></i> Memory Usage </p>
-                                            </div>
-                                            <div class="col-md-7">
-                                                    <p class="text-primary"><span id="cpu"> N / A</span></p>
-                                                    <p class="text-info"><span id="memory"> N / A</span></p>
-                                            </div>
                                             <a href="http://192.168.63.199:19999" class="btn btn-warning" target="_blank">Go to Monitor Dashboard</a>
                                     </div>
                                 </div>

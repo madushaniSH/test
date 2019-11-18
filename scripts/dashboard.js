@@ -6,33 +6,10 @@ Chart.plugins.unregister(ChartDataLabels);
 let table;
 let hunter_table;
 let result_table_product;
-
-const fetch_server_info = () => {
-    jQuery.ajax({
-        url: "fetch_server_info.php",
-        type: "POST",
-        dataType: "JSON",
-        success: function (data) {
-            if (data[0].grant === 1) {
-                const cpu = data[0].cpu.toFixed(2) + ' %';
-                const memory = data[0].memory.toFixed(2) + ' %';
-                document.getElementById('cpu').innerText = cpu;
-                document.getElementById('memory').innerText = memory;
-            }
-        },
-        error: function (data) {
-            alert("Error fetching project info. Please refresh");
-        },
-        cache: false,
-        contentType: false,
-        processData: false
-    });
-};
-
 /*
-    This function fetches the project list from the db using an ajax call according to the region selected in 
+    This function fetches the project list from the db using an ajax call according to the region selected in
     "project_region" select box. The fetched list is then rendered on the multiple selection
-    select box "project_name". 
+    select box "project_name".
 */
 const fetch_project_list = (region_element, project_name_element) => {
     const project_region = $('#' + region_element).val();
@@ -768,13 +745,9 @@ jQuery(document).ready(function () {
         fetch_project_list('project_region_error_type', 'project_name_error_type');
     });
     fetch_dashboard_info();
-    fetch_server_info();
     setInterval(function () {
         fetch_dashboard_info();
     }, 36000000);
-    setInterval(function () {
-        fetch_server_info();
-    }, 1000);
     $('#datetime_filter').daterangepicker({
         "opens": "right",
         "drops": "up"
