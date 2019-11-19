@@ -2,6 +2,8 @@
 /*
 Author: Malika Liyanage
 */
+set_time_limit(0);
+ignore_user_abort(1);
 session_start();
 // If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['logged_in'])) {
