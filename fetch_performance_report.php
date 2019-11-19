@@ -87,6 +87,7 @@ foreach ($hunter_array as $hunter) {
         $date_productivity = 0;
         $date_errors = 0;
         $date_rename_errors = 0;
+        $processed_count = 0;
         foreach ($project_array as $project) {
             $dbname = $project[project_db_name];
             $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
@@ -113,6 +114,23 @@ foreach ($hunter_array as $hunter) {
                 $summary[$count]['Checked Radar Links'] += $radar_count;
                 $summary[$count]['Checked References'] += $ref_count;
             }
+
+            $sql = 'SELECT COUNT(*) FROM probe WHERE probe.probe_processed_hunter_id = :id AND DATE(probe.probe_hunter_processed_time) = :date';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['id'=>$hunter[account_id],'date'=>$date]);
+            $processed_count += $stmt->fetchColumn();
+
+            $sql = 'SELECT COUNT(*) FROM radar_sources WHERE radar_sources.account_id = :id AND DATE(radar_sources.creation_time) = :date';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['id'=>$hunter[account_id],'date'=>$date]);
+            $processed_count += $stmt->fetchColumn();
+
+            $sql = 'SELECT COUNT(*) FROM reference_info WHERE reference_info.reference_processed_hunter_id = :id AND DATE(reference_info.reference_hunter_processed_time) = :date ';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['id'=>$hunter[account_id],'date'=>$date]);
+            $processed_count += $stmt->fetchColumn();
+
+
             $sql = 'SELECT COUNT(*) FROM products p WHERE p.account_id = :id AND (p.product_creation_time >= :start_datetime AND p.product_creation_time <= :end_datetime)';
             $stmt = $pdo->prepare($sql);
             $stmt->execute(['id'=>$hunter[account_id],'start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
@@ -199,7 +217,7 @@ foreach ($hunter_array as $hunter) {
             $pdo = NULL;
         }
         $date_count++;
-        if ($date_productivity > 0 || $summary[$count]['Checked Probes'] > 0 || $summary[$count]['Checked Radar Links'] > 0 || $summary[$count]['Checked References'] > 0) {
+        if ($date_productivity > 0 || $processed_count > 0) {
             $summary[$count]['# Of Worked Days']++;
         }
         if ($date_productivity >= 30 && $date_productivity < 35) {
