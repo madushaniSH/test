@@ -341,6 +341,14 @@ if($_SESSION['role'] === 'Admin'){
                                         <button class="btn btn-primary hide" id="export_button_performance_report" onclick="fetch_performance_report()"><i class="fas fa-download"></i> Fetch Performance Report</button>
                                     </div>
                                 </div>
+                                <div class="row my-3 hide" id="performance_loader">
+                                    <div class="col">
+                                        <div class="spinner-grow text-danger" role="status">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                        <p class="text-warning">Loading Please Wait :D</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         </div>

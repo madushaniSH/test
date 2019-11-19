@@ -103,6 +103,7 @@ const special = () => {
 }
 
 const fetch_performance_report = () => {
+    document.getElementById('performance_loader').classList.remove('hide');
     let formData = new FormData();
     formData.append("start_datetime", start_datetime );
     formData.append("end_datetime", end_datetime);
@@ -139,6 +140,7 @@ const fetch_performance_report = () => {
             /* Write workbook and Download */
             XLSX.writeFile(wb, filename);
 
+            document.getElementById('performance_loader').classList.add('hide');
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
