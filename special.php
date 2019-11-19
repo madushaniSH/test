@@ -116,7 +116,7 @@ foreach ($project_info as $project) {
     $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
     $pdo = new PDO($dsn, $user, $pwd);
 
-    $sql = 'SELECT p.product_id, p.product_name, p.product_hunt_type, p.product_facing_count, p.product_creation_time  FROM products p WHERE p.product_type = "facing"';
+    $sql = 'SELECT p.product_id, p.product_name, p.product_hunt_type, p.product_facing_count, p.product_creation_time , p.product_qa_status FROM products p WHERE p.product_type = "facing"';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     $product_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -127,7 +127,8 @@ foreach ($project_info as $project) {
             'Region' => $project['project_region'],
             'Product Name' => $product['product_name'],
             'Facing Count' => $product['product_facing_count'],
-            'Product Creation Date' => $product['product_creation_time']
+            'Product Creation Date' => $product['product_creation_time'],
+            'Product Status' => $product['product_qa_status']
         );
 
         $count++;
