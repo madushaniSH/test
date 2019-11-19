@@ -109,6 +109,32 @@ $sql = 'SELECT project_name, project_db_name, project_region FROM projects';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $project_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$count = 0;
+
+foreach ($project_info as $project) {
+    $dbname = $project["project_db_name"];
+    $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
+    $pdo = new PDO($dsn, $user, $pwd);
+
+    $sql = 'SELECT p.product_id, p.product_name, p.product_hunt_type, p.product_facing_count, p.product_creation_time  FROM products p WHERE p.product_type = "facing"';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $product_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($product_info as $product) {
+        $summary[$count] = array(
+            'Project Name' => $project['project_name'],
+            'Region' => $project['project_region'],
+            'Product Name' => $product['product_name'],
+            'Facing Count' => $product['product_facing_count'],
+            'Product Creation Date' => $product['product_creation_time']
+        );
+
+        $count++;
+    }
+}
+
+/*
 $project_info_radar = $project_info;
 $project_info_ref = $project_info;
 $project_info_dates = $project_info;
@@ -466,7 +492,7 @@ foreach ($period as $dt) {
     }
     $count++;
 }
-
+*/
 
 $return_arr[] = array("hunter_summary" => $project_info, "project_info_radar" => $project_info_radar, "project_info_ref" => $project_info_ref, "date" => $summary);
 echo json_encode($return_arr);

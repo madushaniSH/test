@@ -88,10 +88,13 @@ const special = () => {
         data: formData,
         dataType: 'JSON',
         success: function (data) {
+            JSONToCSVConvertor(data[0].project_info_ref, "Facing Report", true);
+            /*
             JSONToCSVConvertor(data[0].hunter_summary, " Monthly Probe Summary 2019-08-01 04:30:00 to 2019-10-31 04:30:00", true);
             JSONToCSVConvertor(data[0].project_info_radar, " Monthly Radar Summary 2019-08-01 04:30:00 to 2019-10-31 04:30:00", true);
             JSONToCSVConvertor(data[0].project_info_ref, " Monthly Reference Summary 2019-08-01 04:30:00 to 2019-10-31 04:30:00", true);
             JSONToCSVConvertor(data[0].date, " Date Work Summary 2019-08-01 04:30:00 to 2019-10-31 04:30:00", true);
+             */
         },
         error: function (data) {
             alert("Error assigning probe. Please refresh");
