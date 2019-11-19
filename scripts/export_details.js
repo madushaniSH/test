@@ -102,6 +102,53 @@ const special = () => {
     });
 }
 
+const fetch_performance_report = () => {
+    let formData = new FormData();
+    formData.append("start_datetime", start_datetime );
+    formData.append("end_datetime", end_datetime);
+    jQuery.ajax({
+        url: 'fetch_performance_report.php',
+        type: 'POST',
+        data: formData,
+        dataType: 'JSON',
+        success: function (data) {
+            let createXLSLFormatObj = [];
+            /* XLS Head Columns */
+            let xlsHeader = Object.keys(data[0].report[0]);
+            let xlsRows = data[0].report;
+            createXLSLFormatObj.push(xlsHeader);
+            $.each(xlsRows, function(index, value) {
+                let innerRowData = [];
+                $.each(value, function(ind, val) {
+                    innerRowData.push(val);
+                });
+                createXLSLFormatObj.push(innerRowData);
+            });
+
+            /* File Name */
+            const filename = "Performance_Report_" + start_datetime + "_" + end_datetime +".xlsx";
+
+            /* Sheet Name */
+            const ws_name = "Hunter_Performance";
+            let wb = XLSX.utils.book_new(),
+                ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
+
+            /* Add worksheet to workbook */
+            XLSX.utils.book_append_sheet(wb, ws, ws_name);
+
+            /* Write workbook and Download */
+            XLSX.writeFile(wb, filename);
+
+        },
+        error: function (data) {
+            alert("Error assigning probe. Please refresh");
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+};
+
 const fetch_details_productivity = () => {
     let formData = new FormData();
     formData.append("start_datetime", start_datetime );
@@ -244,6 +291,7 @@ function show_product_info() {
     var project_select = document.getElementById('project_select');
     document.getElementById('export_button_productivity').classList.add('hide');
     document.getElementById('export_button_productivity_single').classList.add('hide');
+    document.getElementById('export_button_performance_report').classList.add('hide');
     $("#project_name").select2({
         width: '100%',
         multiple: false
@@ -268,6 +316,7 @@ function show_probe_info() {
     generate_productivity_section.classList.add('hide');
     var project_select = document.getElementById('project_select');
     document.getElementById('export_button_productivity').classList.add('hide');
+    document.getElementById('export_button_performance_report').classList.add('hide');
     document.getElementById('export_button_productivity_single').classList.add('hide');
     $("#project_name").select2({
         width: '100%',
@@ -284,6 +333,7 @@ function show_hunter_info() {
     var project_select = document.getElementById('project_select');
     document.getElementById('export_button_productivity').classList.add('hide');
     document.getElementById('export_button_productivity_single').classList.add('hide');
+    document.getElementById('export_button_performance_report').classList.add('hide');
     $("#project_name").select2({
         width: '100%',
         multiple: true
@@ -378,14 +428,17 @@ jQuery(document).ready(function () {
         end_datetime = $('#datetime_filter_productivity').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm:ss');
         let export_button = document.getElementById('export_button_productivity');
         let export_button_single = document.getElementById('export_button_productivity_single');
+        let export_button_performance_report = document.getElementById('export_button_performance_report');
         if (start_datetime != '' && end_datetime != '') {
             export_button.classList.remove('hide');
             export_button_single.classList.remove('hide');
+            export_button_performance_report.classList.remove('hide');
             filter_picked = true;
 
         } else {
             export_button.classList.add('hide');
             export_button_single.classList.add('hide');
+            export_button_performance_report.classList.add('hide');
             filter_picked = false;
         }
     });

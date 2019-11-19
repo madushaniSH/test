@@ -100,6 +100,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
     <link href="styles/sb-admin-2.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="styles/export_projects.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.core.min.js"></script>
     <script src="scripts/export_details.js"></script>
     <!-- Prerenders font awesome-->
     <script type="text/javascript">
@@ -329,8 +330,17 @@ if($_SESSION['role'] === 'Admin'){
                             </div>
                             <div id="export_final">
                                 <button class="btn btn-primary hide" id="export_button" onclick="fetch_details()"><i class="fas fa-download fa-3x"></i></button>
-                                <button class="btn btn-primary hide" id="export_button_productivity" onclick="fetch_details_productivity()"><i class="fas fa-download"></i> Fetch Productivity Final Count</button>
-                                <button class="btn btn-primary hide" id="export_button_productivity_single" onclick="fetch_details_productivity_single()"><i class="fas fa-download"></i> Fetch Productivity Single Count</button>
+                                <div class="row">
+                                   <div class="col">
+                                       <button class="btn btn-primary hide" id="export_button_productivity" onclick="fetch_details_productivity()"><i class="fas fa-download"></i> Fetch Productivity Final Count</button>
+                                   </div>
+                                    <div class="col">
+                                        <button class="btn btn-primary hide" id="export_button_productivity_single" onclick="fetch_details_productivity_single()"><i class="fas fa-download"></i> Fetch Productivity Single Count</button>
+                                    </div>
+                                    <div class="col">
+                                        <button class="btn btn-primary hide" id="export_button_performance_report" onclick="fetch_performance_report()"><i class="fas fa-download"></i> Fetch Performance Report</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         </div>
