@@ -26,10 +26,13 @@ try {
     exit();
 }
 try {
-    $sql = 'SELECT pt.project_ticket_system_id,DATE(pt.ticket_creation_time) as "create_date",pt.ticket_type, pt.ticket_description, pt.ticket_id, pt.ticket_status, a.account_gid, pt.ticket_comment  
+    $sql = 'SELECT pt.project_ticket_system_id,DATE(pt.ticket_creation_time) as "create_date",pt.ticket_type, pt.ticket_description, pt.ticket_id, pt.ticket_status, a.account_gid, pt.ticket_comment,
+            b.account_gid as "mod_gid", pt.ticket_last_mod_date, pt.ticket_escalate, pt.ticket_escalate_date, pt.ticket_completion_date
             from '.$dbname.'.project_tickets pt
                 INNER JOIN user_db.accounts a
                     ON a.account_id = pt.account_id
+                LEFT OUTER JOIN user_db.accounts b
+                    ON b.account_id = pt.ticket_last_mod_account_id
              WHERE 1';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
