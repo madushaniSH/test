@@ -552,7 +552,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     </div>
                     </div>
                     <?php
-                    if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Supervisor') {
+                    if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Supervisor' || $_SESSION['role'] == 'SRT Analyst') {
                     echo '
                     <div class="row my-3">
                         <div class="col">
