@@ -8,7 +8,13 @@ session_start();
 if (!isset($_SESSION['logged_in'])) {
     header('Location: ../login_auth_one.php');
     exit();
+} else {
+    if (!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'ODA Supervisor')) {
+        header('Location: ../index.php');
+        exit();
+    }
 }
+
 // Current settings to connect to the user account database
 require('../user_db_connection.php');
 // Setting up the DSN
