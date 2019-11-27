@@ -94,6 +94,9 @@ try {
                                 :headers="headers"
                                 :items="ticketInfo"
                                 class="elevation-1"
+                                show-select
+                                item-key="project_ticket_system_id"
+                                v-model="selected"
                         >
                             <template v-slot:top>
                                 <v-toolbar flat>
@@ -106,7 +109,12 @@ try {
                                     <v-spacer></v-spacer>
                                     <v-dialog v-model="dialog" max-width="800px">
                                         <template v-slot:activator="{ on }">
-                                            <v-btn color="purple" dark class="mb-2" v-on="on">New Ticket</v-btn>
+                                            <v-btn
+                                                    :color="selected.length === 0 ? 'purple' : 'info'"
+                                                    dark class="mb-2"
+                                                    v-on="on">
+                                                {{ selected.length === 0 ? 'New Ticket' : 'Update' }}
+                                            </v-btn>
                                         </template>
                                         <v-card>
                                             <v-card-title>
@@ -120,7 +128,7 @@ try {
                                                         lazy-validation
                                                 >
                                                 <v-container>
-                                                    <section v-if="editedIndex === -1">
+                                                    <section v-if="editedIndex === -1 && selected.length === 0" >
                                                         <v-row>
                                                             <v-col
                                                                     cols="12"
@@ -154,11 +162,10 @@ try {
                                                                     label = "Ticket Status"
                                                                     :items="ticketStatusOptions"
                                                                     :rules="ticketStatusRules"
-                                                                    required
                                                             ></v-select>
                                                         </v-col>
                                                     </v-row>
-                                                    <v-row v-if="editedIndex === -1">
+                                                    <v-row v-if="editedIndex === -1 && selected.length === 0">
                                                         <v-col cols="12">
                                                             <v-text-field
                                                                     v-model.trim="editedItem.ticket_description"
@@ -169,7 +176,7 @@ try {
                                                         </v-col>
                                                     </v-row>
                                                     <v-row>
-                                                        <v-col cols="12">
+                                                        <v-col cols="12" v-if="selected.length === 0 || editedIndex !== -1">
                                                             <v-text-field
                                                                     v-model.trim="editedItem.ticket_comment"
                                                                     label="Ticket Comment"
@@ -260,6 +267,7 @@ try {
         el: "#app",
         vuetify: new Vuetify(),
         data: {
+            selected: [],
             darkThemeSelected: false,
             valid: false,
             projectArray: [],
@@ -312,6 +320,7 @@ try {
                 mod_gid: '',
                 ticket_last_mod_date: '',
             },
+            selectedIDArray: [],
             ticketRules: [
                 v => !!v || 'Ticket ID is required',
                 v => (v && v.length <= 255) || 'Ticket ID must be less than 255 characters'
@@ -320,7 +329,7 @@ try {
                 v => !!v || 'Ticket Type is required',
             ],
             ticketStatusRules: [
-                v => !!v || 'Ticket Status is required',
+                v => !!v || 'Ticket Status is required / Ignore for multi-update',
             ],
             ticketDescriptionRules: [
                 v => !!v || 'Ticket Description is required',
@@ -394,7 +403,30 @@ try {
             },
             save() {
                 this.overlay = true;
-                if (this.editedIndex > -1) {
+                if (this.selected.length !== 0 && this.editedIndex === -1) {
+                    let formData = new FormData ();
+                    formData.append('project_name', this.selectedProjects.name);
+                    this.selectedIDArray = [];
+                    for (let i = 0; i < this.selected.length; i++) {
+                        this.selectedIDArray[i] = this.selected[i].project_ticket_system_id;
+                    }
+                    formData.append('selected', this.selectedIDArray);
+                    let status = '';
+                    this.editedItem.ticket_status === '' ? status = 'null' : status = this.editedItem.ticket_status;
+                    formData.append('ticket_status', status);
+                    formData.append('ticket_escalate', this.editedItem.ticket_escalate);
+                    axios.post('api/multi_update_ticket_info.php', formData)
+                        .then((response) => {
+                            if (response.data[0].error_message === '') {
+                                this.fetchTicketInfo();
+                                this.close();
+                            } else {
+                                this.displayMessage = response.data[0].error_message;
+                                this.snackbar = true;
+                            }
+                            this.overlay = false;
+                        });
+                } else if (this.editedIndex > -1) {
                     // checking if changes were made that have to be commited to the db
                     if (this.checkTicketInfoChanged(this.editedIndex)) {
                         let formData = new FormData ();
@@ -468,7 +500,11 @@ try {
         },
         computed: {
             formTitle () {
-                return this.editedIndex === -1 ? 'New Ticket' : 'Edit Ticket'
+                if (this.selected.length === 0) {
+                    return this.editedIndex === -1 ? 'New Ticket' : 'Edit Ticket'
+                } else {
+                    return this.editedIndex === -1 ? 'Multi-Update' : 'Edit Ticket'
+                }
             },
         },
     });
