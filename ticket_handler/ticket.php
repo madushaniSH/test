@@ -108,30 +108,81 @@ try {
                                             </v-card-title>
 
                                             <v-card-text>
+                                                <v-form
+                                                        ref="form"
+                                                        v-model="valid"
+                                                        lazy-validation
+                                                >
                                                 <v-container>
-                                                    <v-col cols="12" sm="6" md="4">
-                                                        <v-select
-                                                                v-model="editedItem.ticket_status"
-                                                                label = "Ticket Status"
-                                                                :items="ticketStatusOptions"
-                                                        ></v-select>
-                                                    </v-col>
-                                                    <v-col cols="12">
-                                                        <v-text-field
-                                                                v-model.trim="editedItem.ticket_comment"
-                                                                label="Ticket Comment"
-                                                                auto-grow
-                                                        ></v-text-field>
-                                                    </v-col>
-                                                    <v-col>
-                                                        <v-btn
-                                                                :color="editedItem.ticket_escalate === '1' ? 'success': 'error'"
-                                                                @click="changeEscalateStatus()"
-                                                        >
-                                                            {{ editedItem.ticket_escalate === '1' ? 'De-escalate': 'Escalate' }}
-                                                        </v-btn>
-                                                    </v-col>
+                                                    <section v-if="editedIndex === -1">
+                                                        <v-row>
+                                                            <v-col
+                                                                    cols="12"
+                                                                    md="4"
+                                                            >
+                                                                <v-text-field
+                                                                        v-model.trim="editedItem.ticket_id"
+                                                                        label="Ticket ID"
+                                                                        :rules="ticketRules"
+                                                                        required
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                            <v-col
+                                                                    cols="12"
+                                                                    md="4"
+                                                            >
+                                                                <v-select
+                                                                        v-model="editedItem.ticket_type"
+                                                                        label = "Ticket Type"
+                                                                        :items="ticketTypeOptions"
+                                                                        :rules="ticketTypeRules"
+                                                                        required
+                                                                ></v-select>
+                                                            </v-col>
+                                                        </v-row>
+                                                    </section>
+                                                    <v-row>
+                                                        <v-col cols="12" sm="6" md="4">
+                                                            <v-select
+                                                                    v-model="editedItem.ticket_status"
+                                                                    label = "Ticket Status"
+                                                                    :items="ticketStatusOptions"
+                                                                    :rules="ticketStatusRules"
+                                                                    required
+                                                            ></v-select>
+                                                        </v-col>
+                                                    </v-row>
+                                                    <v-row v-if="editedIndex === -1">
+                                                        <v-col cols="12">
+                                                            <v-text-field
+                                                                    v-model.trim="editedItem.ticket_description"
+                                                                    label="Ticket Description"
+                                                                    :rules="ticketDescriptionRules"
+                                                                    auto-grow
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                    </v-row>
+                                                    <v-row>
+                                                        <v-col cols="12">
+                                                            <v-text-field
+                                                                    v-model.trim="editedItem.ticket_comment"
+                                                                    label="Ticket Comment"
+                                                                    auto-grow
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                    </v-row>
+                                                    <v-row>
+                                                        <v-col>
+                                                            <v-btn
+                                                                    :color="editedItem.ticket_escalate === '1' ? 'success': 'error'"
+                                                                    @click="changeEscalateStatus()"
+                                                            >
+                                                                {{ editedItem.ticket_escalate === '1' ? 'De-escalate': 'Escalate' }}
+                                                            </v-btn>
+                                                        </v-col>
+                                                    </v-row>
                                                 </v-container>
+                                                </v-form>
                                             </v-card-text>
 
                                             <v-card-actions>
@@ -183,7 +234,14 @@ try {
                 </v-btn>
             </v-snackbar>
         </v-content>
-
+        <v-bottom-navigation
+                color="success"
+        >
+            <v-btn href="../dashboard.php">
+                <span>Dashboard</span>
+                <v-icon>mdi-home</v-icon>
+            </v-btn>
+        </v-bottom-navigation>
     </v-app>
 </div>
 
@@ -197,6 +255,7 @@ try {
         vuetify: new Vuetify(),
         data: {
             darkThemeSelected: false,
+            valid: false,
             projectArray: [],
             selectedProjects: [],
             ticketInfo: [],
@@ -215,12 +274,52 @@ try {
                 {text: 'Actions', value: 'action', sortable: false, align: 'center'},
             ],
             ticketStatusOptions: ['OPEN', 'CLOSED', 'DONE', 'IN PROGRESS', 'IN PROGRESS / SEND TO EAN'],
+            ticketTypeOptions: ['APOC Radar', 'Radar', 'Data Health', 'Type E - SKU Hunt/Data Collection', 'NA'],
             editedIndex: -1,
-            editedItem:{},
+            editedItem:{
+                ticket_id: '',
+                ticket_type: '',
+                ticket_description: '',
+                ticket_status: '',
+                ticket_comment: '',
+                ticket_escalate: '0',
+                create_date: '',
+                account_gid: '',
+                ticket_completion_date: '',
+                mod_gid: '',
+                ticket_last_mod_date: '',
+            },
             dialog: false,
             overlay: false,
             displayMessage: '',
             snackbar: false,
+            defaultItem: {
+                ticket_id: '',
+                ticket_type: '',
+                ticket_description: '',
+                ticket_status: '',
+                ticket_comment: '',
+                ticket_escalate: '0',
+                create_date: '',
+                account_gid: '',
+                ticket_completion_date: '',
+                mod_gid: '',
+                ticket_last_mod_date: '',
+            },
+            ticketRules: [
+                v => !!v || 'Ticket ID is required',
+                v => (v && v.length <= 255) || 'Ticket ID must be less than 255 characters'
+            ],
+            ticketTypeRules: [
+                v => !!v || 'Ticket Type is required',
+            ],
+            ticketStatusRules: [
+                v => !!v || 'Ticket Status is required',
+            ],
+            ticketDescriptionRules: [
+                v => !!v || 'Ticket Description is required',
+                v => (v && v.length <= 500) || 'Ticket Description must be less than 500 characters'
+            ],
         },
         methods: {
             getColor(status) {
@@ -267,7 +366,8 @@ try {
             close() {
                 this.dialog = false;
                 setTimeout(() => {
-                    this.editedItem = {};
+                    this.$refs.form.resetValidation();
+                    this.editedItem = Object.assign({}, this.defaultItem);
                     this.editedIndex = -1;
                 }, 300);
             },
@@ -311,6 +411,37 @@ try {
                         this.displayMessage = 'No changes were made';
                         this.snackbar = true;
                         this.overlay = false;
+                    }
+                } else {
+                    if (!this.$refs.form.validate()) {
+                        this.displayMessage = 'Errors in form';
+                        this.snackbar = true;
+                        this.overlay = false;
+                    } else {
+                        let formData = new FormData ();
+                        formData.append('project_name', this.selectedProjects.name);
+                        formData.append('ticket_id', this.editedItem.ticket_id);
+                        formData.append('ticket_type', this.editedItem.ticket_type);
+                        formData.append('ticket_status', this.editedItem.ticket_status);
+                        formData.append('ticket_description', this.editedItem.ticket_description);
+                        formData.append('ticket_comment', this.editedItem.ticket_comment);
+                        formData.append('ticket_escalate', this.editedItem.ticket_escalate);
+                        axios.post('api/add_new_ticket.php', formData)
+                            .then((response) => {
+                                if (response.data[0].error_message === '') {
+                                    this.editedItem.mod_gid = response.data[0].update_info.gid;
+                                    this.editedItem.account_gid = response.data[0].update_info.gid;
+                                    this.editedItem.ticket_last_mod_date = response.data[0].update_info.date;
+                                    this.editedItem.ticket_completion_date = response.data[0].update_info.close_date;
+                                    this.editedItem.create_date = response.data[0].update_info.create_date;
+                                    this.ticketInfo.push(this.editedItem);
+                                    this.close();
+                                } else {
+                                    this.displayMessage = response.data[0].error_message;
+                                    this.snackbar = true;
+                                }
+                                this.overlay = false;
+                            });
                     }
                 }
             },

@@ -173,6 +173,11 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     <i class=\"fas fa-users fa-2x\"></i>
                     <span>Manage Queue</span></a>
             </li>
+            <li class='nav-item'>
+                <a class='nav-link' href='ticket_handler/ticket.php'>
+                    <i class='fas fa-ticket-alt fa-2x'></i>
+                    <span>Ticket Manager</span></a>
+            </li>
             "
             ;
             }
@@ -288,7 +293,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                         <div id="ticket_section" class="row hide">
                             <div class="col-md-4">
                                 <label for="ticket_name">Select Ticket ID</label>
-                                <button class="btn btn-outline-success" data-toggle="modal" data-target="#add_ticket">+Add New Ticket</button>
+                                <a href="ticket_handler/ticket.php" class="btn btn-primary">+Add New Ticket</a>
                                 <select name="ticket_name" id="ticket_name" class="form-control">
                                 </select>
                             </div>
@@ -335,35 +340,6 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                             </div>
                         </div>
 </div>
-                    </div>
-                    <div class="modal hide fade modal-form" id="add_ticket" tabindex="-1" role="dialog" aria-labelledby="add_ticket_title" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-                        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="add_ticket_title">Enter New Ticket</h5>
-                                    <button type="button" class="close" id="close_ticket_form" data-dismiss="modal" aria-label="Close" onclick="clear_ticket_form();">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form id="new_error_form">
-                                        <div class="form-row">
-                                            <div class="col">
-                                                <div class="form-group">
-                                                    <label for="ticket_id">New Ticket ID:</label>
-                                                    <input type="text" id="ticket_id" class="form-control">
-                                                    <span id="ticket_id_error" class="error-popup"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="clear_ticket_form();">Cancel</button>
-                                    <button type="button" class="btn btn-success" value="Submit" onclick="validate_new_ticket();">Save changes</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

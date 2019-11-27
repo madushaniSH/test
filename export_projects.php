@@ -177,6 +177,11 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     <i class=\"fas fa-users fa-2x\"></i>
                     <span>Manage Queue</span></a>
             </li>
+            <li class='nav-item'>
+                <a class='nav-link' href='ticket_handler/ticket.php'>
+                    <i class='fas fa-ticket-alt fa-2x'></i>
+                    <span>Ticket Manager</span></a>
+            </li>
             "
             ;
             }
