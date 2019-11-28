@@ -63,35 +63,65 @@ try {
                     :label="'Dark Mode'"
             ></v-switch>
         </v-app-bar>
-
         <v-content>
-            <v-row>
-                <v-col cols="12" sm="6">
-                    <v-col>
-                        <v-autocomplete
-                                v-if="projectArray.length > 0"
-                                v-model="selectedProjects"
-                                label="Select"
-                                chips
-                                hint="Select a Project to get started!"
-                                persistent-hint
-                                :items="projectArray"
-                                item-text="name"
-                                item-value="project_id"
-                                return-object
-                        >
-                        </v-autocomplete>
-                    </v-col>
+            <v-row
+                    :align="'end'"
+                    :justify="'space-between'"
+            >
+                <v-col
+                        cols="12"
+                        md="4"
+                >
+                    <v-autocomplete
+                        v-if="projectArray.length > 0"
+                        v-model="selectedProjects"
+                        label="Select"
+                        chips
+                        hint="Select a Project to get started!"
+                        persistent-hint
+                        :items="projectArray"
+                        item-text="name"
+                        item-value="project_id"
+                        return-object
+                >
+                </v-autocomplete>
+                </v-col>
+                <v-col
+                        cols="12"
+                        md="4"
+                >
+                    <v-dialog
+                            ref="dateDialog"
+                            v-model="menu"
+                            :return-value.sync="dates"
+                            persistent
+                            width="290px"
+                    >
+                        <template v-slot:activator="{ on }">
+                            <v-combobox
+                                    v-model="dates"
+                                    label="Ticket Creation Time"
+                                    v-on="on"
+                                    chips
+                                    small-chips
+                                    multiple
+                            ></v-combobox>
+                        </template>
+                        <v-date-picker v-model="dates" range scrollable>
+                            <v-spacer></v-spacer>
+                            <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+                            <v-btn text color="primary" @click="$refs.dateDialog.save(dates); fetchTicketInfo();">OK</v-btn>
+                        </v-date-picker>
+                    </v-dialog>
                 </v-col>
             </v-row>
             <v-row>
-                <v-col>
-                    <v-slide-y-transition>
+                <v-slide-y-transition>
                     <v-col
-                        v-if="ticketInfo.length > 0"
+                            v-if="ticketInfo.length > 0"
                     >
                         <v-data-table
-                                :headers="headers"
+                                :headers="computedHeaders"
                                 :items="ticketInfo"
                                 class="elevation-1"
                                 show-select
@@ -216,6 +246,17 @@ try {
                                     mdi-account-edit
                                 </v-icon>
                             </template>
+                            <template v-slot:item.mod_info="{ item }">
+                                <v-row justify="center">
+                                    <v-btn
+                                            color="info"
+                                            @click.stop="showModInfo(item)"
+                                    >
+                                        View
+                                    </v-btn>
+
+                                </v-row>
+                            </template>
                             <template v-slot:item.ticket_escalate="{ item }">
                                 <v-chip dark :color="getColor(item.ticket_escalate)">{{ getStatus(item.ticket_escalate) }}</v-chip>
                             </template>
@@ -225,8 +266,66 @@ try {
                         </v-data-table>
                         </v-slide-y-transition>
                     </v-col>
-                </v-col>
             </v-row>
+            <v-dialog
+                    v-model="modDialog"
+                    max-width="400"
+            >
+                <v-card>
+                    <v-card-title class="headline">Additional Information</v-card-title>
+
+                    <v-card-text>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Created Byy</v-list-item-subtitle>
+                                <v-list-item-title>{{ modifyInfo.creator }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Last Modified By</v-list-item-subtitle>
+                                <v-list-item-title>{{ modifyInfo.mod_gid }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Last Modified DateTime</v-list-item-subtitle>
+                                <v-list-item-title>{{ modifyInfo.ticket_last_mod_date }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Completed DateTime</v-list-item-subtitle>
+                                <v-list-item-title>{{ modifyInfo.ticket_completion_date }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Ticket Description</v-list-item-subtitle>
+                                <v-list-item-title>{{ modifyInfo.description }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Ticket Comment</v-list-item-subtitle>
+                                <v-list-item-title>{{ modifyInfo.comment }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-card-text>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+
+                        <v-btn
+                                color="green darken-1"
+                                text
+                                @click="modDialog = false"
+                        >
+                            Close
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
             <v-overlay
                     :value="overlay"
                     :z-index="206"
@@ -262,31 +361,35 @@ try {
 <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/http-vue-loader@1.4.1/src/httpVueLoader.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
 <script>
     new Vue({
         el: "#app",
         vuetify: new Vuetify(),
         data: {
             selected: [],
+            menu: false,
+            modDialog: false,
             darkThemeSelected: false,
             valid: false,
             projectArray: [],
             selectedProjects: [],
             ticketInfo: [],
+            dates: [],
             headers: [
-                {text: 'Date', value: 'create_date', width: '10%'},
-                {text: 'Ticket ID', value: 'ticket_id', width:'10%'},
+                {text: 'Date', value: 'create_date'},
+                {text: 'Ticket ID', value: 'ticket_id'},
                 {text: 'Type', value: 'ticket_type'},
-                {text: 'Description', value: 'ticket_description', sortable: false},
-                {text: 'Status', value: 'ticket_status', width: '15%', align: 'left'},
-                {text: 'Creator GID', value: 'account_gid'},
-                {text: 'Comment', value: 'ticket_comment', sortable: false},
-                {text: 'Completion DateTime', value: 'ticket_completion_date'},
-                {text: 'Last Modified GID', value: 'mod_gid'},
-                {text: 'Last Modified DateTime', value: 'ticket_last_mod_date'},
+                {text: 'Status', value: 'ticket_status'},
+                {text: 'Brands', value: 'brand_count', align: 'left'},
+                {text: 'SKUs', value: 'sku_count', align: 'left'},
+                {text: 'DVCs', value: 'dvc_count', align: 'left'},
+                {text: 'Facings', value: 'facing_count', align: 'left'},
+                {text: 'Additional Information', value: 'mod_info', width: '10%', align: 'center'},
                 {text: 'Escalate Status', value: 'ticket_escalate', align: 'center'},
                 {text: 'Actions', value: 'action', sortable: false, align: 'center'},
             ],
+            headersToHide: ['Completion DateTime', 'Last Modified GID', 'Last Modified DateTime'],
             ticketStatusOptions: ['OPEN', 'CLOSED', 'DONE', 'IN PROGRESS', 'IN PROGRESS / SEND TO EAN'],
             ticketTypeOptions: ['APOC Radar', 'Radar', 'Data Health', 'Type E - SKU Hunt/Data Collection', 'NA'],
             editedIndex: -1,
@@ -302,6 +405,14 @@ try {
                 ticket_completion_date: '',
                 mod_gid: '',
                 ticket_last_mod_date: '',
+            },
+            modifyInfo: {
+                ticket_completion_date: '',
+                mod_gid: '',
+                ticket_last_mod_date: '',
+                description: '',
+                creator: '',
+                comment: '',
             },
             dialog: false,
             overlay: false,
@@ -367,14 +478,18 @@ try {
                     });
             },
             fetchTicketInfo() {
+                this.overlay = true;
                 if (this.selectedProjects.length !== 0) {
                     this.ticketInfo = [];
                     let formData = new FormData();
                     formData.append('project_id', this.selectedProjects.project_id);
                     formData.append('project_name', this.selectedProjects.name);
+                    formData.append('start_date', this.dates[0]);
+                    formData.append('end_date', this.dates[1]);
                     axios.post('api/fetch_ticket_info.php', formData)
                         .then((response) => {
                             this.ticketInfo = response.data[0].ticket_info;
+                            this.overlay = false;
                         });
                 }
             },
@@ -390,6 +505,15 @@ try {
                 this.editedIndex = this.ticketInfo.indexOf(item);
                 this.editedItem = Object.assign({}, item);
                 this.dialog = true
+            },
+            showModInfo (item) {
+                this.modifyInfo.mod_gid = item.mod_gid;
+                this.modifyInfo.ticket_completion_date = item.ticket_completion_date;
+                this.modifyInfo.ticket_last_mod_date = item.ticket_last_mod_date;
+                this.modifyInfo.description = item.ticket_description;
+                this.modifyInfo.creator = item.account_gid;
+                this.modifyInfo.comment = item.ticket_comment;
+                this.modDialog = true;
             },
             checkTicketInfoChanged(index) {
                 return (this.ticketInfo[index].ticket_status !== this.editedItem.ticket_status)
@@ -483,9 +607,14 @@ try {
                     }
                 }
             },
+            initTicketDate() {
+                this.dates[0] = moment().startOf('month').format('YYYY-MM-DD');
+                this.dates[1] = moment().endOf('month').format('YYYY-MM-DD');
+            }
         },
         created() {
             this.getProjectList();
+            this.initTicketDate();
         },
         watch: {
             darkThemeSelected: function (val) {
@@ -505,6 +634,11 @@ try {
                 } else {
                     return this.editedIndex === -1 ? 'Multi-Update' : 'Edit Ticket'
                 }
+            },
+            computedHeaders() {
+                return this.headers.filter(header =>
+                    !header.hide
+                );
             },
         },
     });
