@@ -97,7 +97,9 @@ try {
                             persistent
                             width="290px"
                     >
-                        <template v-slot:activator="{ on }">
+                        <template
+                                v-slot:activator="{ on }"
+                            >
                             <v-combobox
                                     v-model="dates"
                                     label="Ticket Creation Time"
@@ -105,9 +107,13 @@ try {
                                     chips
                                     small-chips
                                     multiple
+                                    :rules="[dateDifference <= 31 || 'Date Range has to be between within 31 Days']"
                             ></v-combobox>
                         </template>
-                        <v-date-picker v-model="dates" range scrollable>
+                        <v-date-picker
+                                v-model="dates"
+                                range scrollable
+                        >
                             <v-spacer></v-spacer>
                             <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
                             <v-btn text color="primary" @click="$refs.dateDialog.save(dates); fetchTicketInfo();">OK</v-btn>
@@ -431,6 +437,7 @@ try {
                 mod_gid: '',
                 ticket_last_mod_date: '',
             },
+            dateDiff: 0,
             selectedIDArray: [],
             ticketRules: [
                 v => !!v || 'Ticket ID is required',
@@ -479,7 +486,7 @@ try {
             },
             fetchTicketInfo() {
                 this.overlay = true;
-                if (this.selectedProjects.length !== 0) {
+                if (this.selectedProjects.length !== 0 && this.dateDiff <= 31) {
                     this.ticketInfo = [];
                     let formData = new FormData();
                     formData.append('project_id', this.selectedProjects.project_id);
@@ -491,6 +498,8 @@ try {
                             this.ticketInfo = response.data[0].ticket_info;
                             this.overlay = false;
                         });
+                } else {
+                    this.overlay = false;
                 }
             },
             close() {
@@ -640,6 +649,13 @@ try {
                     !header.hide
                 );
             },
+            dateDifference() {
+                const date1 = new Date(this.dates[0]);
+                const date2 = new Date(this.dates[1]);
+                const timeDiff = Math.abs(date2.getTime() - date1.getTime());
+                this.dateDiff =  Math.ceil(timeDiff / (1000 * 3600 * 24));
+                return Math.ceil(timeDiff / (1000 * 3600 * 24));
+            }
         },
     });
 </script>
