@@ -26,7 +26,7 @@ try {
     exit();
 }
 
-function fetchTicketFacingCount ($pdo, $ticket_id, $product_type) {
+function fetchTicketFacingCount ($pdo, $ticket_id) {
     $sql = 'SELECT SUM(prod.product_facing_count)
         FROM products prod
             LEFT OUTER JOIN probe_product_info ppi 
@@ -52,12 +52,10 @@ function fetchTicketFacingCount ($pdo, $ticket_id, $product_type) {
                 (p.probe_ticket_id = :id OR rh.radar_ticket_id = :id OR ri.reference_ticket_id = :id)
               AND
                 (prod.product_qa_status = "approved" OR prod.product_qa_status = "rejected" or prod.product_qa_status = "active")
-              AND
-                (prod.product_type = :product_type)';
+                ';
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
-        'id' => $ticket_id,
-        'product_type' => $product_type
+        'id' => $ticket_id
     ]);
     $count = $stmt->fetchColumn();
     $count == NULL ? $return_count = 0 : $return_count = $count;
@@ -101,7 +99,7 @@ function fetchTicketProductCount ($pdo, $ticket_id, $product_type) {
         $count = $stmt->fetchColumn();
         $count == NULL ? $return_count = 0 : $return_count = $count;
     } else {
-        $return_count = fetchTicketFacingCount($pdo, $ticket_id, $product_type);
+        $return_count = fetchTicketFacingCount($pdo, $ticket_id);
     }
     return $return_count;
 }
