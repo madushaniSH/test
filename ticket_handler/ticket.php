@@ -66,29 +66,67 @@ try {
         <v-content>
             <v-row
                     :align="'end'"
-                    :justify="'space-between'"
+                    :justify="'start'"
+                    id="filters"
             >
                 <v-col
-                        cols="12"
-                        md="4"
+                        cols="6"
+                        md="2"
                 >
                     <v-autocomplete
-                        v-if="projectArray.length > 0"
-                        v-model="selectedProjects"
-                        label="Select"
-                        chips
-                        hint="Select a Project to get started!"
-                        persistent-hint
-                        :items="projectArray"
-                        item-text="name"
-                        item-value="project_id"
-                        return-object
-                >
-                </v-autocomplete>
+                            v-model="selectedRegion"
+                            label="Select"
+                            chips
+                            hint="Select a Region to get started!"
+                            persistent-hint
+                            :items="regionArray"
+                    >
+                    </v-autocomplete>
                 </v-col>
                 <v-col
                         cols="12"
-                        md="4"
+                        md="3"
+                >
+                    <v-autocomplete
+                            v-model="selectedProjects"
+                            label="Select"
+                            chips
+                            hint="Select a Project"
+                            persistent-hint
+                            :items="projectArray"
+                            item-text="name"
+                            item-value="name"
+                            multiple
+                    >
+                        <template v-slot:prepend-item>
+                            <v-list-item
+                                    ripple
+                                    @click="toggleAllProjects"
+                            >
+                                <v-list-item-action>
+                                    <v-icon :color="selectedProjects.length > 0 ? 'indigo darken-4' : ''">{{ icon }}
+                                    </v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>Select All</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                            <v-divider class="mt-2"></v-divider>
+                        </template>
+                        <template v-slot:selection="{ item, index }">
+                            <v-chip v-if="index === 0">
+                                <span>{{ item.name }}</span>
+                            </v-chip>
+                            <span
+                                    v-if="index === 1"
+                                    class="grey--text caption"
+                            >(+{{ selectedProjects.length - 1 }} others)</span>
+                        </template>
+                    </v-autocomplete>
+                </v-col>
+                <v-col
+                        cols="12"
+                        md="3"
                 >
                     <v-dialog
                             ref="dateDialog"
@@ -99,7 +137,7 @@ try {
                     >
                         <template
                                 v-slot:activator="{ on }"
-                            >
+                        >
                             <v-combobox
                                     v-model="dates"
                                     label="Ticket Creation Time"
@@ -116,9 +154,41 @@ try {
                         >
                             <v-spacer></v-spacer>
                             <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-                            <v-btn text color="primary" @click="$refs.dateDialog.save(dates); fetchTicketInfo();">OK</v-btn>
+                            <v-btn text color="primary" @click="$refs.dateDialog.save(dates); fetchTicketInfo();">OK
+                            </v-btn>
                         </v-date-picker>
                     </v-dialog>
+                </v-col>
+                <v-col
+                        cols="6"
+                        md="3"
+                >
+                    <v-autocomplete
+                            v-model="selectedTicketStatus"
+                            label="Select"
+                            chips
+                            :items="ticketStatusOptions"
+                            multiple
+                    >
+                        <template v-slot:selection="{ item, index }">
+                            <v-chip v-if="index === 0">
+                                <span>{{ item }}</span>
+                            </v-chip>
+                            <span
+                                    v-if="index === 1"
+                                    class="grey--text caption"
+                            >(+{{ selectedTicketStatus.length - 1 }} others)</span>
+                        </template>
+                    </v-autocomplete>
+                </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                        v-if="ticketInfo.length > 0"
+                >
+                    <v-btn color="indigo" dark @click="exportTicketInfo">
+                        <v-icon dark>mdi-cloud-download</v-icon>
+                    </v-btn>
                 </v-col>
             </v-row>
             <v-row>
@@ -131,8 +201,8 @@ try {
                                 :items="ticketInfo"
                                 class="elevation-1"
                                 show-select
-                                item-key="project_ticket_system_id"
                                 v-model="selected"
+                                item-key="index"
                         >
                             <template v-slot:top>
                                 <v-toolbar flat>
@@ -163,74 +233,93 @@ try {
                                                         v-model="valid"
                                                         lazy-validation
                                                 >
-                                                <v-container>
-                                                    <section v-if="editedIndex === -1 && selected.length === 0" >
+                                                    <v-container>
+                                                        <section v-if="editedIndex === -1 && selected.length === 0">
+                                                            <v-row>
+                                                                <v-col
+                                                                        cols="12"
+                                                                        md="6"
+                                                                >
+                                                                    <v-autocomplete
+                                                                            v-model="editedItem.project_name"
+                                                                            label="Select"
+                                                                            chips
+                                                                            hint="Select a Project"
+                                                                            persistent-hint
+                                                                            :items="selectedProjects"
+                                                                            :rules="projectRules"
+                                                                    >
+                                                                    </v-autocomplete>
+                                                                </v-col>
+                                                            </v-row>
+                                                            <v-row>
+                                                                <v-col
+                                                                        cols="12"
+                                                                        md="4"
+                                                                >
+                                                                    <v-text-field
+                                                                            v-model.trim="editedItem.ticket_id"
+                                                                            label="Ticket ID"
+                                                                            :rules="ticketRules"
+                                                                            required
+                                                                    ></v-text-field>
+                                                                </v-col>
+                                                                <v-col
+                                                                        cols="12"
+                                                                        md="4"
+                                                                >
+                                                                    <v-select
+                                                                            v-model="editedItem.ticket_type"
+                                                                            label="Ticket Type"
+                                                                            :items="ticketTypeOptions"
+                                                                            :rules="ticketTypeRules"
+                                                                            required
+                                                                    ></v-select>
+                                                                </v-col>
+                                                            </v-row>
+                                                        </section>
                                                         <v-row>
-                                                            <v-col
-                                                                    cols="12"
-                                                                    md="4"
-                                                            >
-                                                                <v-text-field
-                                                                        v-model.trim="editedItem.ticket_id"
-                                                                        label="Ticket ID"
-                                                                        :rules="ticketRules"
-                                                                        required
-                                                                ></v-text-field>
-                                                            </v-col>
-                                                            <v-col
-                                                                    cols="12"
-                                                                    md="4"
-                                                            >
+                                                            <v-col cols="12" sm="6" md="4">
                                                                 <v-select
-                                                                        v-model="editedItem.ticket_type"
-                                                                        label = "Ticket Type"
-                                                                        :items="ticketTypeOptions"
-                                                                        :rules="ticketTypeRules"
-                                                                        required
+                                                                        v-model="editedItem.ticket_status"
+                                                                        label="Ticket Status"
+                                                                        :items="ticketStatusOptions"
+                                                                        :rules="ticketStatusRules"
                                                                 ></v-select>
                                                             </v-col>
                                                         </v-row>
-                                                    </section>
-                                                    <v-row>
-                                                        <v-col cols="12" sm="6" md="4">
-                                                            <v-select
-                                                                    v-model="editedItem.ticket_status"
-                                                                    label = "Ticket Status"
-                                                                    :items="ticketStatusOptions"
-                                                                    :rules="ticketStatusRules"
-                                                            ></v-select>
-                                                        </v-col>
-                                                    </v-row>
-                                                    <v-row v-if="editedIndex === -1 && selected.length === 0">
-                                                        <v-col cols="12">
-                                                            <v-text-field
-                                                                    v-model.trim="editedItem.ticket_description"
-                                                                    label="Ticket Description"
-                                                                    :rules="ticketDescriptionRules"
-                                                                    auto-grow
-                                                            ></v-text-field>
-                                                        </v-col>
-                                                    </v-row>
-                                                    <v-row>
-                                                        <v-col cols="12" v-if="selected.length === 0 || editedIndex !== -1">
-                                                            <v-text-field
-                                                                    v-model.trim="editedItem.ticket_comment"
-                                                                    label="Ticket Comment"
-                                                                    auto-grow
-                                                            ></v-text-field>
-                                                        </v-col>
-                                                    </v-row>
-                                                    <v-row>
-                                                        <v-col>
-                                                            <v-btn
-                                                                    :color="editedItem.ticket_escalate === '1' ? 'success': 'error'"
-                                                                    @click="changeEscalateStatus()"
-                                                            >
-                                                                {{ editedItem.ticket_escalate === '1' ? 'De-escalate': 'Escalate' }}
-                                                            </v-btn>
-                                                        </v-col>
-                                                    </v-row>
-                                                </v-container>
+                                                        <v-row v-if="editedIndex === -1 && selected.length === 0">
+                                                            <v-col cols="12">
+                                                                <v-text-field
+                                                                        v-model.trim="editedItem.ticket_description"
+                                                                        label="Ticket Description"
+                                                                        :rules="ticketDescriptionRules"
+                                                                        auto-grow
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row>
+                                                            <v-col cols="12"
+                                                                   v-if="selected.length === 0 || editedIndex !== -1">
+                                                                <v-text-field
+                                                                        v-model.trim="editedItem.ticket_comment"
+                                                                        label="Ticket Comment"
+                                                                        auto-grow
+                                                                ></v-text-field>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row>
+                                                            <v-col>
+                                                                <v-btn
+                                                                        :color="editedItem.ticket_escalate === '1' ? 'success': 'error'"
+                                                                        @click="changeEscalateStatus()"
+                                                                >
+                                                                    {{ editedItem.ticket_escalate === '1' ?
+                                                                    'De-escalate': 'Escalate' }}
+                                                                </v-btn>
+                                                            </v-col>
+                                                        </v-row>
+                                                    </v-container>
                                                 </v-form>
                                             </v-card-text>
 
@@ -264,14 +353,18 @@ try {
                                 </v-row>
                             </template>
                             <template v-slot:item.ticket_escalate="{ item }">
-                                <v-chip dark :color="getColor(item.ticket_escalate)">{{ getStatus(item.ticket_escalate) }}</v-chip>
+                                <v-chip dark :color="getColor(item.ticket_escalate)">{{ getStatus(item.ticket_escalate)
+                                    }}
+                                </v-chip>
                             </template>
                             <template v-slot:item.ticket_status="{ item }">
-                                <v-chip dark :color="getColorStatus(item.ticket_status)" outlined>{{ item.ticket_status }}</v-chip>
+                                <v-chip dark :color="getColorStatus(item.ticket_status)" outlined>{{ item.ticket_status
+                                    }}
+                                </v-chip>
                             </template>
                         </v-data-table>
-                        </v-slide-y-transition>
-                    </v-col>
+                </v-slide-y-transition>
+                </v-col>
             </v-row>
             <v-dialog
                     v-model="modDialog"
@@ -283,7 +376,7 @@ try {
                     <v-card-text>
                         <v-list-item two-line>
                             <v-list-item-content>
-                                <v-list-item-subtitle>Created Byy</v-list-item-subtitle>
+                                <v-list-item-subtitle>Created By</v-list-item-subtitle>
                                 <v-list-item-title>{{ modifyInfo.creator }}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
@@ -334,7 +427,7 @@ try {
             </v-dialog>
             <v-overlay
                     :value="overlay"
-                    :z-index="206"
+                    :z-index="220"
             >
                 <v-progress-circular indeterminate size="64"></v-progress-circular>
             </v-overlay>
@@ -374,6 +467,9 @@ try {
         vuetify: new Vuetify(),
         data: {
             selected: [],
+            regionArray: ["AMER", "APAC", "DPG", "EMEA"],
+            selectedRegion: '',
+            selectedTicketStatus: ['IN PROGRESS', 'IN PROGRESS / SEND TO EAN'],
             menu: false,
             modDialog: false,
             darkThemeSelected: false,
@@ -383,6 +479,7 @@ try {
             ticketInfo: [],
             dates: [],
             headers: [
+                {text: 'Project Name', value: 'project_name'},
                 {text: 'Date', value: 'create_date'},
                 {text: 'Ticket ID', value: 'ticket_id'},
                 {text: 'Type', value: 'ticket_type'},
@@ -399,7 +496,8 @@ try {
             ticketStatusOptions: ['OPEN', 'CLOSED', 'DONE', 'IN PROGRESS', 'IN PROGRESS / SEND TO EAN'],
             ticketTypeOptions: ['APOC Radar', 'Radar', 'Data Health', 'Type E - SKU Hunt/Data Collection', 'NA'],
             editedIndex: -1,
-            editedItem:{
+            editedItem: {
+                project_name: '',
                 ticket_id: '',
                 ticket_type: '',
                 ticket_description: '',
@@ -425,6 +523,7 @@ try {
             displayMessage: '',
             snackbar: false,
             defaultItem: {
+                project_name: '',
                 ticket_id: '',
                 ticket_type: '',
                 ticket_description: '',
@@ -445,6 +544,9 @@ try {
             ],
             ticketTypeRules: [
                 v => !!v || 'Ticket Type is required',
+            ],
+            projectRules: [
+                v => !!v || 'Project is required',
             ],
             ticketStatusRules: [
                 v => !!v || 'Ticket Status is required / Ignore for multi-update',
@@ -479,20 +581,30 @@ try {
                 }
             },
             getProjectList() {
-                axios.get('api/fetch_project_list.php')
+                this.overlay = true;
+                let formData = new FormData();
+                formData.append('project_region', this.selectedRegion);
+                axios.post('api/fetch_project_list.php', formData)
                     .then((response) => {
                         this.projectArray = response.data[0].project_info;
+                        let count = 0;
+                        this.selectedProjects = [];
+                        this.projectArray.forEach(project => {
+                            this.selectedProjects[count] = project.name;
+                            count++;
+                        });
+                        this.overlay = false;
                     });
             },
             fetchTicketInfo() {
-                this.overlay = true;
                 if (this.selectedProjects.length !== 0 && this.dateDiff <= 31) {
+                    this.overlay = true;
                     this.ticketInfo = [];
                     let formData = new FormData();
-                    formData.append('project_id', this.selectedProjects.project_id);
-                    formData.append('project_name', this.selectedProjects.name);
+                    formData.append('project_array', this.selectedProjects);
                     formData.append('start_date', this.dates[0]);
                     formData.append('end_date', this.dates[1]);
+                    formData.append('status_array', this.selectedTicketStatus);
                     axios.post('api/fetch_ticket_info.php', formData)
                         .then((response) => {
                             this.ticketInfo = response.data[0].ticket_info;
@@ -510,12 +622,12 @@ try {
                     this.editedIndex = -1;
                 }, 300);
             },
-            editItem (item) {
+            editItem(item) {
                 this.editedIndex = this.ticketInfo.indexOf(item);
                 this.editedItem = Object.assign({}, item);
                 this.dialog = true
             },
-            showModInfo (item) {
+            showModInfo(item) {
                 this.modifyInfo.mod_gid = item.mod_gid;
                 this.modifyInfo.ticket_completion_date = item.ticket_completion_date;
                 this.modifyInfo.ticket_last_mod_date = item.ticket_last_mod_date;
@@ -531,14 +643,18 @@ try {
             },
             changeEscalateStatus() {
                 this.editedItem.ticket_escalate === '1' ?
-                    this.editedItem.ticket_escalate = '0':
+                    this.editedItem.ticket_escalate = '0' :
                     this.editedItem.ticket_escalate = '1';
             },
             save() {
                 this.overlay = true;
                 if (this.selected.length !== 0 && this.editedIndex === -1) {
-                    let formData = new FormData ();
-                    formData.append('project_name', this.selectedProjects.name);
+                    let formData = new FormData();
+                    let projectArray = [];
+                    for (let i = 0; i < this.selected.length; i++) {
+                        projectArray[i] = this.selected[i].project_name;
+                    }
+                    formData.append('project_array', projectArray);
                     this.selectedIDArray = [];
                     for (let i = 0; i < this.selected.length; i++) {
                         this.selectedIDArray[i] = this.selected[i].project_ticket_system_id;
@@ -550,6 +666,7 @@ try {
                     formData.append('ticket_escalate', this.editedItem.ticket_escalate);
                     axios.post('api/multi_update_ticket_info.php', formData)
                         .then((response) => {
+                            console.log(response);
                             if (response.data[0].error_message === '') {
                                 this.fetchTicketInfo();
                                 this.close();
@@ -562,8 +679,8 @@ try {
                 } else if (this.editedIndex > -1) {
                     // checking if changes were made that have to be commited to the db
                     if (this.checkTicketInfoChanged(this.editedIndex)) {
-                        let formData = new FormData ();
-                        formData.append('project_name', this.selectedProjects.name);
+                        let formData = new FormData();
+                        formData.append('project_name', this.editedItem.project_name);
                         formData.append('ticket_system_id', this.editedItem.project_ticket_system_id);
                         formData.append('ticket_status', this.editedItem.ticket_status);
                         formData.append('ticket_comment', this.editedItem.ticket_comment);
@@ -589,8 +706,8 @@ try {
                         this.snackbar = true;
                         this.overlay = false;
                     } else {
-                        let formData = new FormData ();
-                        formData.append('project_name', this.selectedProjects.name);
+                        let formData = new FormData();
+                        formData.append('project_name', this.editedItem.project_name);
                         formData.append('ticket_id', this.editedItem.ticket_id);
                         formData.append('ticket_type', this.editedItem.ticket_type);
                         formData.append('ticket_status', this.editedItem.ticket_status);
@@ -619,25 +736,122 @@ try {
             initTicketDate() {
                 this.dates[0] = moment().startOf('month').format('YYYY-MM-DD');
                 this.dates[1] = moment().endOf('month').format('YYYY-MM-DD');
+            },
+            toggleAllProjects() {
+                this.$nextTick(() => {
+                    if (this.allProjects) {
+                        this.selectedProjects = []
+                    } else {
+                        let count = 0;
+                        this.selectedProjects = [];
+                        this.projectArray.forEach(project => {
+                            this.selectedProjects[count] = project.name;
+                            count++;
+                        });
+                    }
+                })
+            },
+            exportTicketInfo() {
+                this.JSONToCSVConvertor(this.ticketInfo, "Ticket Export", true);
+            },
+            JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+                //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+                var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+
+                var CSV = '';
+                //Set Report title in first row or line
+
+                CSV += ReportTitle + '\r\n\n';
+
+                //This condition will generate the Label/Header
+                if (ShowLabel) {
+                    var row = "";
+
+                    //This loop will extract the label from 1st index of on array
+                    for (var index in arrData[0]) {
+
+                        //Now convert each value to string and comma-seprated
+                        row += index + ',';
+                    }
+
+                    row = row.slice(0, -1);
+
+                    //append Label row with line break
+                    CSV += row + '\r\n';
+                }
+
+                //1st loop is to extract each row
+                for (var i = 0; i < arrData.length; i++) {
+                    var row = "";
+
+                    //2nd loop will extract each column and convert it in string comma-seprated
+                    for (var index in arrData[i]) {
+                        row += '"' + arrData[i][index] + '",';
+                    }
+
+                    row.slice(0, row.length - 1);
+
+                    //add a line break after each row
+                    CSV += row + '\r\n';
+                }
+
+                if (CSV == '') {
+                    alert("Invalid data");
+                    return;
+                }
+
+                //Generate a file name
+                var fileName = "MyReport_";
+                //this will remove the blank-spaces from the title and replace it with an underscore
+                fileName += ReportTitle.replace(/ /g, "_");
+
+                //Initialize file format you want csv or xls
+                var uri = 'data:text/csv;charset=utf-8,' + escape(CSV);
+
+                // Now the little tricky part.
+                // you can use either>> window.open(uri);
+                // but this will not work in some browsers
+                // or you will not get the correct file extension
+
+                //this trick will generate a temp <a /> tag
+                var link = document.createElement("a");
+                link.href = uri;
+
+                //set the visibility hidden so it will not effect on your web-layout
+                link.style = "visibility:hidden";
+                link.download = fileName + ".csv";
+
+                //this part will append the anchor tag and remove it after automatic click
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             }
         },
         created() {
-            this.getProjectList();
             this.initTicketDate();
         },
         watch: {
             darkThemeSelected: function (val) {
                 this.$vuetify.theme.dark = val;
             },
-            selectedProjects: function () {
+            selectedProjects: function (val) {
                 this.fetchTicketInfo();
             },
             dialog: function (val) {
                 val || this.close();
             },
+            selectedRegion: function () {
+                this.projectArray = [];
+                this.selected = [];
+                this.selectedProjects = [];
+                this.getProjectList();
+            },
+            selectedTicketStatus: function () {
+                this.fetchTicketInfo();
+            }
         },
         computed: {
-            formTitle () {
+            formTitle() {
                 if (this.selected.length === 0) {
                     return this.editedIndex === -1 ? 'New Ticket' : 'Edit Ticket'
                 } else {
@@ -653,11 +867,27 @@ try {
                 const date1 = new Date(this.dates[0]);
                 const date2 = new Date(this.dates[1]);
                 const timeDiff = Math.abs(date2.getTime() - date1.getTime());
-                this.dateDiff =  Math.ceil(timeDiff / (1000 * 3600 * 24));
+                this.dateDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
                 return Math.ceil(timeDiff / (1000 * 3600 * 24));
-            }
+            },
+            icon() {
+                if (this.allProjects) return 'mdi-close-box';
+                if (this.someProjects) return 'mdi-minus-box';
+                return 'mdi-checkbox-blank-outline';
+            },
+            allProjects() {
+                return this.selectedProjects.length === this.projectArray.length
+            },
+            someProjects() {
+                return this.selectedProjects.length > 0 && !this.allProjects
+            },
         },
     });
 </script>
+<style>
+    #filters {
+        margin-left: 0.5vw;
+    }
+</style>
 </body>
 </html>

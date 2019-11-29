@@ -31,32 +31,39 @@ $selected = $_POST['selected'];
 $selected_array = explode(',', $selected);
 $count = 0;
 
-foreach ($selected_array as $selected_id) {
-    $sql = 'SELECT pt.ticket_escalate, pt.ticket_status FROM project_tickets pt WHERE pt.project_ticket_system_id = :id';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['id'=>$selected_id]);
-    $ticket_info = $stmt->fetchAll(PDO::FETCH_OBJ);
-    $current_escalate_status = $ticket_info->ticket_escalate;
-    $current_ticket_status = $ticket_info->ticket_status;
+$project_array =  explode(',', $_POST['project_array']);
 
-    $now = new DateTime();
-    $date = $now->format('Y-m-d H:i:s');
-    $escalate_date = $date;
-    $close_date = $date;
+for ($i = 0; $i < count($project_array); $i++) {
+    $dbname = $project_array[$i];
+    $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
+    $pdo = new PDO($dsn, $user, $pwd);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->beginTransaction();
+    foreach ($selected_array as $selected_id) {
+        $sql = 'SELECT pt.ticket_escalate, pt.ticket_status FROM project_tickets pt WHERE pt.project_ticket_system_id = :id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id' => $selected_id]);
+        $ticket_info = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $current_escalate_status = $ticket_info->ticket_escalate;
+        $current_ticket_status = $ticket_info->ticket_status;
 
-    if ($current_escalate_status !== $_POST['ticket_escalate']) {
-        $escalate_date = NULL;
-    }
+        $now = new DateTime();
+        $date = $now->format('Y-m-d H:i:s');
+        $escalate_date = $date;
+        $close_date = $date;
 
-    if($_POST['ticket_status'] !== 'CLOSED') {
-        $close_date = NULL;
-    }
+        if ($current_escalate_status !== $_POST['ticket_escalate']) {
+            $escalate_date = NULL;
+        }
 
-    $ticket_status = $_POST['ticket_status'];
-    if ($ticket_status == "null") {
-        $ticket_status = $current_ticket_status;
-        $pdo->beginTransaction();
-        $sql = 'UPDATE project_tickets pt 
+        if ($_POST['ticket_status'] !== 'CLOSED') {
+            $close_date = NULL;
+        }
+
+        $ticket_status = $_POST['ticket_status'];
+        if ($ticket_status == "null") {
+            $ticket_status = $current_ticket_status;
+            $sql = 'UPDATE project_tickets pt 
                 SET 
                     pt.ticket_escalate = :escalate, 
                     pt.ticket_escalate_date = :escalate_date,
@@ -65,19 +72,17 @@ foreach ($selected_array as $selected_id) {
                     pt.ticket_completion_date = :close_date
                 WHERE 
                       pt.project_ticket_system_id = :id';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            'escalate' => $_POST['ticket_escalate'],
-            'escalate_date' => $escalate_date,
-            'account_id' => $_SESSION['id'],
-            'mod_date' => $date,
-            'close_date' => $close_date,
-            'id' => $selected_id
-        ]);
-        $pdo->commit();
-    } else {
-        $pdo->beginTransaction();
-        $sql = 'UPDATE project_tickets pt 
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                'escalate' => $_POST['ticket_escalate'],
+                'escalate_date' => $escalate_date,
+                'account_id' => $_SESSION['id'],
+                'mod_date' => $date,
+                'close_date' => $close_date,
+                'id' => $selected_id
+            ]);
+        } else {
+            $sql = 'UPDATE project_tickets pt 
                 SET 
                     pt.ticket_status = :ticket_status, 
                     pt.ticket_escalate = :escalate, 
@@ -87,35 +92,37 @@ foreach ($selected_array as $selected_id) {
                     pt.ticket_completion_date = :close_date
                 WHERE 
                       pt.project_ticket_system_id = :id';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                'ticket_status' => $ticket_status,
+                'escalate' => $_POST['ticket_escalate'],
+                'escalate_date' => $escalate_date,
+                'account_id' => $_SESSION['id'],
+                'mod_date' => $date,
+                'close_date' => $close_date,
+                'id' => $selected_id
+            ]);
+        }
+
+        $sql = 'SELECT a.account_gid FROM user_db.accounts a WHERE a.account_id = :id';
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
-            'ticket_status' => $ticket_status,
-            'escalate' => $_POST['ticket_escalate'],
-            'escalate_date' => $escalate_date,
-            'account_id' => $_SESSION['id'],
-            'mod_date' => $date,
-            'close_date' => $close_date,
-            'id' => $selected_id
+            'id' => $_SESSION['id']
         ]);
-        $pdo->commit();
+        $user_gid = $stmt->fetchColumn();
+
+        $update_info[$count] = array(
+            'gid' => $user_gid,
+            'date' => $date,
+            'close_date' => $close_date
+        );
+        $count++;
     }
-
-    $sql = 'SELECT a.account_gid FROM user_db.accounts a WHERE a.account_id = :id';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        'id' => $_SESSION['id']
-    ]);
-    $user_gid = $stmt->fetchColumn();
-
-    $update_info[$count] = array(
-        'gid' => $user_gid,
-        'date' => $date,
-        'close_date' => $close_date
-    );
-    $count++;
+    $pdo->commit();
+    $pdo = NULL;
 }
 
 
-$return_arr[] = array("update_info" => $update_info, "error_message" => $error_message);
+$return_arr[] = array("update_info" => $project_array, "error_message" => $error_message);
 echo json_encode($return_arr);
 

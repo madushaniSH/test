@@ -29,7 +29,7 @@ try {
     exit();
 }
 
-$sql = 'SELECT project_id,project_db_name AS "name" FROM `project_db`.projects WHERE 1';
+$sql = 'SELECT project_id,project_db_name AS "name" FROM `project_db`.projects WHERE project_region = :region';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['region' => $_POST['project_region']]);
 $project_array = $stmt->fetchAll(PDO::FETCH_ASSOC);

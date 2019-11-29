@@ -7,24 +7,6 @@ if (!isset($_SESSION['logged_in'])) {
 }
 // Current settings to connect to the user account database
 require('../../user_db_connection.php');
-$dbname = $_POST['project_name'];
-// Setting up the DSN
-$dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
-
-/*
-    Attempts to connect to the databse, if no connection was estabishled
-    kills the script
-*/
-try {
-    // Creating a new PDO instance
-    $pdo = new PDO($dsn, $user, $pwd);
-    // setting the PDO error mode to exception
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    // throws error message
-    echo "<p>Connection to database failed<br>Reason: " . $e->getMessage() . '</p>';
-    exit();
-}
 
 function fetchTicketFacingCount ($pdo, $ticket_id) {
     $sql = 'SELECT SUM(prod.product_facing_count)
@@ -104,10 +86,28 @@ function fetchTicketProductCount ($pdo, $ticket_id, $product_type) {
     return $return_count;
 }
 
+$project_array =  explode(',', $_POST['project_array']);
+$status_array =  explode(',', $_POST['status_array']);
+$status_string = "";
 
+for ($i = 0; $i < count($status_array); $i++){
+    if ($i == 0) {
+        $status_string .= ' pt.ticket_status = "'.$status_array[$i].'"';
+    } else {
+        $status_string .= ' OR pt.ticket_status = "'.$status_array[$i].'"';
+    }
+}
 
-try {
-    $sql = '
+$return_info = array();
+$count = 0;
+
+for ($i = 0; $i < count($project_array); $i++) {
+    $dbname = $project_array[$i];
+    $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
+    $pdo = new PDO($dsn, $user, $pwd);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    try {
+        $sql = '
 SELECT
     pt.project_ticket_system_id,
     DATE(pt.ticket_creation_time) AS "create_date",
@@ -133,29 +133,40 @@ LEFT OUTER JOIN
 ON
     b.account_id = pt.ticket_last_mod_account_id
 WHERE 
-      DATE(pt.ticket_creation_time) >= :start_date AND DATE(pt.ticket_creation_time) <= :end_date
+      DATE(pt.ticket_creation_time) >= :start_date AND DATE(pt.ticket_creation_time) <= :end_date 
+  AND ('.$status_string.')
 GROUP BY
     1';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
             'start_date' => $_POST['start_date'],
             'end_date' => $_POST['end_date']
-      ]);
-    $ticket_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        ]);
+        $ticket_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    for ($i = 0; $i < count($ticket_info); $i++){
-        $id = $ticket_info[$i]["project_ticket_system_id"];
-        $ticket_info[$i]["sku_count"] = fetchTicketProductCount($pdo, $id, "sku");
-        $ticket_info[$i]["brand_count"] = fetchTicketProductCount($pdo, $id, "brand");
-        $ticket_info[$i]["dvc_count"] = fetchTicketProductCount($pdo, $id, "dvc");
-        $ticket_info[$i]["facing_count"] = fetchTicketProductCount($pdo, $id, "facing");
+        for ($j = 0; $j < count($ticket_info); $j++) {
+            $id = $ticket_info[$j]["project_ticket_system_id"];
+            $ticket_info[$j]["sku_count"] = fetchTicketProductCount($pdo, $id, "sku");
+            $ticket_info[$j]["brand_count"] = fetchTicketProductCount($pdo, $id, "brand");
+            $ticket_info[$j]["dvc_count"] = fetchTicketProductCount($pdo, $id, "dvc");
+            $ticket_info[$j]["facing_count"] = fetchTicketProductCount($pdo, $id, "facing");
+            $ticket_info[$j]["project_name"] = $dbname;
+            $ticket_info[$j]["index"] = $count;
+            $count++;
+        }
+
+
+    } catch (PDOException $e) {
+        $ticket_info = $e->getMessage();
     }
+    $pdo = NULL;
 
-
-} catch (PDOException $e) {
-    $ticket_info = $e->getMessage();
+    if (count($ticket_info) > 0) {
+        $return_info = array_merge($ticket_info, $return_info);
+    }
 }
 
-$return_arr[] = array("ticket_info" => $ticket_info);
+
+$return_arr[] = array("ticket_info" => $return_info);
 echo json_encode($return_arr);
 
