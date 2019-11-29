@@ -669,6 +669,7 @@ try {
                             console.log(response);
                             if (response.data[0].error_message === '') {
                                 this.fetchTicketInfo();
+                                this.selected = [];
                                 this.close();
                             } else {
                                 this.displayMessage = response.data[0].error_message;
