@@ -56,6 +56,11 @@ try {
                 app
                 clipped-left
         >
+            <img
+                    src="./api/logo.png"
+                    class="mr-3"
+                    height="40"
+            >
             <v-toolbar-title>Ticket Manager</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-switch
@@ -607,6 +612,7 @@ try {
                     formData.append('status_array', this.selectedTicketStatus);
                     axios.post('api/fetch_ticket_info.php', formData)
                         .then((response) => {
+                            console.log(response);
                             this.ticketInfo = response.data[0].ticket_info;
                             this.overlay = false;
                         });
@@ -669,6 +675,7 @@ try {
                             console.log(response);
                             if (response.data[0].error_message === '') {
                                 this.fetchTicketInfo();
+                                this.selected = [];
                                 this.close();
                             } else {
                                 this.displayMessage = response.data[0].error_message;

@@ -92,9 +92,14 @@ $status_string = "";
 
 for ($i = 0; $i < count($status_array); $i++){
     if ($i == 0) {
-        $status_string .= ' pt.ticket_status = "'.$status_array[$i].'"';
+        $status_string .= '(pt.ticket_status = "'.$status_array[$i].'"';
     } else {
-        $status_string .= ' OR pt.ticket_status = "'.$status_array[$i].'"';
+        $status_string .= ' OR (pt.ticket_status = "'.$status_array[$i].'"';
+    }
+    if($status_array[$i] === 'IN PROGRESS' OR $status_array[$i] === 'IN PROGRESS / SEND TO EAN') {
+        $status_string .= ')';
+    } else {
+        $status_string .= 'AND (DATE(pt.ticket_creation_time) >= "'.$_POST['start_date'].'" AND DATE(pt.ticket_creation_time) <= "'.$_POST['end_date'].'"))';
     }
 }
 
@@ -133,15 +138,11 @@ LEFT OUTER JOIN
 ON
     b.account_id = pt.ticket_last_mod_account_id
 WHERE 
-      DATE(pt.ticket_creation_time) >= :start_date AND DATE(pt.ticket_creation_time) <= :end_date 
-  AND ('.$status_string.')
+  '.$status_string.'
 GROUP BY
     1';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            'start_date' => $_POST['start_date'],
-            'end_date' => $_POST['end_date']
-        ]);
+        $stmt->execute();
         $ticket_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         for ($j = 0; $j < count($ticket_info); $j++) {
