@@ -96,11 +96,7 @@ for ($i = 0; $i < count($status_array); $i++){
     } else {
         $status_string .= ' OR (pt.ticket_status = "'.$status_array[$i].'"';
     }
-    if($status_array[$i] === 'IN PROGRESS' OR $status_array[$i] === 'IN PROGRESS / SEND TO EAN') {
-        $status_string .= ')';
-    } else {
-        $status_string .= 'AND (DATE(pt.ticket_creation_time) >= "'.$_POST['start_date'].'" AND DATE(pt.ticket_creation_time) <= "'.$_POST['end_date'].'"))';
-    }
+    $status_string .= ')';
 }
 
 $return_info = array();

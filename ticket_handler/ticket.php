@@ -2,6 +2,7 @@
 /*
     Filename: add_new_error.php
     Author: Malika Liyanage
+    TODO : Have to clean up unused functions and variables from removal of Data Filter
 */
 session_start();
 // If the user is not logged in redirect to the login page...
@@ -130,41 +131,6 @@ try {
                     </v-autocomplete>
                 </v-col>
                 <v-col
-                        cols="12"
-                        md="3"
-                >
-                    <v-dialog
-                            ref="dateDialog"
-                            v-model="menu"
-                            :return-value.sync="dates"
-                            persistent
-                            width="290px"
-                    >
-                        <template
-                                v-slot:activator="{ on }"
-                        >
-                            <v-combobox
-                                    v-model="dates"
-                                    label="Ticket Creation Time"
-                                    v-on="on"
-                                    chips
-                                    small-chips
-                                    multiple
-                                    :rules="[dateDifference <= 31 || 'Date Range has to be between within 31 Days']"
-                            ></v-combobox>
-                        </template>
-                        <v-date-picker
-                                v-model="dates"
-                                range scrollable
-                        >
-                            <v-spacer></v-spacer>
-                            <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-                            <v-btn text color="primary" @click="$refs.dateDialog.save(dates); fetchTicketInfo();">OK
-                            </v-btn>
-                        </v-date-picker>
-                    </v-dialog>
-                </v-col>
-                <v-col
                         cols="6"
                         md="3"
                 >
@@ -186,16 +152,16 @@ try {
                         </template>
                     </v-autocomplete>
                 </v-col>
-                <v-col
-                        cols="6"
-                        md="2"
-                        v-if="ticketInfo.length > 0"
-                >
-                    <v-btn color="indigo" dark @click="exportTicketInfo">
-                        <v-icon dark>mdi-cloud-download</v-icon>
-                    </v-btn>
-                </v-col>
             </v-row>
+                <v-col>
+                    <v-col
+                            v-if="ticketInfo.length > 0"
+                    >
+                        <v-btn color="indigo" dark @click="exportTicketInfo">
+                            <v-icon dark>mdi-cloud-download</v-icon>
+                        </v-btn>
+                    </v-col>
+                </v-col>
             <v-row>
                 <v-slide-y-transition>
                     <v-col
@@ -740,10 +706,6 @@ try {
                     }
                 }
             },
-            initTicketDate() {
-                this.dates[0] = moment().startOf('month').format('YYYY-MM-DD');
-                this.dates[1] = moment().endOf('month').format('YYYY-MM-DD');
-            },
             toggleAllProjects() {
                 this.$nextTick(() => {
                     if (this.allProjects) {
@@ -834,9 +796,6 @@ try {
                 document.body.removeChild(link);
             }
         },
-        created() {
-            this.initTicketDate();
-        },
         watch: {
             darkThemeSelected: function (val) {
                 this.$vuetify.theme.dark = val;
@@ -869,13 +828,6 @@ try {
                 return this.headers.filter(header =>
                     !header.hide
                 );
-            },
-            dateDifference() {
-                const date1 = new Date(this.dates[0]);
-                const date2 = new Date(this.dates[1]);
-                const timeDiff = Math.abs(date2.getTime() - date1.getTime());
-                this.dateDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                return Math.ceil(timeDiff / (1000 * 3600 * 24));
             },
             icon() {
                 if (this.allProjects) return 'mdi-close-box';
