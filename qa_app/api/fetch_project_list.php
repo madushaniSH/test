@@ -29,9 +29,9 @@ try {
     exit();
 }
 
-$sql = 'SELECT project_id,project_db_name AS "name" FROM `project_db`.projects WHERE project_region = :region';
+$sql = 'SELECT project_id,project_db_name AS "name" FROM `project_db`.projects WHERE 1';
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['region' => $_POST['project_region']]);
+$stmt->execute();
 $project_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $return_arr[] = array("project_info" => $project_array);

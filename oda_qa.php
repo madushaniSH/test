@@ -690,4 +690,6 @@ $project_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
     <script src="scripts/oda_qa.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/JQuery-Snowfall/1.7.4/snowfall.jquery.min.js"></script>
+    <script src="scripts/snow.js"></script>
 </body>

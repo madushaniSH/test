@@ -333,4 +333,6 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
 
         <!-- Custom scripts for all pages-->
         <script src="scripts/sb-admin-2.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/JQuery-Snowfall/1.7.4/snowfall.jquery.min.js"></script>
+        <script src="scripts/snow.js"></script>
 </body>

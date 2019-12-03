@@ -110,6 +110,28 @@ try {
                         </template>
                     </v-autocomplete>
                 </v-col>
+                <v-col
+                        cols="6"
+                        md="3"
+                >
+                    <v-autocomplete
+                            v-model="selectedTicketStatus"
+                            label="Select"
+                            chips
+                            :items="ticketStatusOptions"
+                            multiple
+                    >
+                        <template v-slot:selection="{ item, index }">
+                            <v-chip v-if="index === 0">
+                                <span>{{ item }}</span>
+                            </v-chip>
+                            <span
+                                    v-if="index === 1"
+                                    class="grey--text caption"
+                            >(+{{ selectedTicketStatus.length - 1 }} others)</span>
+                        </template>
+                    </v-autocomplete>
+                </v-col>
             </v-row>
 
             <v-row>
@@ -121,7 +143,6 @@ try {
                                 :headers="headers"
                                 :items="productInfo"
                                 class="elevation-1"
-                                show-select
                                 item-key="product_id"
                         >
                             <template v-slot:top>
@@ -136,16 +157,23 @@ try {
                                 </v-toolbar>
                             </template>
                             <template v-slot:item.action="{ item }">
-                                <v-icon
-                                        small
-                                        class="mr-2"
-                                        @click="editItem(item)"
+                                <div class="my-2">
+                                    <v-btn color="primary" :disabled="item.probe_being_handled === null">QA</v-btn>
+                                </div>
+                            </template>
+                            <template v-slot:item.product_qa_status="{ item }">
+                                <v-chip
+                                        class="ma-2"
+                                        :color="getStatusColor(item.product_qa_status)"
+                                        label
+                                        text-color="white"
                                 >
-                                    mdi-account-edit
-                                </v-icon>
+                                    <v-icon left>mdi-label</v-icon>
+                                    {{ item.product_qa_status }}
+                                </v-chip>
                             </template>
                             <template v-slot:item.product_type="{ item }">
-                                <v-chip dark color="green">{{ item.product_type }}
+                                <v-chip dark>{{ item.product_type }}
                                 </v-chip>
                             </template>
                             <template v-slot:item.product_hunt_type="{ item }">
@@ -186,15 +214,17 @@ try {
             selectedTickets: [],
             productInfo: [],
             headers: [
-                {text: 'Creation DateTime', value: 'product_creation_time'},
+                {text: 'Creation Date', value: 'product_creation_time'},
                 {text: 'Ticket ID', value: 'ticket_id'},
                 {text: 'Product Type', value: 'product_type'},
                 {text: 'Product Name', value: 'product_name'},
                 {text: 'Product Alt Name', value: 'product_alt_design_name'},
-                {text: 'Product QA Status', value: 'product_qa_status'},
+                {text: 'Product QA Status', value: 'product_qa_status', width: '10%'},
                 {text: 'Hunt Type', value: 'product_hunt_type'},
                 {text: 'Actions', value: 'action', sortable: false, align: 'center'},
             ],
+            ticketStatusOptions: ['OPEN', 'CLOSED', 'DONE', 'IN PROGRESS', 'IN PROGRESS / SEND TO EAN'],
+            selectedTicketStatus: ['IN PROGRESS', 'IN PROGRESS / SEND TO EAN'],
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -208,25 +238,41 @@ try {
                 }
                 return color;
             },
+            getStatusColor(status) {
+                let color = '';
+                if (status === 'pending') {
+                    color = 'orange';
+                } else if (status === 'approved' || status === 'active') {
+                    color = 'green';
+                } else {
+                    color =  'red';
+                }
+                return color;
+            },
             getProjectList() {
                 this.overlay = true;
                 axios.get('api/fetch_project_list.php')
                     .then((response) => {
+                        this.selectedTickets = [];
+                        this.productInfo = [];
                         this.projectArray = response.data[0].project_info;
                         this.overlay = false;
                     });
             },
             getTicketList() {
-                this.overlay = true;
-                let formData = new FormData;
-                formData.append('db_name', this.selectedProject);
-                axios.post('api/fetch_project_ticket_list.php', formData)
-                    .then((response) => {
-                        this.selectedTickets = []
-                        this.ticketArray = response.data[0].ticket_info;
-                        this.overlay = false;
-                    });
-
+                if (this.selectedProject !== '' && this.selectedTicketStatus.length > 0) {
+                    this.overlay = true;
+                    let formData = new FormData;
+                    formData.append('db_name', this.selectedProject);
+                    formData.append('status_array', this.selectedTicketStatus);
+                    axios.post('api/fetch_project_ticket_list.php', formData)
+                        .then((response) => {
+                            this.selectedTickets = [];
+                            this.productInfo = [];
+                            this.ticketArray = response.data[0].ticket_info;
+                            this.overlay = false;
+                        });
+                }
             },
             getProductInfo() {
                 if (this.selectedProject !== '' && this.selectedTickets.length !== 0) {
@@ -253,6 +299,10 @@ try {
             selectedTickets: function() {
                 this.getProductInfo();
             },
+            selectedTicketStatus: function() {
+                this.productInfo = [];
+                this.getTicketList();
+            }
         },
         created() {
             this.getProjectList();
@@ -264,5 +314,6 @@ try {
         margin-left: 0.5vw;
     }
 </style>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Snowstorm/20131208/snowstorm-min.js"></script>
 </body>
 </html>

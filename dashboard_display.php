@@ -513,4 +513,6 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
 <script src="scripts/dashboard.js"></script>
 <script src="scripts/display.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/JQuery-Snowfall/1.7.4/snowfall.jquery.min.js"></script>
+<script src="scripts/snow.js"></script>
 </body>
