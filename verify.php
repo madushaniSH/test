@@ -34,7 +34,7 @@ catch(PDOException $e){
     exit();
 }
 $verify = false;
-if ($_SESSION['id'] === '1' || $_SESSION['id'] === '131' || $_SESSION['id'] === '18' || $_SESSION['id'] === '71' || $_SESSION['id'] === '70' || $_SESSION['id'] === '68') {
+if ($_SESSION['id'] === '131' || $_SESSION['id'] === '71' || $_SESSION['id'] === '70' || $_SESSION['id'] === '68') {
     $verify = true;
 }
 
