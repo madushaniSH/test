@@ -55,9 +55,9 @@ SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_cre
     INNER JOIN project_tickets pt on 
         p2.probe_ticket_id = pt.project_ticket_system_id
         OR
-        pt.ticket_id = rh.radar_ticket_id
+        pt.project_ticket_system_id = rh.radar_ticket_id
         OR 
-        pt.ticket_id = ri.reference_ticket_id
+        pt.project_ticket_system_id = ri.reference_ticket_id
 WHERE ('.$ticket_query_string.')
 ORDER BY p.product_creation_time DESC';
 $stmt = $pdo->prepare($sql);

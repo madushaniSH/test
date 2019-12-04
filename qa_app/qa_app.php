@@ -37,7 +37,7 @@ try {
     <link rel='icon' href='../favicon.ico' type='image/x-icon'/>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Qualtiy Assurance</title>
+    <title>Quality Assurance</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
@@ -72,7 +72,7 @@ try {
             >
                 <v-col
                         cols="12"
-                        md="3"
+                        md="2"
                 >
                     <v-autocomplete
                             v-model="selectedProject"
@@ -88,7 +88,7 @@ try {
                 </v-col>
                 <v-col
                         cols="6"
-                        md="3"
+                        md="2"
                 >
                     <v-autocomplete
                             v-model="selectedTickets"
@@ -132,6 +132,49 @@ try {
                         </template>
                     </v-autocomplete>
                 </v-col>
+                <v-layout
+                    justify-end
+                >
+                    <v-col
+                            cols="6"
+                            md="6"
+                    >
+                        <v-card
+                                class="mx-auto"
+                                outlined
+                        >
+                            <v-list-item>
+                                <v-list-item-content>
+                                    <div class="overline mb-4">Product Count</div>
+                                    <v-row>
+                                        <v-col>
+                                            <v-list-item-title class="text-center">Ticket</v-list-item-title>
+                                            <v-list-item-subtitle class="text-center">{{ selectedTickets.length }}</v-list-item-subtitle>
+                                        </v-col>
+                                        <v-col>
+                                            <v-list-item-title class="text-center">Brand</v-list-item-title>
+                                            <v-list-item-subtitle class="text-center">{{ pendingCount.brand }}</v-list-item-subtitle>
+                                        </v-col>
+                                        <v-col>
+                                            <v-list-item-title class="text-center">SKU</v-list-item-title>
+                                            <v-list-item-subtitle class="text-center">{{ pendingCount.sku }}</v-list-item-subtitle>
+                                        </v-col>
+                                        <v-col>
+                                            <v-list-item-title class="text-center">DVC</v-list-item-title>
+                                            <v-list-item-subtitle class="text-center">{{ pendingCount.dvc }}</v-list-item-subtitle>
+                                        </v-col>
+                                    <v-col>
+                                            <v-list-item-title class="text-center">Facing</v-list-item-title>
+                                            <v-list-item-subtitle class="text-center">{{ pendingCount.facing }}</v-list-item-subtitle>
+                                        </v-col>
+                                    </v-row>
+                                </v-list-item-content>
+
+                            </v-list-item>
+
+                        </v-card>
+                    </v-col>
+                </v-layout>
             </v-row>
 
             <v-row>
@@ -144,6 +187,11 @@ try {
                                 :items="productInfo"
                                 class="elevation-1"
                                 item-key="product_id"
+                                :footer-props="{
+                                    'items-per-page-options': [10]
+                                }"
+                                :search="search"
+                                multi-sort
                         >
                             <template v-slot:top>
                                 <v-toolbar flat>
@@ -154,6 +202,13 @@ try {
                                         </v-btn>
                                     </v-col>
                                     <v-spacer></v-spacer>
+                                    <v-text-field
+                                            v-model="search"
+                                            append-icon="mdi-file-find"
+                                            label="Search"
+                                            single-line
+                                            hide-details
+                                    ></v-text-field>
                                 </v-toolbar>
                             </template>
                             <template v-slot:item.action="{ item }">
@@ -214,17 +269,24 @@ try {
             selectedTickets: [],
             productInfo: [],
             headers: [
-                {text: 'Creation Date', value: 'product_creation_time'},
-                {text: 'Ticket ID', value: 'ticket_id'},
-                {text: 'Product Type', value: 'product_type'},
-                {text: 'Product Name', value: 'product_name'},
-                {text: 'Product Alt Name', value: 'product_alt_design_name'},
-                {text: 'Product QA Status', value: 'product_qa_status', width: '10%'},
-                {text: 'Hunt Type', value: 'product_hunt_type'},
-                {text: 'Actions', value: 'action', sortable: false, align: 'center'},
+                {text: 'Creation Date', value: 'product_creation_time', width: '10%', filterable: false},
+                {text: 'Ticket ID', value: 'ticket_id', width: '10%', filterable: false},
+                {text: 'Product Type', value: 'product_type', width: '10%', filterable: false},
+                {text: 'Product Name', value: 'product_name', width: '25%'},
+                {text: 'Product Alt Name', value: 'product_alt_design_name', width: '25%'},
+                {text: 'Product QA Status', value: 'product_qa_status', width: '10%', filterable: false},
+                {text: 'Hunt Type', value: 'product_hunt_type', width: '10%', filterable: false},
+                {text: 'Actions', value: 'action', sortable: false, align: 'center', filterable: false},
             ],
             ticketStatusOptions: ['OPEN', 'CLOSED', 'DONE', 'IN PROGRESS', 'IN PROGRESS / SEND TO EAN'],
             selectedTicketStatus: ['IN PROGRESS', 'IN PROGRESS / SEND TO EAN'],
+            pendingCount: {
+                brand: 0,
+                sku: 0,
+                dvc: 0,
+                facing: 0
+            },
+            search: ''
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -287,7 +349,41 @@ try {
                             this.overlay = false;
                         });
                 }
-            }
+            },
+            getPendingCount() {
+                if (this.productInfo.length === 0) {
+                    this.pendingCount.brand = 0;
+                    this.pendingCount.sku = 0;
+                    this.pendingCount.dvc = 0;
+                    this.pendingCount.facing = 0;
+                } else {
+                    let brand_count = 0;
+                    let sku_count = 0;
+                    let dvc_count = 0;
+                    let facing_count = 0;
+
+                    this.productInfo.forEach(function(item) {
+                        if (item.product_type === 'brand') {
+                            brand_count++;
+                        }
+                        if (item.product_type === 'sku') {
+                            sku_count++;
+                        }
+                        if (item.product_type === 'dvc') {
+                            dvc_count++;
+                        }
+                        if (item.product_type === 'facing') {
+                            facing_count++;
+                        }
+                    });
+
+                    this.pendingCount.brand = brand_count;
+                    this.pendingCount.sku = sku_count;
+                    this.pendingCount.dvc = dvc_count;
+                    this.pendingCount.facing = facing_count;
+
+                }
+            },
         },
         watch: {
             darkThemeSelected: function (val) {
@@ -302,7 +398,10 @@ try {
             selectedTicketStatus: function() {
                 this.productInfo = [];
                 this.getTicketList();
-            }
+            },
+            productInfo: function() {
+                this.getPendingCount();
+            },
         },
         created() {
             this.getProjectList();
@@ -314,6 +413,5 @@ try {
         margin-left: 0.5vw;
     }
 </style>
-<script src="//cdnjs.cloudflare.com/ajax/libs/Snowstorm/20131208/snowstorm-min.js"></script>
 </body>
 </html>
