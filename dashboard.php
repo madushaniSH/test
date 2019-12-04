@@ -784,4 +784,5 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
     <script src="scripts/dashboard.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/JQuery-Snowfall/1.7.4/snowfall.jquery.min.js"></script>
+    <script src="scripts/snow.js"></script>
 </body>
