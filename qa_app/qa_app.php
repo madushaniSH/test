@@ -245,6 +245,7 @@ try {
                                     'items-per-page-options': [10]
                                 }"
                                 multi-sort
+                                :search="search"
                         >
                             <template v-slot:top>
                                 <v-toolbar flat>
@@ -254,6 +255,13 @@ try {
                                             <v-icon>mdi-cached</v-icon>
                                         </v-btn>
                                     </v-col>
+                                    <v-spacer></v-spacer>
+                                    <v-text-field
+                                            v-model="search"
+                                            label="Product Name"
+                                            single-line
+                                            hide-details
+                                    ></v-text-field>
                                 </v-toolbar>
                             </template>
                             <template v-slot:item.action="{ item }">
@@ -339,6 +347,7 @@ try {
             selectedProductType: '',
             productBrandItems: [],
             selectedBrand: '',
+            search: ''
         },
         methods: {
             getHuntTypeColor(hunt_type) {
