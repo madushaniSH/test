@@ -78,6 +78,12 @@ try {
         }
     } while (!$flag);
 
+    if ($_POST['client_cat'] !== '') {
+        $sql = 'UPDATE products p SET p.client_cat = :cat WHERE p.product_id = :id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['cat'=>$_POST['client_cat'], 'id' => $last_id]);
+    }
+
     $sql = 'SELECT radar_hunt_key_id FROM radar_queue WHERE account_id = :account_id AND radar_being_handled = 1';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$_SESSION['id']]);

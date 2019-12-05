@@ -104,6 +104,9 @@ function get_probe_info() {
         data: formData,
         dataType: 'JSON',
         success: function (data) {
+            if (project_name.toLowerCase() === "rinielsenus") {
+                document.getElementById('client_cat_select').classList.remove('hide');
+            }
             var title_string = '<span id="project_title">' + project_name + " " + data[0].ticket + '</span>';
             if (data[0].brand_name != null) {
                 title_string += ' <span id="brand_title">' + data[0].brand_name + '</span>';
@@ -309,6 +312,7 @@ function reset_probe_modal() {
 
 function reset_hunt_information() {
     $("#product_type").val('').trigger('change');
+    $("#client_cat_drop").val('').trigger('change');
     document.getElementById('product_name').value = '';
     document.getElementById('manu_link').value = '';
     document.getElementById('product_link').value = '';
@@ -321,6 +325,7 @@ function reset_hunt_information() {
     document.getElementById('facing_error').innerHTML = '';
     document.getElementById('manu_link_error').innerHTML = '';
     document.getElementById('product_comment').value = '';
+    document.getElementById('client_cat_error').innerHTML = '';
     document.getElementById('resubmitted_product').checked = false;
 }
 
@@ -389,6 +394,20 @@ function validate_probe_submission() {
             formData.append('resubmitted_product', resubmitted_product);
             formData.append('product_comment', product_comment);
             formData.append('facings', facings);
+
+            const client_cat_element = document.getElementById('client_cat_drop');
+            const client_cat = client_cat_element.options[client_cat_element.selectedIndex].value;
+            const client_cat_error = document.getElementById('client_cat_error');
+            if (project_name.toLowerCase() === "rinielsenus") {
+                if (client_cat === '') {
+                    is_valid_form = false;
+                    client_cat_error.innerHTML = 'Required';
+                } else {
+                    formData.append('client_cat', client_cat);
+                }
+            } else {
+                formData.append('client_cat', client_cat);
+            }
 
             if (product_name == '') {
                 product_name_error.innerHTML = 'Product Name required';
@@ -675,6 +694,19 @@ function add_probe_product() {
     formData.append('product_comment', product_comment);
     formData.append('facings', facings);
 
+    const client_cat_element = document.getElementById('client_cat_drop');
+    const client_cat = client_cat_element.options[client_cat_element.selectedIndex].value;
+    const client_cat_error = document.getElementById('client_cat_error');
+    if (project_name.toLowerCase() === "rinielsenus") {
+        if (client_cat === '') {
+            is_valid_form = false;
+            client_cat_error.innerHTML = 'Required';
+        } else {
+            formData.append('client_cat', client_cat);
+        }
+    } else {
+        formData.append('client_cat', client_cat);
+    }
     if (product_name == '') {
         product_name_error.innerHTML = 'Product Name required';
         is_valid_form = false;
@@ -973,6 +1005,9 @@ jQuery(document).ready(function () {
     });
     jQuery('#ticket').select2({
         width: '50%',
+    });
+    jQuery('#client_cat_drop').select2({
+        width: '100%'
     });
     jQuery('#status').select2({
         dropdownParent: $("#add_probe"),

@@ -77,6 +77,12 @@ try {
         }
     } while (!$flag);
 
+    if ($_POST['client_cat'] !== '') {
+        $sql = 'UPDATE products p SET p.client_cat = :cat WHERE p.product_id = :id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['cat'=>$_POST['client_cat'], 'id' => $last_id]);
+    }
+
     $sql = 'SELECT probe_key_id FROM probe_queue WHERE account_id = :account_id AND probe_being_handled = 1';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$_SESSION['id']]);

@@ -108,6 +108,15 @@ for ($i = 0; $i < count($hunted_product_info); $i++){
     if ($hunted_product_info[$i]["ODA Comment"] == null){
         $hunted_product_info[$i]["ODA Comment"] = '';
     }
+
+    if ($dbname === 'RINIELSENUS') {
+        $sql = 'SELECT p.client_cat FROM products p WHERE p.product_id = :id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id'=>$hunted_product_info[$i][product_id]]);
+        $client_cat = $stmt->fetchColumn();
+        $hunted_product_info[$i]['Client Cat'] = $client_cat;
+    }
+
     $sql = 'SELECT b.account_gid FROM products INNER JOIN user_db.accounts b ON products.account_id = b.account_id WHERE b.account_id = :account_id AND products.product_id = :product_id';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id'=>$hunted_product_info[$i][hunter_gid], 'product_id'=>$hunted_product_info[$i][product_id]]);

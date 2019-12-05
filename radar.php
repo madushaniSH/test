@@ -552,6 +552,37 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                                                 </div>
                                             </div>
                                             <div class="row">
+                                                <div class="form-group col-md-5 hide" id="client_cat_select">
+                                                    <label for="client_cat_select_val">*Client Cat:</label>
+                                                    <select name="client_cat_select_val" id="client_cat_drop" class="form-control">
+                                                        <option value="" selected disabled>Select</option>
+                                                        <option value="Coffee">Coffee</option>
+                                                        <option value="RTD Coffee">RTD Coffee</option>
+                                                        <option value="Cereal & Granola">Cereal & Granola</option>
+                                                        <option value="Tea">Tea</option>
+                                                        <option value="Beer">Beer</option>
+                                                        <option value="Pet Food">Pet Food</option>
+                                                        <option value="Coffee Makers & Filters /Accessories">Coffee Makers & Filters /Accessories</option>
+                                                        <option value="Frozen Breakfast">Frozen Breakfast</option>
+                                                        <option value="Frozen Snacks & Apps">Frozen Snacks & Apps</option>
+                                                        <option value="Bacon">Bacon</option>
+                                                        <option value="Breakfast Completes">Breakfast Completes</option>
+                                                        <option value="Lunch Meat">Lunch Meat</option>
+                                                        <option value="Rfg Prepared Meat">Rfg Prepared Meat</option>
+                                                        <option value="Packaged Meats/Breakfast Sausage">Package Meats/Breakfast Sausage</option>
+                                                        <option value="Dinner Meats">Dinner Meats</option>
+                                                        <option value="Hot Dogs">Hot Dogs</option>
+                                                        <option value="Frz Prepared Meat">Frz Prepared Meat</option>
+                                                        <option value="Lunch Combos/Snacks">Lunch Combos/Snacks</option>
+                                                        <option value="Rfg Uncooked Meat">Rfg Uncooked Meat</option>
+                                                        <option value="Frozen Value Added Protein">Frozen Value Added Protein</option>
+                                                        <option value="Frz Uncooked Meat">Frz Uncooked Meat</option>
+                                                        <option value="Home Meal Replacement">Home Meal Replacement</option>
+                                                    </select>
+                                                    <span id="client_cat_error" class="error-popup"></span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="form-group col-md-5">
                                                 <div class="checkbox">
                                                     <label class="check_box_container">Resubmitted Product

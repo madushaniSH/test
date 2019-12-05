@@ -279,6 +279,9 @@ const get_radar_info = () => {
         data: formData,
         dataType: "JSON",
         success: function (data) {
+            if (project_name.toLowerCase() === "rinielsenus") {
+                document.getElementById('client_cat_select').classList.remove('hide');
+            }
             var title_string = '<span id="project_title">' + project_name + ' ' + data[0].ticket + "</span>";
             if (data[0].brand_name != null) {
                 title_string +=
@@ -360,6 +363,16 @@ const validate_product_info = () => {
     const facing_error = document.getElementById('facing_error');
     let manu_link = document.getElementById('manu_link').value.trim();
     const product_link = document.getElementById('product_link').value.trim();
+
+    const client_cat_element = document.getElementById('client_cat_drop');
+    const client_cat = client_cat_element.options[client_cat_element.selectedIndex].value;
+    const client_cat_error = document.getElementById('client_cat_error');
+    if (project_name.toLowerCase() === "rinielsenus") {
+        if (client_cat === '') {
+            is_valid_form = false;
+            client_cat_error.innerHTML = 'Required';
+        }
+    }
 
     if (product_name == '') {
         product_name_error.innerHTML = 'Product Name required';
@@ -564,10 +577,13 @@ const save_radar_source = (save_radar, close_radar) => {
                 let manu_link = document.getElementById('manu_link').value.trim();
                 const product_link = document.getElementById('product_link').value.trim();
                 const product_comment = document.getElementById('product_comment').value.trim();
+                const client_cat_element = document.getElementById('client_cat_drop');
+                const client_cat = client_cat_element.options[client_cat_element.selectedIndex].value;
                 if (product_type != 'brand') {
                     manu_link = '';
                 }
                 let formData = new FormData();
+                formData.append('client_cat', client_cat);
                 formData.append('project_name', p_name);
                 formData.append('status', status);
                 formData.append('source', suggestion_source);
@@ -688,6 +704,7 @@ const save_radar_source = (save_radar, close_radar) => {
 
 const reset_hunt_information = () => {
     $("#product_type").val('').trigger('change');
+    $("#client_cat_drop").val('').trigger('change');
     document.getElementById('product_name').value = '';
     document.getElementById('manu_link').value = '';
     document.getElementById('product_link').value = '';
@@ -697,6 +714,7 @@ const reset_hunt_information = () => {
     document.getElementById("output").innerHTML = 0;
     document.getElementById('product_name_error').innerHTML = '';
     document.getElementById('server_success').innerHTML = '';
+    document.getElementById('client_cat_error').innerHTML = '';
     document.getElementById('alt_design_name_error').innerHTML = '';
     document.getElementById('product_type_error').innerHTML = '';
     document.getElementById('facing_error').innerHTML = '';
@@ -771,6 +789,9 @@ jQuery(document).ready(function () {
     });
     jQuery('#brand_name_filter').change(function () {
         validate_client_cat();
+    });
+    jQuery('#client_cat_drop').select2({
+        width: '100%'
     });
     $("#show_button").mouseleave(function () {
         $("#counters").fadeOut();
