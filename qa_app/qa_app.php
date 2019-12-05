@@ -5,7 +5,7 @@ if (!isset($_SESSION['logged_in'])) {
     header('Location: ../login_auth_one.php');
     exit();
 } else {
-    if (!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor') || $_SESSION['role'] === 'SRT Analyst') {
+    if (!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT Analyst')) {
         header('Location: ../index.php');
         exit();
     }
