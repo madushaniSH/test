@@ -42,7 +42,7 @@ foreach ($ticket_array as $ticket) {
 }
 
 $sql = '
-SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_creation_time", p.product_name, p.product_alt_design_name, p.product_type,
+SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_creation_time", SUBSTRING_INDEX(p.product_name, \' \', 1 ) AS "brand_name" ,p.product_name, p.product_alt_design_name, p.product_type,
        p.product_qa_status, p.product_hunt_type, pqq.probe_being_handled
     FROM products p
     LEFT OUTER JOIN probe_qa_queue pqq ON p.product_id = pqq.product_id

@@ -5,7 +5,7 @@ if (!isset($_SESSION['logged_in'])) {
     header('Location: ../login_auth_one.php');
     exit();
 } else {
-    if (!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor')) {
+    if (!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor') || $_SESSION['role'] === 'SRT Analyst') {
         header('Location: ../index.php');
         exit();
     }
@@ -68,7 +68,7 @@ try {
             <v-row
                     :align="'end'"
                     :justify="'start'"
-                    id="filters"
+                    class="filters"
             >
                 <v-col
                         cols="12"
@@ -176,7 +176,61 @@ try {
                     </v-col>
                 </v-layout>
             </v-row>
-
+            <v-row
+                    :align="'end'"
+                    :justify="'start'"
+                    class="filters"
+                    v-if="productInfo.length > 0"
+            >
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            label="QA Status"
+                            :items="qaStatusItems"
+                            v-model="selectedQaStatus"
+                            chips
+                            deletable-chips
+                    ></v-autocomplete>
+                </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            label="Hunt Type"
+                            :items="productHuntItems"
+                            v-model="selectedHuntType"
+                            chips
+                            deletable-chips
+                    ></v-autocomplete>
+                </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            label="Product Type"
+                            :items="productTypeItems"
+                            v-model="selectedProductType"
+                            chips
+                            deletable-chips
+                    ></v-autocomplete>
+                </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            label="Brand"
+                            :items="productBrandItems"
+                            v-model="selectedBrand"
+                            chips
+                            deletable-chips
+                    ></v-autocomplete>
+                </v-col>
+            </v-row>
             <v-row>
                 <v-slide-y-transition>
                     <v-col
@@ -184,13 +238,12 @@ try {
                     >
                         <v-data-table
                                 :headers="headers"
-                                :items="productInfo"
+                                :items="filteredProducts"
                                 class="elevation-1"
                                 item-key="product_id"
                                 :footer-props="{
                                     'items-per-page-options': [10]
                                 }"
-                                :search="search"
                                 multi-sort
                         >
                             <template v-slot:top>
@@ -201,14 +254,6 @@ try {
                                             <v-icon>mdi-cached</v-icon>
                                         </v-btn>
                                     </v-col>
-                                    <v-spacer></v-spacer>
-                                    <v-text-field
-                                            v-model="search"
-                                            append-icon="mdi-file-find"
-                                            label="Search"
-                                            single-line
-                                            hide-details
-                                    ></v-text-field>
                                 </v-toolbar>
                             </template>
                             <template v-slot:item.action="{ item }">
@@ -286,7 +331,14 @@ try {
                 dvc: 0,
                 facing: 0
             },
-            search: ''
+            qaStatusItems: ['pending', 'approved', 'disapproved', 'active', 'rejected'],
+            selectedQaStatus: '',
+            productHuntItems: ['probe', 'radar', 'reference'],
+            selectedHuntType: '',
+            productTypeItems:['brand', 'sku', 'dvc', 'facing'],
+            selectedProductType: '',
+            productBrandItems: [],
+            selectedBrand: '',
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -345,13 +397,19 @@ try {
                     axios.post('api/fetch_product_info.php', formData)
                         .then((response) => {
                             this.productInfo = [];
+                            this.productBrandItems = [];
+                            let count = 0;
+                            response.data[0].product_info.forEach(item => {
+                                this.productBrandItems[count] = item.brand_name;
+                                count++;
+                            });
                             this.productInfo = response.data[0].product_info;
                             this.overlay = false;
                         });
                 }
             },
-            getPendingCount() {
-                if (this.productInfo.length === 0) {
+            getPendingCount(data) {
+                if (data.length === 0) {
                     this.pendingCount.brand = 0;
                     this.pendingCount.sku = 0;
                     this.pendingCount.dvc = 0;
@@ -362,7 +420,7 @@ try {
                     let dvc_count = 0;
                     let facing_count = 0;
 
-                    this.productInfo.forEach(function(item) {
+                    data.forEach(function(item) {
                         if (item.product_type === 'brand') {
                             brand_count++;
                         }
@@ -400,16 +458,42 @@ try {
                 this.getTicketList();
             },
             productInfo: function() {
-                this.getPendingCount();
+                this.getPendingCount(this.productInfo);
             },
         },
         created() {
             this.getProjectList();
+        },
+        computed: {
+            filteredProducts() {
+                let a = this.productInfo.filter((i) => {
+                    return !this.selectedQaStatus || (i.product_qa_status === this.selectedQaStatus);
+                });
+                a = a.filter((i) => {
+                    return !this.selectedHuntType || (i.product_hunt_type === this.selectedHuntType);
+                });
+                a = a.filter((i) => {
+                    return !this.selectedProductType || (i.product_type === this.selectedProductType);
+                });
+                let count = 0;
+                this.productBrandItems = [];
+                a.forEach(item => {
+                    this.productBrandItems[count] = item.brand_name;
+                    count++;
+                });
+                a = a.filter((i) => {
+                    return !this.selectedBrand ||
+                        (i.product_name.substr(0, i.product_name.indexOf(" ")) === this.selectedBrand);
+                });
+                this.getPendingCount(a);
+                return a;
+            }
+
         }
     });
 </script>
 <style>
-    #filters {
+    .filters {
         margin-left: 0.5vw;
     }
 </style>
