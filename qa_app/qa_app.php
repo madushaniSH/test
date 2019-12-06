@@ -269,6 +269,14 @@ try {
                                     <v-btn color="primary" :disabled="item.probe_being_handled === null">QA</v-btn>
                                 </div>
                             </template>
+                            <template v-slot:item.view="{ item }">
+                                <div class="my-2">
+                                    <v-btn
+                                            color="dark"
+                                            @click.stop="showProductHistory(item)"
+                                    >Explore</v-btn>
+                                </div>
+                            </template>
                             <template v-slot:item.product_qa_status="{ item }">
                                 <v-chip
                                         class="ma-2"
@@ -292,6 +300,77 @@ try {
                 </v-slide-y-transition>
                 </v-col>
             </v-row>
+            <v-dialog
+                    v-model="historyDialog"
+                    max-width="400"
+            >
+                <v-card>
+                    <v-card-title class="headline">Product History</v-card-title>
+
+                    <v-card-text>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>QA DateTime</v-list-item-subtitle>
+                                <v-list-item-title>{{ productHistory.product_qa_datetime}}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Product Previous Name</v-list-item-subtitle>
+                                <v-list-item-title>{{ productHistory.product_previous}}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Product Previous Alt Name</v-list-item-subtitle>
+                                <v-list-item-title>{{ productHistory.alt_design_previous}}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Product QA Errors</v-list-item-subtitle>
+                                <v-list-item-title>{{ productHistory.qa_error}}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>ODA DateTime</v-list-item-subtitle>
+                                <v-list-item-title>{{ productHistory.product_oda_datetime}}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Product QA Previous Name</v-list-item-subtitle>
+                                <v-list-item-title>{{ productHistory.product_alt_design_qa_previous}}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Product ODA Errors</v-list-item-subtitle>
+                                <v-list-item-title>{{ productHistory.oda_error}}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Product ODA Comment</v-list-item-subtitle>
+                                <v-list-item-title>{{ productHistory.product_oda_comment}}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-card-text>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+
+                        <v-btn
+                                color="green darken-1"
+                                text
+                                @click="historyDialog = false"
+                        >
+                            Close
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-content>
         <v-bottom-navigation
                 color="success"
@@ -329,6 +408,7 @@ try {
                 {text: 'Product Alt Name', value: 'product_alt_design_name', width: '25%'},
                 {text: 'Product QA Status', value: 'product_qa_status', width: '10%', filterable: false},
                 {text: 'Hunt Type', value: 'product_hunt_type', width: '10%', filterable: false},
+                {text: 'Product History', value: 'view', sortable: false, align: 'center', filterable: false},
                 {text: 'Actions', value: 'action', sortable: false, align: 'center', filterable: false},
             ],
             ticketStatusOptions: ['OPEN', 'CLOSED', 'DONE', 'IN PROGRESS', 'IN PROGRESS / SEND TO EAN'],
@@ -347,7 +427,9 @@ try {
             selectedProductType: '',
             productBrandItems: [],
             selectedBrand: '',
-            search: ''
+            search: '',
+            productHistory: {},
+            historyDialog: false,
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -405,6 +487,7 @@ try {
                     formData.append('ticket', this.selectedTickets);
                     axios.post('api/fetch_product_info.php', formData)
                         .then((response) => {
+                            console.log(response);
                             this.productInfo = [];
                             this.productBrandItems = [];
                             let count = 0;
@@ -451,6 +534,18 @@ try {
 
                 }
             },
+            showProductHistory(item) {
+                this.productHistory.product_qa_datetime = item.product_qa_datetime;
+                this.productHistory.product_previous = item.product_previous;
+                this.productHistory.alt_design_previous = item.alt_design_previous;
+                this.productHistory.qa_error = item.qa_error;
+                this.productHistory.product_oda_datetime = item.product_oda_datetime;
+                this.productHistory.product_qa_previous = item.product_qa_previous;
+                this.productHistory.product_alt_design_qa_previous = item.product_alt_design_qa_previous;
+                this.productHistory.oda_error = item.oda_error;
+                this.productHistory.product_oda_comment = item.product_oda_comment;
+                this.historyDialog = true;
+            }
         },
         watch: {
             darkThemeSelected: function (val) {

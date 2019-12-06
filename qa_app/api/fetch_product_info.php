@@ -42,8 +42,8 @@ foreach ($ticket_array as $ticket) {
 }
 
 $sql = '
-SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_creation_time", SUBSTRING_INDEX(p.product_name, \' \', 1 ) AS "brand_name" ,p.product_name, p.product_alt_design_name, p.product_type,
-       p.product_qa_status, p.product_hunt_type, pqq.probe_being_handled
+SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_creation_time", SUBSTRING_INDEX(p.product_name, \' \', 1 ) AS "brand_name" ,p.product_name, p.product_previous, p.product_qa_previous ,p.product_alt_design_name, p.product_alt_design_previous, p.product_alt_design_qa_previous , p.product_type,
+       p.product_qa_status, p.product_hunt_type, p.product_qa_datetime, p.product_oda_datetime, p.product_oda_comment,pqq.probe_being_handled
     FROM products p
     LEFT OUTER JOIN probe_qa_queue pqq ON p.product_id = pqq.product_id
     LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id
@@ -63,6 +63,34 @@ ORDER BY p.product_creation_time DESC';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $product_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+for($i = 0; $i < count($product_array); $i++) {
+    $sql = 'SELECT a.project_error_name FROM product_qa_errors b INNER JOIN project_errors a ON b.error_id = a.project_error_id WHERE b.product_id = :product_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['product_id'=>$product_array[$i][product_id]]);
+    $qa_errors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $error_string = '';
+    for ($j = 0; $j < count($qa_errors); $j++) {
+        $error_string .= $qa_errors[$j][project_error_name].',';
+    }
+    if ($error_string != '') {
+        $error_string = rtrim($error_string, ",");
+    }
+    $product_array[$i]['qa_error'] = $error_string;
+
+    $sql = 'SELECT a.project_error_name FROM product_oda_errors b INNER JOIN project_errors a ON b.error_id = a.project_error_id WHERE b.product_id = :product_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['product_id'=>$product_array[$i][product_id]]);
+    $qa_errors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $error_string = '';
+    for ($j = 0; $j < count($qa_errors); $j++) {
+        $error_string .= $qa_errors[$j][project_error_name].',';
+    }
+    if ($error_string != '') {
+        $error_string = rtrim($error_string, ",");
+    }
+    $product_array[$i]['oda_error'] = $error_string;
+}
 
 $return_arr[] = array("product_info" => $product_array);
 echo json_encode($return_arr);
