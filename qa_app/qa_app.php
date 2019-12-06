@@ -302,7 +302,7 @@ try {
             </v-row>
             <v-dialog
                     v-model="historyDialog"
-                    max-width="400"
+                    max-width="600"
             >
                 <v-card>
                     <v-card-title class="headline">Product History</v-card-title>
@@ -310,7 +310,19 @@ try {
                     <v-card-text>
                         <v-list-item two-line>
                             <v-list-item-content>
-                                <v-list-item-subtitle>QA DateTime</v-list-item-subtitle>
+                                <v-list-item-subtitle>Product Source Link</v-list-item-subtitle>
+                                <v-list-item-title><a :href="productHistory.product_link" target="_blank">{{ productHistory.product_link}}</a></v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Product Hunt Source</v-list-item-subtitle>
+                                <v-list-item-title>{{ productHistory.hunt_source }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>SRT QA DateTime</v-list-item-subtitle>
                                 <v-list-item-title>{{ productHistory.product_qa_datetime}}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
@@ -334,13 +346,19 @@ try {
                         </v-list-item>
                         <v-list-item two-line>
                             <v-list-item-content>
-                                <v-list-item-subtitle>ODA DateTime</v-list-item-subtitle>
+                                <v-list-item-subtitle>ODA QA DateTime</v-list-item-subtitle>
                                 <v-list-item-title>{{ productHistory.product_oda_datetime}}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
                         <v-list-item two-line>
                             <v-list-item-content>
                                 <v-list-item-subtitle>Product QA Previous Name</v-list-item-subtitle>
+                                <v-list-item-title>{{ productHistory.product_qa_previous}}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Product QA Previous Alt Name</v-list-item-subtitle>
                                 <v-list-item-title>{{ productHistory.product_alt_design_qa_previous}}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
@@ -544,6 +562,14 @@ try {
                 this.productHistory.product_alt_design_qa_previous = item.product_alt_design_qa_previous;
                 this.productHistory.oda_error = item.oda_error;
                 this.productHistory.product_oda_comment = item.product_oda_comment;
+                this.productHistory.product_link = item.product_link;
+                if (item.probe_id !== null) {
+                    this.productHistory.hunt_source = "PROBE " + item.probe_id;
+                } else if (item.radar_source_link !== null) {
+                    this.productHistory.hunt_source = item.radar_source_link;
+                } else {
+                    this.productHistory.hunt_source = "REF EAN " + item.reference_ean;
+                }
                 this.historyDialog = true;
             }
         },
