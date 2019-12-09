@@ -266,7 +266,7 @@ try {
                             </template>
                             <template v-slot:item.action="{ item }">
                                 <div class="my-2">
-                                    <v-btn color="primary" :disabled="item.probe_being_handled === null">QA</v-btn>
+                                    <v-btn color="primary" :disabled="item.probe_being_handled === null" @click="qaProduct(item)">QA</v-btn>
                                 </div>
                             </template>
                             <template v-slot:item.view="{ item }">
@@ -302,7 +302,7 @@ try {
             </v-row>
             <v-dialog
                     v-model="historyDialog"
-                    max-width="400"
+                    max-width="600"
             >
                 <v-card>
                     <v-card-title class="headline">Product History</v-card-title>
@@ -310,7 +310,19 @@ try {
                     <v-card-text>
                         <v-list-item two-line>
                             <v-list-item-content>
-                                <v-list-item-subtitle>QA DateTime</v-list-item-subtitle>
+                                <v-list-item-subtitle>Product Source Link</v-list-item-subtitle>
+                                <v-list-item-title><a :href="productHistory.product_link" target="_blank">{{ productHistory.product_link}}</a></v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Product Hunt Source</v-list-item-subtitle>
+                                <v-list-item-title>{{ productHistory.hunt_source }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>SRT QA DateTime</v-list-item-subtitle>
                                 <v-list-item-title>{{ productHistory.product_qa_datetime}}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
@@ -334,13 +346,19 @@ try {
                         </v-list-item>
                         <v-list-item two-line>
                             <v-list-item-content>
-                                <v-list-item-subtitle>ODA DateTime</v-list-item-subtitle>
+                                <v-list-item-subtitle>ODA QA DateTime</v-list-item-subtitle>
                                 <v-list-item-title>{{ productHistory.product_oda_datetime}}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
                         <v-list-item two-line>
                             <v-list-item-content>
                                 <v-list-item-subtitle>Product QA Previous Name</v-list-item-subtitle>
+                                <v-list-item-title>{{ productHistory.product_qa_previous}}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>Product QA Previous Alt Name</v-list-item-subtitle>
                                 <v-list-item-title>{{ productHistory.product_alt_design_qa_previous}}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
@@ -368,6 +386,24 @@ try {
                         >
                             Close
                         </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-dialog v-model="dialog" max-width="800px">
+                <v-card>
+                    <v-card-title>
+                    </v-card-title>
+                        <span class="headline">{{ selectedProductInfo.projectName }} {{ selectedProductInfo.ticket_id }} {{ selectedProductInfo.product_hunt_type }} {{ selectedProductInfo.product_source }}</span>
+                    <v-card-text>
+                        <v-form
+                        >
+                            <v-container>
+                            </v-container>
+                        </v-form>
+                    </v-card-text>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -430,6 +466,12 @@ try {
             search: '',
             productHistory: {},
             historyDialog: false,
+            selectedProductInfo: {
+                projectName: '',
+                ticket_id: '',
+                product_hunt_type: '',
+                product_source: ''
+            }
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -487,7 +529,6 @@ try {
                     formData.append('ticket', this.selectedTickets);
                     axios.post('api/fetch_product_info.php', formData)
                         .then((response) => {
-                            console.log(response);
                             this.productInfo = [];
                             this.productBrandItems = [];
                             let count = 0;
@@ -544,7 +585,22 @@ try {
                 this.productHistory.product_alt_design_qa_previous = item.product_alt_design_qa_previous;
                 this.productHistory.oda_error = item.oda_error;
                 this.productHistory.product_oda_comment = item.product_oda_comment;
+                this.productHistory.product_link = item.product_link;
+                if (item.probe_id !== null) {
+                    this.productHistory.hunt_source = "PROBE " + item.probe_id;
+                } else if (item.radar_source_link !== null) {
+                    this.productHistory.hunt_source = item.radar_source_link;
+                } else {
+                    this.productHistory.hunt_source = "REF EAN " + item.reference_ean;
+                }
                 this.historyDialog = true;
+            },
+            qaProduct(item) {
+                this.selectedProductInfo.projectName = this.selectedProject;
+                this.selectedProductInfo.ticket_id = item.ticket_id;
+                this.selectedProductInfo.product_hunt_type = item.product_hunt_type;
+
+                this.dialog = true;
             }
         },
         watch: {
