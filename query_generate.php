@@ -266,7 +266,7 @@ if (!isset($_SESSION['logged_in'])) {
                         }
                         this.sql += ')t GROUP BY 2';
                     }else if (this.selectedQueryType === 'Product Type Hunted Chart Query') {
-                        this.sql = 'SELECT product_type, SUM(COUNT) AS "Count", DATE(product_qa_datetime) FROM\n(';
+                        this.sql = 'SELECT product_type, SUM(COUNT) AS "Count", DATE(product_qa_datetime) as "time" FROM\n(';
                         for (let i = 0; i < this.selectedProjects.length; i++) {
                             let project = this.selectedProjects[i];
                             let projectQuery = '';
