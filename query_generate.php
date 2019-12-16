@@ -216,7 +216,7 @@ if (!isset($_SESSION['logged_in'])) {
                                 '    FROM\n' +
                                 `        ${project}.products p\n` +
                                 '    WHERE\n' +
-                                '       p.product_qa_status = "active" OR p.product_qa_status = "approved"\n' +
+                                '       (p.product_qa_status = "active" OR p.product_qa_status = "approved") AND $__timeFilter(p.product_qa_datetime)\n' +
                                 '    GROUP BY\n' +
                                 '        p.product_type\n';
                             if (i + 1 !== this.selectedProjects.length) {
