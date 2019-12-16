@@ -112,6 +112,20 @@ if (!isset($_SESSION['logged_in'])) {
                     >
                     </v-autocomplete>
                 </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            v-model="selectedQueryType"
+                            label="Select"
+                            chips
+                            hint="Select a Query Type"
+                            persistent-hint
+                            :items="queryType"
+                    >
+                    </v-autocomplete>
+                </v-col>
             </v-row>
             <v-row
                     :align="'center'"
@@ -155,7 +169,9 @@ if (!isset($_SESSION['logged_in'])) {
             projectArray: ['Test'],
             selectedProjects: [],
             sql: '',
-            selectedHuntType: 'probe'
+            selectedHuntType: 'probe',
+            queryType: ['Product Type Hunted Query', 'Probe Status Query'],
+            selectedQueryType: '',
         },
         methods: {
             getProjectList() {
@@ -189,45 +205,67 @@ if (!isset($_SESSION['logged_in'])) {
             },
             genQuery() {
                 if (this.selectedProjects.length > 0 && this.selectedHuntType !== '') {
-                    this.sql = 'SELECT SUM(COUNT) AS "Count", probe_status_name FROM\n(';
-                    for (let i = 0; i < this.selectedProjects.length; i++) {
-                        let project = this.selectedProjects[i];
-                        let projectQuery = '';
-                        let countString = '';
-                        let joinString = '';
-                        if (this.selectedHuntType === 'probe') {
-                            countString  = '        COUNT(p.probe_key_id) AS "Count",\n'
-                            joinString = '    LEFT OUTER JOIN\n' +
-                                `        ${project}.probe p\n ` +
-                                '    ON\n' +
-                                '        p.probe_status_id = ps.probe_status_id\n';
-                        } else if (this.selectedHuntType === 'radar') {
-                            countString  = '        COUNT(rs.radar_source_id) AS "Count",\n';
-                            joinString = '    LEFT OUTER JOIN\n' +
-                                `        ${project}.radar_sources rs\n ` +
-                                '    ON\n' +
-                                '        rs.radar_status_id = ps.probe_status_id\n';
-                        } else {
-                            countString  = '        COUNT(ri.reference_info_id) AS "Count",\n';
-                            joinString = '    LEFT OUTER JOIN\n' +
-                                `        ${project}.reference_info ri\n ` +
-                                '    ON\n' +
-                                '        ri.reference_status_id = ps.probe_status_id\n';
+                    if (this.selectedQueryType === 'Product Type Hunted Query') {
+                        this.sql = 'SELECT product_type, SUM(COUNT) AS "Count" FROM\n(';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            projectQuery = '  SELECT\n' +
+                                '        COUNT(p.product_id) AS "Count",\n' +
+                                '        p.product_type\n' +
+                                '    FROM\n' +
+                                `        ${project}.products p\n` +
+                                '    WHERE\n' +
+                                '       p.product_qa_status = "active" OR p.product_qa_status = "approved"\n' +
+                                '    GROUP BY\n' +
+                                '        p.product_type\n';
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
                         }
-                        projectQuery = '  SELECT\n' +
+                        this.sql += ')t GROUP BY 1';
+                    } else if (this.selectedQueryType === 'Probe Status Query'){
+                        this.sql = 'SELECT SUM(COUNT) AS "Count", probe_status_name FROM\n(';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            let countString = '';
+                            let joinString = '';
+                            if (this.selectedHuntType === 'probe') {
+                                countString = '        COUNT(p.probe_key_id) AS "Count",\n'
+                                joinString = '    LEFT OUTER JOIN\n' +
+                                    `        ${project}.probe p\n ` +
+                                    '    ON\n' +
+                                    '        p.probe_status_id = ps.probe_status_id\n';
+                            } else if (this.selectedHuntType === 'radar') {
+                                countString = '        COUNT(rs.radar_source_id) AS "Count",\n';
+                                joinString = '    LEFT OUTER JOIN\n' +
+                                    `        ${project}.radar_sources rs\n ` +
+                                    '    ON\n' +
+                                    '        rs.radar_status_id = ps.probe_status_id\n';
+                            } else {
+                                countString = '        COUNT(ri.reference_info_id) AS "Count",\n';
+                                joinString = '    LEFT OUTER JOIN\n' +
+                                    `        ${project}.reference_info ri\n ` +
+                                    '    ON\n' +
+                                    '        ri.reference_status_id = ps.probe_status_id\n';
+                            }
+                            projectQuery = '  SELECT\n' +
                                 countString +
-                            '        ps.probe_status_name\n' +
-                            '    FROM\n' +
-                            `        ${project}.probe_status ps\n` +
+                                '        ps.probe_status_name\n' +
+                                '    FROM\n' +
+                                `        ${project}.probe_status ps\n` +
                                 joinString +
-                            '    GROUP BY\n' +
-                            '        ps.probe_status_name\n';
-                        if (i + 1 !== this.selectedProjects.length) {
-                            projectQuery += '    UNION ALL\n';
+                                '    GROUP BY\n' +
+                                '        ps.probe_status_name\n';
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
                         }
-                        this.sql += projectQuery;
+                        this.sql += ')t GROUP BY 2';
                     }
-                    this.sql += ')t GROUP BY 2';
                 } else {
                     this.sql = '';
                 }
@@ -243,6 +281,9 @@ if (!isset($_SESSION['logged_in'])) {
                 this.genQuery();
             },
             selectedHuntType: function() {
+                this.genQuery();
+            },
+            selectedQueryType: function() {
                 this.genQuery();
             }
         },
