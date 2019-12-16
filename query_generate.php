@@ -170,7 +170,7 @@ if (!isset($_SESSION['logged_in'])) {
             selectedProjects: [],
             sql: '',
             selectedHuntType: 'probe',
-            queryType: ['Product Type Hunted Query', 'Probe Status Query'],
+            queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query'],
             selectedQueryType: '',
         },
         methods: {
@@ -265,6 +265,27 @@ if (!isset($_SESSION['logged_in'])) {
                             this.sql += projectQuery;
                         }
                         this.sql += ')t GROUP BY 2';
+                    }else if (this.selectedQueryType === 'Product Type Hunted Chart Query') {
+                        this.sql = 'SELECT product_type, SUM(COUNT) AS "Count", DATE(product_qa_datetime) FROM\n(';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            projectQuery = '  SELECT\n' +
+                                '        COUNT(p.product_id) AS "Count",\n' +
+                                '        p.product_type,\n' +
+                                '        p.product_qa_datetime\n' +
+                                '    FROM\n' +
+                                `        ${project}.products p\n` +
+                                '    WHERE\n' +
+                                '       (p.product_qa_status = "active" OR p.product_qa_status = "approved") AND $__timeFilter(p.product_qa_datetime)\n' +
+                                '    GROUP BY\n' +
+                                '        p.product_type, p.product_qa_datetime\n';
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += ')t GROUP BY 1, 3';
                     }
                 } else {
                     this.sql = '';
