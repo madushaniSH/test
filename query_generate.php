@@ -256,6 +256,7 @@ if (!isset($_SESSION['logged_in'])) {
                                 'FROM\n' +
                                 `    ${project}.project_tickets pt` +
                                 'WHERE pt.ticket_type != "Internal"';
+                                `    ${project}.project_tickets pt`;
                             if (i + 1 !== this.selectedProjects.length) {
                                 projectQuery += '    UNION ALL\n';
                             }
