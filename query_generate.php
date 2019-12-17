@@ -254,9 +254,8 @@ if (!isset($_SESSION['logged_in'])) {
                                 '    \tCASE WHEN WEEK(CURDATE()) != WEEK(pt.ticket_creation_time) AND pt.ticket_status = "IN PROGRESS" THEN 1 ELSE 0\n' +
                                 '    END) AS "col4"\n' +
                                 'FROM\n' +
-                                `    ${project}.project_tickets pt` +
+                                `    ${project}.project_tickets pt\n` +
                                 'WHERE pt.ticket_type != "Internal"';
-                                `    ${project}.project_tickets pt`;
                             if (i + 1 !== this.selectedProjects.length) {
                                 projectQuery += '    UNION ALL\n';
                             }
