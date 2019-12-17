@@ -170,7 +170,7 @@ if (!isset($_SESSION['logged_in'])) {
             selectedProjects: [],
             sql: '',
             selectedHuntType: 'probe',
-            queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query'],
+            queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query', 'Probe Processed Chart Query'],
             selectedQueryType: '',
         },
         methods: {
@@ -225,25 +225,28 @@ if (!isset($_SESSION['logged_in'])) {
                             this.sql += projectQuery;
                         }
                         this.sql += ')t GROUP BY 1';
-                    } else if (this.selectedQueryType === 'Probe Status Query'){
-                        this.sql = 'SELECT SUM(COUNT) AS "Count", probe_status_name FROM\n(';
+                    } else if (this.selectedQueryType === 'Probe Processed Chart Query') {
+                        this.sql = 'SELECT "Region" ,SUM(COUNT) AS "Count", DATE(time) as "time" FROM\n(';
                         for (let i = 0; i < this.selectedProjects.length; i++) {
                             let project = this.selectedProjects[i];
                             let projectQuery = '';
                             let countString = '';
                             let joinString = '';
+                            let whereString = '';
                             if (this.selectedHuntType === 'probe') {
-                                countString = '        COUNT(p.probe_key_id) AS "Count",\n'
+                                countString = '        COUNT(p.probe_key_id) AS "Count", p.probe_hunter_processed_time as "time",\n';
                                 joinString = '    LEFT OUTER JOIN\n' +
                                     `        ${project}.probe p\n ` +
                                     '    ON\n' +
                                     '        p.probe_status_id = ps.probe_status_id\n';
+                                whereString = 'WHERE $__timeFilter(p.probe_hunter_processed_time)';
                             } else if (this.selectedHuntType === 'radar') {
-                                countString = '        COUNT(rs.radar_source_id) AS "Count",\n';
+                                countString = '        COUNT(rs.radar_source_id) AS "Count", rs.creation_time as "time", \n';
                                 joinString = '    LEFT OUTER JOIN\n' +
                                     `        ${project}.radar_sources rs\n ` +
                                     '    ON\n' +
                                     '        rs.radar_status_id = ps.probe_status_id\n';
+                                whereString = 'WHERE $__timeFilter(rs.creation_time)';
                             } else {
                                 countString = '        COUNT(ri.reference_info_id) AS "Count",\n';
                                 joinString = '    LEFT OUTER JOIN\n' +
@@ -257,6 +260,52 @@ if (!isset($_SESSION['logged_in'])) {
                                 '    FROM\n' +
                                 `        ${project}.probe_status ps\n` +
                                 joinString +
+                                whereString +
+                                '    GROUP BY\n' +
+                                '        ps.probe_status_name, 2\n';
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += ')t GROUP BY 3 ORDER BY 3 ASC';
+
+                    } else if (this.selectedQueryType === 'Probe Status Query'){
+                        this.sql = 'SELECT SUM(COUNT) AS "Count", probe_status_name FROM\n(';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            let countString = '';
+                            let joinString = '';
+                            let whereString = '';
+                            if (this.selectedHuntType === 'probe') {
+                                countString = '        COUNT(p.probe_key_id) AS "Count",\n'
+                                joinString = '    LEFT OUTER JOIN\n' +
+                                    `        ${project}.probe p\n ` +
+                                    '    ON\n' +
+                                    '        p.probe_status_id = ps.probe_status_id\n';
+                                whereString = 'WHERE $__timeFilter(p.probe_hunter_processed_time)';
+                            } else if (this.selectedHuntType === 'radar') {
+                                countString = '        COUNT(rs.radar_source_id) AS "Count",\n';
+                                joinString = '    LEFT OUTER JOIN\n' +
+                                    `        ${project}.radar_sources rs\n ` +
+                                    '    ON\n' +
+                                    '        rs.radar_status_id = ps.probe_status_id\n';
+                                whereString = 'WHERE $__timeFilter(rs.creation_time)';
+                            } else {
+                                countString = '        COUNT(ri.reference_info_id) AS "Count",\n';
+                                joinString = '    LEFT OUTER JOIN\n' +
+                                    `        ${project}.reference_info ri\n ` +
+                                    '    ON\n' +
+                                    '        ri.reference_status_id = ps.probe_status_id\n';
+                            }
+                            projectQuery = '  SELECT\n' +
+                                countString +
+                                '        ps.probe_status_name\n' +
+                                '    FROM\n' +
+                                `        ${project}.probe_status ps\n` +
+                                joinString +
+                                whereString +
                                 '    GROUP BY\n' +
                                 '        ps.probe_status_name\n';
                             if (i + 1 !== this.selectedProjects.length) {
