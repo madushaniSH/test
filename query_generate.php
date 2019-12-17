@@ -283,10 +283,7 @@ if (!isset($_SESSION['logged_in'])) {
                                 'FROM\n' +
                                 `    ${project}.project_tickets pt\n` +
                                 'WHERE\n' +
-                                '    YEARWEEK(\n' +
-                                '        DATE(pt.ticket_creation_time),\n' +
-                                '        1\n' +
-                                '    ) = YEARWEEK(CURDATE(), 1)';
+                                '    $__timeFilter(pt.ticket_creation_time)';
                             if (i + 1 !== this.selectedProjects.length) {
                                 projectQuery += '    UNION ALL\n';
                             }
