@@ -170,7 +170,7 @@ if (!isset($_SESSION['logged_in'])) {
             selectedProjects: [],
             sql: '',
             selectedHuntType: 'probe',
-            queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query', 'Probe Processed Chart Query', 'Ticket Progress Query'],
+            queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query', 'Probe Processed Chart Query', 'Ticket Progress Query', 'Ticket Chart Query'],
             selectedQueryType: '',
         },
         methods: {
@@ -225,6 +225,24 @@ if (!isset($_SESSION['logged_in'])) {
                             this.sql += projectQuery;
                         }
                         this.sql += ')t GROUP BY 1';
+                    } else if (this.selectedQueryType === 'Ticket Chart Query') {
+                        this.sql = 'SELECT "Region" ,SUM(COUNT) AS "Count", DATE(time) as "time" FROM\n(';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            projectQuery = 'SELECT\n' +
+                                '    COUNT(pt.project_ticket_system_id) as "COUNT",\n' +
+                                '    DATE(pt.ticket_creation_time) as "time"\n' +
+                                'FROM\n' +
+                                `    ${project}.project_tickets pt\n` +
+                                'GROUP BY\n' +
+                                '    2';
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += ')t GROUP BY 3 ORDER BY 3 ASC';
                     } else if (this.selectedQueryType === 'Ticket Progress Query') {
                         this.sql = 'SELECT "Region" as "", SUM(col1) AS "Current Week Inflow",' +
                             'SUM(col2) as "Closed Tickets for the Week",' +
