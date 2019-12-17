@@ -170,7 +170,7 @@ if (!isset($_SESSION['logged_in'])) {
             selectedProjects: [],
             sql: '',
             selectedHuntType: 'probe',
-            queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query', 'Probe Processed Chart Query'],
+            queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query', 'Probe Processed Chart Query', 'Ticket Progress Query'],
             selectedQueryType: '',
         },
         methods: {
@@ -225,6 +225,42 @@ if (!isset($_SESSION['logged_in'])) {
                             this.sql += projectQuery;
                         }
                         this.sql += ')t GROUP BY 1';
+                    } else if (this.selectedQueryType === 'Ticket Progress Query') {
+                        this.sql = 'SELECT "Region" as "", SUM(col1) AS "Current Week Inflow",' +
+                            'SUM(col2) as "Closed Tickets for the Week",' +
+                            'SUM(col3) as "In Progress",' +
+                            'SUM(col4) as "Bought forward from last week" FROM\n(';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            projectQuery = 'SELECT\n' +
+                                '    SUM(\n' +
+                                '        CASE WHEN YEARWEEK(\n' +
+                                '            DATE(pt.ticket_creation_time),\n' +
+                                '            1\n' +
+                                '        ) = YEARWEEK(CURDATE(), 1) THEN 1 ELSE 0\n' +
+                                '        END) AS "col1",\n' +
+                                '    SUM(\n' +
+                                '        CASE WHEN YEARWEEK(\n' +
+                                '            DATE(pt.ticket_completion_date),\n' +
+                                '            1\n' +
+                                '        ) = YEARWEEK(CURDATE(), 1) THEN 1 ELSE 0\n' +
+                                '        END) AS "col2",\n' +
+                                '    SUM(\n' +
+                                '        CASE WHEN pt.ticket_status = "IN PROGRESS" THEN 1 ELSE 0\n' +
+                                '    END\n' +
+                                '\t) AS "col3",\n' +
+                                '\tSUM(\n' +
+                                '    \tCASE WHEN WEEK(CURDATE()) != WEEK(pt.ticket_creation_time) AND pt.ticket_status = "IN PROGRESS" THEN 1 ELSE 0\n' +
+                                '    END) AS "col4"\n' +
+                                'FROM\n' +
+                                `    ${project}.project_tickets pt`;
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += ')t';
                     } else if (this.selectedQueryType === 'Probe Processed Chart Query') {
                         this.sql = 'SELECT "Region" ,SUM(COUNT) AS "Count", DATE(time) as "time" FROM\n(';
                         for (let i = 0; i < this.selectedProjects.length; i++) {
