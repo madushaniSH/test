@@ -106,7 +106,7 @@ if ($row_count == 0) {
       `account_id` int(11) NOT NULL,
       `ticket_creation_time` datetime NOT NULL DEFAULT current_timestamp(),
         ticket_type 
-                    ENUM(\'APOC Radar\',\'Radar\',\'Data Health\',\'Type E - SKU Hunt/Data Collection\',\'NA\') 
+                    ENUM(\'APOC Radar\',\'Radar\',\'Data Health\',\'Type E - SKU Hunt/Data Collection\',\'NA\',\'Internal\') 
                     NOT NULL DEFAULT \'NA\' 
         ,
         `ticket_description` VARCHAR(500) NULL DEFAULT NULL,
