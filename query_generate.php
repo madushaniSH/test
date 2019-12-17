@@ -171,7 +171,8 @@ if (!isset($_SESSION['logged_in'])) {
             sql: '',
             selectedHuntType: 'probe',
             queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query',
-                'Probe Processed Chart Query', 'Ticket Progress Query', 'Ticket Chart Query', 'Ticket Type Query'],
+                'Probe Processed Chart Query', 'Ticket Progress Query', 'Ticket Chart Query', 'Ticket Type Query',
+                'Ticket Type Chart Query', 'Ticket Type Complete Query', 'Ticket Type Complete Chart Query'],
             selectedQueryType: '',
         },
         methods: {
@@ -290,6 +291,147 @@ if (!isset($_SESSION['logged_in'])) {
                             this.sql += projectQuery;
                         }
                         this.sql += ')t';
+                    }else if (this.selectedQueryType === 'Ticket Type Complete Query') {
+                        this.sql = 'SELECT "Region" , SUM(col1) AS "Radar",' +
+                            'SUM(col2) AS "Data Health",' +
+                            'SUM(col3) AS "Type E - SKU Hunt/Data Collection",' +
+                            'SUM(col4) AS "APOC Radar",' +
+                            'SUM(col5) AS "NA",' +
+                            'SUM(col6) AS "Internal" FROM\n(';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            projectQuery = 'SELECT\n' +
+                                '    SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "Radar" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col1",\n' +
+                                '      SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "Data Health" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col2",\n' +
+                                '      SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "Type E - SKU Hunt/Data Collection" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col3",\n' +
+                                '      SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "APOC Radar" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col4",\n' +
+                                '     SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "NA" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col5",\n' +
+                                '      SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "Internal" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col6"\n' +
+                                'FROM\n' +
+                                `    ${project}.project_tickets pt\n` +
+                                'WHERE\n' +
+                                '    $__timeFilter(pt.ticket_completion_date)';
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += ')t';
+                    } else if (this.selectedQueryType === 'Ticket Type Complete Chart Query'){
+                        this.sql = 'SELECT "Region" , SUM(col1) AS "Radar",' +
+                            'SUM(col2) AS "Data Health",' +
+                            'SUM(col3) AS "Type E - SKU Hunt/Data Collection",' +
+                            'SUM(col4) AS "APOC Radar",' +
+                            'SUM(col5) AS "NA",' +
+                            'SUM(col6) AS "Internal",' +
+                            'DATE(time) AS "time" FROM\n(';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            projectQuery = 'SELECT\n' +
+                                '    SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "Radar" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col1",\n' +
+                                '      SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "Data Health" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col2",\n' +
+                                '      SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "Type E - SKU Hunt/Data Collection" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col3",\n' +
+                                '      SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "APOC Radar" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col4",\n' +
+                                '     SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "NA" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col5",\n' +
+                                '      SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "Internal" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col6",\n' +
+                                'DATE(pt.ticket_completion_date) as "time"\n' +
+                                'FROM\n' +
+                                `    ${project}.project_tickets pt\n` +
+                                'WHERE\n' +
+                                '    $__timeFilter(pt.ticket_completion_date)\n' +
+                                'GROUP BY 7';
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += ')t GROUP BY 8 ORDER BY 8 ASC';
+                    }else if (this.selectedQueryType === 'Ticket Type Chart Query'){
+                        this.sql = 'SELECT "Region" , SUM(col1) AS "Radar",' +
+                            'SUM(col2) AS "Data Health",' +
+                            'SUM(col3) AS "Type E - SKU Hunt/Data Collection",' +
+                            'SUM(col4) AS "APOC Radar",' +
+                            'SUM(col5) AS "NA",' +
+                            'SUM(col6) AS "Internal",' +
+                            'DATE(time) AS "time" FROM\n(';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            projectQuery = 'SELECT\n' +
+                                '    SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "Radar" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col1",\n' +
+                                '      SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "Data Health" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col2",\n' +
+                                '      SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "Type E - SKU Hunt/Data Collection" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col3",\n' +
+                                '      SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "APOC Radar" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col4",\n' +
+                                '     SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "NA" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col5",\n' +
+                                '      SUM(\n' +
+                                '        CASE WHEN pt.ticket_type = "Internal" THEN 1 ELSE 0\n' +
+                                '    \tEND\n' +
+                                '\t) AS "col6",\n' +
+                                'DATE(pt.ticket_creation_time) as "time"\n' +
+                                'FROM\n' +
+                                `    ${project}.project_tickets pt\n` +
+                                'WHERE\n' +
+                                '    $__timeFilter(pt.ticket_creation_time)\n' +
+                                'GROUP BY 7';
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += ')t GROUP BY 8 ORDER BY 8 ASC';
                     } else if (this.selectedQueryType === 'Ticket Progress Query') {
                         this.sql = 'SELECT "Region" as "", SUM(col1) AS "Current Week Inflow",' +
                             'SUM(col2) as "Closed Tickets for the Week",' +
