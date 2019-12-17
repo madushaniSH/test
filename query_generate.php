@@ -235,6 +235,7 @@ if (!isset($_SESSION['logged_in'])) {
                                 '    DATE(pt.ticket_creation_time) as "time"\n' +
                                 'FROM\n' +
                                 `    ${project}.project_tickets pt\n` +
+                                'WHERE pt.ticket_type != "Internal"\n' +
                                 'GROUP BY\n' +
                                 '    2';
                             if (i + 1 !== this.selectedProjects.length) {
