@@ -173,7 +173,7 @@ if (!isset($_SESSION['logged_in'])) {
             queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query',
                 'Probe Processed Chart Query', 'Ticket Progress Query', 'Ticket Chart Query', 'Ticket Type Query',
                 'Ticket Type Chart Query', 'Ticket Type Complete Query', 'Ticket Type Complete Chart Query',
-                'Hunter Trend Chart', 'Hunter Error Chart', 'Hunter Probe Chart'],
+                'Hunter Trend Chart', 'Hunter Error Chart', 'Hunter Probe Chart', 'Hunter Productivity'],
             selectedQueryType: '',
         },
         methods: {
@@ -228,6 +228,42 @@ if (!isset($_SESSION['logged_in'])) {
                             this.sql += projectQuery;
                         }
                         this.sql += ')t GROUP BY 1';
+                    } else if (this.selectedQueryType === 'Hunter Productivity'){
+                        this.sql = 'SELECT DISTINCT(account_gid), (SUM(brand) * 1.5 + SUM(sku) + (SUM(dvc) + SUM(facing)) / 2) AS "productivity" FROM(\n';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            projectQuery = 'SELECT\n' +
+                                '    a.account_gid,\n' +
+                                '    SUM(\n' +
+                                '        CASE WHEN(p.product_type = "brand") THEN 1 ELSE 0\n' +
+                                '    END\n' +
+                                '\t) AS "brand",\n' +
+                                '    SUM(\n' +
+                                '        CASE WHEN(p.product_type = "sku") THEN 1 ELSE 0\n' +
+                                '    END\n' +
+                                '\t) AS "sku",\n' +
+                                '    SUM(\n' +
+                                '        CASE WHEN(p.product_type = "dvc") THEN 1 ELSE 0\n' +
+                                '    END\n' +
+                                '\t) AS "dvc",\n' +
+                                '    SUM(p.product_facing_count) as "facing"\n' +
+                                'FROM\n' +
+                                `    ${project}.products p\n` +
+                                'INNER JOIN\n' +
+                                '    user_db.accounts a\n' +
+                                'ON\n' +
+                                '    a.account_id = p.account_id\n' +
+                                'WHERE\n' +
+                                '$__timeFilter(p.product_creation_time)\n' +
+                                'GROUP BY\n' +
+                                '    1';
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += ')t GROUP BY 1 ORDER BY 1 ASC';
                     } else if (this.selectedQueryType === 'Hunter Probe Chart'){
                         this.sql = 'SELECT SUM(col1) AS "count", DATE(time) as "time" FROM\n(';
                         for (let i = 0; i < this.selectedProjects.length; i++) {
