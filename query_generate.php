@@ -172,7 +172,8 @@ if (!isset($_SESSION['logged_in'])) {
             selectedHuntType: 'probe',
             queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query',
                 'Probe Processed Chart Query', 'Ticket Progress Query', 'Ticket Chart Query', 'Ticket Type Query',
-                'Ticket Type Chart Query', 'Ticket Type Complete Query', 'Ticket Type Complete Chart Query'],
+                'Ticket Type Chart Query', 'Ticket Type Complete Query', 'Ticket Type Complete Chart Query',
+                'Hunter Trend Chart'],
             selectedQueryType: '',
         },
         methods: {
@@ -227,6 +228,43 @@ if (!isset($_SESSION['logged_in'])) {
                             this.sql += projectQuery;
                         }
                         this.sql += ')t GROUP BY 1';
+                    } else if (this.selectedQueryType === 'Hunter Trend Chart'){
+                        this.sql = 'SELECT SUM(col1) AS "brand", SUM(col2) AS "sku",' +
+                            'SUM(col3) AS "dvc", SUM(col4) AS "facing",' +
+                            'DATE(time) as "time" FROM\n(';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            projectQuery = 'SELECT\n' +
+                                '    \tSUM(\n' +
+                                '        \tCASE WHEN p.product_type = "brand" THEN 1 ELSE 0\n' +
+                                '        END) AS "col1",\n' +
+                                '        SUM(\n' +
+                                '        \tCASE WHEN p.product_type = "sku" THEN 1 ELSE 0\n' +
+                                '        END) AS "col2",\n' +
+                                '        SUM(\n' +
+                                '        \tCASE WHEN p.product_type = "dvc" THEN 1 ELSE 0\n' +
+                                '        END) AS "col3",\n' +
+                                '        SUM(\n' +
+                                '        \tCASE WHEN p.product_type = "facing" THEN 1 ELSE 0\n' +
+                                '        END) AS "col4",\n' +
+                                '        DATE(p.product_creation_time) as "time"\n' +
+                                'FROM\n' +
+                                `    ${project}.products p\n` +
+                                'INNER JOIN\n' +
+                                '\tuser_db.accounts a\n' +
+                                '    ON\n' +
+                                '    \ta.account_id = p.account_id\n' +
+                                'WHERE\n' +
+                                '\ta.account_gid = $gid\n' +
+                                ' AND $__timeFilter(p.product_creation_time)\n' +
+                                'GROUP BY time\n';
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += ')t GROUP BY time ORDER BY time ASC';
                     } else if (this.selectedQueryType === 'Ticket Chart Query') {
                         this.sql = 'SELECT "Region" ,SUM(COUNT) AS "Count", DATE(time) as "time" FROM\n(';
                         for (let i = 0; i < this.selectedProjects.length; i++) {
