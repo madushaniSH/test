@@ -173,7 +173,7 @@ if (!isset($_SESSION['logged_in'])) {
             queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query',
                 'Probe Processed Chart Query', 'Ticket Progress Query', 'Ticket Chart Query', 'Ticket Type Query',
                 'Ticket Type Chart Query', 'Ticket Type Complete Query', 'Ticket Type Complete Chart Query',
-                'Hunter Trend Chart', 'Hunter Error Chart'],
+                'Hunter Trend Chart', 'Hunter Error Chart', 'Hunter Probe Chart'],
             selectedQueryType: '',
         },
         methods: {
@@ -228,6 +228,68 @@ if (!isset($_SESSION['logged_in'])) {
                             this.sql += projectQuery;
                         }
                         this.sql += ')t GROUP BY 1';
+                    } else if (this.selectedQueryType === 'Hunter Probe Chart'){
+                        this.sql = 'SELECT SUM(col1) AS "count", DATE(time) as "time" FROM\n(';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            if (this.selectedHuntType === 'probe') {
+                                projectQuery = 'SELECT\n' +
+                                    '\t\tCOUNT(p.probe_key_id) as "col1",\n' +
+                                    ' \t\tDATE(p.probe_hunter_processed_time) AS "time"\n' +
+                                    'FROM\n' +
+                                    '    user_db.accounts a\n' +
+                                    'LEFT JOIN\n' +
+                                    `\t${project}.probe p \n` +
+                                    '    ON\t\n' +
+                                    '    \tp.probe_processed_hunter_id = a.account_id\n' +
+                                    'WHERE\n' +
+                                    '\ta.account_gid = $gid\n' +
+                                    ' AND $__timeFilter(p.probe_hunter_processed_time)\n' +
+                                    'GROUP BY time';
+                                if (i + 1 !== this.selectedProjects.length) {
+                                    projectQuery += '    UNION ALL\n';
+                                }
+                            }
+                            if (this.selectedHuntType === 'radar') {
+                                projectQuery = 'SELECT\n' +
+                                    '\t\tCOUNT(rs.radar_source_id) as "col1",\n' +
+                                    ' \t\tDATE(rs.creation_time) AS "time"\n' +
+                                    'FROM\n' +
+                                    '    user_db.accounts a\n' +
+                                    'LEFT JOIN\n' +
+                                    `\t${project}.radar_sources rs\n` +
+                                    '    ON\t\n' +
+                                    '    \trs.account_id = a.account_id\n' +
+                                    'WHERE\n' +
+                                    '\ta.account_gid = $gid\n' +
+                                    ' AND $__timeFilter(rs.creation_time)\n' +
+                                    'GROUP BY time';
+                                if (i + 1 !== this.selectedProjects.length) {
+                                    projectQuery += '    UNION ALL\n';
+                                }
+                            }
+                            if (this.selectedHuntType === 'reference') {
+                                projectQuery = 'SELECT\n' +
+                                    '\t\tCOUNT(ri.reference_info_id) as "col1",\n' +
+                                    ' \t\tDATE(ri.reference_hunter_processed_time) AS "time"\n' +
+                                    'FROM\n' +
+                                    '    user_db.accounts a\n' +
+                                    'LEFT JOIN\n' +
+                                    `\t${project}.reference_info ri\n` +
+                                    '    ON\t\n' +
+                                    '    \tri.reference_processed_hunter_id = a.account_id\n' +
+                                    'WHERE\n' +
+                                    '\ta.account_gid = $gid\n' +
+                                    ' AND $__timeFilter(ri.reference_hunter_processed_time)\n' +
+                                    'GROUP BY time';
+                                if (i + 1 !== this.selectedProjects.length) {
+                                    projectQuery += '    UNION ALL\n';
+                                }
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += ')t GROUP BY time ORDER BY time ASC';
                     } else if (this.selectedQueryType === 'Hunter Error Chart'){
                         this.sql = 'SELECT SUM(col1) AS "QA Errors", SUM(col2) AS "Rename Errors" ,DATE(time) as "time" FROM\n(';
                         for (let i = 0; i < this.selectedProjects.length; i++) {
