@@ -245,9 +245,7 @@ if (!isset($_SESSION['logged_in'])) {
                                 '        SUM(\n' +
                                 '        \tCASE WHEN p.product_type = "dvc" THEN 1 ELSE 0\n' +
                                 '        END) AS "col3",\n' +
-                                '        SUM(\n' +
-                                '        \tCASE WHEN p.product_type = "facing" THEN 1 ELSE 0\n' +
-                                '        END) AS "col4",\n' +
+                                '        SUM(p.product_facing_count)\n' +
                                 '        DATE(p.product_creation_time) as "time"\n' +
                                 'FROM\n' +
                                 `    ${project}.products p\n` +
