@@ -311,6 +311,43 @@ const save_ref_info = (save_product, close_reference) => {
                             }
                             toastr.error(data[0].duplicate_error);
                         }
+                        if (close_reference && valid_product) {
+                            let formData = new FormData();
+                            formData.append('project_name', p_name);
+                            formData.append('status', status);
+                            formData.append('comment', comment);
+                            formData.append('remark', remark);
+                            jQuery.ajax({
+                                url: 'close_ref.php',
+                                type: 'POST',
+                                data: formData,
+                                success: function (data) {
+                                    toastr.options = {
+                                        "closeButton": true,
+                                        "debug": false,
+                                        "newestOnTop": false,
+                                        "progressBar": false,
+                                        "positionClass": "toast-top-right",
+                                        "preventDuplicates": false,
+                                        "onclick": null,
+                                        "showEasing": "swing",
+                                        "hideEasing": "linear",
+                                        "showMethod": "fadeIn",
+                                        "hideMethod": "fadeOut",
+                                        "timeOut": "5000",
+                                        "extendedTimeOut": "0",
+                                    }
+                                    toastr.success('Reference Cleared');
+                                },
+                                error: function (data) {
+                                    alert("Error fetching probe information. Please refresh");
+                                },
+                                cache: false,
+                                contentType: false,
+                                processData: false
+                            });
+                            reset_hunt_information();
+                        }
                     },
                     error: function (data) {
                         alert("Error fetching probe information. Please refresh");
@@ -325,7 +362,7 @@ const save_ref_info = (save_product, close_reference) => {
                 is_valid_form = false;
             }
         }
-        if (close_reference && (valid_product || skip_check)) {
+        if (close_reference && skip_check) {
             let formData = new FormData();
             formData.append('project_name', p_name);
             formData.append('status', status);
