@@ -173,7 +173,7 @@ if (!isset($_SESSION['logged_in'])) {
             queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query',
                 'Probe Processed Chart Query', 'Ticket Progress Query', 'Ticket Chart Query', 'Ticket Type Query',
                 'Ticket Type Chart Query', 'Ticket Type Complete Query', 'Ticket Type Complete Chart Query',
-                'Hunter Trend Chart'],
+                'Hunter Trend Chart', 'Hunter Error Chart'],
             selectedQueryType: '',
         },
         methods: {
@@ -228,6 +228,37 @@ if (!isset($_SESSION['logged_in'])) {
                             this.sql += projectQuery;
                         }
                         this.sql += ')t GROUP BY 1';
+                    } else if (this.selectedQueryType === 'Hunter Error Chart'){
+                        this.sql = 'SELECT SUM(col1) AS "QA Errors", SUM(col2) AS "Rename Errors" ,DATE(time) as "time" FROM\n(';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            projectQuery = 'SELECT\n' +
+                                '    \tCOUNT(pqe.product_id) as "col1",\n' +
+                                ' \t\tSUM(\n' +
+                                '        \tCASE WHEN (p.product_previous IS NOT NULL OR p.product_qa_previous IS NOT NULL)  THEN 1 ELSE 0\n' +
+                                '        END) AS "col2",\n' +
+                                ' \t\tDATE(p.product_creation_time) AS "time"\n' +
+                                'FROM\n' +
+                                `    ${project}.products p\n` +
+                                'INNER JOIN\n' +
+                                '\tuser_db.accounts a\n' +
+                                '    ON\n' +
+                                '    \ta.account_id = p.account_id\n' +
+                                'LEFT OUTER JOIN\n' +
+                                ` \t${project}.product_qa_errors pqe \n` +
+                                ' \tON\n' +
+                                ' \t\tpqe.product_id = p.product_id\n' +
+                                'WHERE\n' +
+                                '\ta.account_gid = $gid\n' +
+                                ' AND $__timeFilter(p.product_creation_time)\n' +
+                                'GROUP BY time';
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += ')t GROUP BY time ORDER BY time ASC';
                     } else if (this.selectedQueryType === 'Hunter Trend Chart'){
                         this.sql = 'SELECT SUM(col1) AS "brand", SUM(col2) AS "sku",' +
                             'SUM(col3) AS "dvc", SUM(col4) AS "facing",' +
