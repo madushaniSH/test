@@ -174,7 +174,7 @@ if (!isset($_SESSION['logged_in'])) {
                 'Probe Processed Chart Query', 'Ticket Progress Query', 'Ticket Chart Query', 'Ticket Type Query',
                 'Ticket Type Chart Query', 'Ticket Type Complete Query', 'Ticket Type Complete Chart Query',
                 'Hunter Trend Chart', 'Hunter Error Chart', 'Hunter Probe Chart', 'Hunter Productivity',
-                'Hunter Accuracy', 'Hunter Rename Accuracy'],
+                'Hunter Accuracy', 'Hunter Rename Accuracy', 'Hunter Checked Query'],
             selectedQueryType: '',
         },
         methods: {
@@ -229,6 +229,62 @@ if (!isset($_SESSION['logged_in'])) {
                             this.sql += projectQuery;
                         }
                         this.sql += ')t GROUP BY 1';
+                    } else if (this.selectedQueryType === 'Hunter Checked Query'){
+                        this.sql = 'SELECT DISTINCT(account_gid) as "metric", SUM(value) AS "value" , now() as time_sec FROM(\n';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            if (this.selectedHuntType === 'probe') {
+                                projectQuery = 'SELECT \n' +
+                                    '    a.account_gid,\n' +
+                                    '    SUM(CASE WHEN p.probe_id IS NOT NULL THEN 1 ELSE 0 END) as "value"\n' +
+                                    'FROM\n' +
+                                    '    user_db.accounts a\n' +
+                                    '        INNER JOIN\n' +
+                                    '    user_db.account_designations ad ON ad.account_id = a.account_id\n' +
+                                    '        LEFT OUTER JOIN\n' +
+                                    `    ${project}.probe p ON p.probe_processed_hunter_id = a.account_id\n` +
+                                    'WHERE\n' +
+                                    '    ad.designation_id = 3\n' +
+                                    ' AND $__timeFilter(p.probe_hunter_processed_time)\n' +
+                                    'GROUP BY 1';
+                            }
+                            if (this.selectedHuntType === 'radar') {
+                                projectQuery = 'SELECT \n' +
+                                    '    a.account_gid,\n' +
+                                    '    SUM(CASE WHEN rs.radar_source_id IS NOT NULL THEN 1 ELSE 0 END) as "value"\n' +
+                                    'FROM\n' +
+                                    '    user_db.accounts a\n' +
+                                    '        INNER JOIN\n' +
+                                    '    user_db.account_designations ad ON ad.account_id = a.account_id\n' +
+                                    '        LEFT OUTER JOIN\n' +
+                                    `    ${project}.radar_sources rs ON rs.account_id = a.account_id\n` +
+                                    'WHERE\n' +
+                                    '    ad.designation_id = 3\n' +
+                                    ' AND $__timeFilter(rs.creation_time)\n' +
+                                    'GROUP BY 1'
+                            }
+                            if (this.selectedHuntType === 'reference') {
+                                projectQuery = 'SELECT \n' +
+                                    '    a.account_gid,\n' +
+                                    '    SUM(CASE WHEN ri.reference_info_id IS NOT NULL THEN 1 ELSE 0 END) as "value"\n' +
+                                    'FROM\n' +
+                                    '    user_db.accounts a\n' +
+                                    '        INNER JOIN\n' +
+                                    '    user_db.account_designations ad ON ad.account_id = a.account_id\n' +
+                                    '        LEFT OUTER JOIN\n' +
+                                    `    ${project}.reference_info ri ON ri.reference_processed_hunter_id = a.account_id\n` +
+                                    'WHERE\n' +
+                                    '    ad.designation_id = 3\n' +
+                                    ' AND $__timeFilter(ri.reference_hunter_processed_time)\n' +
+                                    'GROUP BY 1'
+                            }
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += ')t GROUP BY 1 ORDER BY 1 ASC';
                     } else if (this.selectedQueryType === 'Hunter Rename Accuracy'){
                         this.sql = 'SELECT DISTINCT(account_gid) as "metric", ((SUM(prod) - SUM(re)) / SUM(prod)) * 100 AS "value" , now() as time_sec FROM(\n';
                         for (let i = 0; i < this.selectedProjects.length; i++) {
@@ -277,7 +333,7 @@ if (!isset($_SESSION['logged_in'])) {
                             'SELECT\n' +
                             '    a.account_gid,\n' +
                             '    0 as "prod",\n' +
-                            '    0 as "rename",\n' +
+                            '    0 as "re"\n' +
                             'FROM    \n' +
                             '     user_db.accounts a\n' +
                             'INNER JOIN\n' +
