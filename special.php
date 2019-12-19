@@ -105,6 +105,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
     unset($hunter_summary[$i][project_region]);
 }
 */
+/*
 $sql = 'SELECT project_name, project_db_name, project_region FROM projects';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
@@ -133,6 +134,127 @@ foreach ($project_info as $project) {
 
         $count++;
     }
+}
+*/
+$sql = 'SELECT project_name, project_db_name, project_region FROM projects';
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$project_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$count = 0;
+
+foreach ($project_info as $project) {
+    $dbname = $project["project_db_name"];
+    $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
+    $pdo = new PDO($dsn, $user, $pwd);
+    $report[$count] = array(
+        "project_name" => $project["project_name"],
+        "probes" => 0,
+        "radar" => 0,
+        "ref" => 0,
+        "probe_brand" => 0,
+        "probe_sku" => 0,
+        "radar_brand" => 0,
+        "radar_sku" => 0,
+        "ref_brand" => 0,
+        "ref_sku" => 0,
+        "probe_alloc_hunters" => 0,
+        "radar_alloc_hunters" => 0,
+        "ref_alloc_hunters" => 0,
+    );
+
+    $sql = 'SELECT COUNT(*) FROM probe p WHERE p.probe_hunter_processed_time >= :start_datetime AND p.probe_hunter_processed_time <= :end_datetime';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
+    $report[$count]["probes"] = $stmt->fetchColumn();
+
+    $sql = 'SELECT COUNT(*) FROM radar_sources rs WHERE rs.creation_time >= :start_datetime AND rs.creation_time <= :end_datetime';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
+    $report[$count]["radar"] = $stmt->fetchColumn();
+
+    $sql = 'SELECT COUNT(*) FROM reference_info ri WHERE ri.reference_hunter_processed_time >= :start_datetime AND ri.reference_hunter_processed_time <= :end_datetime';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
+    $report[$count]["ref"] = $stmt->fetchColumn();
+
+    $sql = '
+    SELECT
+        SUM(CASE WHEN p.product_hunt_type = "probe" AND p.product_type = "sku" THEN 1 ELSE 0 END) as "probe_sku",
+    	SUM(CASE WHEN p.product_hunt_type = "probe" AND p.product_type = "brand" THEN 1 ELSE 0 END) as "probe_brand",
+        SUM(CASE WHEN p.product_hunt_type = "radar" AND p.product_type = "brand" THEN 1 ELSE 0 END) as "radar_brand",
+        SUM(CASE WHEN p.product_hunt_type = "radar" AND p.product_type = "sku" THEN 1 ELSE 0 END) as "radar_sku",
+        SUM(CASE WHEN p.product_hunt_type = "reference" AND p.product_type = "brand" THEN 1 ELSE 0 END) as "ref_brand",
+        SUM(CASE WHEN p.product_hunt_type = "reference" AND p.product_type = "sku" THEN 1 ELSE 0 END) as "ref_sku"
+    FROM
+	    products p
+    WHERE
+        p.product_creation_time >= :start_datetime AND p.product_creation_time <= :end_datetime
+    ';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
+    $prod_info = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $report[$count]["probe_brand"] = $prod_info["probe_brand"];
+    $report[$count]["probe_sku"] = $prod_info["probe_sku"];
+    $report[$count]["radar_brand"] = $prod_info["radar_brand"];
+    $report[$count]["radar_sku"] = $prod_info["radar_sku"];
+    $report[$count]["ref_brand"] = $prod_info["ref_brand"];
+    $report[$count]["ref_sku"] = $prod_info["ref_sku"];
+
+    $sql = '
+    SELECT 
+        COUNT(DISTINCT (id))
+    FROM
+        (SELECT 
+            p.probe_processed_hunter_id AS  "id", COUNT(*) AS "count"
+        FROM
+            probe p
+        WHERE
+            p.probe_hunter_processed_time >= :start_datetime AND p.probe_hunter_processed_time <= :end_datetime
+        GROUP BY 1) t
+    WHERE
+        count > 15 AND id IS NOT NULL';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
+    $report[$count]["probe_alloc_hunters"] = $stmt->fetchColumn();
+
+    $sql = '
+    SELECT 
+        COUNT(DISTINCT (id))
+    FROM
+        (SELECT 
+            rs.account_id AS  "id", COUNT(*) AS "count"
+        FROM
+            radar_sources rs
+        WHERE
+            rs.creation_time >= :start_datetime AND rs.creation_time <= :end_datetime
+        GROUP BY 1) t
+    WHERE
+        count > 15 AND id IS NOT NULL';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
+    $report[$count]["radar_alloc_hunters"] = $stmt->fetchColumn();
+
+    $sql = '
+    SELECT 
+        COUNT(DISTINCT (id))
+    FROM
+        (SELECT 
+            ri.reference_processed_hunter_id AS  "id"
+        FROM
+            reference_info ri
+        WHERE
+            ri.reference_hunter_processed_time >= :start_datetime AND ri.reference_hunter_processed_time <= :end_datetime
+        GROUP BY 1) t
+    WHERE
+        id IS NOT NULL
+    ';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
+    $report[$count]["ref_alloc_hunters"] = $stmt->fetchColumn();
+
+
+    $count++;
 }
 
 /*
@@ -495,6 +617,6 @@ foreach ($period as $dt) {
 }
 */
 
-$return_arr[] = array("hunter_summary" => $project_info, "project_info_radar" => $project_info_radar, "project_info_ref" => $project_info_ref, "date" => $summary);
+$return_arr[] = array("hunter_summary" => $project_info, "project_info_radar" => $project_info_radar, "project_info_ref" => $project_info_ref, "date" => $summary, "report" => $report);
 echo json_encode($return_arr);
 ?>

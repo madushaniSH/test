@@ -80,15 +80,15 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
 
 const special = () => {
     let formData = new FormData();
-    formData.append("start_datetime", '2019-08-01 04:30:00');
-    formData.append("end_datetime", '2019-10-31 04:30:00');
+    formData.append("start_datetime", '2019-11-01 00:00:00');
+    formData.append("end_datetime", '2019-11-30 00:00:00');
     jQuery.ajax({
         url: 'special.php',
         type: 'POST',
         data: formData,
         dataType: 'JSON',
         success: function (data) {
-            JSONToCSVConvertor(data[0].date, "Facing Report", true);
+            JSONToCSVConvertor(data[0].report, "Project Hunt Report November", true);
             /*
             JSONToCSVConvertor(data[0].hunter_summary, " Monthly Probe Summary 2019-08-01 04:30:00 to 2019-10-31 04:30:00", true);
             JSONToCSVConvertor(data[0].project_info_radar, " Monthly Radar Summary 2019-08-01 04:30:00 to 2019-10-31 04:30:00", true);
