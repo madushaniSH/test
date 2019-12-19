@@ -173,7 +173,7 @@ if (!isset($_SESSION['logged_in'])) {
             queryType: ['Product Type Hunted Query', 'Probe Status Query', 'Product Type Hunted Chart Query',
                 'Probe Processed Chart Query', 'Ticket Progress Query', 'Ticket Chart Query', 'Ticket Type Query',
                 'Ticket Type Chart Query', 'Ticket Type Complete Query', 'Ticket Type Complete Chart Query',
-                'Hunter Trend Chart', 'Hunter Error Chart', 'Hunter Probe Chart', 'Hunter Productivity'],
+                'Hunter Trend Chart', 'Hunter Error Chart', 'Hunter Probe Chart', 'Hunter Productivity', 'Hunter Accuracy'],
             selectedQueryType: '',
         },
         methods: {
@@ -228,6 +228,67 @@ if (!isset($_SESSION['logged_in'])) {
                             this.sql += projectQuery;
                         }
                         this.sql += ')t GROUP BY 1';
+                    } else if (this.selectedQueryType === 'Hunter Accuracy'){
+                        this.sql = 'SELECT DISTINCT(account_gid) as "metric", ((SUM(prod) - SUM(qa_errors) + SUM(system_errors)) / SUM(prod)) * 100 AS "value" , now() as time_sec FROM(\n';
+                        for (let i = 0; i < this.selectedProjects.length; i++) {
+                            let project = this.selectedProjects[i];
+                            let projectQuery = '';
+                            projectQuery = 'SELECT\n' +
+                                '    a.account_gid,\n' +
+                                '    SUM(\n' +
+                                '        CASE WHEN(p.product_type = "brand") THEN 1 ELSE 0\n' +
+                                '    END\n' +
+                                ') * 1.5 + SUM(\n' +
+                                '    CASE WHEN(p.product_type = "sku") THEN 1 ELSE 0\n' +
+                                'END\n' +
+                                ') +(\n' +
+                                '    SUM(\n' +
+                                '        CASE WHEN(p.product_type = "dvc") THEN 1 ELSE 0\n' +
+                                '    END\n' +
+                                ')\n' +
+                                ') * 0.5 +(SUM(p.product_facing_count)) * 0.5 as "prod",\n' +
+                                'COUNT(pqe.product_id) AS "qa_errors",\n' +
+                                'SUM(\n' +
+                                '    CASE WHEN(\n' +
+                                '        p.product_qa_status = "disapproved" AND p.product_qa_account_id IS NULL\n' +
+                                '    ) THEN 1 ELSE 0\n' +
+                                'END\n' +
+                                ') AS "system_errors"\n' +
+                                'FROM\n' +
+                                `    ${project}.products p\n` +
+                                'INNER JOIN\n' +
+                                '    user_db.accounts a\n' +
+                                'ON\n' +
+                                '    a.account_id = p.account_id\n' +
+                                'LEFT JOIN\n' +
+                                `    ${project}.product_qa_errors pqe\n` +
+                                'ON\n' +
+                                '    pqe.product_id = p.product_id\n' +
+                                'GROUP BY\n' +
+                                '    1';
+                            if (i + 1 !== this.selectedProjects.length) {
+                                projectQuery += '    UNION ALL\n';
+                            }
+                            this.sql += projectQuery;
+                        }
+                        this.sql += '\nUNION ALL\n' +
+                            'SELECT\n' +
+                            '    a.account_gid,\n' +
+                            '    0 as "prod",\n' +
+                            '    0 as "qa_errors",\n' +
+                            '    0 as "system_errors"\n' +
+                            'FROM    \n' +
+                            '     user_db.accounts a\n' +
+                            'INNER JOIN\n' +
+                            '    user_db.account_designations ad \n' +
+                            '    ON \n' +
+                            '    ad.account_id = a.account_id\n' +
+                            'WHERE\n' +
+                            '    ad.designation_id = 3\n' +
+                            'AND $__timeFilter(p.product_creation_time)\n' +
+                            '    GROUP BY\n' +
+                            '    1\n' +
+                            ')t GROUP BY 1 ORDER BY 1 ASC';
                     } else if (this.selectedQueryType === 'Hunter Productivity'){
                         this.sql = 'SELECT DISTINCT(account_gid) as "metric", (SUM(brand) * 1.5 + SUM(sku) + (SUM(dvc) + SUM(facing)) / 2) AS "value", now() as time_sec FROM(\n';
                         for (let i = 0; i < this.selectedProjects.length; i++) {
