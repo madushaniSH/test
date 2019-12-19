@@ -264,6 +264,8 @@ if (!isset($_SESSION['logged_in'])) {
                                 `    ${project}.product_qa_errors pqe\n` +
                                 'ON\n' +
                                 '    pqe.product_id = p.product_id\n' +
+                                'WHERE\n' +
+                                '\t$__timeFilter(p.product_creation_time)\n' +
                                 'GROUP BY\n' +
                                 '    1';
                             if (i + 1 !== this.selectedProjects.length) {
@@ -285,7 +287,6 @@ if (!isset($_SESSION['logged_in'])) {
                             '    ad.account_id = a.account_id\n' +
                             'WHERE\n' +
                             '    ad.designation_id = 3\n' +
-                            'AND $__timeFilter(p.product_creation_time)\n' +
                             '    GROUP BY\n' +
                             '    1\n' +
                             ')t GROUP BY 1 ORDER BY 1 ASC';
