@@ -229,7 +229,7 @@ if (!isset($_SESSION['logged_in'])) {
                         }
                         this.sql += ')t GROUP BY 1';
                     } else if (this.selectedQueryType === 'Hunter Productivity'){
-                        this.sql = 'SELECT DISTINCT(account_gid), (SUM(brand) * 1.5 + SUM(sku) + (SUM(dvc) + SUM(facing)) / 2) AS "productivity" FROM(\n';
+                        this.sql = 'SELECT DISTINCT(account_gid) as "metric", (SUM(brand) * 1.5 + SUM(sku) + (SUM(dvc) + SUM(facing)) / 2) AS "value", now() as time_sec FROM(\n';
                         for (let i = 0; i < this.selectedProjects.length; i++) {
                             let project = this.selectedProjects[i];
                             let projectQuery = '';
@@ -263,7 +263,24 @@ if (!isset($_SESSION['logged_in'])) {
                             }
                             this.sql += projectQuery;
                         }
-                        this.sql += ')t GROUP BY 1 ORDER BY 1 ASC';
+                        this.sql += '\nUNION ALL\n' +
+                            'SELECT\n' +
+                            '    a.account_gid,\n' +
+                            '    0 as "brand",\n' +
+                            '    0 as "sku",\n' +
+                            '    0 as "dvc",\n' +
+                            '    0 as "facing"\n' +
+                            'FROM    \n' +
+                            '     user_db.accounts a\n' +
+                            'INNER JOIN\n' +
+                            '    user_db.account_designations ad \n' +
+                            '    ON \n' +
+                            '    ad.account_id = a.account_id\n' +
+                            'WHERE\n' +
+                            '    ad.designation_id = 3\n' +
+                            '    GROUP BY\n' +
+                            '    1\n' +
+                            ')t GROUP BY 1 ORDER BY 1 ASC';
                     } else if (this.selectedQueryType === 'Hunter Probe Chart'){
                         this.sql = 'SELECT SUM(col1) AS "count", DATE(time) as "time" FROM\n(';
                         for (let i = 0; i < this.selectedProjects.length; i++) {
