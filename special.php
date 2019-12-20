@@ -165,17 +165,32 @@ foreach ($project_info as $project) {
         "days_taken_ref" => 0,
     );
 
-    $sql = 'SELECT COUNT(*) FROM probe p WHERE p.probe_hunter_processed_time >= :start_datetime AND p.probe_hunter_processed_time <= :end_datetime';
+    $sql = '
+        SELECT 
+               COUNT(*) 
+        FROM probe p
+            INNER JOIN project_tickets pt on p.probe_ticket_id = pt.project_ticket_system_id
+        WHERE p.probe_hunter_processed_time >= :start_datetime AND p.probe_hunter_processed_time <= :end_datetime AND pt.ticket_id NOT LIKE "%GENERAL%"';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
     $report[$count]["probes"] = $stmt->fetchColumn();
 
-    $sql = 'SELECT COUNT(*) FROM radar_sources rs WHERE rs.creation_time >= :start_datetime AND rs.creation_time <= :end_datetime';
+    $sql = '
+        SELECT 
+               COUNT(*) 
+        FROM radar_sources rs 
+            INNER JOIN project_tickets pt on rs.account_id = pt.account_id
+        WHERE rs.creation_time >= :start_datetime AND rs.creation_time <= :end_datetime AND pt.ticket_id NOT LIKE "%GENERAL%"';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
     $report[$count]["radar"] = $stmt->fetchColumn();
 
-    $sql = 'SELECT COUNT(*) FROM reference_info ri WHERE ri.reference_hunter_processed_time >= :start_datetime AND ri.reference_hunter_processed_time <= :end_datetime';
+    $sql = '
+        SELECT 
+               COUNT(*) 
+        FROM reference_info ri 
+            INNER JOIN project_tickets pt ON pt.ticket_id = ri.reference_ticket_id
+        WHERE ri.reference_hunter_processed_time >= :start_datetime AND ri.reference_hunter_processed_time <= :end_datetime AND pt.ticket_id NOT LIKE "%GENERAL%"';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
     $report[$count]["ref"] = $stmt->fetchColumn();
@@ -190,8 +205,18 @@ foreach ($project_info as $project) {
         SUM(CASE WHEN p.product_hunt_type = "reference" AND p.product_type = "sku" THEN 1 ELSE 0 END) as "ref_sku"
     FROM
 	    products p
+        LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id
+        LEFT OUTER JOIN probe p2 on ppi.probe_product_info_key_id = p2.probe_key_id
+        LEFT OUTER JOIN ref_product_info rpi on p.product_id = rpi.product_id
+        LEFT OUTER JOIN reference_info ri on rpi.reference_info_id = ri.reference_info_id
+        LEFT OUTER JOIN radar_sources rs on p.product_id = rs.radar_product_id
+        LEFT OUTER JOIN radar_hunt rh on rs.radar_hunt_id = rh.radar_hunt_id
+        LEFT OUTER JOIN project_tickets pt 
+            on rh.radar_ticket_id = pt.project_ticket_system_id 
+            OR p2.probe_ticket_id = pt.project_ticket_system_id
+            OR ri.reference_ticket_id = pt.project_ticket_system_id
     WHERE
-        p.product_creation_time >= :start_datetime AND p.product_creation_time <= :end_datetime
+        p.product_creation_time >= :start_datetime AND p.product_creation_time <= :end_datetime AND pt.ticket_id NOT LIKE "%GENERAL%"
     ';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
@@ -212,8 +237,10 @@ foreach ($project_info as $project) {
             p.probe_processed_hunter_id AS  "id", COUNT(*) AS "count"
         FROM
             probe p
+            INNER JOIN project_tickets pt on p.probe_ticket_id = pt.project_ticket_system_id
         WHERE
             p.probe_hunter_processed_time >= :start_datetime AND p.probe_hunter_processed_time <= :end_datetime
+            AND pt.ticket_id NOT LIKE "%GENERAL%"
         GROUP BY 1) t
     WHERE
         id IS NOT NULL';
@@ -229,8 +256,11 @@ foreach ($project_info as $project) {
             rs.account_id AS  "id", COUNT(*) AS "count"
         FROM
             radar_sources rs
+            INNER JOIN radar_hunt rh on rs.radar_hunt_id = rh.radar_hunt_id
+            INNER JOIN project_tickets pt on rh.radar_ticket_id = pt.project_ticket_system_id
         WHERE
             rs.creation_time >= :start_datetime AND rs.creation_time <= :end_datetime
+            AND pt.ticket_id NOT LIKE "%GENERAL%"
         GROUP BY 1) t
     WHERE
         id IS NOT NULL';
@@ -246,8 +276,10 @@ foreach ($project_info as $project) {
             ri.reference_processed_hunter_id AS  "id"
         FROM
             reference_info ri
+            INNER JOIN project_tickets pt ON pt.ticket_id = ri.reference_ticket_id
         WHERE
             ri.reference_hunter_processed_time >= :start_datetime AND ri.reference_hunter_processed_time <= :end_datetime
+            AND pt.ticket_id NOT LIKE "%GENERAL%"
         GROUP BY 1) t
     WHERE
         id IS NOT NULL
@@ -264,8 +296,10 @@ foreach ($project_info as $project) {
             MID(\'0123444401233334012222340111123400001234000123440\', 7 * WEEKDAY(MIN(p.probe_hunter_processed_time)) + WEEKDAY(MAX(p.probe_hunter_processed_time)) + 1, 1)) AS "days"
         FROM
             probe p
+            INNER JOIN project_tickets pt on p.probe_ticket_id = pt.project_ticket_system_id
         WHERE
             p.probe_hunter_processed_time >= :start_datetime AND p.probe_hunter_processed_time <= :end_datetime
+            AND pt.ticket_id NOT LIKE "%GENERAL%"
 	    GROUP BY 1
     ) t ';
     $stmt = $pdo->prepare($sql);
@@ -281,8 +315,10 @@ foreach ($project_info as $project) {
         FROM
             radar_sources rs
             INNER JOIN radar_hunt rh on rs.radar_hunt_id = rh.radar_hunt_id
+            INNER JOIN project_tickets pt on rh.radar_ticket_id = pt.project_ticket_system_id
         WHERE
             rs.creation_time >= :start_datetime AND rs.creation_time <= :end_datetime
+            AND pt.ticket_id NOT LIKE "%GENERAL%"
 	    GROUP BY 1
     ) t ';
     $stmt = $pdo->prepare($sql);
@@ -297,8 +333,10 @@ foreach ($project_info as $project) {
             MID(\'0123444401233334012222340111123400001234000123440\', 7 * WEEKDAY(MIN(ri.reference_hunter_processed_time)) + WEEKDAY(MAX(ri.reference_hunter_processed_time)) + 1, 1)) AS "days"
         FROM
             reference_info ri
+            INNER JOIN project_tickets pt ON pt.ticket_id = ri.reference_ticket_id
         WHERE
             ri.reference_hunter_processed_time >= :start_datetime AND ri.reference_hunter_processed_time <= :end_datetime
+            AND pt.ticket_id NOT LIKE "%GENERAL%"
 	    GROUP BY 1
     ) t ';
     $stmt = $pdo->prepare($sql);
