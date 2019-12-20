@@ -277,7 +277,7 @@ foreach ($project_info as $project) {
         SELECT
 		    rh.radar_ticket_id,
             (5 * (DATEDIFF(MAX(rs.creation_time), MIN(rs.creation_time)) DIV 7) + 
-            MID(\'0123444401233334012222340111123400001234000123440\', 7 * WEEKDAY(MIN(p.probe_hunter_processed_time)) + WEEKDAY(MAX(p.probe_hunter_processed_time)) + 1, 1)) AS "days"
+            MID(\'0123444401233334012222340111123400001234000123440\', 7 * WEEKDAY(MIN(rs.creation_time)) + WEEKDAY(MAX(rs.creation_time)) + 1, 1)) AS "days"
         FROM
             radar_sources rs
             INNER JOIN radar_hunt rh on rs.radar_hunt_id = rh.radar_hunt_id
@@ -294,7 +294,7 @@ foreach ($project_info as $project) {
         SELECT
 		    ri.reference_ticket_id,
             (5 * (DATEDIFF(MAX(ri.reference_hunter_processed_time), MIN(ri.reference_hunter_processed_time)) DIV 7) + 
-            MID(\'0123444401233334012222340111123400001234000123440\', 7 * WEEKDAY(MIN(p.probe_hunter_processed_time)) + WEEKDAY(MAX(p.probe_hunter_processed_time)) + 1, 1)) AS "days"
+            MID(\'0123444401233334012222340111123400001234000123440\', 7 * WEEKDAY(MIN(ri.reference_hunter_processed_time)) + WEEKDAY(MAX(ri.reference_hunter_processed_time)) + 1, 1)) AS "days"
         FROM
             reference_info ri
         WHERE
