@@ -160,6 +160,9 @@ foreach ($project_info as $project) {
         "probe_alloc_hunters" => 0,
         "radar_alloc_hunters" => 0,
         "ref_alloc_hunters" => 0,
+        "days_taken_probe" => 0,
+        "days_taken_radar" => 0,
+        "days_taken_ref" => 0,
     );
 
     $sql = 'SELECT COUNT(*) FROM probe p WHERE p.probe_hunter_processed_time >= :start_datetime AND p.probe_hunter_processed_time <= :end_datetime';
@@ -213,7 +216,7 @@ foreach ($project_info as $project) {
             p.probe_hunter_processed_time >= :start_datetime AND p.probe_hunter_processed_time <= :end_datetime
         GROUP BY 1) t
     WHERE
-        count > 15 AND id IS NOT NULL';
+        id IS NOT NULL';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
     $report[$count]["probe_alloc_hunters"] = $stmt->fetchColumn();
@@ -230,7 +233,7 @@ foreach ($project_info as $project) {
             rs.creation_time >= :start_datetime AND rs.creation_time <= :end_datetime
         GROUP BY 1) t
     WHERE
-        count > 15 AND id IS NOT NULL';
+        id IS NOT NULL';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
     $report[$count]["radar_alloc_hunters"] = $stmt->fetchColumn();
@@ -250,8 +253,53 @@ foreach ($project_info as $project) {
         id IS NOT NULL
     ';
     $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime' => $_post['start_datetime'], 'end_datetime' => $_post['end_datetime']]);
+    $report[$count]["ref_alloc_hunters"] = $stmt->fetchcolumn();
+
+    $sql = '
+    SELECT
+        DATEDIFF(
+            MAX(p.probe_hunter_processed_time),
+            MIN(p.probe_hunter_processed_time)
+        ) AS "days"
+    FROM
+        probe p
+    WHERE
+            p.probe_hunter_processed_time >= :start_datetime AND p.probe_hunter_processed_time <= :end_datetime
+    ';
+    $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
-    $report[$count]["ref_alloc_hunters"] = $stmt->fetchColumn();
+    $report[$count]["days_taken_probe"] = $stmt->fetchcolumn();
+
+    $sql = '
+    SELECT
+        DATEDIFF(
+            MAX(rs.creation_time),
+            MIN(rs.creation_time)
+        ) AS "days"
+    FROM
+        radar_sources rs
+    WHERE
+            rs.creation_time >= :start_datetime AND rs.creation_time <= :end_datetime
+    ';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
+    $report[$count]["days_taken_radar"] = $stmt->fetchcolumn();
+
+    $sql = '
+    SELECT
+        DATEDIFF(
+            MAX(ri.reference_hunter_processed_time),
+            MIN(ri.reference_hunter_processed_time)
+        ) AS "days"
+    FROM
+        reference_info ri
+    WHERE
+            ri.reference_hunter_processed_time >= :start_datetime AND ri.reference_hunter_processed_time <= :end_datetime
+    ';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['start_datetime' => $_POST['start_datetime'], 'end_datetime' => $_POST['end_datetime']]);
+    $report[$count]["days_taken_ref"] = $stmt->fetchcolumn();
 
 
     $count++;
