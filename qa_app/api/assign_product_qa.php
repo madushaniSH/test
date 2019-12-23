@@ -54,7 +54,9 @@ SELECT
     p.product_name,
     p.product_alt_design_name,
     p.product_facing_count,
-    p.product_hunt_type
+    p.product_hunt_type,
+    p.product_link,
+    p.manufacturer_link
 FROM
     products p
         INNER JOIN

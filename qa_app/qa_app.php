@@ -405,28 +405,42 @@ try {
                             >
                                 <v-form
                                 >
-                                    <v-row>
+                                    <v-row v-if="selectedProductInfo.productLink !== null">
+                                        <v-col>
+                                            <v-btn text outlined color="info" :href="selectedProductInfo.productLink" target="_blank">
+                                                <v-icon left>mdi-link</v-icon>
+                                                Product Source Link
+                                            </v-btn>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row v-if="selectedProductInfo.productName !== null">
                                         <v-col>
                                             <v-text-field
                                                     label="Product Name"
                                                     required
                                                     v-model="selectedProductInfo.productName"
-                                                    v-if="selectedProductInfo.productName !== ''"
                                             ></v-text-field>
                                         </v-col>
                                     </v-row>
 
-                                    <v-row>
+                                    <v-row v-if="selectedProductInfo.productAltName !== null">
                                         <v-col>
                                             <v-text-field
                                                     label="Product Alt Name"
                                                     required
                                                     v-model="selectedProductInfo.productAltName"
-                                                    v-if="selectedProductInfo.productAltName !== ''"
                                             ></v-text-field>
                                         </v-col>
                                     </v-row>
 
+                                    <v-row v-if="selectedProductInfo.manuLink !== null">
+                                        <v-col>
+                                            <v-text-field
+                                                    label="Manufacturer Source Link"
+                                                    v-model="selectedProductInfo.manuLink"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
 
                                     <v-row>
                                         <v-col>
@@ -607,6 +621,9 @@ try {
                 productName: '',
                 productAltName: '',
                 productFacingCount: 0,
+                productLink: '',
+                manuLink: '',
+                manuLinkOrg: '',
             },
             assigned: 0,
         },
@@ -753,6 +770,9 @@ try {
                             this.selectedProductInfo.productNameOrg = response.data[0].product_info[0].product_name;
                             this.selectedProductInfo.productAltNameOrg = response.data[0].product_info[0].product_alt_design_name;
                             this.selectedProductInfo.productFacingCount = response.data[0].product_info[0].product_facing_count;
+                            this.selectedProductInfo.productLink = response.data[0].product_info[0].product_link;
+                            this.selectedProductInfo.manuLinkOrg = response.data[0].product_info[0].manufacturer_link;
+                            this.selectedProductInfo.manuLink = response.data[0].product_info[0].manufacturer_link;
                             this.qaDialog = true;
                         } else if (response.data[0].row_count === 0 && response.data[0].already_assigned === 0){
                             this.selectedProductInfo.assignMessage = 'Product was taken by another QA';
