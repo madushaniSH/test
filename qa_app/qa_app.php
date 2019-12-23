@@ -268,7 +268,8 @@ try {
                                 <div class="my-2">
                                     <v-btn color="primary"
                                            :disabled="item.probe_being_handled === null
-                                           || (item.probe_being_handled === '1' && item.assigned_user === '0')"
+                                           || (item.probe_being_handled === '1' && item.assigned_user === '0')
+                                           || (assigned === 1 && item.assigned_user !== '1')"
                                            @click="qaProduct(item)"
                                     >QA</v-btn>
                                 </div>
@@ -593,7 +594,8 @@ try {
                 product_source: '',
                 productId: '',
                 assignMessage: ''
-            }
+            },
+            assigned: 0,
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -658,6 +660,7 @@ try {
                                 this.productBrandItems[count] = item.brand_name;
                                 count++;
                             });
+                            this.assigned = response.data[0].row_count;
                             this.productInfo = response.data[0].product_info;
                             this.overlay = false;
                         });
@@ -735,6 +738,7 @@ try {
                             this.qaDialog = true;
                         } else if (response.data[0].row_count === 0 && response.data[0].already_assigned === 0){
                             this.selectedProductInfo.assignMessage = 'Product was taken by another QA';
+                            this.getProductInfo();
                         }
                     });
             },
@@ -746,6 +750,7 @@ try {
                     .then((response) => {
                         if (response.data[0].error === '') {
                             this.qaDialog = false;
+                            this.getProductInfo();
                         }
                     });
             }

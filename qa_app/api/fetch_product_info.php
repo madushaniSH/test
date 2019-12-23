@@ -58,8 +58,8 @@ SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_cre
         pt.project_ticket_system_id = rh.radar_ticket_id
         OR 
         pt.project_ticket_system_id = ri.reference_ticket_id
-WHERE ('.$ticket_query_string.')
-ORDER BY p.product_creation_time DESC';
+WHERE ('.$ticket_query_string.') OR  (pqq.probe_being_handled = 1 AND pqq.account_id = :account_id)
+ORDER BY pqq.probe_being_handled DESC ,p.product_creation_time DESC';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id' => $_SESSION['id']]);
 $product_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -92,5 +92,10 @@ for($i = 0; $i < count($product_array); $i++) {
     $product_array[$i]['oda_error'] = $error_string;
 }
 
-$return_arr[] = array("product_info" => $product_array);
+$sql = 'SELECT probe_qa_queue_id FROM probe_qa_queue WHERE account_id = :account_id';
+$stmt = $pdo->prepare($sql);
+$stmt->execute(['account_id' => $_SESSION['id']]);
+$row_count = $stmt->rowCount(PDO::FETCH_OBJ);
+
+$return_arr[] = array("product_info" => $product_array, "row_count" => $row_count);
 echo json_encode($return_arr);
