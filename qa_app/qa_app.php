@@ -266,7 +266,11 @@ try {
                             </template>
                             <template v-slot:item.action="{ item }">
                                 <div class="my-2">
-                                    <v-btn color="primary" :disabled="item.probe_being_handled === null" @click="qaProduct(item)">QA</v-btn>
+                                    <v-btn color="primary"
+                                           :disabled="item.probe_being_handled === null
+                                           || (item.probe_being_handled === '1' && item.assigned_user === '0')"
+                                           @click="qaProduct(item)"
+                                    >QA</v-btn>
                                 </div>
                             </template>
                             <template v-slot:item.view="{ item }">
@@ -389,24 +393,138 @@ try {
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-            <v-dialog v-model="dialog" max-width="800px">
+            <v-dialog v-model="qaDialog" max-width="800px">
                 <v-card>
                     <v-card-title>
-                    </v-card-title>
                         <span class="headline">{{ selectedProductInfo.projectName }} {{ selectedProductInfo.ticket_id }} {{ selectedProductInfo.product_hunt_type }} {{ selectedProductInfo.product_source }}</span>
+                    </v-card-title>
                     <v-card-text>
-                        <v-form
-                        >
-                            <v-container>
-                            </v-container>
-                        </v-form>
+                        <v-container>
+                            <v-form
+                            >
+                                <v-form
+                                >
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field
+                                                    label="Product Name"
+                                                    required
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field
+                                                    label="Product Alt Name"
+                                                    required
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+
+                                    <v-row>
+                                        <v-col>
+                                            <v-select
+                                                    label="Error Type"
+                                                    required
+                                            ></v-select>
+                                        </v-col>
+                                        <v-col>
+                                            <v-slider
+                                                    step="5"
+                                                    ticks
+                                                    thumb-label="always"
+                                                    label="Facing"
+                                            ></v-slider>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-radio-group row label="Status">
+                                                <v-radio label="Approved" color="success"></v-radio>
+                                                <v-radio label="Disapproved" color="red darken-3"></v-radio>
+                                            </v-radio-group>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-row>
+                                        <v-col>
+                                            <v-file-input
+                                                    v-model="files"
+                                                    color="deep-purple accent-4"
+                                                    counter
+                                                    label="Image Attachments"
+                                                    multiple
+                                                    placeholder="Select your files"
+                                                    prepend-icon="mdi-paperclip"
+                                                    outlined
+                                                    :show-size="1000"
+                                            >
+                                                <template v-slot:selection="{ index, text }">
+                                                    <v-chip
+                                                            v-if="index < 2"
+                                                            color="deep-purple accent-4"
+                                                            dark
+                                                            label
+                                                            small
+                                                    >
+                                                        {{ text }}
+                                                    </v-chip>
+
+                                                    <span
+                                                            v-else-if="index === 2"
+                                                            class="overline grey--text text--darken-3 mx-2"
+                                                    >
+                                                        +{{ files.length - 2 }} File(s)
+                                                    </span>
+                                                </template>
+                                            </v-file-input>
+                                        </v-col>
+                                    </v-row>
+
+                                </v-form>
+                        </v-container>
                     </v-card-text>
 
                     <v-card-actions>
                         <v-spacer></v-spacer>
+                        <v-btn color="red darken-1" text @click="unassignProduct()">Close</v-btn>
+                        <v-btn color="success darken-1" text @click="qaDialog = false">Save</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+
+            <v-dialog
+                    v-model="dialog"
+                    hide-overlay
+                    persistent
+                    width="300"
+            >
+                <v-card
+                        :color="selectedProductInfo.assignMessage === '' ? 'primary' : 'red'"
+                        dark
+                >
+                    <v-card-text v-if="selectedProductInfo.assignMessage === ''">
+                        Please stand by
+                        <v-progress-linear
+                                indeterminate
+                                color="white"
+                                class="mb-0"
+                        ></v-progress-linear>
+                    </v-card-text>
+                    <section v-else>
+                        <v-card-text>
+                            {{ selectedProductInfo.assignMessage }}
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="white darken-1" text @click="dialog = false">Close</v-btn>
+                        </v-card-actions>
+                    </section>
+                </v-card>
+            </v-dialog>
+
         </v-content>
         <v-bottom-navigation
                 color="success"
@@ -429,8 +547,10 @@ try {
         el: "#app",
         vuetify: new Vuetify(),
         data: {
+            files: [],
             darkThemeSelected: false,
             dialog: false,
+            qaDialog: false,
             projectArray: [],
             ticketArray: [],
             selectedProject: '',
@@ -456,7 +576,7 @@ try {
                 facing: 0
             },
             qaStatusItems: ['pending', 'approved', 'disapproved', 'active', 'rejected'],
-            selectedQaStatus: '',
+            selectedQaStatus: 'pending',
             productHuntItems: ['probe', 'radar', 'reference'],
             selectedHuntType: '',
             productTypeItems:['brand', 'sku', 'dvc', 'facing'],
@@ -470,7 +590,9 @@ try {
                 projectName: '',
                 ticket_id: '',
                 product_hunt_type: '',
-                product_source: ''
+                product_source: '',
+                productId: '',
+                assignMessage: ''
             }
         },
         methods: {
@@ -599,8 +721,33 @@ try {
                 this.selectedProductInfo.projectName = this.selectedProject;
                 this.selectedProductInfo.ticket_id = item.ticket_id;
                 this.selectedProductInfo.product_hunt_type = item.product_hunt_type;
+                this.selectedProductInfo.productId = item.product_id;
+                this.selectedProductInfo.assignMessage = '';
 
                 this.dialog = true;
+                let formData = new FormData();
+                formData.append('project_name', this.selectedProject);
+                formData.append('product_id', this.selectedProductInfo.productId);
+                axios.post('api/assign_product_qa.php', formData)
+                    .then((response) => {
+                        if (response.data[0].row_count === 1) {
+                            this.dialog = false;
+                            this.qaDialog = true;
+                        } else if (response.data[0].row_count === 0 && response.data[0].already_assigned === 0){
+                            this.selectedProductInfo.assignMessage = 'Product was taken by another QA';
+                        }
+                    });
+            },
+            unassignProduct() {
+                let formData = new FormData();
+                formData.append('project_name', this.selectedProject);
+
+                axios.post('api/unassign_product_qa.php', formData)
+                    .then((response) => {
+                        if (response.data[0].error === '') {
+                            this.qaDialog = false;
+                        }
+                    });
             }
         },
         watch: {
