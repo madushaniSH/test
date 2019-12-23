@@ -26,6 +26,8 @@ catch(PDOException $e){
     exit();
 }
 
+$product_info[] = array();
+
 $sql = 'SELECT probe_qa_queue_id FROM probe_qa_queue WHERE account_id = :account_id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id' => $_SESSION['id']]);
@@ -37,7 +39,7 @@ if ($row_count == 0) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id' => $_SESSION['id'], 'product_id' => $_POST['product_id']]);
 
-    $sql = 'SELECT probe_qa_queue_id, product_id FROM probe_qa_queue WHERE account_id = :account_id';
+    $sql = 'SELECT probe_qa_queue_id FROM probe_qa_queue WHERE account_id = :account_id';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id' => $_SESSION['id']]);
     $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
@@ -45,7 +47,25 @@ if ($row_count == 0) {
     $already_assigned = 1;
 }
 
+if ($row_count === 1) {
+    $sql = '
+SELECT 
+    p.product_id,
+    p.product_name,
+    p.product_alt_design_name,
+    p.product_facing_count,
+    p.product_hunt_type
+FROM
+    products p
+        INNER JOIN
+    probe_qa_queue pqq ON p.product_id = pqq.product_id
+WHERE
+	pqq.account_id = :account_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['account_id' => $_SESSION['id']]);
+    $product_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
-$return_arr[] = array("row_count" => $row_count, "already_assigned" => $already_assigned);
+$return_arr[] = array("row_count" => $row_count, "already_assigned" => $already_assigned, "product_info" => $product_info);
 echo json_encode($return_arr);
 ?>

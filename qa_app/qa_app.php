@@ -410,6 +410,8 @@ try {
                                             <v-text-field
                                                     label="Product Name"
                                                     required
+                                                    v-model="selectedProductInfo.productName"
+                                                    v-if="selectedProductInfo.productName !== ''"
                                             ></v-text-field>
                                         </v-col>
                                     </v-row>
@@ -419,6 +421,8 @@ try {
                                             <v-text-field
                                                     label="Product Alt Name"
                                                     required
+                                                    v-model="selectedProductInfo.productAltName"
+                                                    v-if="selectedProductInfo.productAltName !== ''"
                                             ></v-text-field>
                                         </v-col>
                                     </v-row>
@@ -433,10 +437,14 @@ try {
                                         </v-col>
                                         <v-col>
                                             <v-slider
-                                                    step="5"
+                                                    step="1"
                                                     ticks
                                                     thumb-label="always"
                                                     label="Facing"
+                                                    v-model="selectedProductInfo.productFacingCount"
+                                                    min="0"
+                                                    max="5"
+                                                    tick-size="5"
                                             ></v-slider>
                                         </v-col>
                                     </v-row>
@@ -593,7 +601,12 @@ try {
                 product_hunt_type: '',
                 product_source: '',
                 productId: '',
-                assignMessage: ''
+                assignMessage: '',
+                productNameOrg: '',
+                productAltNameOrg: '',
+                productName: '',
+                productAltName: '',
+                productFacingCount: 0,
             },
             assigned: 0,
         },
@@ -735,6 +748,11 @@ try {
                     .then((response) => {
                         if (response.data[0].row_count === 1) {
                             this.dialog = false;
+                            this.selectedProductInfo.productName = response.data[0].product_info[0].product_name;
+                            this.selectedProductInfo.productAltName = response.data[0].product_info[0].product_alt_design_name;
+                            this.selectedProductInfo.productNameOrg = response.data[0].product_info[0].product_name;
+                            this.selectedProductInfo.productAltNameOrg = response.data[0].product_info[0].product_alt_design_name;
+                            this.selectedProductInfo.productFacingCount = response.data[0].product_info[0].product_facing_count;
                             this.qaDialog = true;
                         } else if (response.data[0].row_count === 0 && response.data[0].already_assigned === 0){
                             this.selectedProductInfo.assignMessage = 'Product was taken by another QA';
