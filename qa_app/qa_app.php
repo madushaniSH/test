@@ -397,116 +397,352 @@ try {
             <v-dialog v-model="qaDialog" max-width="800px">
                 <v-card>
                     <v-card-title>
-                        <span class="headline">{{ selectedProductInfo.projectName }} {{ selectedProductInfo.ticket_id }} {{ selectedProductInfo.product_hunt_type }} {{ selectedProductInfo.product_source }}</span>
+                        <v-row>
+                            <v-col>
+                        <span class="body-1 font-weight-regular">
+                            {{ selectedProductInfo.projectName }} {{ selectedProductInfo.ticket_id }} {{ selectedProductInfo.product_hunt_type }} {{ selectedProductInfo.product_source }} {{ selectedProductInfo.titleString }}
+                        </span>
+                            </v-col>
+                        </v-row>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
-                            <v-form
+                            <v-tabs
+                                    v-model="tab"
+                                    dark
                             >
-                                <v-form
+                                <v-tabs-slider></v-tabs-slider>
+
+                                <v-tab
+                                    key="qaForm"
                                 >
-                                    <v-row v-if="selectedProductInfo.productLink !== null">
-                                        <v-col>
-                                            <v-btn text outlined color="info" :href="selectedProductInfo.productLink" target="_blank">
-                                                <v-icon left>mdi-link</v-icon>
-                                                Product Source Link
-                                            </v-btn>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row v-if="selectedProductInfo.productName !== null">
-                                        <v-col>
-                                            <v-text-field
-                                                    label="Product Name"
-                                                    required
-                                                    v-model="selectedProductInfo.productName"
-                                            ></v-text-field>
-                                        </v-col>
-                                    </v-row>
+                                    QA Form
+                                </v-tab>
+                                <v-tab
+                                    key="sourceInfo"
+                                    v-if="selectedProductInfo.productHuntType === 'reference'"
+                                >
+                                    Source Information
+                                </v-tab>
 
-                                    <v-row v-if="selectedProductInfo.productAltName !== null">
-                                        <v-col>
-                                            <v-text-field
-                                                    label="Product Alt Name"
-                                                    required
-                                                    v-model="selectedProductInfo.productAltName"
-                                            ></v-text-field>
-                                        </v-col>
-                                    </v-row>
+                                <v-tab-item
+                                    key="qaForm"
+                                >
+                                    <v-form
+                                    >
+                                        <v-row>
+                                            <v-col v-if="selectedProductInfo.productLink !== null" cols="12" md="4">
+                                                <v-btn text outlined color="info" :href="selectedProductInfo.productLink" target="_blank">
+                                                    <v-icon left>mdi-link</v-icon>
+                                                    Product Source Link
+                                                </v-btn>
+                                            </v-col>
+                                            <v-col v-if="selectedProductInfo.radarSource !== ''" cols="12" md="5">
+                                                <v-btn text outlined color="info" :href="selectedProductInfo.radarSource" target="_blank">
+                                                    <v-icon left>mdi-link</v-icon>
+                                                    Suggestion Source Link
+                                                </v-btn>
+                                            </v-col>
+                                        </v-row>
+                                        <v-row v-if="selectedProductInfo.productName !== null">
+                                            <v-col>
+                                                <v-text-field
+                                                        label="Product Name"
+                                                        required
+                                                        v-model.trim="selectedProductInfo.productName"
+                                                ></v-text-field>
+                                            </v-col>
+                                        </v-row>
 
-                                    <v-row v-if="selectedProductInfo.manuLink !== null">
-                                        <v-col>
-                                            <v-text-field
-                                                    label="Manufacturer Source Link"
-                                                    v-model="selectedProductInfo.manuLink"
-                                            ></v-text-field>
-                                        </v-col>
-                                    </v-row>
+                                        <v-row v-if="selectedProductInfo.productAltName !== null">
+                                            <v-col>
+                                                <v-text-field
+                                                        label="Product Alt Name"
+                                                        required
+                                                        v-model.trim="selectedProductInfo.productAltName"
+                                                ></v-text-field>
+                                            </v-col>
+                                        </v-row>
 
-                                    <v-row>
-                                        <v-col>
-                                            <v-select
-                                                    label="Error Type"
-                                                    required
-                                            ></v-select>
-                                        </v-col>
-                                        <v-col>
-                                            <v-slider
-                                                    step="1"
-                                                    ticks
-                                                    thumb-label="always"
-                                                    label="Facing"
-                                                    v-model="selectedProductInfo.productFacingCount"
-                                                    min="0"
-                                                    max="5"
-                                                    tick-size="5"
-                                            ></v-slider>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-radio-group row label="Status">
-                                                <v-radio label="Approved" color="success"></v-radio>
-                                                <v-radio label="Disapproved" color="red darken-3"></v-radio>
-                                            </v-radio-group>
-                                        </v-col>
-                                    </v-row>
+                                        <v-row v-if="selectedProductInfo.manuLink !== null">
+                                            <v-col>
+                                                <v-text-field
+                                                        label="Manufacturer Source Link"
+                                                        v-model.trim="selectedProductInfo.manuLink"
+                                                ></v-text-field>
+                                            </v-col>
+                                        </v-row>
 
-                                    <v-row>
-                                        <v-col>
-                                            <v-file-input
-                                                    v-model="files"
-                                                    color="deep-purple accent-4"
-                                                    counter
-                                                    label="Image Attachments"
-                                                    multiple
-                                                    placeholder="Select your files"
-                                                    prepend-icon="mdi-paperclip"
-                                                    outlined
-                                                    :show-size="1000"
-                                            >
-                                                <template v-slot:selection="{ index, text }">
-                                                    <v-chip
-                                                            v-if="index < 2"
-                                                            color="deep-purple accent-4"
-                                                            dark
-                                                            label
-                                                            small
-                                                    >
-                                                        {{ text }}
-                                                    </v-chip>
+                                        <v-row>
+                                            <v-col>
+                                                <v-select
+                                                        label="Error Type"
+                                                        required
+                                                ></v-select>
+                                            </v-col>
+                                            <v-col>
+                                                <v-slider
+                                                        step="1"
+                                                        ticks
+                                                        thumb-label="always"
+                                                        label="Facing"
+                                                        v-model="selectedProductInfo.productFacingCount"
+                                                        min="0"
+                                                        max="5"
+                                                        tick-size="5"
+                                                ></v-slider>
+                                            </v-col>
+                                        </v-row>
+                                        <v-row>
+                                            <v-col>
+                                                <v-radio-group row label="Status">
+                                                    <v-radio label="Approved" color="success"></v-radio>
+                                                    <v-radio label="Disapproved" color="red darken-3"></v-radio>
+                                                </v-radio-group>
+                                            </v-col>
+                                        </v-row>
 
-                                                    <span
-                                                            v-else-if="index === 2"
-                                                            class="overline grey--text text--darken-3 mx-2"
-                                                    >
+                                        <v-row>
+                                            <v-col>
+                                                <v-file-input
+                                                        v-model="files"
+                                                        color="deep-purple accent-4"
+                                                        counter
+                                                        label="Image Attachments"
+                                                        multiple
+                                                        placeholder="Select your files"
+                                                        prepend-icon="mdi-paperclip"
+                                                        outlined
+                                                        :show-size="1000"
+                                                >
+                                                    <template v-slot:selection="{ index, text }">
+                                                        <v-chip
+                                                                v-if="index < 2"
+                                                                color="deep-purple accent-4"
+                                                                dark
+                                                                label
+                                                                small
+                                                        >
+                                                            {{ text }}
+                                                        </v-chip>
+
+                                                        <span
+                                                                v-else-if="index === 2"
+                                                                class="overline grey--text text--darken-3 mx-2"
+                                                        >
                                                         +{{ files.length - 2 }} File(s)
                                                     </span>
-                                                </template>
-                                            </v-file-input>
+                                                    </template>
+                                                </v-file-input>
+                                            </v-col>
+                                        </v-row>
+
+                                    </v-form>
+                                </v-tab-item>
+
+                                <v-tab-item
+                                        key="sourceInfo"
+                                >
+                                    <v-row>
+                                        <v-col
+                                                cols="12"
+                                                md="2"
+                                        >
+                                            <v-text-field
+                                                    label="Level"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_recognition_level"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                                cols="12"
+                                                md="10"
+                                        >
+                                            <v-text-field
+                                                    label="Short Name"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_short_name"
+                                            ></v-text-field>
                                         </v-col>
                                     </v-row>
 
-                                </v-form>
+                                    <v-row>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Sub Brand"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_sub_brand"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Manufacturer"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_manufacturer"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-row>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Category"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_category"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Sub Category"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_sub_category"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-row>
+                                        <v-col
+                                                cols="12"
+                                                md="3"
+                                        >
+                                            <v-text-field
+                                                    label="Base Size"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_base_size"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                                cols="12"
+                                                md="3"
+                                        >
+                                            <v-text-field
+                                                    label="Size"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_size"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                                cols="12"
+                                                md="2"
+                                        >
+                                            <v-text-field
+                                                    label="Unit"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_measurement_unit"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                                cols="12"
+                                                md="4"
+                                        >
+                                            <v-text-field
+                                                    label="Container Type"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_container_type"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-row>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Agg Level"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_agg_level"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Segment"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_segment"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-row>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="UPC2 Count"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_count_upc2"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Flavor Detail"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_flavor_detail"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-row>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Case Pack"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_case_pack"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Multi Pack"
+                                                    outlined
+                                                    readonly
+                                                    v-model="selectedProductInfo.refInfo.reference_multi_pack"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                </v-tab-item>
+
+                                </v-tabs-items>
+                            </v-tabs>
                         </v-container>
                     </v-card-text>
 
@@ -570,6 +806,7 @@ try {
         el: "#app",
         vuetify: new Vuetify(),
         data: {
+            tab: null,
             files: [],
             darkThemeSelected: false,
             dialog: false,
@@ -624,6 +861,7 @@ try {
                 productLink: '',
                 manuLink: '',
                 manuLinkOrg: '',
+                refInfo: {},
             },
             assigned: 0,
         },
@@ -773,6 +1011,14 @@ try {
                             this.selectedProductInfo.productLink = response.data[0].product_info[0].product_link;
                             this.selectedProductInfo.manuLinkOrg = response.data[0].product_info[0].manufacturer_link;
                             this.selectedProductInfo.manuLink = response.data[0].product_info[0].manufacturer_link;
+                            this.selectedProductInfo.productHuntType = response.data[0].product_info[0].product_hunt_type;
+                            this.selectedProductInfo.titleString = response.data[0].title_string;
+                            this.selectedProductInfo.radarSource = response.data[0].radar_source;
+
+                            if (this.selectedProductInfo.productHuntType === "reference") {
+                                this.selectedProductInfo.refInfo = response.data[0].ref_info;
+                            }
+
                             this.qaDialog = true;
                         } else if (response.data[0].row_count === 0 && response.data[0].already_assigned === 0){
                             this.selectedProductInfo.assignMessage = 'Product was taken by another QA';
