@@ -400,7 +400,7 @@ try {
                         <v-row>
                             <v-col>
                         <span class="body-1 font-weight-regular">
-                            {{ selectedProductInfo.projectName }} {{ selectedProductInfo.ticket_id }} {{ selectedProductInfo.product_hunt_type }} {{ selectedProductInfo.product_source }} {{ selectedProductInfo.titleString }}
+                            {{ selectedProductInfo.projectName }} {{ selectedProductInfo.ticket_id }} {{ selectedProductInfo.product_hunt_type.toUpperCase() }} {{ selectedProductInfo.product_source }} {{ selectedProductInfo.titleString }}
                         </span>
                             </v-col>
                         </v-row>
@@ -451,6 +451,15 @@ try {
                                                         required
                                                         v-model.trim="selectedProductInfo.productName"
                                                 ></v-text-field>
+                                                <v-alert
+                                                        border="right"
+                                                        colored-border
+                                                        type="warning"
+                                                        elevation="2"
+                                                        v-if="selectedProductInfo.productName !== selectedProductInfo.productNameOrg"
+                                                >
+                                                    Warning, Product Name will be overwritten
+                                                </v-alert>
                                             </v-col>
                                         </v-row>
 
@@ -461,6 +470,15 @@ try {
                                                         required
                                                         v-model.trim="selectedProductInfo.productAltName"
                                                 ></v-text-field>
+                                                <v-alert
+                                                        border="right"
+                                                        colored-border
+                                                        type="warning"
+                                                        elevation="2"
+                                                        v-if="selectedProductInfo.productAltName !== selectedProductInfo.productAltNameOrg"
+                                                >
+                                                    Warning, Product Alt Name will be overwritten
+                                                </v-alert>
                                             </v-col>
                                         </v-row>
 
@@ -475,22 +493,56 @@ try {
 
                                         <v-row>
                                             <v-col>
-                                                <v-select
-                                                        label="Error Type"
-                                                        required
-                                                ></v-select>
+                                                <v-autocomplete
+                                                        :items="qaErrors"
+                                                        item-text="project_error_name"
+                                                        item-value="project_error_id"
+                                                        v-model="selectedQaErrors"
+                                                        label="Select Item"
+                                                        multiple
+                                                        clearable
+                                                >
+                                                    <template v-slot:selection="{ item, index }">
+                                                        <v-chip v-if="index === 0">
+                                                            <span>{{ item.project_error_name }}</span>
+                                                        </v-chip>
+                                                        <span
+                                                                v-if="index === 1"
+                                                                class="grey--text caption"
+                                                        >(+{{ selectedQaErrors.length - 1 }} others)</span>
+                                                    </template>
+                                                </v-autocomplete>
                                             </v-col>
                                             <v-col>
+                                                <v-btn
+                                                        color="red"
+                                                        dark
+                                                        class="ma-2"
+                                                        @click="newErrorDialog = true"
+                                                >
+                                                    <v-icon left>mdi-pencil</v-icon>Add Error
+                                                </v-btn>
+                                            </v-col>
+                                        </v-row>
+                                        <v-row>
+                                            <v-col cols="12" md="6">
                                                 <v-slider
                                                         step="1"
                                                         ticks
-                                                        thumb-label="always"
                                                         label="Facing"
                                                         v-model="selectedProductInfo.productFacingCount"
                                                         min="0"
                                                         max="5"
                                                         tick-size="5"
-                                                ></v-slider>
+                                                >
+                                                    <template v-slot:append>
+                                                        <span
+                                                                class="mt-0 pt-0 info--text"
+                                                        >
+                                                            {{ selectedProductInfo.productFacingCount }}
+                                                        </span>
+                                                    </template>
+                                                </v-slider>
                                             </v-col>
                                         </v-row>
                                         <v-row>
@@ -502,7 +554,7 @@ try {
                                             </v-col>
                                         </v-row>
 
-                                        <v-row>
+                                        <v-row v-if="selectedQaErrors.length > 0">
                                             <v-col>
                                                 <v-file-input
                                                         v-model="files"
@@ -754,6 +806,49 @@ try {
                 </v-card>
             </v-dialog>
 
+            <v-dialog v-model="newErrorDialog" max-width="500px">
+                <v-card>
+                    <v-card-title>
+                        <v-row>
+                            <v-col>
+                        <span class="body-1 font-weight-regular">
+                            Add New Error
+                        </span>
+                            </v-col>
+                        </v-row>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-row>
+                                <v-col
+                                >
+                                    <v-text-field
+                                            label="Error Name"
+                                            outlined
+                                            v-model.trim="newError"
+                                    ></v-text-field>
+                                    <v-alert
+                                            border="right"
+                                            colored-border
+                                            type="error"
+                                            elevation="2"
+                                            v-if="newErrorDialogMessage !== ''"
+                                    >
+                                        {{ newErrorDialogMessage }}
+                                    </v-alert>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red darken-1" text @click="newErrorDialog = false">Close</v-btn>
+                        <v-btn color="success darken-1"  :disabled="newError === ''" text @click="addNewQaError()">Save</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
             <v-dialog
                     v-model="dialog"
                     hide-overlay
@@ -811,6 +906,9 @@ try {
             darkThemeSelected: false,
             dialog: false,
             qaDialog: false,
+            newErrorDialog: false,
+            newErrorDialogMessage: '',
+            newError: '',
             projectArray: [],
             ticketArray: [],
             selectedProject: '',
@@ -864,6 +962,8 @@ try {
                 refInfo: {},
             },
             assigned: 0,
+            qaErrors: [],
+            selectedQaErrors: [],
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -988,6 +1088,29 @@ try {
                 }
                 this.historyDialog = true;
             },
+            getQaErrors() {
+                let formData = new FormData();
+                formData.append('project_name', this.selectedProject);
+                axios.post('api/fetch_qa_error_list.php', formData)
+                    .then((response) => {
+                        this.qaErrors = response.data[0].error_rows;
+                    });
+
+            },
+            addNewQaError() {
+                let formData = new FormData();
+                formData.append('project_name', this.selectedProject);
+                formData.append('error_new_name', this.newError);
+                axios.post('api/add_new_error.php', formData)
+                    .then((response) => {
+                        this.newErrorDialogMessage = response.data[0].error;
+                        if (this.newErrorDialogMessage === '') {
+                            this.getQaErrors();
+                            this.selectedQaErrors.unshift(response.data[0].error_id);
+                            this.newErrorDialog = false;
+                        }
+                    });
+            },
             qaProduct(item) {
                 this.selectedProductInfo.projectName = this.selectedProject;
                 this.selectedProductInfo.ticket_id = item.ticket_id;
@@ -1002,6 +1125,7 @@ try {
                 axios.post('api/assign_product_qa.php', formData)
                     .then((response) => {
                         if (response.data[0].row_count === 1) {
+                            this.getQaErrors();
                             this.dialog = false;
                             this.selectedProductInfo.productName = response.data[0].product_info[0].product_name;
                             this.selectedProductInfo.productAltName = response.data[0].product_info[0].product_alt_design_name;
@@ -1035,9 +1159,10 @@ try {
                         if (response.data[0].error === '') {
                             this.qaDialog = false;
                             this.getProductInfo();
+                            this.selectedQaErrors = [];
                         }
                     });
-            }
+            },
         },
         watch: {
             darkThemeSelected: function (val) {
@@ -1056,6 +1181,12 @@ try {
             productInfo: function() {
                 this.getPendingCount(this.productInfo);
             },
+            newErrorDialog: function(val) {
+                if (val === false) {
+                    this.newError = '';
+                    this.newErrorDialogMessage = '';
+                }
+            }
         },
         created() {
             this.getProjectList();
