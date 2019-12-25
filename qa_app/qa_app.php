@@ -429,6 +429,8 @@ try {
                                     key="qaForm"
                                 >
                                     <v-form
+                                            v-model="valid"
+                                            ref="form"
                                     >
                                         <v-row>
                                             <v-col v-if="selectedProductInfo.productLink !== null" cols="12" md="4">
@@ -450,6 +452,7 @@ try {
                                                         label="Product Name"
                                                         required
                                                         v-model.trim="selectedProductInfo.productName"
+                                                        :rules="productNameRules"
                                                 ></v-text-field>
                                                 <v-alert
                                                         border="right"
@@ -469,6 +472,7 @@ try {
                                                         label="Product Alt Name"
                                                         required
                                                         v-model.trim="selectedProductInfo.productAltName"
+                                                        :rules="productAltNameRules"
                                                 ></v-text-field>
                                                 <v-alert
                                                         border="right"
@@ -487,6 +491,7 @@ try {
                                                 <v-text-field
                                                         label="Manufacturer Source Link"
                                                         v-model.trim="selectedProductInfo.manuLink"
+                                                        :rules="manuLinkRules"
                                                 ></v-text-field>
                                             </v-col>
                                         </v-row>
@@ -501,6 +506,7 @@ try {
                                                         label="Select Item"
                                                         multiple
                                                         clearable
+                                                        :rules="[ errorTypeValidate ]"
                                                 >
                                                     <template v-slot:selection="{ item, index }">
                                                         <v-chip v-if="index === 0">
@@ -547,9 +553,12 @@ try {
                                         </v-row>
                                         <v-row>
                                             <v-col>
-                                                <v-radio-group row label="Status">
-                                                    <v-radio label="Approved" color="success"></v-radio>
-                                                    <v-radio label="Disapproved" color="red darken-3"></v-radio>
+                                                <v-radio-group row label="Status"
+                                                               v-model="selectedProductInfo.qaStatus"
+                                                               :rules="qaStatusRules"
+                                                >
+                                                    <v-radio label="Approved" color="success" value="approved"></v-radio>
+                                                    <v-radio label="Disapproved" color="red darken-3" value="disapproved"></v-radio>
                                                 </v-radio-group>
                                             </v-col>
                                         </v-row>
@@ -566,6 +575,7 @@ try {
                                                         prepend-icon="mdi-paperclip"
                                                         outlined
                                                         :show-size="1000"
+                                                        :rules="[ fileTypeValidate ]"
                                                 >
                                                     <template v-slot:selection="{ index, text }">
                                                         <v-chip
@@ -801,7 +811,7 @@ try {
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="red darken-1" text @click="unassignProduct()">Close</v-btn>
-                        <v-btn color="success darken-1" text @click="qaDialog = false">Save</v-btn>
+                        <v-btn color="success darken-1" text @click="saveQaProduct()" :disabled="!valid">Save</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -937,7 +947,7 @@ try {
             selectedQaStatus: 'pending',
             productHuntItems: ['probe', 'radar', 'reference'],
             selectedHuntType: '',
-            productTypeItems:['brand', 'sku', 'dvc', 'facing'],
+            productTypeItems: ['brand', 'sku', 'dvc', 'facing'],
             selectedProductType: '',
             productBrandItems: [],
             selectedBrand: '',
@@ -960,10 +970,29 @@ try {
                 manuLink: '',
                 manuLinkOrg: '',
                 refInfo: {},
+                productType: '',
+                qaStatus: '',
             },
             assigned: 0,
             qaErrors: [],
             selectedQaErrors: [],
+            valid: false,
+            productNameRules: [
+                v => !!v || 'Product Name is required'
+            ],
+            productAltNameRules: [
+                v => !!v || 'Product Alt Name is required'
+            ],
+            qaStatusRules: [
+                v => !!v || 'QA Status is required'
+            ],
+            acceptedImageFormats: ['png', 'jpg', 'jpeg'],
+            maxFileCount: 4,
+            maxFileSize: 2000000,
+            manuLinkRules: [
+                v => !!v || 'Manu Link is required',
+                v => (v && v.length > 10) || 'Link must be greater than 10 characters',
+            ],
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -1116,6 +1145,7 @@ try {
                 this.selectedProductInfo.ticket_id = item.ticket_id;
                 this.selectedProductInfo.product_hunt_type = item.product_hunt_type;
                 this.selectedProductInfo.productId = item.product_id;
+                this.selectedProductInfo.productType = item.product_type;
                 this.selectedProductInfo.assignMessage = '';
 
                 this.dialog = true;
@@ -1159,10 +1189,37 @@ try {
                         if (response.data[0].error === '') {
                             this.qaDialog = false;
                             this.getProductInfo();
-                            this.selectedQaErrors = [];
+                            this.$refs.form.reset();
+                            this.selectedProductInfo.qaStatus = '';
                         }
                     });
             },
+            saveQaProduct() {
+                if (this.$refs.form.validate()) {
+                    this.dialog = true;
+                    let formData = new FormData();
+                    formData.append('project_name', this.selectedProject);
+                    formData.append("product_type", this.selectedProductInfo.productType);
+                    formData.append("product_rename", this.selectedProductInfo.productName);
+                    formData.append("error_image_count", this.files.length);
+                    formData.append("product_alt_rename", this.selectedProductInfo.productAltName);
+                    formData.append("error_qa", this.selectedQaErrors);
+                    formData.append("num_facings", this.selectedProductInfo.productFacingCount);
+                    formData.append("manu_link", this.selectedProductInfo.manuLink);
+                    for (let i = 0; i < this.files.length; i++) {
+                        formData.append("error_images" + i, this.files[i]);
+                    }
+                    formData.append('status', this.selectedProductInfo.qaStatus);
+
+                    axios.post('api/process_qa.php', formData)
+                        .then(() => {
+                            this.getProductInfo();
+                            this.dialog = false;
+                            this.qaDialog = false;
+                            this.$refs.form.reset();
+                        });
+                }
+            }
         },
         watch: {
             darkThemeSelected: function (val) {
@@ -1186,6 +1243,9 @@ try {
                     this.newError = '';
                     this.newErrorDialogMessage = '';
                 }
+            },
+            files: function () {
+                console.log(this.files[0])
             }
         },
         created() {
@@ -1214,6 +1274,27 @@ try {
                 });
                 this.getPendingCount(a);
                 return a;
+            },
+            errorTypeValidate() {
+                 if ((this.selectedQaErrors.length > 0 && this.selectedProductInfo.qaStatus === 'disapproved')
+                    || (this.selectedProductInfo.qaStatus === 'approved')) {
+                     return true;
+                 } else if (this.selectedQaErrors.length > 0 && this.selectedProductInfo.qaStatus === ''){
+                     return "QA Status must be selected";
+                 } else {
+                     return "Error Type must be selected";
+                 }
+            },
+            fileTypeValidate() {
+                if (this.files.length === 0 && this.selectedQaErrors > 0) {
+                    return "At least one image must be selected for upload";
+                } else if (!(this.files.reduce((size, file) => size + file.size, 0) < 8000000)) {
+                    return "Images must be less than 8MB in size";
+                } else if (this.files.length > 4) {
+                    return "Only 4 Images can be selected for upload";
+                }else {
+                    return true;
+                }
             }
 
         }
