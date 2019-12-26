@@ -254,6 +254,9 @@ try {
                                         <v-btn text icon color="green" @click="getProductInfo()">
                                             <v-icon>mdi-cached</v-icon>
                                         </v-btn>
+                                        <v-btn color="indigo" dark >
+                                            <v-icon dark @click="exportProducts(filteredProducts)">mdi-cloud-download</v-icon>
+                                        </v-btn>
                                     </v-col>
                                     <v-spacer></v-spacer>
                                     <v-text-field
@@ -1219,6 +1222,121 @@ try {
                             this.$refs.form.reset();
                         });
                 }
+            },
+            stringCheck(string) {
+                if (string === null) {
+                    return '';
+                } else {
+                    return string;
+                }
+            },
+            exportProducts(data) {
+                if (data.length > 0) {
+                    let exportData = [];
+                    data.forEach((item, index) => {
+                        let source = '';
+                        if (item.probe_id !== null) {
+                            source = "PROBE " + item.probe_id;
+                        } else if (item.radar_source_link !== null) {
+                            source = item.radar_source_link;
+                        } else {
+                            source = "REF EAN " + item.reference_ean;
+                        }
+                        exportData[index] = {
+                            "Creation Data": this.stringCheck(item.product_creation_time),
+                            "Ticket ID": this.stringCheck(item.ticket_id),
+                            "Product Type": this.stringCheck(item.product_type.toUpperCase()),
+                            "Product Name": this.stringCheck(item.product_name),
+                            "Product Alt Name": this.stringCheck(item.product_alt_design_name),
+                            "Product QA Status": this.stringCheck(item.product_qa_status),
+                            "Hunt Type": this.stringCheck(item.product_hunt_type.toUpperCase()),
+                            "Product Source Link": this.stringCheck(item.product_link),
+                            "Product Hunt Source": this.stringCheck(source),
+                            "SRT QA DateTime": this.stringCheck(item.product_qa_datetime),
+                            "Product Previous Name": this.stringCheck(item.product_previous),
+                            "Product Previous Alt Name": this.stringCheck(item.product_alt_design_previous),
+                            "Product QA Errors": this.stringCheck(item.qa_error),
+                            "Product ODA DateTime": this.stringCheck(item.product_oda_datetime),
+                            "Product QA Previous Name": this.stringCheck(item.product_qa_previous),
+                            "Product QA Previous Alt Name": this.stringCheck(item.product_alt_design_qa_previous),
+                            "Product ODA Errors": this.stringCheck(item.oda_error),
+                            "Product ODA Comment": this.stringCheck(item.product_oda_comment),
+                        }
+                    });
+                    this.JSONToCSVConvertor(exportData, "Product Export", true);
+                }
+            },
+            JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+                //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+                var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+
+                var CSV = '';
+                //Set Report title in first row or line
+
+                CSV += ReportTitle + '\r\n\n';
+
+                //This condition will generate the Label/Header
+                if (ShowLabel) {
+                    var row = "";
+
+                    //This loop will extract the label from 1st index of on array
+                    for (var index in arrData[0]) {
+
+                        //Now convert each value to string and comma-seprated
+                        row += index + ',';
+                    }
+
+                    row = row.slice(0, -1);
+
+                    //append Label row with line break
+                    CSV += row + '\r\n';
+                }
+
+                //1st loop is to extract each row
+                for (var i = 0; i < arrData.length; i++) {
+                    var row = "";
+
+                    //2nd loop will extract each column and convert it in string comma-seprated
+                    for (var index in arrData[i]) {
+                        row += '"' + arrData[i][index] + '",';
+                    }
+
+                    row.slice(0, row.length - 1);
+
+                    //add a line break after each row
+                    CSV += row + '\r\n';
+                }
+
+                if (CSV == '') {
+                    alert("Invalid data");
+                    return;
+                }
+
+                //Generate a file name
+                var fileName = "MyReport_";
+                //this will remove the blank-spaces from the title and replace it with an underscore
+                fileName += ReportTitle.replace(/ /g, "_");
+
+                //Initialize file format you want csv or xls
+                var uri = 'data:text/csv;charset=utf-8,' + escape(CSV);
+
+                // Now the little tricky part.
+                // you can use either>> window.open(uri);
+                // but this will not work in some browsers
+                // or you will not get the correct file extension
+
+                //this trick will generate a temp <a /> tag
+                var link = document.createElement("a");
+                link.href = uri;
+
+                //set the visibility hidden so it will not effect on your web-layout
+                link.style = "visibility:hidden";
+                link.download = fileName + ".csv";
+
+                //this part will append the anchor tag and remove it after automatic click
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             }
         },
         watch: {
