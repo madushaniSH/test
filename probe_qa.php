@@ -4,6 +4,8 @@
     Author: Malika Liyanage
 */
 
+// Temporary fix have to update the menu links instead of routing like this
+header('Location: qa_app/qa_app.php');
 session_start();
 // If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['logged_in'])) {
