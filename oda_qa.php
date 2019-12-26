@@ -2,6 +2,8 @@
 /*
     Author: Malika Liyanage
 */
+// Temporary fix have to update the menu links instead of routing like this
+header('Location: oda_qa/oda_qa.php');
 session_start();
 // If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['logged_in'])) {

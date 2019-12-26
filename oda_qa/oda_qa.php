@@ -284,8 +284,8 @@ try {
                             <template v-slot:item.action="{ item }">
                                 <div class="my-2">
                                     <v-btn color="primary"
-                                           :disabled="item.probe_being_handled === null
-                                           || (item.probe_being_handled === '1' && item.assigned_user === '0')
+                                           :disabled="item.qa_being_handled === null
+                                           || (item.qa_being_handled === '1' && item.assigned_user === '0')
                                            || (assigned === 1 && item.assigned_user !== '1')"
                                            @click="qaProduct(item)"
                                     >QA</v-btn>
@@ -574,45 +574,19 @@ try {
                                                                v-model="selectedProductInfo.qaStatus"
                                                                :rules="qaStatusRules"
                                                 >
-                                                    <v-radio label="Approved" color="success" value="approved"></v-radio>
-                                                    <v-radio label="Disapproved" color="red darken-3" value="disapproved"></v-radio>
+                                                    <v-radio label="Activate" color="success" value="active"></v-radio>
+                                                    <v-radio label="Reject" color="red darken-3" value="rejected"></v-radio>
                                                 </v-radio-group>
                                             </v-col>
                                         </v-row>
 
-                                        <v-row v-if="selectedQaErrors.length > 0">
+                                        <v-row>
                                             <v-col>
-                                                <v-file-input
-                                                        v-model="files"
-                                                        color="deep-purple accent-4"
-                                                        counter
-                                                        label="Image Attachments"
-                                                        multiple
-                                                        placeholder="Select your files"
-                                                        prepend-icon="mdi-paperclip"
-                                                        outlined
-                                                        :show-size="1000"
-                                                        :rules="[ fileTypeValidate ]"
-                                                >
-                                                    <template v-slot:selection="{ index, text }">
-                                                        <v-chip
-                                                                v-if="index < 2"
-                                                                color="deep-purple accent-4"
-                                                                dark
-                                                                label
-                                                                small
-                                                        >
-                                                            {{ text }}
-                                                        </v-chip>
-
-                                                        <span
-                                                                v-else-if="index === 2"
-                                                                class="overline grey--text text--darken-3 mx-2"
-                                                        >
-                                                        +{{ files.length - 2 }} File(s)
-                                                    </span>
-                                                    </template>
-                                                </v-file-input>
+                                                <v-text-field
+                                                        label="Product Comment"
+                                                        required
+                                                        v-model.trim="selectedProductInfo.productComment"
+                                                ></v-text-field>
                                             </v-col>
                                         </v-row>
 
@@ -910,7 +884,7 @@ try {
         <v-bottom-navigation
                 color="success"
         >
-            <v-btn href="../dashboard.php">
+            <v-btn href="../oda_dashboard.php">
                 <span>Dashboard</span>
                 <v-icon>mdi-home</v-icon>
             </v-btn>
@@ -929,7 +903,6 @@ try {
         vuetify: new Vuetify(),
         data: {
             tab: null,
-            files: [],
             darkThemeSelected: false,
             dialog: false,
             qaDialog: false,
@@ -992,6 +965,7 @@ try {
                 refInfo: {},
                 productType: '',
                 qaStatus: '',
+                productComment: '',
             },
             assigned: 0,
             qaErrors: [],
@@ -1006,9 +980,6 @@ try {
             qaStatusRules: [
                 v => !!v || 'QA Status is required'
             ],
-            acceptedImageFormats: ['png', 'jpg', 'jpeg'],
-            maxFileCount: 4,
-            maxFileSize: 2000000,
             manuLinkRules: [
                 v => !!v || 'Manu Link is required',
                 v => (v && v.length > 10) || 'Link must be greater than 10 characters',
@@ -1173,7 +1144,7 @@ try {
                 let formData = new FormData();
                 formData.append('project_name', this.selectedProject);
                 formData.append('product_id', this.selectedProductInfo.productId);
-                axios.post('api/assign_product_qa.php', formData)
+                axios.post('api/assign_product_oda.php', formData)
                     .then((response) => {
                         if (response.data[0].row_count === 1) {
                             this.getQaErrors();
@@ -1205,7 +1176,7 @@ try {
                 let formData = new FormData();
                 formData.append('project_name', this.selectedProject);
 
-                axios.post('api/unassign_product_qa.php', formData)
+                axios.post('api/unassign_product_oda.php', formData)
                     .then((response) => {
                         if (response.data[0].error === '') {
                             this.qaDialog = false;
@@ -1219,20 +1190,17 @@ try {
                 if (this.$refs.form.validate()) {
                     this.dialog = true;
                     let formData = new FormData();
-                    formData.append('project_name', this.selectedProject);
+                    formData.append("project_name", this.selectedProject);
                     formData.append("product_type", this.selectedProductInfo.productType);
                     formData.append("product_rename", this.selectedProductInfo.productName);
-                    formData.append("error_image_count", this.files.length);
                     formData.append("product_alt_rename", this.selectedProductInfo.productAltName);
                     formData.append("error_qa", this.selectedQaErrors);
+                    formData.append("product_comment", this.selectedProductInfo.productComment);
                     formData.append("num_facings", this.selectedProductInfo.productFacingCount);
                     formData.append("manu_link", this.selectedProductInfo.manuLink);
-                    for (let i = 0; i < this.files.length; i++) {
-                        formData.append("error_images" + i, this.files[i]);
-                    }
                     formData.append('status', this.selectedProductInfo.qaStatus);
 
-                    axios.post('api/process_qa.php', formData)
+                    axios.post('api/process_oda_qa.php', formData)
                         .then(() => {
                             this.getProductInfo();
                             this.dialog = false;
@@ -1381,9 +1349,6 @@ try {
                     this.newErrorDialogMessage = '';
                 }
             },
-            files: function () {
-                console.log(this.files[0])
-            }
         },
         created() {
             this.getProjectList();
@@ -1422,27 +1387,15 @@ try {
                 return a;
             },
             errorTypeValidate() {
-                if ((this.selectedQaErrors.length > 0 && this.selectedProductInfo.qaStatus === 'disapproved')
-                    || (this.selectedProductInfo.qaStatus === 'approved')) {
+                if ((this.selectedQaErrors.length > 0 && this.selectedProductInfo.qaStatus === 'rejected')
+                    || (this.selectedProductInfo.qaStatus === 'active')) {
                     return true;
                 } else if (this.selectedQaErrors.length > 0 && this.selectedProductInfo.qaStatus === ''){
-                    return "QA Status must be selected";
+                    return "Status must be selected";
                 } else {
                     return "Error Type must be selected";
                 }
             },
-            fileTypeValidate() {
-                if (this.files.length === 0 && this.selectedQaErrors > 0) {
-                    return "At least one image must be selected for upload";
-                } else if (!(this.files.reduce((size, file) => size + file.size, 0) < 8000000)) {
-                    return "Images must be less than 8MB in size";
-                } else if (this.files.length > 4) {
-                    return "Only 4 Images can be selected for upload";
-                }else {
-                    return true;
-                }
-            }
-
         }
     });
 </script>

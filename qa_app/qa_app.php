@@ -1364,9 +1364,6 @@ try {
                     this.newErrorDialogMessage = '';
                 }
             },
-            files: function () {
-                console.log(this.files[0])
-            }
         },
         created() {
             this.getProjectList();

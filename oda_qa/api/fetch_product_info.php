@@ -43,9 +43,9 @@ foreach ($ticket_array as $ticket) {
 
 $sql = '
 SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_creation_time", SUBSTRING_INDEX(p.product_name, \' \', 1 ) AS "brand_name" ,p.product_name, p.product_previous, p.product_qa_previous ,p.product_alt_design_name, p.product_alt_design_previous, p.product_alt_design_qa_previous , p.product_type,
-       p.product_qa_status, p.product_hunt_type, p.product_qa_datetime, p.product_oda_datetime, p.product_oda_comment,pqq.probe_being_handled, p.product_link ,p2.probe_id, ri.reference_ean, rs.radar_source_link, IF (pqq.account_id = :account_id, 1, 0) AS assigned_user, IF(cc.client_category_name IS NULL, "NA", cc.client_category_name) AS "client_category_name"
+       p.product_qa_status, p.product_hunt_type, p.product_qa_datetime, p.product_oda_datetime, p.product_oda_comment,oq.qa_being_handled, p.product_link ,p2.probe_id, ri.reference_ean, rs.radar_source_link, IF (oq.account_id = :account_id, 1, 0) AS assigned_user, IF(cc.client_category_name IS NULL, "NA", cc.client_category_name) AS "client_category_name"
     FROM products p
-    LEFT OUTER JOIN probe_qa_queue pqq ON p.product_id = pqq.product_id
+    LEFT OUTER JOIN oda_queue oq ON oq.product_id = p.product_id
     LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id
     LEFT OUTER JOIN probe p2 on ppi.probe_product_info_key_id = p2.probe_key_id
     LEFT OUTER JOIN radar_sources rs on p.product_id = rs.radar_product_id
@@ -60,8 +60,8 @@ SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_cre
         pt.project_ticket_system_id = rh.radar_ticket_id
         OR 
         pt.project_ticket_system_id = ri.reference_ticket_id
-WHERE ('.$ticket_query_string.') OR  (pqq.probe_being_handled = 1 AND pqq.account_id = :account_id)
-ORDER BY pqq.probe_being_handled DESC ,p.product_creation_time DESC';
+WHERE ('.$ticket_query_string.') OR  (oq.qa_being_handled = 1 AND oq.account_id = :account_id)
+ORDER BY oq.qa_being_handled DESC ,p.product_creation_time DESC';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id' => $_SESSION['id']]);
 $product_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -94,7 +94,7 @@ for($i = 0; $i < count($product_array); $i++) {
     $product_array[$i]['oda_error'] = $error_string;
 }
 
-$sql = 'SELECT probe_qa_queue_id FROM probe_qa_queue WHERE account_id = :account_id';
+$sql = 'SELECT oda_queue_id FROM oda_queue WHERE account_id = :account_id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id' => $_SESSION['id']]);
 $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
