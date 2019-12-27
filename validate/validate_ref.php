@@ -147,7 +147,21 @@ try {
                             :sort-desc="[true]"
                             class="elevation-1"
                             v-if="matchInfo.length > 0"
-                    ></v-data-table>
+                            :search="search"
+                    >
+                        <template v-slot:top>
+                            <v-toolbar flat>
+                                <v-toolbar-title>Result(s)</v-toolbar-title>
+                                <v-spacer></v-spacer>
+                                <v-text-field
+                                        v-model="search"
+                                        label="Product Name"
+                                        single-line
+                                        hide-details
+                                ></v-text-field>
+                            </v-toolbar>
+                        </template>
+                    </v-data-table>
                 </v-col>
             </v-row>
 
@@ -185,6 +199,7 @@ try {
             overlay: false,
             matchWith: [],
             searchWith: [],
+            search: '',
             productName: '',
             headers: [
                 { text: 'Key', value: 'key' },
