@@ -288,7 +288,7 @@ try {
             productName: '',
             headers: [
                 { text: 'Key', value: 'key' },
-                { text: 'UPC', value: 'upc'},
+                { text: 'System Gen UPC', value: 'upc'},
                 { text: 'Column', value: 'col' },
                 { text: 'Match Percentage', value: 'per' },
             ],
@@ -316,15 +316,17 @@ try {
                 let matchArray = [];
                 let total = 0;
                 let row = "";
+                let upc = '';
 
                 this.overlay = true;
 
                 // init array
                 for (let i = 0; i < refInfoLength; ++i) {
                     row = this.refInfo[i];
+                    upc = row[this.key] + calcCheckDigit(row[this.key])).padStart(12, "0");
                     matchArray[i] = {
                         "key": row[this.key],
-                        "upc": (row[this.key] + calcCheckDigit(row[this.key])).padStart(12, "0"),
+                        "upc": upc,
                         "col": row[this.searchObjectArray[0].col],
                         "totalPer": 0,
                         "per": 0
