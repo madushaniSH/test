@@ -1,8 +1,6 @@
 <?php
 session_start();
 // If the user is not logged in redirect to the login page...
-session_start();
-// If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['logged_in'])) {
     header('Location: ../login_auth_one.php');
     exit();
@@ -1130,6 +1128,9 @@ try {
                             this.selectedQaErrors.unshift(response.data[0].error_id);
                             this.newErrorDialog = false;
                         }
+                    })
+                    .catch(() => {
+                        location.reload();
                     });
             },
             qaProduct(item) {
@@ -1170,6 +1171,9 @@ try {
                             this.selectedProductInfo.assignMessage = 'Product was taken by another QA';
                             this.getProductInfo();
                         }
+                    })
+                    .catch(() => {
+                        location.reload();
                     });
             },
             unassignProduct() {
@@ -1184,6 +1188,9 @@ try {
                             this.$refs.form.reset();
                             this.selectedProductInfo.qaStatus = '';
                         }
+                    })
+                    .catch(() => {
+                        location.reload();
                     });
             },
             saveQaProduct() {
@@ -1206,6 +1213,9 @@ try {
                             this.dialog = false;
                             this.qaDialog = false;
                             this.$refs.form.reset();
+                        })
+                        .catch(() => {
+                            location.reload();
                         });
                 }
             },

@@ -4,6 +4,15 @@
     Author: Malika Liyanage
 */
 session_start();
+if (!isset($_SESSION['logged_in'])) {
+    header('Location: ../login_auth_one.php');
+    exit();
+} else {
+    if(!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'ODA Supervisor' || $_SESSION['role'] === 'ODA')){
+        header('Location: ../index.php');
+        exit();
+    }
+}
 require('../../user_db_connection.php');
 $dbname = $_POST['project_name'];
 $_SESSION['current_database'] = $dbname;
