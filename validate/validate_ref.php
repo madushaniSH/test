@@ -288,6 +288,7 @@ try {
             productName: '',
             headers: [
                 { text: 'Key', value: 'key' },
+                { text: 'UPC', value: 'upc'},
                 { text: 'Column', value: 'col' },
                 { text: 'Match Percentage', value: 'per' },
             ],
@@ -323,6 +324,7 @@ try {
                     row = this.refInfo[i];
                     matchArray[i] = {
                         "key": row[this.key],
+                        "upc": (row[this.key] + calcCheckDigit(row[this.key])).padStart(12, "0"),
                         "col": row[this.searchObjectArray[0].col],
                         "totalPer": 0,
                         "per": 0
@@ -427,6 +429,28 @@ try {
                 costs[s2.length] = lastValue;
         }
         return costs[s2.length];
+    }
+
+    function calcCheckDigit(code) {
+        let check = 0;
+        code = code.toString();
+
+        while(code.length < 11) { code = "0" + code }
+
+        for(let i = 0; i < code.length; i += 2) {
+            check += parseInt(code.charAt(i));
+        }
+
+        check *= 3;
+
+        for(let i = 1; i < code.length; i += 2) {
+            check += parseInt(code.charAt(i));
+        }
+
+        check %= 10;
+        check = (check === 0) ? check : 10 - check;
+
+        return check
     }
 </script>
 <style>
