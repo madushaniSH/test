@@ -240,9 +240,12 @@ try {
                             "per": (similarity(productName, row[this.searchWith]) * 100).toFixed(2)
                         }
                     }
-                    if (i > maxRows) {
-                        break;
-                    }
+                }
+
+                matchArray.sort((a, b) => (a.per < b.per ? 1 : -1)); // sorts array based on match percentage
+                let temp = matchArray;
+                if (refInfoLength > maxRows) {
+                    matchArray = temp.slice(0, maxRows);
                 }
 
                 this.matchInfo = matchArray;
