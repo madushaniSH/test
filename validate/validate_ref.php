@@ -91,50 +91,15 @@ try {
                             </v-chip>
                         </template>
                     </v-file-input>
-                </v-col>
-                <v-col
-                        cols="6"
-                        md="2"
-                >
-                    <v-autocomplete
-                            v-model="matchWith"
-                            label="Key"
-                            chips
-                            :items="refInfoHeaders"
-                            :disabled="!refInfoHeaders.length > 0"
+                    <v-btn
+                            color="primary"
+                            class="ma-2"
+                            dark
+                            :disabled="files === null"
+                            @click="dialog = true"
                     >
-                    </v-autocomplete>
-                </v-col>
-                <v-col
-                        cols="6"
-                        md="2"
-                >
-                    <v-autocomplete
-                            v-model="searchWith"
-                            label="Search Column"
-                            chips
-                            :items="refInfoHeaders"
-                            :disabled="!matchWith.length > 0"
-                    >
-                    </v-autocomplete>
-                </v-col>
-            </v-row>
-
-            <v-row
-                    :align="'start'"
-                    :justify="'start'"
-                    class="filters"
-            >
-                <v-col
-                        cols="6"
-                        md="5"
-                        v-if="searchWith.length > 0"
-                >
-                    <v-text-field
-                            label="Product Name"
-                            v-model.trim="productName"
-                    ></v-text-field>
-                    <v-btn color="success" @click="matchData">Match</v-btn>
+                        Search Options
+                    </v-btn>
                 </v-col>
             </v-row>
 
@@ -175,9 +140,85 @@ try {
             </v-btn>
         </v-bottom-navigation>
 
-        <v-overlay :value="overlay">
-            <v-progress-circular indeterminate size="64"></v-progress-circular>
-        </v-overlay>
+        <v-dialog
+                v-model="overlay"
+                hide-overlay
+                persistent
+                width="300"
+        >
+            <v-card
+                    color="primary"
+                    dark
+            >
+                <v-card-text>
+                    Please stand by
+                    <v-progress-linear
+                            indeterminate
+                            color="white"
+                            class="mb-0"
+                    ></v-progress-linear>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+
+
+        <v-dialog
+                v-model="dialog"
+                max-width="1000px"
+        >
+            <v-card>
+                <v-card-title>
+                    Search Options
+                </v-card-title>
+                <v-card-text>
+                    <v-container>
+                        <v-row>
+                            <v-col
+                                    cols="11"
+                            >
+                                <v-autocomplete
+                                        :items="refInfoHeaders"
+                                        v-model="key"
+                                        label="Select Key"
+                                >
+                                </v-autocomplete>
+                            </v-col>
+                            <v-col
+                                    cols="1"
+                            >
+                                <v-btn fab dark small color="indigo" @click="addNewSearch()">
+                                    <v-icon dark>mdi-plus</v-icon>
+                                </v-btn>
+                            </v-col>
+                        </v-row>
+                        <section v-for="item in searchObjectArray">
+                            <v-row>
+                                <v-col>
+                                    <v-autocomplete
+                                            :items="refInfoHeaders"
+                                            v-model="item.col"
+                                            label="Search Column"
+                                    >
+                                    </v-autocomplete>
+                                </v-col>
+                                <v-col>
+                                    <v-text-field
+                                            label="Value"
+                                            v-model.trim="item.value"
+                                    ></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </section>
+                    </v-container>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="red darken-1" text @click="dialog = false">Close</v-btn>
+                    <v-btn color="success darken-1" :disabled="checkSearchValues" @click="matchData()" text>Save</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-app>
 </div>
 
@@ -197,8 +238,8 @@ try {
             refInfo: [],
             refInfoHeaders: [],
             overlay: false,
-            matchWith: [],
-            searchWith: [],
+            searchObjectArray: [],
+            key: '',
             search: '',
             productName: '',
             headers: [
@@ -207,6 +248,7 @@ try {
                 { text: 'Match Percentage', value: 'per' },
             ],
             matchInfo: [],
+            dialog: false,
         },
         methods: {
             processData(file) {
@@ -224,23 +266,40 @@ try {
             },
 
             matchData() {
-                const productName = this.productName;
                 const refInfoLength = this.refInfo.length;
                 const maxRows = 10000;
                 let matchArray = [];
+                let total = 0;
                 let row = "";
 
                 this.overlay = true;
+
+                // init array
                 for (let i = 0; i < refInfoLength; ++i) {
                     row = this.refInfo[i];
-                    if (row[this.searchWith] !== undefined) {
-                        matchArray[i] = {
-                            "key": row[this.matchWith],
-                            "col": row[this.searchWith],
-                            "per": (similarity(productName, row[this.searchWith]) * 100).toFixed(2)
-                        }
+                    matchArray[i] = {
+                        "key": row[this.key],
+                        "col": row[this.searchObjectArray[0].col],
+                        "totalPer": 0,
+                        "per": 0
                     }
                 }
+
+
+                this.searchObjectArray.forEach((item, index) => {
+                    for (let i = 0; i < refInfoLength; ++i) {
+                        row = this.refInfo[i];
+                        if (row[item.col] !== undefined) {
+                            total = parseFloat((similarity(item.value, row[item.col]) * 100).toFixed(2));
+                            matchArray[i].totalPer = parseFloat(total) + parseFloat(matchArray[i].totalPer);
+                        }
+                    }
+                });
+
+                for (let i = 0; i < refInfoLength; ++i) {
+                    matchArray[i].per = (matchArray[i].totalPer / this.searchObjectArray.length).toFixed(2);
+                }
+                console.log(matchArray);
 
                 matchArray.sort((a, b) => (a.per < b.per ? 1 : -1)); // sorts array based on match percentage
                 let temp = matchArray;
@@ -249,9 +308,16 @@ try {
                 }
 
                 this.matchInfo = matchArray;
+                this.dialog = false;
                 this.overlay = false;
             },
-
+            addNewSearch() {
+                const newObject = {
+                    col: '',
+                    value: ''
+                };
+                this.searchObjectArray.push(newObject);
+            }
         },
         watch: {
             darkThemeSelected: function (val) {
@@ -263,7 +329,18 @@ try {
                 }
             },
         },
+        created() {
+            this.addNewSearch();
+        },
         computed: {
+            checkSearchValues() {
+                let valid = false;
+                for (let i = 0; i < this.searchObjectArray.length; i++) {
+                    this.searchObjectArray[i].col === '' || this.searchObjectArray[i].value === '' ?
+                        valid = true : valid = false;
+                }
+                return valid;
+            }
         }
     });
     // FROM STACK OVER FLOW https://stackoverflow.com/questions/10473745/compare-strings-javascript-return-of-likely
