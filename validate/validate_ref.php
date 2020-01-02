@@ -91,6 +91,50 @@ try {
                             </v-chip>
                         </template>
                     </v-file-input>
+                </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            v-model="key"
+                            label="Key"
+                            chips
+                            :items="refInfoHeaders"
+                            :disabled="!refInfoHeaders.length > 0"
+                    >
+                    </v-autocomplete>
+                </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            v-model="searchObjectArray[0].col"
+                            label="Search Column"
+                            chips
+                            :items="refInfoHeaders"
+                            :disabled="key === ''"
+                    >
+                    </v-autocomplete>
+                </v-col>
+            </v-row>
+
+            <v-row
+                    :align="'start'"
+                    :justify="'start'"
+                    class="filters"
+            >
+                <v-col
+                        cols="6"
+                        md="5"
+                        v-if="searchObjectArray[0].col !== ''"
+                >
+                    <v-text-field
+                            label="Product Name"
+                            v-model.trim="searchObjectArray[0].value"
+                    ></v-text-field>
+                    <v-btn color="success" @click="matchData">Match</v-btn>
                     <v-btn
                             color="primary"
                             class="ma-2"
