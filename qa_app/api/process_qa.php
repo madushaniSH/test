@@ -3,11 +3,12 @@
     Author: Malika Liyanage
 */
 session_start();
+// If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['logged_in'])) {
     header('Location: ../login_auth_one.php');
     exit();
 } else {
-    if(!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'ODA Supervisor' || $_SESSION['role'] === 'ODA')){
+    if (!($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Supervisor' || $_SESSION['role'] === 'SRT Analyst')) {
         header('Location: ../index.php');
         exit();
     }
