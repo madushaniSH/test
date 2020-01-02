@@ -213,7 +213,7 @@ try {
                 this.overlay = true;
                 Papa.parsePromise = function(file) {
                     return new Promise(function(complete, error) {
-                        Papa.parse(file, {header:true,complete, error});
+                        Papa.parse(file, {worker: true, header:true,complete, error});
                     });
                 };
                 Papa.parsePromise(file).then((results) => {
@@ -226,6 +226,7 @@ try {
             matchData() {
                 const productName = this.productName;
                 const refInfoLength = this.refInfo.length;
+                const maxRows = 10000;
                 let matchArray = [];
                 let row = "";
 
@@ -238,6 +239,9 @@ try {
                             "col": row[this.searchWith],
                             "per": (similarity(productName, row[this.searchWith]) * 100).toFixed(2)
                         }
+                    }
+                    if (i > maxRows) {
+                        break;
                     }
                 }
 
