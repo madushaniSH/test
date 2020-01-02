@@ -432,25 +432,29 @@ try {
     }
 
     function calcCheckDigit(code) {
-        let check = 0;
-        code = code.toString();
+        if (code !== undefined) {
+            let check = 0;
+            code = code.toString();
 
-        while(code.length < 11) { code = "0" + code }
+            while (code.length < 11) {
+                code = "0" + code
+            }
 
-        for(let i = 0; i < code.length; i += 2) {
-            check += parseInt(code.charAt(i));
+            for (let i = 0; i < code.length; i += 2) {
+                check += parseInt(code.charAt(i));
+            }
+
+            check *= 3;
+
+            for (let i = 1; i < code.length; i += 2) {
+                check += parseInt(code.charAt(i));
+            }
+
+            check %= 10;
+            check = (check === 0) ? check : 10 - check;
+
+            return check
         }
-
-        check *= 3;
-
-        for(let i = 1; i < code.length; i += 2) {
-            check += parseInt(code.charAt(i));
-        }
-
-        check %= 10;
-        check = (check === 0) ? check : 10 - check;
-
-        return check
     }
 </script>
 <style>
