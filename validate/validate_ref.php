@@ -341,7 +341,7 @@ try {
                     upc = row[this.key] + calcCheckDigit(row[this.key]);
                     matchArray[i] = {
                         "key": row[this.key],
-                        "upc": zeroFill(upc, 12),
+                        "upc": zeroPad(upc, 12),
                         "col": row[this.searchObjectArray[0].col],
                         "totalPer": 0,
                         "per": 0
@@ -479,16 +479,17 @@ try {
             return check
         }
     }
-    
-    function zeroFill( number, width )
-    {
-        width -= number.toString().length;
-        if ( width > 0 )
-        {
-            return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
+
+    function zeroPad (num, numZeros) {
+        var an = Math.abs (num);
+        var digitCount = 1 + Math.floor (Math.log (an) / Math.LN10);
+        if (digitCount >= numZeros) {
+            return num;
         }
-        return number + ""; // always return a string
+        var zeroString = Math.pow (10, numZeros - digitCount).toString ().substr (1);
+        return num < 0 ? '-' + zeroString + an : zeroString + an;
     }
+
 </script>
 <style>
     .filters {
