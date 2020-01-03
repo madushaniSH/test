@@ -139,7 +139,7 @@ try {
                             color="primary"
                             class="ma-2"
                             dark
-                            :disabled="files === null"
+                            :disabled="files === null || searchObjectArray[0].value === ''"
                             @click="dialog = true"
                     >
                         Search Options
@@ -170,6 +170,15 @@ try {
                                 ></v-text-field>
                             </v-toolbar>
                         </template>
+
+                        <template v-slot:item.upc="{ item }">
+                            <v-btn text outlined color="info" :href="upcLink(item.upc)" target="_blank">
+                                <v-icon left>mdi-link</v-icon>
+                                {{ item.upc }}
+                            </v-btn>
+                        </template>
+                    </v-data-table>
+
                     </v-data-table>
                 </v-col>
             </v-row>
@@ -235,7 +244,7 @@ try {
                                 </v-btn>
                             </v-col>
                         </v-row>
-                        <section v-for="item in searchObjectArray">
+                        <section v-for="(item, index) in searchObjectArray">
                             <v-row>
                                 <v-col>
                                     <v-autocomplete
@@ -249,7 +258,13 @@ try {
                                     <v-text-field
                                             label="Value"
                                             v-model.trim="item.value"
-                                    ></v-text-field>
+                                    >
+                                        <template slot="append-outer">
+                                            <v-btn class="mx-2" fab dark small color="red" :disabled="index === 0" @click="removeSearch(index)">
+                                                <v-icon dark>mdi-minus</v-icon>
+                                            </v-btn>
+                                        </template>
+                                    </v-text-field>
                                 </v-col>
                             </v-row>
                         </section>
@@ -259,7 +274,7 @@ try {
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="red darken-1" text @click="dialog = false">Close</v-btn>
-                    <v-btn color="success darken-1" :disabled="checkSearchValues" @click="matchData()" text>Save</v-btn>
+                    <v-btn color="success darken-1" :disabled="!checkSearchValues" @click="matchData()" text>Save</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -323,10 +338,10 @@ try {
                 // init array
                 for (let i = 0; i < refInfoLength; ++i) {
                     row = this.refInfo[i];
-                    upc = (row[this.key] + calcCheckDigit(row[this.key])).padStart(12, "0");
+                    upc = row[this.key] + calcCheckDigit(row[this.key]);
                     matchArray[i] = {
                         "key": row[this.key],
-                        "upc": upc,
+                        "upc": upc.padStart(12, "0"),
                         "col": row[this.searchObjectArray[0].col],
                         "totalPer": 0,
                         "per": 0
@@ -347,7 +362,6 @@ try {
                 for (let i = 0; i < refInfoLength; ++i) {
                     matchArray[i].per = (matchArray[i].totalPer / this.searchObjectArray.length).toFixed(2);
                 }
-                console.log(matchArray);
 
                 matchArray.sort((a, b) => (a.per < b.per ? 1 : -1)); // sorts array based on match percentage
                 let temp = matchArray;
@@ -365,6 +379,12 @@ try {
                     value: ''
                 };
                 this.searchObjectArray.push(newObject);
+            },
+            removeSearch(index) {
+                this.searchObjectArray.splice(index, 1);
+            },
+            upcLink(upc) {
+                return "https://www.upcitemdb.com/upc/" + upc;
             }
         },
         watch: {
@@ -385,10 +405,10 @@ try {
                 let valid = false;
                 for (let i = 0; i < this.searchObjectArray.length; i++) {
                     this.searchObjectArray[i].col === '' || this.searchObjectArray[i].value === '' ?
-                        valid = true : valid = false;
+                        valid = false : valid = true;
                 }
                 return valid;
-            }
+            },
         }
     });
     // FROM STACK OVER FLOW https://stackoverflow.com/questions/10473745/compare-strings-javascript-return-of-likely
