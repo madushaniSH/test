@@ -258,13 +258,21 @@ try {
                                     <v-text-field
                                             label="Value"
                                             v-model.trim="item.value"
+                                            v-if="index === 0"
+                                    >
+                                    </v-text-field>
+                                    <v-autocomplete
+                                            :items="refDropDown(index)"
+                                            v-model="item.value"
+                                            label="Value"
+                                            v-else
                                     >
                                         <template slot="append-outer">
                                             <v-btn class="mx-2" fab dark small color="red" :disabled="index === 0" @click="removeSearch(index)">
                                                 <v-icon dark>mdi-minus</v-icon>
                                             </v-btn>
                                         </template>
-                                    </v-text-field>
+                                    </v-autocomplete>
                                 </v-col>
                             </v-row>
                         </section>
@@ -386,6 +394,20 @@ try {
             },
             upcLink(upc) {
                 return "https://www.upcitemdb.com/upc/" + upc;
+            },
+            refDropDown(index) {
+                let returnArray = [];
+                if (this.searchObjectArray[index] !== undefined) {
+                    let count = 0;
+                    this.refInfo.forEach(item => {
+                        let value = item[this.searchObjectArray[index].col];
+                        if (value !== undefined || value !== '') {
+                            returnArray[count] = value;
+                            count++;
+                        }
+                    });
+                }
+                return returnArray;
             }
         },
         watch: {
