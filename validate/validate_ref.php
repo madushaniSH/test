@@ -369,6 +369,7 @@ try {
                     matchArray = temp.slice(0, maxRows);
                 }
 
+                this.searchObjectArray.splice(1);
                 this.matchInfo = matchArray;
                 this.dialog = false;
                 this.overlay = false;
