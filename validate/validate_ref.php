@@ -323,7 +323,7 @@ try {
                 // init array
                 for (let i = 0; i < refInfoLength; ++i) {
                     row = this.refInfo[i];
-                    upc = row[this.key] + calcCheckDigit(row[this.key])).padStart(12, "0");
+                    upc = (row[this.key] + calcCheckDigit(row[this.key])).padStart(12, "0");
                     matchArray[i] = {
                         "key": row[this.key],
                         "upc": upc,
