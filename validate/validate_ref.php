@@ -341,7 +341,7 @@ try {
                     upc = row[this.key] + calcCheckDigit(row[this.key]);
                     matchArray[i] = {
                         "key": row[this.key],
-                        "upc": upc.padStart(12, "0"),
+                        "upc": zeroFill(upc, 12),
                         "col": row[this.searchObjectArray[0].col],
                         "totalPer": 0,
                         "per": 0
@@ -478,6 +478,16 @@ try {
 
             return check
         }
+    }
+    
+    function zeroFill( number, width )
+    {
+        width -= number.toString().length;
+        if ( width > 0 )
+        {
+            return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
+        }
+        return number + ""; // always return a string
     }
 </script>
 <style>
