@@ -171,10 +171,10 @@ try {
                             </v-toolbar>
                         </template>
 
-                        <template v-slot:item.upc="{ item }">
-                            <v-btn text outlined color="info" :href="upcLink(item.upc)" target="_blank">
+                        <template v-slot:item.key="{ item }">
+                            <v-btn text outlined color="info" :href="upcLink(item.key)" target="_blank">
                                 <v-icon left>mdi-link</v-icon>
-                                {{ item.upc }}
+                                {{ item.key }}
                             </v-btn>
                         </template>
                     </v-data-table>
@@ -309,9 +309,9 @@ try {
             key: '',
             search: '',
             productName: '',
+            orgProductName: '',
             headers: [
                 { text: 'Key', value: 'key' },
-                { text: 'System Gen UPC', value: 'upc'},
                 { text: 'Column', value: 'col' },
                 { text: 'Match Percentage', value: 'per' },
             ],
@@ -346,10 +346,8 @@ try {
                 // init array
                 for (let i = 0; i < refInfoLength; ++i) {
                     row = this.refInfo[i];
-                    upc = row[this.key] + calcCheckDigit(row[this.key]);
                     matchArray[i] = {
                         "key": row[this.key],
-                        "upc": zeroPad(upc, 12),
                         "col": row[this.searchObjectArray[0].col],
                         "totalPer": 0,
                         "per": 0
@@ -393,7 +391,7 @@ try {
                 this.searchObjectArray.splice(index, 1);
             },
             upcLink(upc) {
-                return "https://www.upcitemdb.com/upc/" + upc;
+                return `https://www.upcitemdb.com/query?upc=${upc}&type=4`;
             },
             refDropDown(index) {
                 let returnArray = [];
@@ -474,42 +472,6 @@ try {
                 costs[s2.length] = lastValue;
         }
         return costs[s2.length];
-    }
-
-    function calcCheckDigit(code) {
-        if (code !== undefined) {
-            let check = 0;
-            code = code.toString();
-
-            while (code.length < 11) {
-                code = "0" + code
-            }
-
-            for (let i = 0; i < code.length; i += 2) {
-                check += parseInt(code.charAt(i));
-            }
-
-            check *= 3;
-
-            for (let i = 1; i < code.length; i += 2) {
-                check += parseInt(code.charAt(i));
-            }
-
-            check %= 10;
-            check = (check === 0) ? check : 10 - check;
-
-            return check
-        }
-    }
-
-    function zeroPad (num, numZeros) {
-        var an = Math.abs (num);
-        var digitCount = 1 + Math.floor (Math.log (an) / Math.LN10);
-        if (digitCount >= numZeros) {
-            return num;
-        }
-        var zeroString = Math.pow (10, numZeros - digitCount).toString ().substr (1);
-        return num < 0 ? '-' + zeroString + an : zeroString + an;
     }
 
 </script>
