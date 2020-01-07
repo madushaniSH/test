@@ -85,6 +85,13 @@ try {
                     </p>
                 </v-col>
             </v-row>
+            <v-btn
+                    v-if="genProductName !== ''"
+                    color="error"
+                    @click="clearProductName()"
+            >
+                Clear
+            </v-btn>
             <v-card
                 style="margin-top: 4vh;"
                 class="mx-auto"
@@ -262,7 +269,13 @@ try {
                 },
             ]
         },
-        method: {
+        methods: {
+            clearProductName() {
+                let array = this.productNameArray;
+                array.forEach(item => {
+                    item.att = '';
+                })
+            }
         },
         watch: {
             darkThemeSelected: function (val) {
