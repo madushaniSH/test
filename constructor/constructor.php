@@ -65,7 +65,6 @@ try {
             <v-row
                     align="center"
                     justify="center"
-                    style="margin-top: 1vh"
             >
                 <v-col>
                     <p style="text-align: center">
@@ -93,7 +92,7 @@ try {
                 Clear
             </v-btn>
             <v-card
-                style="margin-top: 4vh;"
+                style="margin-top: 1vw;"
                 class="mx-auto"
             >
             <v-row style="padding: 10px">
@@ -131,30 +130,41 @@ try {
                 </v-col>
             </v-row>
             <v-row style="padding: 10px">
-                <v-col md="4">
+                <v-col md="4"
+                       v-if="productNameArray[7].att !== ''"
+                >
+
                     <v-text-field
-                            label="Container Type"
+                            label="Sub Package Container Type"
                             v-model.trim="productNameArray[5].att"
                     ></v-text-field>
                 </v-col>
+                <v-col md="4">
+                    <v-text-field
+                            label="Container Type"
+                            v-model.trim="productNameArray[6].att"
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row style="padding: 10px">
                 <v-col md="3">
                     <v-text-field
                             label="Sub Packages"
-                            v-model.trim="productNameArray[6].att"
-                            :disabled="productNameArray[7].att !== ''"
+                            v-model.trim="productNameArray[7].att"
+                            :disabled="productNameArray[8].att !== ''"
                     ></v-text-field>
                 </v-col>
                 <v-col md="3">
                     <v-text-field
                             label="Unit"
-                            v-model.trim="productNameArray[7].att"
-                            :disabled="productNameArray[6].att !== ''"
+                            v-model.trim="productNameArray[8].att"
+                            :disabled="productNameArray[7].att !== ''"
                     ></v-text-field>
                 </v-col>
                 <v-col md="2">
                     <v-text-field
                             label="Descriptor"
-                            v-model.trim="productNameArray[8].att"
+                            v-model.trim="productNameArray[9].att"
                             disabled
                     ></v-text-field>
                 </v-col>
@@ -163,13 +173,13 @@ try {
                 <v-col md="4">
                     <v-text-field
                             label="Size"
-                            v-model.trim="productNameArray[9].att"
+                            v-model.trim="productNameArray[10].att"
                     ></v-text-field>
                 </v-col>
                 <v-col md="4">
                     <v-text-field
                             label="Measurement Unit"
-                            v-model.trim="productNameArray[10].att"
+                            v-model.trim="productNameArray[11].att"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -177,7 +187,7 @@ try {
                 <v-col md="12">
                     <v-text-field
                             label="Value Pack Description"
-                            v-model.trim="productNameArray[11].att"
+                            v-model.trim="productNameArray[12].att"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -256,6 +266,10 @@ try {
                     att: ''
                 },
                 {
+                    color: 'lime',
+                    att: ''
+                },
+                {
                     color: 'green',
                     att: ''
                 },
@@ -290,11 +304,11 @@ try {
                 let array = this.productNameArray;
                 let stringArray = [];
                 for (let i = 0; i < array.length; ++i) {
-                    if (i === 8) {
-                        if (array[6].att !== '') {
+                    if (i === 9) {
+                        if (array[7].att !== '') {
                             array[i].att = "Pack x";
-                        } else if (array[7].att !== '') {
-                            if (parseInt(array[7].att) === 1) {
+                        } else if (array[8].att !== '') {
+                            if (parseInt(array[8].att) === 1) {
                                 array[i].att = "Unit"
                             } else {
                                 array[i].att = "Units"
@@ -302,7 +316,7 @@ try {
                         } else {
                             array[i].att = ""
                         }
-                    } else if (i !== 10) {
+                    } else if (i !== 11) {
                         stringArray = array[i].att.toString().split(" ");
                         for (let j = 0; j < stringArray.length; ++j) {
                             stringArray[j] = stringArray[j].charAt(0).toUpperCase() + stringArray[j].slice(1);
