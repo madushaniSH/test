@@ -279,13 +279,15 @@ try {
                 for (let i = 0; i < array.length; ++i) {
                     if (i === 8) {
                         if (array[6].att !== '') {
-                            array[i].att = "Packs x";
+                            array[i].att = "Pack x";
                         } else if (array[7].att !== '') {
                             if (parseInt(array[7].att) === 1) {
                                 array[i].att = "Unit"
                             } else {
                                 array[i].att = "Units"
                             }
+                        } else {
+                            array[i].att = ""
                         }
                     } else if (i !== 10) {
                         stringArray = array[i].att.toString().split(" ");
