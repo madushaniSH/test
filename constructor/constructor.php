@@ -80,6 +80,9 @@ try {
                             </v-chip>
                         </span>
                     </p>
+                    <p style="text-align: center" class="display-1">
+                        {{ genProductName }}
+                    </p>
                 </v-col>
             </v-row>
             <v-card
@@ -127,18 +130,25 @@ try {
                             v-model.trim="productNameArray[5].att"
                     ></v-text-field>
                 </v-col>
-                <v-col md="4">
+                <v-col md="3">
                     <v-text-field
                             label="Sub Packages"
                             v-model.trim="productNameArray[6].att"
                             :disabled="productNameArray[7].att !== ''"
                     ></v-text-field>
                 </v-col>
-                <v-col md="4">
+                <v-col md="3">
                     <v-text-field
                             label="Unit"
                             v-model.trim="productNameArray[7].att"
                             :disabled="productNameArray[6].att !== ''"
+                    ></v-text-field>
+                </v-col>
+                <v-col md="2">
+                    <v-text-field
+                            label="Descriptor"
+                            v-model.trim="productNameArray[8].att"
+                            disabled
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -146,13 +156,13 @@ try {
                 <v-col md="4">
                     <v-text-field
                             label="Size"
-                            v-model.trim="productNameArray[8].att"
+                            v-model.trim="productNameArray[9].att"
                     ></v-text-field>
                 </v-col>
                 <v-col md="4">
                     <v-text-field
                             label="Measurement Unit"
-                            v-model.trim="productNameArray[9].att"
+                            v-model.trim="productNameArray[10].att"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -160,7 +170,7 @@ try {
                 <v-col md="12">
                     <v-text-field
                             label="Value Pack Description"
-                            v-model.trim="productNameArray[10].att"
+                            v-model.trim="productNameArray[11].att"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -235,6 +245,10 @@ try {
                     att: ''
                 },
                 {
+                    color: 'lime',
+                    att: ''
+                },
+                {
                     color: 'green',
                     att: ''
                 },
@@ -263,23 +277,33 @@ try {
                 let array = this.productNameArray;
                 let stringArray = [];
                 for (let i = 0; i < array.length; ++i) {
-                    stringArray = array[i].att.toString().split(" ");
-                    for (let j = 0; j < stringArray.length; ++j) {
-                        stringArray[j] = stringArray[j].charAt(0).toUpperCase() + stringArray[j].slice(1);
-                    }
-                    if (i === 6 && stringArray.length === 1) {
-                        if (array[i].att !== '') {
-                            stringArray[stringArray.length] = "Pack x";
+                    if (i === 8) {
+                        if (array[6].att !== '') {
+                            array[i].att = "Packs x";
+                        } else if (array[7].att !== '') {
+                            if (parseInt(array[7].att) === 1) {
+                                array[i].att = "Unit"
+                            } else {
+                                array[i].att = "Units"
+                            }
                         }
-                    } else if (i === 7 && stringArray.length === 1) {
-                        if (array[i].att !== '') {
-                            stringArray[stringArray.length] = "Units"
+                    } else if (i !== 10) {
+                        stringArray = array[i].att.toString().split(" ");
+                        for (let j = 0; j < stringArray.length; ++j) {
+                            stringArray[j] = stringArray[j].charAt(0).toUpperCase() + stringArray[j].slice(1);
                         }
-
+                        array[i].att = stringArray.join(" ");
                     }
-                    array[i].att = stringArray.join(" ");
                 }
                 return array;
+            },
+            genProductName() {
+                let array = this.productNameArray;
+                let productName = '';
+                for (let i = 0; i < array.length; ++i) {
+                    productName += array[i].att + ' ';
+                }
+                return productName.trim();
             }
         }
     });
