@@ -66,11 +66,52 @@ try {
         </v-app-bar>
         <v-content>
 
+
             <v-row
                     :align="'end'"
                     :justify="'start'"
                     class="filters"
             >
+                <v-col
+                        cols="12"
+                        md="2"
+                >
+                    <v-autocomplete
+                            v-model="selectedProject"
+                            label="Select"
+                            chips
+                            hint="Select a Project"
+                            persistent-hint
+                            :items="projectArray"
+                            item-text="name"
+                            item-value="name"
+                    >
+                    </v-autocomplete>
+                </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            v-model="selectedTickets"
+                            label="Select"
+                            chips
+                            :items="ticketArray"
+                            item-text="ticket_id"
+                            item-value="ticket_id"
+                            multiple
+                    >
+                        <template v-slot:selection="{ item, index }">
+                            <v-chip v-if="index === 0">
+                                <span>{{ item.ticket_id }}</span>
+                            </v-chip>
+                            <span
+                                    v-if="index === 1"
+                                    class="grey--text caption"
+                            >(+{{ selectedTickets.length - 1 }} others)</span>
+                        </template>
+                    </v-autocomplete>
+                </v-col>
                 <v-col
                         cols="12"
                         md="4"
@@ -79,7 +120,6 @@ try {
                             v-model="files"
                             placeholder="Upload your documents"
                             label="Reference File input"
-                            prepend-icon="mdi-paperclip"
                     >
                         <template v-slot:selection="{ text }">
                             <v-chip
@@ -92,6 +132,13 @@ try {
                         </template>
                     </v-file-input>
                 </v-col>
+            </v-row>
+
+            <v-row
+                    :align="'end'"
+                    :justify="'start'"
+                    class="filters"
+            >
                 <v-col
                         cols="6"
                         md="2"
@@ -121,69 +168,232 @@ try {
             </v-row>
 
             <v-row
-                    :align="'start'"
+                    :align="'end'"
                     :justify="'start'"
                     class="filters"
+                    v-if="productInfo.length > 0"
             >
                 <v-col
                         cols="6"
-                        md="5"
-                        v-if="searchObjectArray[0].col !== ''"
+                        md="2"
                 >
-                    <v-text-field
-                            label="Product Name"
-                            v-model.trim="searchObjectArray[0].value"
-                    ></v-text-field>
-                    <v-btn color="success" @click="matchData">Match</v-btn>
-                    <v-btn
-                            color="primary"
-                            class="ma-2"
-                            dark
-                            :disabled="files === null || searchObjectArray[0].value === ''"
-                            @click="dialog = true"
-                    >
-                        Search Options
-                    </v-btn>
+                    <v-autocomplete
+                            label="QA Status"
+                            :items="qaStatusItems"
+                            v-model="selectedQaStatus"
+                            chips
+                            deletable-chips
+                    ></v-autocomplete>
+                </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            label="Hunt Type"
+                            :items="productHuntItems"
+                            v-model="selectedHuntType"
+                            chips
+                            deletable-chips
+                    ></v-autocomplete>
+                </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            label="Product Type"
+                            :items="productTypeItems"
+                            v-model="selectedProductType"
+                            chips
+                            deletable-chips
+                    ></v-autocomplete>
+                </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            label="Brand"
+                            :items="productBrandItems"
+                            v-model="selectedBrand"
+                            chips
+                            deletable-chips
+                    ></v-autocomplete>
                 </v-col>
             </v-row>
-
             <v-row>
-                <v-col>
-                    <v-data-table
-                            :headers="headers"
-                            :items="matchInfo"
-                            :sort-by="['per']"
-                            :sort-desc="[true]"
-                            class="elevation-1"
-                            v-if="matchInfo.length > 0"
-                            :search="search"
+                <v-slide-y-transition>
+                    <v-col
+                            v-if="productInfo.length > 0"
                     >
-                        <template v-slot:top>
-                            <v-toolbar flat>
-                                <v-toolbar-title>Result(s)</v-toolbar-title>
-                                <v-spacer></v-spacer>
-                                <v-text-field
-                                        v-model="search"
-                                        label="Product Name"
-                                        single-line
-                                        hide-details
-                                ></v-text-field>
-                            </v-toolbar>
-                        </template>
-
-                        <template v-slot:item.key="{ item }">
-                            <v-btn text outlined color="info" :href="upcLink(item.key)" target="_blank">
-                                <v-icon left>mdi-link</v-icon>
-                                {{ item.key }}
-                            </v-btn>
-                        </template>
-                    </v-data-table>
-
-                    </v-data-table>
+                        <v-data-table
+                                :headers="productInfoHeaders"
+                                :items="filteredProducts"
+                                class="elevation-1"
+                                item-key="product_id"
+                                :footer-props="{
+                                    'items-per-page-options': [10]
+                                }"
+                                multi-sort
+                                :search="search"
+                        >
+                            <template v-slot:top>
+                                <v-toolbar flat>
+                                    <v-toolbar-title>{{ selectedProject }} Product(s)</v-toolbar-title>
+                                    <v-col cols="12" sm="3">
+                                        <v-btn text icon color="green" @click="getProductInfo()">
+                                            <v-icon>mdi-cached</v-icon>
+                                        </v-btn>
+                                        <v-btn color="indigo" dark >
+                                            <v-icon dark @click="exportProducts(filteredProducts)">mdi-cloud-download</v-icon>
+                                        </v-btn>
+                                    </v-col>
+                                    <v-spacer></v-spacer>
+                                    <v-text-field
+                                            v-model="productInfoSearch"
+                                            label="Product Name"
+                                            single-line
+                                            hide-details
+                                    ></v-text-field>
+                                </v-toolbar>
+                            </template>
+                            <template v-slot:item.product_qa_status="{ item }">
+                                <v-chip
+                                        class="ma-2"
+                                        :color="getStatusColor(item.product_qa_status)"
+                                        label
+                                        text-color="white"
+                                >
+                                    <v-icon left>mdi-label</v-icon>
+                                    {{ item.product_qa_status }}
+                                </v-chip>
+                            </template>
+                            <template v-slot:item.product_type="{ item }">
+                                <v-chip dark>{{ item.product_type }}
+                                </v-chip>
+                            </template>
+                            <template v-slot:item.view="{ item }">
+                                <div class="my-2">
+                                    <v-btn
+                                            color="dark"
+                                            @click.stop="showProductHistory(item)"
+                                    >Explore</v-btn>
+                                </div>
+                            </template>
+                            <template v-slot:item.product_hunt_type="{ item }">
+                                <v-chip dark :color="getHuntTypeColor(item.product_hunt_type)">{{ item.product_hunt_type }}
+                                </v-chip>
+                            </template>
+                            <template v-slot:item.action="{ item }">
+                                <div class="my-2">
+                                    <v-btn color="primary"
+                                           :disabled="item.product_qa_status !== 'approved'"
+                                           @click="openMatchDialog(item)"
+                                    >Reference</v-btn>
+                                </div>
+                            </template>
+                        </v-data-table>
+                </v-slide-y-transition>
                 </v-col>
             </v-row>
+
+            <!--
+
+            -->
 
         </v-content>
+
+        <v-dialog
+                v-model="historyDialog"
+                max-width="600"
+        >
+            <v-card>
+                <v-card-title class="headline">Product History</v-card-title>
+
+                <v-card-text>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>Product Source Link</v-list-item-subtitle>
+                            <v-list-item-title><a :href="productHistory.product_link" target="_blank">{{ productHistory.product_link}}</a></v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>Product Hunt Source</v-list-item-subtitle>
+                            <v-list-item-title>{{ productHistory.hunt_source }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>SRT QA DateTime</v-list-item-subtitle>
+                            <v-list-item-title>{{ productHistory.product_qa_datetime}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>Product Previous Name</v-list-item-subtitle>
+                            <v-list-item-title>{{ productHistory.product_previous}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>Product Previous Alt Name</v-list-item-subtitle>
+                            <v-list-item-title>{{ productHistory.alt_design_previous}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>Product QA Errors</v-list-item-subtitle>
+                            <v-list-item-title>{{ productHistory.qa_error}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>ODA QA DateTime</v-list-item-subtitle>
+                            <v-list-item-title>{{ productHistory.product_oda_datetime}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>Product QA Previous Name</v-list-item-subtitle>
+                            <v-list-item-title>{{ productHistory.product_qa_previous}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>Product QA Previous Alt Name</v-list-item-subtitle>
+                            <v-list-item-title>{{ productHistory.product_alt_design_qa_previous}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>Product ODA Errors</v-list-item-subtitle>
+                            <v-list-item-title>{{ productHistory.oda_error}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>Product ODA Comment</v-list-item-subtitle>
+                            <v-list-item-title>{{ productHistory.product_oda_comment}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+
+                    <v-btn
+                            color="green darken-1"
+                            text
+                            @click="historyDialog = false"
+                    >
+                        Close
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
         <v-bottom-navigation
                 color="success"
         >
@@ -213,6 +423,116 @@ try {
                 </v-card-text>
             </v-card>
         </v-dialog>
+
+
+        <v-dialog
+                v-model="productMatchDialog"
+                fullscreen
+                hide-overlay
+                transition="dialog-bottom-transition"
+                scrollable
+        >
+            <v-card tile>
+                <v-toolbar
+                        flat
+                        dark
+                        color="primary"
+                >
+                    <v-btn
+                            icon
+                            dark
+                            @click="productMatchDialog = false"
+                    >
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>Product Reference Match</v-toolbar-title>
+                </v-toolbar>
+
+                <v-card-text>
+                    <v-row
+                            align="start"
+                            justify="start"
+                            class="filters"
+                    >
+                            <v-col
+                                    cols="12"
+                                    md="2"
+                            >
+                                <v-autocomplete
+                                        label="Unmatch Reason"
+                                >
+                                </v-autocomplete>
+                            </v-col>
+                            <v-col
+                                    cols="6"
+                                    md="2"
+                            >
+                                <v-text-field
+                                        label="Duplicate with Product Name"
+                                >
+                                </v-text-field>
+                            </v-col>
+                        <v-col
+                                cols="6"
+                                md="4"
+                        >
+                            <v-text-field
+                                    label="EAN"
+                            >
+                            </v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row
+                            align="start"
+                            justify="start"
+                            class="filters"
+                    >
+                        <v-col cols="6" md="5" v-if="searchObjectArray[0].col !== ''">
+                            <v-text-field label="Product Name" v-model.trim="searchObjectArray[0].value"></v-text-field>
+                            <v-btn color="success" @click="matchData">Search</v-btn>
+                            <v-btn color="primary" class="ma-2" dark
+                                :disabled="files === null || searchObjectArray[0].value === ''" @click="dialog = true">
+                                Search Options
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col>
+                            <v-data-table
+                                    :headers="headers"
+                                    :items="matchInfo"
+                                    :sort-by="['per']"
+                                    :sort-desc="[true]"
+                                    v-if="matchInfo.length > 0"
+                                    :search="search"
+                            >
+                                <template v-slot:top>
+                                    <v-toolbar flat>
+                                        <v-toolbar-title>Result(s)</v-toolbar-title>
+                                        <v-spacer></v-spacer>
+                                        <v-text-field
+                                                v-model="search"
+                                                label="Product Name"
+                                                single-line
+                                                hide-details
+                                        ></v-text-field>
+                                    </v-toolbar>
+                                </template>
+
+                                <template v-slot:item.key="{ item }">
+                                    <v-btn text outlined color="info" :href="upcLink(item.key)" target="_blank">
+                                        <v-icon left>mdi-link</v-icon>
+                                        {{ item.key }}
+                                    </v-btn>
+                                </template>
+                            </v-data-table>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+
+            </v-card>
+        </v-dialog>
+
 
 
         <v-dialog
@@ -268,7 +588,7 @@ try {
                                             v-else
                                     >
                                         <template slot="append-outer">
-                                            <v-btn class="mx-2" fab dark small color="red" :disabled="index === 0" @click="removeSearch(index)">
+                                           <v-btn class="mx-2" fab dark small color="red" :disabled="index === 0" @click="removeSearch(index)">
                                                 <v-icon dark>mdi-minus</v-icon>
                                             </v-btn>
                                         </template>
@@ -311,14 +631,66 @@ try {
             productName: '',
             orgProductName: '',
             headers: [
-                { text: 'Key', value: 'key' },
+                { text: 'Key', value: 'key' , width: '10%'},
                 { text: 'Column', value: 'col' },
                 { text: 'Match Percentage', value: 'per' },
             ],
+            productInfo: [],
+            productInfoHeaders: [
+                {text: 'Creation Date', value: 'product_creation_time', width: '10%', filterable: false},
+                {text: 'Ticket ID', value: 'ticket_id', width: '10%', filterable: false},
+                {text: 'Type', value: 'product_type', width: '5%', filterable: false},
+                {text: 'Product Name', value: 'product_name', width: '25%'},
+                {text: 'Product Alt Name', value: 'product_alt_design_name', width: '25%'},
+                {text: 'Product QA Status', value: 'product_qa_status', width: '5%', filterable: false},
+                {text: 'Hunt Type', value: 'product_hunt_type', width: '10%', filterable: false},
+                {text: 'Facings', value: 'product_facing_count', width: '10%'},
+                {text: 'Product History', value: 'view', sortable: false, align: 'center', filterable: false},
+                {text: 'Actions', value: 'action', sortable: false, align: 'center', filterable: false},
+            ],
             matchInfo: [],
             dialog: false,
+            projectArray: [],
+            ticketArray: [],
+            selectedProject: '',
+            selectedTickets: [],
+            selectedTicketStatus: ['IN PROGRESS / SEND TO EAN'],
+            qaStatusItems: ['pending', 'approved', 'disapproved', 'active', 'rejected'],
+            selectedQaStatus: 'approved',
+            productHuntItems: ['probe', 'radar', 'reference'],
+            selectedHuntType: '',
+            productTypeItems: ['brand', 'sku', 'dvc', 'facing'],
+            selectedProductType: '',
+            productBrandItems: [],
+            selectedBrand: '',
+            productInfoSearch: '',
+            productHistory: {},
+            historyDialog: false,
+            productMatchDialog: false,
         },
         methods: {
+            getHuntTypeColor(hunt_type) {
+                let color = '';
+                if (hunt_type === 'probe') {
+                    color = 'purple';
+                } else if (hunt_type === 'radar') {
+                    color = 'orange';
+                } else {
+                    color =  'blue';
+                }
+                return color;
+            },
+            getStatusColor(status) {
+                let color = '';
+                if (status === 'pending') {
+                    color = 'orange';
+                } else if (status === 'approved' || status === 'active') {
+                    color = 'green';
+                } else {
+                    color =  'red';
+                }
+                return color;
+            },
             processData(file) {
                 this.overlay = true;
                 Papa.parsePromise = function(file) {
@@ -353,7 +725,6 @@ try {
                         "per": 0
                     }
                 }
-
 
                 this.searchObjectArray.forEach((item, index) => {
                     for (let i = 0; i < refInfoLength; ++i) {
@@ -406,6 +777,208 @@ try {
                     });
                 }
                 return returnArray;
+            },
+
+            getProjectList() {
+                this.overlay = true;
+                axios.get('api/fetch_project_list.php')
+                    .then((response) => {
+                        this.selectedTickets = [];
+                        this.productInfo = [];
+                        this.projectArray = response.data[0].project_info;
+                        this.overlay = false;
+                    });
+            },
+
+            getTicketList() {
+                if (this.selectedProject !== '' && this.selectedTicketStatus.length > 0) {
+                    this.overlay = true;
+                    let formData = new FormData;
+                    formData.append('db_name', this.selectedProject);
+                    formData.append('status_array', this.selectedTicketStatus);
+                    axios.post('api/fetch_project_ticket_list.php', formData)
+                        .then((response) => {
+                            this.selectedTickets = [];
+                            this.productInfo = [];
+                            this.ticketArray = response.data[0].ticket_info;
+                            this.overlay = false;
+                        });
+                }
+            },
+            getProductInfo() {
+                if (this.selectedProject !== '' && this.selectedTickets.length !== 0) {
+                    this.overlay = true;
+                    let formData = new FormData;
+                    formData.append('db_name', this.selectedProject);
+                    formData.append('ticket', this.selectedTickets);
+                    axios.post('api/fetch_product_info.php', formData)
+                        .then((response) => {
+                            this.productInfo = [];
+                            this.productBrandItems = [];
+                            let count = 0;
+                            response.data[0].product_info.forEach(item => {
+                                this.productBrandItems[count] = item.brand_name;
+                                count++;
+                            });
+                            this.assigned = response.data[0].row_count;
+                            this.productInfo = response.data[0].product_info;
+                            this.overlay = false;
+                        });
+                }
+            },
+            stringCheck(string) {
+                if (string === null) {
+                    return '';
+                } else {
+                    return string;
+                }
+            },
+            exportProducts(data) {
+                if (data.length > 0) {
+                    let exportData = [];
+                    data.forEach((item, index) => {
+                        let source = '';
+                        if (item.probe_id !== null) {
+                            source = "PROBE " + item.probe_id;
+                        } else if (item.radar_source_link !== null) {
+                            source = item.radar_source_link;
+                        } else {
+                            source = "REF EAN " + item.reference_ean;
+                        }
+                        exportData[index] = {
+                            "Creation Data": this.stringCheck(item.product_creation_time),
+                            "Ticket ID": this.stringCheck(item.ticket_id),
+                            "Product Type": this.stringCheck(item.product_type.toUpperCase()),
+                            "Product Name": this.stringCheck(item.product_name),
+                            "Product Alt Name": this.stringCheck(item.product_alt_design_name),
+                            "Product QA Status": this.stringCheck(item.product_qa_status),
+                            "Facing Count": this.stringCheck(item.product_facing_count),
+                            "Hunt Type": this.stringCheck(item.product_hunt_type.toUpperCase()),
+                            "Product Source Link": this.stringCheck(item.product_link),
+                            "Product Hunt Source": this.stringCheck(source),
+                            "SRT QA DateTime": this.stringCheck(item.product_qa_datetime),
+                            "Product Previous Name": this.stringCheck(item.product_previous),
+                            "Product Previous Alt Name": this.stringCheck(item.product_alt_design_previous),
+                            "Product QA Errors": this.stringCheck(item.qa_error),
+                            "Product ODA DateTime": this.stringCheck(item.product_oda_datetime),
+                            "Product QA Previous Name": this.stringCheck(item.product_qa_previous),
+                            "Product QA Previous Alt Name": this.stringCheck(item.product_alt_design_qa_previous),
+                            "Product ODA Errors": this.stringCheck(item.oda_error),
+                            "Product ODA Comment": this.stringCheck(item.product_oda_comment),
+                        }
+                    });
+                    this.JSONToCSVConvertor(exportData, "Product Export", true);
+                }
+            },
+            JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+                //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+                var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+
+                var CSV = '';
+                //Set Report title in first row or line
+
+                CSV += ReportTitle + '\r\n\n';
+
+                //This condition will generate the Label/Header
+                if (ShowLabel) {
+                    var row = "";
+
+                    //This loop will extract the label from 1st index of on array
+                    for (var index in arrData[0]) {
+
+                        //Now convert each value to string and comma-seprated
+                        row += index + ',';
+                    }
+
+                    row = row.slice(0, -1);
+
+                    //append Label row with line break
+                    CSV += row + '\r\n';
+                }
+
+                //1st loop is to extract each row
+                for (var i = 0; i < arrData.length; i++) {
+                    var row = "";
+
+                    //2nd loop will extract each column and convert it in string comma-seprated
+                    for (var index in arrData[i]) {
+                        row += '"' + arrData[i][index] + '",';
+                    }
+
+                    row.slice(0, row.length - 1);
+
+                    //add a line break after each row
+                    CSV += row + '\r\n';
+                }
+
+                if (CSV == '') {
+                    alert("Invalid data");
+                    return;
+                }
+
+                //Generate a file name
+                var fileName = "MyReport_";
+                //this will remove the blank-spaces from the title and replace it with an underscore
+                fileName += ReportTitle.replace(/ /g, "_");
+
+                //Initialize file format you want csv or xls
+                var uri = 'data:text/csv;charset=utf-8,' + escape(CSV);
+
+                // Now the little tricky part.
+                // you can use either>> window.open(uri);
+                // but this will not work in some browsers
+                // or you will not get the correct file extension
+
+                //this trick will generate a temp <a /> tag
+                var link = document.createElement("a");
+                link.href = uri;
+
+                //set the visibility hidden so it will not effect on your web-layout
+                link.style = "visibility:hidden";
+                link.download = fileName + ".csv";
+
+                //this part will append the anchor tag and remove it after automatic click
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            },
+            showProductHistory(item) {
+                this.productHistory.product_qa_datetime = item.product_qa_datetime;
+                this.productHistory.product_previous = item.product_previous;
+                this.productHistory.alt_design_previous = item.alt_design_previous;
+                this.productHistory.qa_error = item.qa_error;
+                this.productHistory.product_oda_datetime = item.product_oda_datetime;
+                this.productHistory.product_qa_previous = item.product_qa_previous;
+                this.productHistory.product_alt_design_qa_previous = item.product_alt_design_qa_previous;
+                this.productHistory.oda_error = item.oda_error;
+                this.productHistory.product_oda_comment = item.product_oda_comment;
+                this.productHistory.product_link = item.product_link;
+                if (item.probe_id !== null) {
+                    this.productHistory.hunt_source = "PROBE " + item.probe_id;
+                } else if (item.radar_source_link !== null) {
+                    this.productHistory.hunt_source = item.radar_source_link;
+                } else {
+                    this.productHistory.hunt_source = "REF EAN " + item.reference_ean;
+                }
+                this.historyDialog = true;
+            },
+            openMatchDialog(item) {
+                this.searchObjectArray[0].value = item.product_name;
+                let formData = new FormData();
+                formData.append('project_name', this.selectedProject);
+                formData.append('product_id', item.product_id);
+                axios.post('api/assign_product_oda_ref.php', formData)
+                    .then((response) => {
+                        if (response.data[0].row_count === 1) {
+                            this.matchData();
+                            this.productMatchDialog = true;
+                        } else if (response.data[0].row_count === 0 && response.data[0].already_assigned === 0){
+                            console.log("hmm")
+                        }
+                    })
+                    .catch(() => {
+                        location.reload();
+                    });
             }
         },
         watch: {
@@ -417,9 +990,16 @@ try {
                     this.refInfo = this.processData(val);
                 }
             },
+            selectedProject: function () {
+                this.getTicketList();
+            },
+            selectedTickets: function() {
+                this.getProductInfo();
+            },
         },
         created() {
             this.addNewSearch();
+            this.getProjectList();
         },
         computed: {
             checkSearchValues() {
@@ -429,6 +1009,28 @@ try {
                         valid = false : valid = true;
                 }
                 return valid;
+            },
+            filteredProducts() {
+                let a = this.productInfo.filter((i) => {
+                    return !this.selectedQaStatus || (i.product_qa_status === this.selectedQaStatus);
+                });
+                a = a.filter((i) => {
+                    return !this.selectedHuntType || (i.product_hunt_type === this.selectedHuntType);
+                });
+                a = a.filter((i) => {
+                    return !this.selectedProductType || (i.product_type === this.selectedProductType);
+                });
+                let count = 0;
+                this.productBrandItems = [];
+                a.forEach(item => {
+                    this.productBrandItems[count] = item.brand_name;
+                    count++;
+                });
+                a = a.filter((i) => {
+                    return !this.selectedBrand ||
+                        (i.product_name.substr(0, i.product_name.indexOf(" ")) === this.selectedBrand);
+                });
+                return a;
             },
         }
     });
