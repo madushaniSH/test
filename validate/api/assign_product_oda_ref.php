@@ -60,6 +60,6 @@ if ($row_count == 0 && $product_row_count == 0) {
 }
 
 
-$return_arr[] = array("row_count" => $row_count, "already_assigned" => $already_assigned);
+$return_arr[] = array("row_count" => $row_count, "already_assigned" => $already_assigned, "product_row_count" => $product_row_count);
 echo json_encode($return_arr);
 ?>

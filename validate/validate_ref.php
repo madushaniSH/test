@@ -474,13 +474,32 @@ try {
                             </v-col>
                         <v-col
                                 cols="6"
-                                md="4"
+                                md="2"
+                        >
+                            <v-text-field
+                                    label="Item Code"
+                            >
+                            </v-text-field>
+                        </v-col>
+                        <v-col
+                                cols="6"
+                                md="2"
                         >
                             <v-text-field
                                     label="EAN"
                             >
                             </v-text-field>
                         </v-col>
+                        <v-col
+                                cols="6"
+                                md="2"
+                        >
+                            <v-text-field
+                                    label="Additonal Comment"
+                            >
+                            </v-text-field>
+                        </v-col>
+                    <!--- Web Link with ability to add links -->
                     </v-row>
                     <v-row
                             align="start"
@@ -969,12 +988,15 @@ try {
                 formData.append('product_id', item.product_id);
                 axios.post('api/assign_product_oda_ref.php', formData)
                     .then((response) => {
+                        /*
                         if (response.data[0].row_count === 1) {
                             this.matchData();
                             this.productMatchDialog = true;
                         } else if (response.data[0].row_count === 0 && response.data[0].already_assigned === 0){
                             console.log("hmm")
                         }
+                         */
+                        console.log(response.data[0])
                     })
                     .catch(() => {
                         location.reload();
