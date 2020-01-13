@@ -51,6 +51,13 @@ try {
 
 
     if ($row_count == 1) {
+        if ($_POST['product_type'] !== $_POST['product_type_org']) {
+            $sql = "UPDATE products SET product_type = :product_type WHERE product_id = :product_id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['product_type' => $_POST['product_type'] , 'product_id' => $product_info->product_id]);
+        }
+
+
         if ($_POST['product_type'] == 'brand') {
             if (trim($product_info->product_name) != trim($_POST['product_rename'])) {
                 $sql = "UPDATE products SET product_name = :product_name, product_previous = :product_previous WHERE product_id = :product_id";

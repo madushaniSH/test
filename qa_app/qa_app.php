@@ -404,6 +404,7 @@ try {
                             <v-col>
                         <span class="body-1 font-weight-regular">
                             {{ selectedProductInfo.projectName }} {{ selectedProductInfo.ticket_id }} {{ selectedProductInfo.product_hunt_type.toUpperCase() }} {{ selectedProductInfo.product_source }} {{ selectedProductInfo.titleString }}
+                            {{ selectedProductInfo.productType.toUpperCase() }}
                         </span>
                             </v-col>
                         </v-row>
@@ -600,6 +601,20 @@ try {
                                                     </template>
                                                 </v-file-input>
                                             </v-col>
+                                        </v-row>
+
+                                        <v-row
+                                                v-if="selectedProductInfo.productType === 'sku'
+                                                    || selectedProductInfo.productType === 'dvc'"
+                                        >
+                                            <v-btn
+                                                    color="warning"
+                                                    dark
+                                                    class="ma-2"
+                                                    @click="toggleProductType"
+                                            >
+                                                <v-icon left>mdi-cloud-alert</v-icon>Toggle Product Type
+                                            </v-btn>
                                         </v-row>
 
                                     </v-form>
@@ -975,6 +990,7 @@ try {
                 manuLinkOrg: '',
                 refInfo: {},
                 productType: '',
+                productTypeOrg: '',
                 qaStatus: '',
             },
             assigned: 0,
@@ -1153,6 +1169,7 @@ try {
                 this.selectedProductInfo.product_hunt_type = item.product_hunt_type;
                 this.selectedProductInfo.productId = item.product_id;
                 this.selectedProductInfo.productType = item.product_type;
+                this.selectedProductInfo.productTypeOrg = item.product_type;
                 this.selectedProductInfo.assignMessage = '';
 
                 this.dialog = true;
@@ -1213,6 +1230,7 @@ try {
                     let formData = new FormData();
                     formData.append('project_name', this.selectedProject);
                     formData.append("product_type", this.selectedProductInfo.productType);
+                    formData.append("product_type_org", this.selectedProductInfo.productTypeOrg);
                     formData.append("product_rename", this.selectedProductInfo.productName);
                     formData.append("error_image_count", this.files.length);
                     formData.append("product_alt_rename", this.selectedProductInfo.productAltName);
@@ -1351,6 +1369,27 @@ try {
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+            },
+            toggleProductType() {
+                if (this.selectedProductInfo.productType === 'sku') {
+                    this.selectedProductInfo.productType = 'dvc';
+                    this.selectedProductInfo.productAltName = this.selectedProductInfo.productName;
+                    this.selectedProductInfo.productAltNameOrg = this.selectedProductInfo.productName;
+
+                    if (this.selectedProductInfo.productTypeOrg !== this.selectedProductInfo.productType) {
+                        this.selectedQaErrors.push('5');
+                    }
+
+                } else if (this.selectedProductInfo.productType === 'dvc') {
+                    this.selectedProductInfo.productType = 'sku';
+                    this.selectedProductInfo.productAltName = null;
+                    this.selectedProductInfo.productAltNameOrg = '';
+
+                    if (this.selectedProductInfo.productTypeOrg !== this.selectedProductInfo.productType) {
+                        this.selectedQaErrors.push('10');
+                    }
+
+                }
             }
         },
         watch: {
@@ -1405,10 +1444,15 @@ try {
                 return a;
             },
             errorTypeValidate() {
+                let productTypeSwitched = false;
+                if (this.selectedProductInfo.productTypeOrg !== this.selectedProductInfo.productType) {
+                    productTypeSwitched = true;
+                }
+
                  if ((this.selectedQaErrors.length > 0 && this.selectedProductInfo.qaStatus === 'disapproved')
-                    || (this.selectedProductInfo.qaStatus === 'approved')) {
+                    || (this.selectedProductInfo.qaStatus === 'approved' && !productTypeSwitched)) {
                      return true;
-                 } else if (this.selectedQaErrors.length > 0 && this.selectedProductInfo.qaStatus === ''){
+                 } else if (this.selectedQaErrors.length > 0 && this.selectedProductInfo.qaStatus === '') {
                      return "QA Status must be selected";
                  } else {
                      return "Error Type must be selected";
@@ -1424,8 +1468,7 @@ try {
                 }else {
                     return true;
                 }
-            }
-
+            },
         }
     });
 </script>
