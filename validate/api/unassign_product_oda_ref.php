@@ -15,6 +15,7 @@ if (!isset($_SESSION['logged_in'])) {
 // Current settings to connect to the user account database
 require('../../user_db_connection.php');
 $dbname = $_POST['project_name'];
+$_SESSION['current_database'] = $dbname;
 // Setting up the DSN
 $dsn = 'mysql:host='.$host.';dbname='.$dbname;
 
@@ -34,32 +35,21 @@ catch(PDOException $e){
     echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
     exit();
 }
-
-$sql = 'SELECT product_id FROM product_ean_queue WHERE account_id = :account_id';
-$stmt = $pdo->prepare($sql);
-$stmt->execute(['account_id' => $_SESSION['id']]);
-$row_count = $stmt->rowCount(PDO::FETCH_OBJ);
-$already_assigned = 0;
-
-$sql = 'SELECT product_id FROM product_ean_queue WHERE product_id = :product_id';
-$stmt = $pdo->prepare($sql);
-$stmt->execute(['product_id' => $_POST['product_id']]);
-$product_row_count = $stmt->rowCount(PDO::FETCH_OBJ);
-
-if ($row_count == 0 && $product_row_count == 0) {
-    $sql = "INSERT INTO product_ean_queue (product_id, account_id, product_being_handled) VALUES (:product_id, :account_id, 1)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['account_id' => $_SESSION['id'], 'product_id' => $_POST['product_id']]);
-
-    $sql = 'SELECT product_id FROM product_ean_queue WHERE account_id = :account_id';
+$error = '';
+try {
+    $sql = 'SELECT product_ean_queue_id FROM product_ean_queue WHERE account_id = :account_id';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id' => $_SESSION['id']]);
     $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
-} else {
-    $already_assigned = 1;
+
+    if ($row_count == 1) {
+        $sql = 'DELETE FROM product_ean_queue WHERE account_id = :account_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['account_id' => $_SESSION['id']]);
+    }
+} catch (PDOException $e) {
+    $error = $e->getMessage();
 }
 
-
-$return_arr[] = array("row_count" => $row_count, "already_assigned" => $already_assigned);
+$return_arr[] = array('error' => $error);
 echo json_encode($return_arr);
-?>

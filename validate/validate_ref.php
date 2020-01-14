@@ -288,7 +288,13 @@ try {
                             <template v-slot:item.action="{ item }">
                                 <div class="my-2">
                                     <v-btn color="primary"
-                                           :disabled="item.product_qa_status !== 'approved'"
+                                           :disabled=
+                                           "
+                                                item.product_qa_status !== 'approved' ||
+                                                item.product_type !== 'sku' ||
+                                                (item.product_being_handled === '1' && item.assigned_user === '0') ||
+                                                (assigned === 1 && item.assigned_user !== '1')
+                                           "
                                            @click="openMatchDialog(item)"
                                     >Reference</v-btn>
                                 </div>
@@ -410,10 +416,10 @@ try {
                 width="300"
         >
             <v-card
-                    color="primary"
+                    :color="assignMessage === '' ? 'primary' : 'red'"
                     dark
             >
-                <v-card-text>
+                <v-card-text v-if="assignMessage === ''">
                     Please stand by
                     <v-progress-linear
                             indeterminate
@@ -421,6 +427,15 @@ try {
                             class="mb-0"
                     ></v-progress-linear>
                 </v-card-text>
+                <section v-else>
+                    <v-card-text>
+                        {{ assignMessage }}
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="white darken-1" text @click="overlay = false">Close</v-btn>
+                    </v-card-actions>
+                </section>
             </v-card>
         </v-dialog>
 
@@ -441,7 +456,7 @@ try {
                     <v-btn
                             icon
                             dark
-                            @click="productMatchDialog = false"
+                            @click="unassignProduct()"
                     >
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
@@ -454,24 +469,16 @@ try {
                             justify="start"
                             class="filters"
                     >
-                            <v-col
-                                    cols="12"
-                                    md="2"
+                        <v-col
+                                cols="12"
+                                md="2"
+                        >
+                            <v-autocomplete
+                                    label="Unmatch Reason"
+                                    :disabled="eanReferenceInformation.selectedEAN !== ''"
                             >
-                                <v-autocomplete
-                                        label="Unmatch Reason"
-                                >
-                                </v-autocomplete>
-                            </v-col>
-                            <v-col
-                                    cols="6"
-                                    md="2"
-                            >
-                                <v-text-field
-                                        label="Duplicate with Product Name"
-                                >
-                                </v-text-field>
-                            </v-col>
+                            </v-autocomplete>
+                        </v-col>
                         <v-col
                                 cols="6"
                                 md="2"
@@ -487,6 +494,7 @@ try {
                         >
                             <v-text-field
                                     label="EAN"
+                                    v-model="eanReferenceInformation.selectedEAN"
                             >
                             </v-text-field>
                         </v-col>
@@ -495,7 +503,7 @@ try {
                                 md="2"
                         >
                             <v-text-field
-                                    label="Additonal Comment"
+                                    label="Additional Comment"
                             >
                             </v-text-field>
                         </v-col>
@@ -537,6 +545,15 @@ try {
                                         ></v-text-field>
                                     </v-toolbar>
                                 </template>
+
+                                <template v-slot:item.action="{ item }">
+                                    <div class="my-2">
+                                        <v-btn color="success"
+                                               @click="eanReferenceInformation.selectedEAN = item.key"
+                                        >Match</v-btn>
+                                    </div>
+                                </template>
+
 
                                 <template v-slot:item.key="{ item }">
                                     <v-btn text outlined color="info" :href="upcLink(item.key)" target="_blank">
@@ -653,6 +670,7 @@ try {
                 { text: 'Key', value: 'key' , width: '10%'},
                 { text: 'Column', value: 'col' },
                 { text: 'Match Percentage', value: 'per' },
+                {text: 'Actions', value: 'action', sortable: false, align: 'center', filterable: false},
             ],
             productInfo: [],
             productInfoHeaders: [
@@ -679,13 +697,19 @@ try {
             productHuntItems: ['probe', 'radar', 'reference'],
             selectedHuntType: '',
             productTypeItems: ['brand', 'sku', 'dvc', 'facing'],
-            selectedProductType: '',
+            selectedProductType: 'sku',
             productBrandItems: [],
             selectedBrand: '',
             productInfoSearch: '',
             productHistory: {},
             historyDialog: false,
             productMatchDialog: false,
+            assigned: 0,
+            assignMessage: '',
+            eanReferenceInformation: {
+                selectedEAN: '',
+                productName: '',
+            }
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -733,6 +757,7 @@ try {
                 let upc = '';
 
                 this.overlay = true;
+                this.eanReferenceInformation.productName = this.searchObjectArray[0].value;
 
                 // init array
                 for (let i = 0; i < refInfoLength; ++i) {
@@ -826,7 +851,6 @@ try {
             },
             getProductInfo() {
                 if (this.selectedProject !== '' && this.selectedTickets.length !== 0) {
-                    this.overlay = true;
                     let formData = new FormData;
                     formData.append('db_name', this.selectedProject);
                     formData.append('ticket', this.selectedTickets);
@@ -841,7 +865,6 @@ try {
                             });
                             this.assigned = response.data[0].row_count;
                             this.productInfo = response.data[0].product_info;
-                            this.overlay = false;
                         });
                 }
             },
@@ -983,25 +1006,40 @@ try {
             },
             openMatchDialog(item) {
                 this.searchObjectArray[0].value = item.product_name;
+                this.assignMessage = '';
                 let formData = new FormData();
                 formData.append('project_name', this.selectedProject);
                 formData.append('product_id', item.product_id);
                 axios.post('api/assign_product_oda_ref.php', formData)
                     .then((response) => {
-                        /*
                         if (response.data[0].row_count === 1) {
                             this.matchData();
                             this.productMatchDialog = true;
-                        } else if (response.data[0].row_count === 0 && response.data[0].already_assigned === 0){
-                            console.log("hmm")
+                        } else if (response.data[0].row_count === 0 && response.data[0].already_assigned === 1){
+                            this.assignMessage = 'Product was taken by another QA';
+                            this.getProductInfo();
+                            this.overlay = true;
                         }
-                         */
-                        console.log(response.data[0])
                     })
                     .catch(() => {
                         location.reload();
                     });
-            }
+            },
+            unassignProduct() {
+                let formData = new FormData();
+                formData.append('project_name', this.selectedProject);
+
+                axios.post('api/unassign_product_oda_ref.php', formData)
+                    .then((response) => {
+                        if (response.data[0].error === '') {
+                            this.productMatchDialog = false;
+                            this.getProductInfo();
+                        }
+                    })
+                    .catch(() => {
+                        location.reload();
+                    });
+            },
         },
         watch: {
             darkThemeSelected: function (val) {
