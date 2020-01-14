@@ -1449,14 +1449,16 @@ try {
                     productTypeSwitched = true;
                 }
 
-                 if ((this.selectedQaErrors.length > 0 && this.selectedProductInfo.qaStatus === 'disapproved')
-                    || (this.selectedProductInfo.qaStatus === 'approved' && !productTypeSwitched)) {
+                if (productTypeSwitched && this.selectedQaErrors.length === 0) {
+                    return "Product Type Switched, Error type must be selected";
+                } else if ((this.selectedQaErrors.length > 0 && this.selectedProductInfo.qaStatus === 'disapproved')
+                    || (this.selectedProductInfo.qaStatus === 'approved')) {
                      return true;
-                 } else if (this.selectedQaErrors.length > 0 && this.selectedProductInfo.qaStatus === '') {
+                } else if (this.selectedQaErrors.length > 0 && this.selectedProductInfo.qaStatus === '') {
                      return "QA Status must be selected";
-                 } else {
+                } else {
                      return "Error Type must be selected";
-                 }
+                }
             },
             fileTypeValidate() {
                 if (this.files.length === 0 && this.selectedQaErrors > 0) {
