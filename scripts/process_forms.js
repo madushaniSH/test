@@ -2,6 +2,7 @@
     Filename: process_forms.js
     Author: Malika Liyanage
     Created: 25/07/2019
+    test comment for commit -- Remove this
 */
 
 function submit_client_category_form() {
