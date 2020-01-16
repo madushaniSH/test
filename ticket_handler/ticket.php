@@ -145,7 +145,7 @@ try {
                                     chips
                                     small-chips
                                     multiple
-                                    :rules="[dateDifference <= 31 || 'Date Range has to be between within 31 Days']"
+                                    :rules="[dateDifference <= 720 || 'Date Range has to be between within 720 Days']"
                             ></v-combobox>
                         </template>
                         <v-date-picker

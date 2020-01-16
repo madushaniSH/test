@@ -132,6 +132,27 @@ try {
                         </template>
                     </v-file-input>
                 </v-col>
+                <v-col
+                        cols="12"
+                        md="4"
+                >
+                    <v-file-input
+                            v-model="eanFiles"
+                            placeholder="Coming soon"
+                            label="Product EAN File"
+                            disabled
+                    >
+                        <template v-slot:selection="{ text }">
+                            <v-chip
+                                    small
+                                    label
+                                    color="primary"
+                            >
+                                {{ text }}
+                            </v-chip>
+                        </template>
+                    </v-file-input>
+                </v-col>
             </v-row>
 
             <v-row
@@ -290,6 +311,7 @@ try {
                                     <v-btn color="primary"
                                            :disabled=
                                            "
+                                                item.product_ean_id !== null ||
                                                 item.product_qa_status !== 'approved' ||
                                                 item.product_type !== 'sku' ||
                                                 (item.product_being_handled === '1' && item.assigned_user === '0') ||
@@ -461,6 +483,12 @@ try {
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                     <v-toolbar-title>Product Reference Match</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                            @click="saveReference()"
+                    >
+                        Save
+                    </v-btn>
                 </v-toolbar>
 
                 <v-card-text>
@@ -470,45 +498,102 @@ try {
                             class="filters"
                     >
                         <v-col
-                                cols="12"
-                                md="2"
-                        >
-                            <v-autocomplete
-                                    label="Unmatch Reason"
-                                    :disabled="eanReferenceInformation.selectedEAN !== ''"
-                            >
-                            </v-autocomplete>
-                        </v-col>
-                        <v-col
                                 cols="6"
-                                md="2"
+                                md="4"
                         >
                             <v-text-field
                                     label="Item Code"
+                                    v-model.trim="eanReferenceInformation.itemCode"
+                                    counter="20"
                             >
                             </v-text-field>
                         </v-col>
                         <v-col
                                 cols="6"
-                                md="2"
+                                md="4"
                         >
                             <v-text-field
                                     label="EAN"
-                                    v-model="eanReferenceInformation.selectedEAN"
+                                    v-model.trim="eanReferenceInformation.selectedEAN"
+                                    counter="20"
                             >
                             </v-text-field>
                         </v-col>
                         <v-col
                                 cols="6"
-                                md="2"
+                                md="4"
                         >
                             <v-text-field
                                     label="Additional Comment"
+                                    v-model.trim="eanReferenceInformation.additonalComment"
                             >
                             </v-text-field>
                         </v-col>
                     <!--- Web Link with ability to add links -->
                     </v-row>
+                    <v-row
+                            align="start"
+                            justify="start"
+                            class="filters"
+                    >
+                        <v-col
+                                cols="12"
+                                md="4"
+                        >
+                            <v-autocomplete
+                                    label="Unmatch Reason"
+                                    :disabled="eanReferenceInformation.selectedEAN !== ''"
+                                    :items="unmatchReasons"
+                                    item-text="unmatch_reason"
+                                    return-object
+                                    v-model="eanReferenceInformation.selectedUnmatchReason"
+                                    clearable
+                            >
+                            </v-autocomplete>
+                        </v-col>
+                        <v-col
+                                cols="6"
+                                md="8"
+                        >
+                            <v-text-field
+                                    label="Duplicate with Product Name"
+                                    :disabled="!(eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id > 13 && eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id < 18)"
+                                    v-model.trim="eanReferenceInformation.duplicateProductName"
+                            >
+                            </v-text-field>
+                        </v-col>
+                    </v-row>
+                    <section v-for="(item, index) in eanReferenceInformation.weblinks">
+                        <v-row
+                                align="start"
+                                justify="start"
+                                class="filters"
+                        >
+                            <v-col
+                                md="12"
+                            >
+                                <v-text-field
+                                        :label="`Weblink ${index+1}`"
+                                        v-model.trim="item.link"
+                                >
+                                    <v-icon
+                                            slot="prepend-inner"
+                                            fab dark color="blue" @click="addNewWebLink()"
+                                            :disabled="item.link === ''"
+                                    >
+                                        mdi-plus
+                                    </v-icon>
+                                    <v-icon
+                                            slot="append"
+                                            fab dark color="red" @click="removeWebLink(index)"
+                                            :disabled="index === 0"
+                                    >
+                                        mdi-minus
+                                    </v-icon>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                    </section>
                     <v-row
                             align="start"
                             justify="start"
@@ -658,6 +743,7 @@ try {
         data: {
             darkThemeSelected: false,
             files: null,
+            eanFiles: null,
             refInfo: [],
             refInfoHeaders: [],
             overlay: false,
@@ -681,7 +767,7 @@ try {
                 {text: 'Product Alt Name', value: 'product_alt_design_name', width: '25%'},
                 {text: 'Product QA Status', value: 'product_qa_status', width: '5%', filterable: false},
                 {text: 'Hunt Type', value: 'product_hunt_type', width: '10%', filterable: false},
-                {text: 'Facings', value: 'product_facing_count', width: '10%'},
+                {text: 'EAN', value: 'product_ean', width: '10%'},
                 {text: 'Product History', value: 'view', sortable: false, align: 'center', filterable: false},
                 {text: 'Actions', value: 'action', sortable: false, align: 'center', filterable: false},
             ],
@@ -709,7 +795,32 @@ try {
             eanReferenceInformation: {
                 selectedEAN: '',
                 productName: '',
-            }
+                selectedUnmatchReason: {
+                    unmatch_reason: '',
+                    unmatch_reason_id: ''
+                },
+                weblinks: [],
+                productId: '',
+                additonalComment: '',
+                itemCode: '',
+                duplicateProductName: '',
+            },
+            refObject: {
+                selectedEAN: '',
+                productName: '',
+                selectedUnmatchReason: {
+                    unmatch_reason: '',
+                    unmatch_reason_id: ''
+                },
+                weblinks: [{
+                    link: ''
+                }],
+                productId: '',
+                additonalComment: '',
+                duplicateProductName: '',
+                itemCode: '',
+            },
+            unmatchReasons: [],
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -802,6 +913,15 @@ try {
                 };
                 this.searchObjectArray.push(newObject);
             },
+            addNewWebLink() {
+                const webLinkObject = {
+                    link: ''
+                };
+                this.eanReferenceInformation.weblinks.push(webLinkObject);
+            },
+            removeWebLink(index) {
+                this.eanReferenceInformation.weblinks.splice(index, 1);
+            },
             removeSearch(index) {
                 this.searchObjectArray.splice(index, 1);
             },
@@ -889,11 +1009,17 @@ try {
                         }
                         exportData[index] = {
                             "Creation Data": this.stringCheck(item.product_creation_time),
+                            "Product EAN": this.stringCheck(item.product_ean),
                             "Ticket ID": this.stringCheck(item.ticket_id),
                             "Product Type": this.stringCheck(item.product_type.toUpperCase()),
                             "Product Name": this.stringCheck(item.product_name),
                             "Product Alt Name": this.stringCheck(item.product_alt_design_name),
                             "Product QA Status": this.stringCheck(item.product_qa_status),
+                            "Product Item Code": this.stringCheck(item.product_item_code),
+                            "Product Additional Comment": this.stringCheck(item.additional_comment),
+                            "Product Duplicate with": this.stringCheck(item.duplicate_product_name),
+                            "Unmatch Reason": this.stringCheck(item.unmatch_reason),
+                            "Web Links": this.stringCheck(item.weblink),
                             "Facing Count": this.stringCheck(item.product_facing_count),
                             "Hunt Type": this.stringCheck(item.product_hunt_type.toUpperCase()),
                             "Product Source Link": this.stringCheck(item.product_link),
@@ -1006,6 +1132,7 @@ try {
             },
             openMatchDialog(item) {
                 this.searchObjectArray[0].value = item.product_name;
+                this.eanReferenceInformation.productId = item.product_id;
                 this.assignMessage = '';
                 let formData = new FormData();
                 formData.append('project_name', this.selectedProject);
@@ -1033,6 +1160,7 @@ try {
                     .then((response) => {
                         if (response.data[0].error === '') {
                             this.productMatchDialog = false;
+                            this.resetReferenceObject();
                             this.getProductInfo();
                         }
                     })
@@ -1040,6 +1168,59 @@ try {
                         location.reload();
                     });
             },
+            getUnmatchReasons() {
+                if (this.selectedProject !== '') {
+                    let formData = new FormData;
+                    formData.append('project_name', this.selectedProject);
+                    axios.post('api/fetch_unmatch_reason.php', formData)
+                        .then((response) => {
+                            this.unmatchReasons = response.data[0].error_rows;
+                        });
+                }
+            },
+            saveReference() {
+                const productId = this.eanReferenceInformation.productId.trim();
+                const selectedEAN = this.eanReferenceInformation.selectedEAN.trim();
+                let unmatchReasonId= this.eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id.trim();
+                const itemCode = this.eanReferenceInformation.itemCode.trim();
+                const additionalComment = this.eanReferenceInformation.additonalComment.trim();
+                let duplicateProductName = this.eanReferenceInformation.duplicateProductName.trim();
+                if (selectedEAN !== '') {
+                    unmatchReasonId = '';
+                    duplicateProductName = '';
+                }
+                let webLinks = [];
+                let index = 0;
+                this.eanReferenceInformation.weblinks.forEach(item => {
+                    webLinks[index] = item.link;
+                    index++;
+                });
+                 if (selectedEAN !== '' || unmatchReasonId !== '') {
+                     let formData = new FormData;
+                     formData.append('project_name', this.selectedProject);
+                     formData.append('productId', productId);
+                     formData.append('selectedEAN', selectedEAN);
+                     formData.append('unmatchReasonId', unmatchReasonId);
+                     formData.append('duplicateProductName', duplicateProductName);
+                     formData.append('itemCode', itemCode);
+                     formData.append('additionalComment', additionalComment);
+                     formData.append('webLinks', webLinks);
+                     axios.post('api/save_reference_ean.php', formData)
+                         .then((response) => {
+                             console.log(response)
+                             this.resetReferenceObject();
+                             this.getProductInfo();
+                             this.productMatchDialog = false;
+                         })
+                         .catch(() => {
+                             location.reload();
+                         });
+                 }
+            },
+            resetReferenceObject() {
+                Object.assign(this.eanReferenceInformation, {});
+                Object.assign(this.eanReferenceInformation, this.refObject);
+            }
         },
         watch: {
             darkThemeSelected: function (val) {
@@ -1052,6 +1233,8 @@ try {
             },
             selectedProject: function () {
                 this.getTicketList();
+                this.getUnmatchReasons();
+                this.addNewWebLink();
             },
             selectedTickets: function() {
                 this.getProductInfo();
