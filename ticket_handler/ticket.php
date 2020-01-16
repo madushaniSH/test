@@ -555,6 +555,8 @@ try {
                 v => !!v || 'Ticket Description is required',
                 v => (v && v.length <= 500) || 'Ticket Description must be less than 500 characters'
             ],
+            departments: ['All', 'SRT', 'ODA'],
+            selectedDepartment: ''
         },
         methods: {
             getColor(status) {
