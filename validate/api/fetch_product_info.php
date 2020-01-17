@@ -43,7 +43,7 @@ foreach ($ticket_array as $ticket) {
 
 $sql = '
 SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_creation_time", SUBSTRING_INDEX(p.product_name, \' \', 1 ) AS "brand_name" ,p.product_name, p.product_previous, p.product_qa_previous ,p.product_alt_design_name, p.product_alt_design_previous, p.product_alt_design_qa_previous , p.product_type,
-       p.product_qa_status, p.product_hunt_type, p.product_qa_datetime, p.product_oda_datetime, p.product_oda_comment,peq.product_being_handled, p.product_link ,p2.probe_id, ri.reference_ean, rs.radar_source_link, IF (peq.account_id = :account_id, 1, 0) AS assigned_user, p.product_facing_count, pe.product_ean_id, pe.product_ean, pe.product_item_code, pe.additional_comment, pe.duplicate_product_name, ur.unmatch_reason
+       p.product_qa_status, p.product_hunt_type, p.product_qa_datetime, p.product_oda_datetime, p.product_oda_comment,peq.product_being_handled, p.product_link ,p2.probe_id, ri.reference_ean, rs.radar_source_link, IF (peq.account_id = :account_id, 1, 0) AS assigned_user, p.product_facing_count, pe.product_ean_id, pe.product_ean, pe.product_item_code, pe.additional_comment, pe.duplicate_product_name, ur.unmatch_reason, pe.matched_method
     FROM products p
     LEFT OUTER JOIN product_ean pe ON pe.product_id = p.product_id
     LEFT OUTER JOIN unmatch_reasons ur ON ur.unmatch_reason_id = pe.unmatch_reason_id

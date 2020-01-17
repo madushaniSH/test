@@ -499,7 +499,7 @@ try {
                     >
                         <v-col
                                 cols="6"
-                                md="4"
+                                md="3"
                         >
                             <v-text-field
                                     label="Item Code"
@@ -510,7 +510,7 @@ try {
                         </v-col>
                         <v-col
                                 cols="6"
-                                md="4"
+                                md="3"
                         >
                             <v-text-field
                                     label="EAN"
@@ -520,8 +520,20 @@ try {
                             </v-text-field>
                         </v-col>
                         <v-col
+                                cols="12"
+                                md="3"
+                        >
+                            <v-autocomplete
+                                    label="Matched With"
+                                    :items="matchedWith"
+                                    v-model="eanReferenceInformation.selectedMatchWith"
+                                    clearable
+                            >
+                            </v-autocomplete>
+                        </v-col>
+                        <v-col
                                 cols="6"
-                                md="4"
+                                md="3"
                         >
                             <v-text-field
                                     label="Additional Comment"
@@ -804,6 +816,7 @@ try {
                 additonalComment: '',
                 itemCode: '',
                 duplicateProductName: '',
+                selectedMatchWith: '',
             },
             refObject: {
                 selectedEAN: '',
@@ -819,8 +832,10 @@ try {
                 additonalComment: '',
                 duplicateProductName: '',
                 itemCode: '',
+                selectedMatchWith: '',
             },
             unmatchReasons: [],
+            matchedWith: ['Matched with Reference File', 'Matched with Attribute File', 'Matched with Item Code'],
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -1020,6 +1035,7 @@ try {
                             "Product Duplicate with": this.stringCheck(item.duplicate_product_name),
                             "Unmatch Reason": this.stringCheck(item.unmatch_reason),
                             "Web Links": this.stringCheck(item.weblink),
+                            "Matched With": this.stringCheck(item.matched_method),
                             "Facing Count": this.stringCheck(item.product_facing_count),
                             "Hunt Type": this.stringCheck(item.product_hunt_type.toUpperCase()),
                             "Product Source Link": this.stringCheck(item.product_link),
@@ -1184,10 +1200,14 @@ try {
                 let unmatchReasonId= this.eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id.trim();
                 const itemCode = this.eanReferenceInformation.itemCode.trim();
                 const additionalComment = this.eanReferenceInformation.additonalComment.trim();
+                let matchWith = this.eanReferenceInformation.selectedMatchWith;
                 let duplicateProductName = this.eanReferenceInformation.duplicateProductName.trim();
                 if (selectedEAN !== '') {
                     unmatchReasonId = '';
                     duplicateProductName = '';
+                }
+                if (matchWith === null || matchWith === undefined) {
+                    matchWith = '';
                 }
                 let webLinks = [];
                 let index = 0;
@@ -1205,6 +1225,7 @@ try {
                      formData.append('itemCode', itemCode);
                      formData.append('additionalComment', additionalComment);
                      formData.append('webLinks', webLinks);
+                     formData.append('matchWith', matchWith);
                      axios.post('api/save_reference_ean.php', formData)
                          .then((response) => {
                              console.log(response)
