@@ -952,7 +952,17 @@ try {
                 let returnArray = [];
                 if (this.searchObjectArray[index] !== undefined) {
                     let count = 0;
-                    this.refInfo.forEach(item => {
+                    let  a = this.refInfo.slice();
+                    if (this.searchObjectArray.length > 2) {
+                        for (let i = 1; i < this.searchObjectArray.length; ++i) {
+                            let item = this.searchObjectArray[i];
+                            a = a.filter((i) => {
+                                return !item.value || (i[item.col] === item.value)
+                            })
+                        }
+                    }
+
+                    a.forEach(item => {
                         let value = item[this.searchObjectArray[index].col];
                         if (value !== undefined || value !== '') {
                             returnArray[count] = value;
@@ -962,7 +972,6 @@ try {
                 }
                 return returnArray;
             },
-
             getProjectList() {
                 this.overlay = true;
                 axios.get('api/fetch_project_list.php')
