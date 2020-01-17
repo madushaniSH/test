@@ -31,28 +31,9 @@ for ($i = 0; $i < count($project_info); $i++) {
     $pdo = new PDO($dsn, $user, $pwd);
     $e = '';
     try {
-        $sql = 'DROP TABLE IF EXISTS product_ean';
+        $sql = 'alter table product_ean add `matched_method` varchar(500) default  null';
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
-
-        $sql = 'CREATE TABLE `product_ean` (
-        `product_ean_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        `product_id` int(11) NOT NULL,
-        `product_ean` VARCHAR(20) DEFAULT NULL,
-        `product_item_code` VARCHAR(24) DEFAULT NULL,
-        `additional_comment` varchar(500) DEFAULT NULL,
-        `account_id` int(11) default null,
-        `ean_creation_time` datetime NOT NULL DEFAULT current_timestamp(),
-        `ean_last_mod_datetime` DATETIME NULL DEFAULT NULL,
-        `ean_last_mod_account_id` int(11) default null,
-        `unmatch_reason_id` int(11) DEFAULT  NULL,
-        `duplicate_product_name` varchar(500) DEFAULT NULL,
-        CONSTRAINT ' . $dbname . '_ODA_EAN_PRODUCT_ID FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
-        CONSTRAINT ' . $dbname . '_ODA_EAN_UNMATCH_REASON_ID FOREIGN KEY (`unmatch_reason_id`) REFERENCES `unmatch_reasons` (`unmatch_reason_id`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute();
-
 
     } catch (PDOException $e) {
         $e->getMessage();

@@ -275,6 +275,7 @@ if ($row_count == 0) {
         `ean_last_mod_account_id` int(11) default null,
         `unmatch_reason_id` int(11) DEFAULT  NULL,
         `duplicate_product_name` varchar(500) DEFAULT NULL,
+        `matched_method` varchar(500) DEFAULT  NULL,
         CONSTRAINT ' . $dbname . '_ODA_EAN_PRODUCT_ID FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
         CONSTRAINT ' . $dbname . '_ODA_EAN_UNMATCH_REASON_ID FOREIGN KEY (`unmatch_reason_id`) REFERENCES `unmatch_reasons` (`unmatch_reason_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';

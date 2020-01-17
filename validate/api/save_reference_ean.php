@@ -49,6 +49,7 @@ try {
     $webLinks = explode(",", $_POST['webLinks']);
     $itemCode = $_POST['itemCode'];
     $additionalComment = $_POST['additionalComment'];
+    $matchWith = $_POST['matchWith'];
 
     if ($unmatchReasonId === '') {
         $unmatchReasonId = NULL;
@@ -66,9 +67,13 @@ try {
         $additionalComment = NULL;
     }
 
+    if ($matchWith === '' || $matchWith === 'undefined') {
+        $matchWith = NULL;
+    }
+
     if ($row_count == 0) {
-        $sql = 'INSERT INTO product_ean (product_id, product_ean, unmatch_reason_id, duplicate_product_name, account_id, product_item_code, additional_comment)
-            VALUES (:product_id, :product_ean, :unmatch_id, :duplicate_product_name, :account_id, :item_code, :additional_comment)';
+        $sql = 'INSERT INTO product_ean (product_id, product_ean, unmatch_reason_id, duplicate_product_name, account_id, product_item_code, additional_comment, matched_method)
+            VALUES (:product_id, :product_ean, :unmatch_id, :duplicate_product_name, :account_id, :item_code, :additional_comment, :match_with)';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(
             [
@@ -79,6 +84,7 @@ try {
                 'account_id' => $_SESSION['id'],
                 'item_code' => $itemCode,
                 'additional_comment' => $additionalComment,
+                'match_with' => $matchWith
             ]
         );
 
