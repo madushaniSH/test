@@ -257,7 +257,7 @@ try {
                                     'items-per-page-options': [10]
                                 }"
                                 multi-sort
-                                :search="search"
+                                :search="productInfoSearch"
                         >
                             <template v-slot:top>
                                 <v-toolbar flat>
