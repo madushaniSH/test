@@ -483,6 +483,11 @@ try {
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                     <v-toolbar-title>Product Reference Match</v-toolbar-title>
+                    <v-btn
+                            class="filters"
+                            color="purple"
+                            @click="historyDialog = true"
+                    >View Product History</v-btn>
                     <v-spacer></v-spacer>
                     <v-btn
                             @click="saveReference()"
@@ -1147,6 +1152,23 @@ try {
                 this.historyDialog = true;
             },
             openMatchDialog(item) {
+                this.productHistory.product_qa_datetime = item.product_qa_datetime;
+                this.productHistory.product_previous = item.product_previous;
+                this.productHistory.alt_design_previous = item.alt_design_previous;
+                this.productHistory.qa_error = item.qa_error;
+                this.productHistory.product_oda_datetime = item.product_oda_datetime;
+                this.productHistory.product_qa_previous = item.product_qa_previous;
+                this.productHistory.product_alt_design_qa_previous = item.product_alt_design_qa_previous;
+                this.productHistory.oda_error = item.oda_error;
+                this.productHistory.product_oda_comment = item.product_oda_comment;
+                this.productHistory.product_link = item.product_link;
+                if (item.probe_id !== null) {
+                    this.productHistory.hunt_source = "PROBE " + item.probe_id;
+                } else if (item.radar_source_link !== null) {
+                    this.productHistory.hunt_source = item.radar_source_link;
+                } else {
+                    this.productHistory.hunt_source = "REF EAN " + item.reference_ean;
+                }
                 this.searchObjectArray[0].value = item.product_name;
                 this.eanReferenceInformation.productId = item.product_id;
                 this.assignMessage = '';
