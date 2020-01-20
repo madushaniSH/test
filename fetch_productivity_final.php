@@ -199,7 +199,7 @@ for ($i = 0; $i < count($hunter_summary); $i++){
 
 
     $total_count = ($hunter_summary[$i]["Brand Hunted"] * 1.5)  + $hunter_summary[$i]["SKU Hunted"] + (($hunter_summary[$i]["DVC Hunted"] + $hunter_summary[$i]["Hunted Facing Count"]) / 2);
-    $hunter_summary[$i]["Total Count"] = (int)$total_count;
+    $hunter_summary[$i]["Total Count"] = round($total_count, 2);
     if ($total_count == 0) {
         $monthly_accuracy = 0;
     } else {
