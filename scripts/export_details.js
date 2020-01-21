@@ -173,7 +173,29 @@ const fetch_details_productivity = () => {
         contentType: false,
         processData: false
     });
-}
+};
+
+const fetch_performance_report_qa = () => {
+    let formData = new FormData();
+    formData.append("start_datetime", start_datetime );
+    formData.append("end_datetime", end_datetime);
+    jQuery.ajax({
+        url: 'fetch_performance_qa.php',
+        type: 'POST',
+        data: formData,
+        dataType: 'JSON',
+        success: function (data) {
+            JSONToCSVConvertor(data[0].qaSummary, "QA Productivity " + start_datetime + ' ' + end_datetime, true);
+        },
+        error: function (data) {
+            alert("Error assigning probe. Please refresh");
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+
+};
 
 const fetch_details_productivity_single = () => {
     let formData = new FormData();
@@ -434,16 +456,19 @@ jQuery(document).ready(function () {
         let export_button = document.getElementById('export_button_productivity');
         let export_button_single = document.getElementById('export_button_productivity_single');
         let export_button_performance_report = document.getElementById('export_button_performance_report');
+        let export_button_performance_qa = document.getElementById('export_button_performance_qa');
         if (start_datetime != '' && end_datetime != '') {
             export_button.classList.remove('hide');
             export_button_single.classList.remove('hide');
             export_button_performance_report.classList.remove('hide');
+            export_button_performance_qa.classList.remove('hide');
             filter_picked = true;
 
         } else {
             export_button.classList.add('hide');
             export_button_single.classList.add('hide');
             export_button_performance_report.classList.add('hide');
+            export_button_performance_qa.classList.add('hide');
             filter_picked = false;
         }
     });

@@ -345,6 +345,9 @@ if($_SESSION['role'] === 'Admin'){
                                     <div class="col">
                                         <button class="btn btn-primary hide" id="export_button_performance_report" onclick="fetch_performance_report()"><i class="fas fa-download"></i> Fetch Performance Report</button>
                                     </div>
+                                    <div class="col">
+                                        <button class="btn btn-primary hide" id="export_button_performance_qa" onclick="fetch_performance_report_qa()"><i class="fas fa-download"></i> Fetch QA Report</button>
+                                    </div>
                                 </div>
                                 <div class="row my-3 hide" id="performance_loader">
                                     <div class="col">
