@@ -1434,7 +1434,7 @@ try {
                 Object.assign(this.eanReferenceInformation, this.refObject);
             },
             checkForDuplicates() {
-                if (this.eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id !== '')
+                if (this.eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id !== '') {
                     this.saveReference();
                 } else if (this.eanFiles !== null && this.matchedProductEanInfo.length !== 0 &&
                     (this.eanReferenceInformation.selectedEAN !== '' || this.eanReferenceInformation.itemCode !== '')) {
