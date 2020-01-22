@@ -333,13 +333,15 @@ try {
                                 </v-toolbar>
                             </template>
                             <template v-slot:item.action="{ item }">
-                                <v-icon
-                                        small
-                                        class="mr-2"
-                                        @click="editItem(item)"
-                                >
-                                    mdi-account-edit
-                                </v-icon>
+                                <v-btn>
+                                    <v-icon
+                                            small
+                                            class="mr-2"
+                                            @click="editItem(item)"
+                                    >
+                                        mdi-account-edit
+                                    </v-icon>
+                                </v-btn>
                             </template>
                             <template v-slot:item.mod_info="{ item }">
                                 <v-row justify="center">
@@ -480,6 +482,7 @@ try {
             dates: [],
             headers: [
                 {text: 'Project Name', value: 'project_name'},
+                {text: 'Department', value: 'department'},
                 {text: 'Date', value: 'create_date'},
                 {text: 'Ticket ID', value: 'ticket_id'},
                 {text: 'Type', value: 'ticket_type'},
