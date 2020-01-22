@@ -242,6 +242,18 @@ try {
                             deletable-chips
                     ></v-autocomplete>
                 </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            label="Client Category"
+                            :items="productClientCategoryItems"
+                            v-model="selectedClientCategory"
+                            chips
+                            deletable-chips
+                    ></v-autocomplete>
+                </v-col>
             </v-row>
             <v-row>
                 <v-slide-y-transition>
@@ -778,6 +790,7 @@ try {
             productInfo: [],
             productInfoHeaders: [
                 {text: 'Creation Date', value: 'product_creation_time', width: '10%', filterable: false},
+                {text: 'Client Category', value: 'client_category_name', width: '10%', filterable: false},
                 {text: 'Ticket ID', value: 'ticket_id', width: '10%', filterable: false},
                 {text: 'Type', value: 'product_type', width: '5%', filterable: false},
                 {text: 'Product Name', value: 'product_name', width: '25%'},
@@ -807,6 +820,8 @@ try {
             productHistory: {},
             historyDialog: false,
             productMatchDialog: false,
+            productClientCategoryItems: [],
+            selectedClientCategory: '',
             assigned: 0,
             assignMessage: '',
             eanReferenceInformation: {
@@ -1010,6 +1025,7 @@ try {
                             let count = 0;
                             response.data[0].product_info.forEach(item => {
                                 this.productBrandItems[count] = item.brand_name;
+                                this.productClientCategoryItems[count] = item.client_category_name;
                                 count++;
                             });
                             this.assigned = response.data[0].row_count;
@@ -1324,6 +1340,15 @@ try {
                 a = a.filter((i) => {
                     return !this.selectedBrand ||
                         (i.product_name.substr(0, i.product_name.indexOf(" ")) === this.selectedBrand);
+                });
+                this.productClientCategoryItems = [];
+                count = 0;
+                a.forEach(item => {
+                    this.productClientCategoryItems[count] = item.client_category_name;
+                    count++;
+                });
+                a = a.filter((i) => {
+                    return !this.selectedClientCategory || (i.client_category_name === this.selectedClientCategory);
                 });
                 return a;
             },
