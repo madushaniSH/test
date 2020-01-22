@@ -285,7 +285,7 @@ try {
                                            :disabled="item.qa_being_handled === null
                                            || (item.qa_being_handled === '1' && item.assigned_user === '0')
                                            || (assigned === 1 && item.assigned_user !== '1')
-                                           || (item.ticket_status === 'IN PROGRESS / SEND TO EAN' && item.product_ean_id === null)"
+                                           || (item.ticket_status === 'IN PROGRESS / SEND TO EAN' && item.product_ean_id === null && item.product_type === 'sku')"
                                            @click="qaProduct(item)"
                                     >{{ item.ticket_status === 'IN PROGRESS / SEND TO EAN' && item.product_ean_id === null ? "Pending EAN" : "QA" }}</v-btn>
                                 </div>
