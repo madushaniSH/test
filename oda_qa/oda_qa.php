@@ -284,9 +284,10 @@ try {
                                     <v-btn color="primary"
                                            :disabled="item.qa_being_handled === null
                                            || (item.qa_being_handled === '1' && item.assigned_user === '0')
-                                           || (assigned === 1 && item.assigned_user !== '1')"
+                                           || (assigned === 1 && item.assigned_user !== '1')
+                                           || (item.ticket_status === 'IN PROGRESS / SEND TO EAN' && item.product_ean_id === null)"
                                            @click="qaProduct(item)"
-                                    >QA</v-btn>
+                                    >{{ item.ticket_status === 'IN PROGRESS / SEND TO EAN' && item.product_ean_id === null ? "Pending EAN" : "QA" }}</v-btn>
                                 </div>
                             </template>
                             <template v-slot:item.view="{ item }">
@@ -922,6 +923,7 @@ try {
                 {text: 'Product QA Status', value: 'product_qa_status', width: '5%', filterable: false},
                 {text: 'Hunt Type', value: 'product_hunt_type', width: '10%', filterable: false},
                 {text: 'Product History', value: 'view', sortable: false, align: 'center', filterable: false},
+                {text: 'EAN', value: 'product_ean', width: '10%'},
                 {text: 'Actions', value: 'action', sortable: false, align: 'center', filterable: false},
             ],
             ticketStatusOptions: ['OPEN', 'CLOSED', 'DONE', 'IN PROGRESS', 'IN PROGRESS / SEND TO EAN'],
