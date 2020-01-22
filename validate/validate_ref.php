@@ -185,6 +185,51 @@ try {
                     >
                     </v-autocomplete>
                 </v-col>
+                <v-col>
+                    <v-layout
+                            justify-end
+                    >
+                        <v-col
+                                cols="6"
+                                md="6"
+                        >
+                            <v-card
+                                    class="mx-auto"
+                                    outlined
+                            >
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <div class="overline mb-4">Product Count</div>
+                                        <v-row>
+                                            <v-col>
+                                                <v-list-item-title class="text-center">Ticket</v-list-item-title>
+                                                <v-list-item-subtitle class="text-center">{{ selectedTickets.length }}</v-list-item-subtitle>
+                                            </v-col>
+                                            <v-col>
+                                                <v-list-item-title class="text-center">Brand</v-list-item-title>
+                                                <v-list-item-subtitle class="text-center">{{ pendingCount.brand }}</v-list-item-subtitle>
+                                            </v-col>
+                                            <v-col>
+                                                <v-list-item-title class="text-center">SKU</v-list-item-title>
+                                                <v-list-item-subtitle class="text-center">{{ pendingCount.sku }}</v-list-item-subtitle>
+                                            </v-col>
+                                            <v-col>
+                                                <v-list-item-title class="text-center">DVC</v-list-item-title>
+                                                <v-list-item-subtitle class="text-center">{{ pendingCount.dvc }}</v-list-item-subtitle>
+                                            </v-col>
+                                            <v-col>
+                                                <v-list-item-title class="text-center">Facing</v-list-item-title>
+                                                <v-list-item-subtitle class="text-center">{{ pendingCount.facing }}</v-list-item-subtitle>
+                                            </v-col>
+                                        </v-row>
+                                    </v-list-item-content>
+
+                                </v-list-item>
+
+                            </v-card>
+                        </v-col>
+                    </v-layout>
+                </v-col>
             </v-row>
 
             <v-row
@@ -501,14 +546,7 @@ try {
                     >View Product History</v-btn>
                     <v-spacer></v-spacer>
                     <v-btn
-                            color="warning"
                             @click="checkForDuplicates()"
-                            :disabled="eanFiles === null || (eanReferenceInformation.selectedEAN === '' && eanReferenceInformation.itemCode === '')"
-                    >
-                        Check for Duplicates
-                    </v-btn>
-                    <v-btn
-                            @click="saveReference()"
                             class="filters"
                     >
                         Save
@@ -783,9 +821,15 @@ try {
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn
+                            color="green darken-1"
+                            text
+                            @click="duplicateWarningDialog = false;">
+                        Take Me Back
+                    </v-btn>
+                    <v-btn
                             color="red darken-1"
                             text
-                            @click="duplicateWarningDialog = false">
+                            @click="saveReference()">
                         I Have Been Warned
                     </v-btn>
                 </v-card-actions>
@@ -805,7 +849,7 @@ try {
         el: "#app",
         vuetify: new Vuetify(),
         data: {
-            darkThemeSelected: false,
+            darkThemeSelected: true,
             files: null,
             eanFiles: null,
             refInfo: [],
@@ -900,8 +944,48 @@ try {
                 {text: 'EAN', value: 'EAN Code',filterable: false},
                 {text: 'Item Code', value: 'Item Code', filterable: false},
             ],
+            pendingCount: {
+                brand: 0,
+                sku: 0,
+                dvc: 0,
+                facing: 0
+            },
     },
         methods: {
+            getPendingCount(data) {
+                if (data.length === 0) {
+                    this.pendingCount.brand = 0;
+                    this.pendingCount.sku = 0;
+                    this.pendingCount.dvc = 0;
+                    this.pendingCount.facing = 0;
+                } else {
+                    let brand_count = 0;
+                    let sku_count = 0;
+                    let dvc_count = 0;
+                    let facing_count = 0;
+
+                    data.forEach(function(item) {
+                        if (item.product_type === 'brand') {
+                            brand_count++;
+                        }
+                        if (item.product_type === 'sku') {
+                            sku_count++;
+                        }
+                        if (item.product_type === 'dvc') {
+                            dvc_count++;
+                        }
+                        if (item.product_type === 'facing') {
+                            facing_count++;
+                        }
+                    });
+
+                    this.pendingCount.brand = brand_count;
+                    this.pendingCount.sku = sku_count;
+                    this.pendingCount.dvc = dvc_count;
+                    this.pendingCount.facing = facing_count;
+
+                }
+            },
             getHuntTypeColor(hunt_type) {
                 let color = '';
                 if (hunt_type === 'probe') {
@@ -1286,6 +1370,7 @@ try {
                 }
             },
             saveReference() {
+                this.duplicateWarningDialog = false;
                 const productId = this.eanReferenceInformation.productId.trim();
                 const selectedEAN = this.eanReferenceInformation.selectedEAN.trim();
                 let unmatchReasonId= this.eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id.trim();
@@ -1343,13 +1428,15 @@ try {
                         return (item["EAN Code"] === this.eanReferenceInformation.selectedEAN.replace(/^0+/, '') && this.eanReferenceInformation.selectedEAN !== '')
                          || (item["Item Code"] === this.eanReferenceInformation.itemCode.replace(/^0+/, '') && this.eanReferenceInformation.itemCode !== '')
                     });
+                    this.overlay = false;
                     if (resultArray.length > 0) {
                         message = resultArray.length + " Duplicate(s) Found";
                         this.duplicateItems = resultArray.slice();
+                        this.duplicateWarning = message;
+                        this.duplicateWarningDialog= true;
+                    } else {
+                        this.saveReference();
                     }
-                    this.overlay = false;
-                    this.duplicateWarning = message;
-                    this.duplicateWarningDialog= true;
                 }
             },
         },
@@ -1388,6 +1475,7 @@ try {
         created() {
             this.addNewSearch();
             this.getProjectList();
+            this.$vuetify.theme.dark = this.darkThemeSelected;
         },
         computed: {
             checkSearchValues() {
@@ -1427,6 +1515,7 @@ try {
                 a = a.filter((i) => {
                     return !this.selectedClientCategory || (i.client_category_name === this.selectedClientCategory);
                 });
+                this.getPendingCount(a);
                 return a;
             },
         }
