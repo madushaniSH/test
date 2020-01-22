@@ -115,6 +115,13 @@ for ($i = 0; $i < count($project_array); $i++) {
         $sql = '
 SELECT
     pt.project_ticket_system_id,
+    a.account_id,
+    CASE
+    	WHEN (ad.designation_id = 2) THEN "SRT" 
+        WHEN (ad.designation_id = 1) THEN "SUPER" 
+        WHEN (ad.designation_id = 8) THEN "ODA" 
+        END
+    AS "department",
     DATE(pt.ticket_creation_time) AS "create_date",
     pt.ticket_type,
     pt.ticket_description,
@@ -133,6 +140,10 @@ INNER JOIN
     user_db.accounts a
 ON
     a.account_id = pt.account_id
+INNER JOIN
+    user_db.account_designations ad
+ON 
+    ad.account_id = a.account_id
 LEFT OUTER JOIN
     user_db.accounts b
 ON
@@ -140,7 +151,7 @@ ON
 WHERE 
   '.$status_string.'
 GROUP BY
-    1';
+    1, 2, 3';
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $ticket_info = $stmt->fetchAll(PDO::FETCH_ASSOC);
