@@ -792,6 +792,8 @@ try {
                                             :items="refDropDown(index)"
                                             v-model="item.value"
                                             label="Value"
+                                            multiple
+                                            chips
                                             v-else
                                     >
                                         <template slot="append-outer">
@@ -1432,7 +1434,9 @@ try {
                 Object.assign(this.eanReferenceInformation, this.refObject);
             },
             checkForDuplicates() {
-                if (this.eanFiles !== null && this.matchedProductEanInfo.length !== 0 &&
+                if (this.eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id !== '')
+                    this.saveReference();
+                } else if (this.eanFiles !== null && this.matchedProductEanInfo.length !== 0 &&
                     (this.eanReferenceInformation.selectedEAN !== '' || this.eanReferenceInformation.itemCode !== '')) {
                     this.overlay = true;
                     this.duplicateItems = [];
