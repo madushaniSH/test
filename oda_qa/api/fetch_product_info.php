@@ -42,9 +42,10 @@ foreach ($ticket_array as $ticket) {
 }
 
 $sql = '
-SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_creation_time", SUBSTRING_INDEX(p.product_name, \' \', 1 ) AS "brand_name" ,p.product_name, p.product_previous, p.product_qa_previous ,p.product_alt_design_name, p.product_alt_design_previous, p.product_alt_design_qa_previous , p.product_type,
-       p.product_qa_status, p.product_hunt_type, p.product_qa_datetime, p.product_oda_datetime, p.product_oda_comment,oq.qa_being_handled, p.product_link ,p2.probe_id, ri.reference_ean, rs.radar_source_link, IF (oq.account_id = :account_id, 1, 0) AS assigned_user, IF(cc.client_category_name IS NULL, "NA", cc.client_category_name) AS "client_category_name"
+SELECT p.product_id, pt.ticket_id, pt.ticket_status ,DATE(p.product_creation_time) as "product_creation_time", SUBSTRING_INDEX(p.product_name, \' \', 1 ) AS "brand_name" ,p.product_name, p.product_previous, p.product_qa_previous ,p.product_alt_design_name, p.product_alt_design_previous, p.product_alt_design_qa_previous , p.product_type,
+       p.product_qa_status, p.product_hunt_type, p.product_qa_datetime, p.product_oda_datetime, p.product_oda_comment,oq.qa_being_handled, p.product_link ,p2.probe_id, ri.reference_ean, rs.radar_source_link, IF (oq.account_id = :account_id, 1, 0) AS assigned_user, IF(cc.client_category_name IS NULL, "NA", cc.client_category_name) AS "client_category_name", pe.product_ean_id, pe.product_ean
     FROM products p
+    LEFT OUTER JOIN product_ean pe ON pe.product_id = p.product_id
     LEFT OUTER JOIN oda_queue oq ON oq.product_id = p.product_id
     LEFT OUTER JOIN probe_product_info ppi on p.product_id = ppi.probe_product_info_product_id
     LEFT OUTER JOIN probe p2 on ppi.probe_product_info_key_id = p2.probe_key_id

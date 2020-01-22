@@ -140,7 +140,6 @@ try {
                             v-model="eanFiles"
                             placeholder="Coming soon"
                             label="Product EAN File"
-                            disabled
                     >
                         <template v-slot:selection="{ text }">
                             <v-chip
@@ -502,7 +501,15 @@ try {
                     >View Product History</v-btn>
                     <v-spacer></v-spacer>
                     <v-btn
+                            color="warning"
+                            @click="checkForDuplicates()"
+                            :disabled="eanFiles === null || (eanReferenceInformation.selectedEAN === '' && eanReferenceInformation.itemCode === '')"
+                    >
+                        Check for Duplicates
+                    </v-btn>
+                    <v-btn
                             @click="saveReference()"
+                            class="filters"
                     >
                         Save
                     </v-btn>
@@ -756,6 +763,34 @@ try {
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="duplicateWarningDialog" persistent max-width="590">
+            <v-card>
+                <v-card-title class="headline">Duplicate Check Results</v-card-title>
+                <v-card-text>
+                    {{ duplicateWarning }}
+                    <v-data-table
+                            :headers="duplicateItemHeaders"
+                            :items="duplicateItems"
+                            v-if="duplicateItems.length > 0"
+                    >
+                        <template v-slot:top>
+                            <v-toolbar flat>
+                                <v-toolbar-title>Result(s)</v-toolbar-title>
+                            </v-toolbar>
+                        </template>
+                    </v-data-table>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                            color="red darken-1"
+                            text
+                            @click="duplicateWarningDialog = false">
+                        I Have Been Warned
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-app>
 </div>
 
@@ -856,7 +891,16 @@ try {
             },
             unmatchReasons: [],
             matchedWith: ['Matched with Reference File', 'Matched with Attribute File', 'Matched with Item Code'],
-        },
+            matchedProductEanInfo: [],
+            duplicateWarningDialog: false,
+            duplicateWarning: '',
+            duplicateItems: [],
+            duplicateItemHeaders: [
+                {text: 'Product Name', value: 'English Product Name', filterable: false},
+                {text: 'EAN', value: 'EAN Code',filterable: false},
+                {text: 'Item Code', value: 'Item Code', filterable: false},
+            ],
+    },
         methods: {
             getHuntTypeColor(hunt_type) {
                 let color = '';
@@ -1275,7 +1319,6 @@ try {
                      formData.append('matchWith', matchWith);
                      axios.post('api/save_reference_ean.php', formData)
                          .then((response) => {
-                             console.log(response)
                              this.resetReferenceObject();
                              this.getProductInfo();
                              this.productMatchDialog = false;
@@ -1288,7 +1331,27 @@ try {
             resetReferenceObject() {
                 Object.assign(this.eanReferenceInformation, {});
                 Object.assign(this.eanReferenceInformation, this.refObject);
-            }
+            },
+            checkForDuplicates() {
+                if (this.eanFiles !== null && this.matchedProductEanInfo.length !== 0 &&
+                    (this.eanReferenceInformation.selectedEAN !== '' || this.eanReferenceInformation.itemCode !== '')) {
+                    this.overlay = true;
+                    this.duplicateItems = [];
+                    let resultArray = [];
+                    let message = "No Duplicates Found";
+                    resultArray = this.matchedProductEanInfo.filter(item => {
+                        return (item["EAN Code"] === this.eanReferenceInformation.selectedEAN.replace(/^0+/, '') && this.eanReferenceInformation.selectedEAN !== '')
+                         || (item["Item Code"] === this.eanReferenceInformation.itemCode.replace(/^0+/, '') && this.eanReferenceInformation.itemCode !== '')
+                    });
+                    if (resultArray.length > 0) {
+                        message = resultArray.length + " Duplicate(s) Found";
+                        this.duplicateItems = resultArray.slice();
+                    }
+                    this.overlay = false;
+                    this.duplicateWarning = message;
+                    this.duplicateWarningDialog= true;
+                }
+            },
         },
         watch: {
             darkThemeSelected: function (val) {
@@ -1307,6 +1370,20 @@ try {
             selectedTickets: function() {
                 this.getProductInfo();
             },
+            eanFiles: function (val) {
+                if (val !== null) {
+                    this.overlay = true;
+                    Papa.parsePromise = function(val) {
+                        return new Promise(function(complete, error) {
+                            Papa.parse(val, {worker: true, header:true,complete, error});
+                        });
+                    };
+                    Papa.parsePromise(val).then((results) => {
+                        this.matchedProductEanInfo = results.data;
+                        this.overlay = false;
+                    });
+                }
+            }
         },
         created() {
             this.addNewSearch();
