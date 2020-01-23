@@ -789,11 +789,11 @@ try {
                                     >
                                     </v-text-field>
                                     <v-autocomplete
+                                            multiple
+                                            small-chips
                                             :items="refDropDown(index)"
                                             v-model="item.value"
                                             label="Value"
-                                            multiple
-                                            chips
                                             v-else
                                     >
                                         <template slot="append-outer">
@@ -1063,9 +1063,18 @@ try {
                 this.searchObjectArray.forEach((item, index) => {
                     for (let i = 0; i < refInfoLength; ++i) {
                         row = this.refInfo[i];
-                        if (row[item.col] !== undefined) {
-                            total = parseFloat((similarity(item.value, row[item.col]) * 100).toFixed(2));
-                            matchArray[i].totalPer = parseFloat(total) + parseFloat(matchArray[i].totalPer);
+                        if (index === 0) {
+                            if (row[item.col] !== undefined) {
+                                total = parseFloat((similarity(item.value, row[item.col]) * 100).toFixed(2));
+                                matchArray[i].totalPer = parseFloat(total) + parseFloat(matchArray[i].totalPer);
+                            }
+                        } else {
+                            item.value.forEach(val=> {
+                                if (row[item.col] !== undefined) {
+                                    total = parseFloat((similarity(val, row[item.col]) * 100).toFixed(2));
+                                    matchArray[i].totalPer = parseFloat(total) + parseFloat(matchArray[i].totalPer);
+                                }
+                            })
                         }
                     }
                 });
@@ -1088,7 +1097,7 @@ try {
             addNewSearch() {
                 const newObject = {
                     col: '',
-                    value: ''
+                    value: []
                 };
                 this.searchObjectArray.push(newObject);
             },
@@ -1113,17 +1122,24 @@ try {
                     let count = 0;
                     let  a = this.refInfo.slice();
                     if (this.searchObjectArray.length > 2) {
+                        let searchArray = [];
                         for (let i = 1; i < this.searchObjectArray.length; ++i) {
                             let item = this.searchObjectArray[i];
-                            a = a.filter((i) => {
-                                return !item.value || (i[item.col] === item.value)
-                            })
+                            item.value.forEach(val => {
+                                searchArray.push(a.filter((i) => {
+                                    if (i[item.col] !== undefined && val !== '' && i[item.col] !== '') {
+                                        return !val || (i[item.col].trim() === val.trim())
+                                    }
+                                }));
+                            });
+                            a = [];
+                            for (row of searchArray) for (e of row) a.push(e);
                         }
                     }
 
                     a.forEach(item => {
                         let value = item[this.searchObjectArray[index].col];
-                        if (value !== undefined || value !== '') {
+                        if (value !== undefined || value !== '' || value !== 'undefined') {
                             returnArray[count] = value;
                             count++;
                         }
@@ -1321,6 +1337,7 @@ try {
                 this.historyDialog = true;
             },
             openMatchDialog(item) {
+                this.eanReferenceInformation.weblinks = [{link: ''}];
                 this.productHistory.product_qa_datetime = item.product_qa_datetime;
                 this.productHistory.product_previous = item.product_previous;
                 this.productHistory.alt_design_previous = item.alt_design_previous;
