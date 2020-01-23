@@ -63,7 +63,7 @@ SELECT p.product_id, pt.ticket_id, pt.ticket_status ,DATE(p.product_creation_tim
         pt.project_ticket_system_id = rh.radar_ticket_id
         OR 
         pt.project_ticket_system_id = ri.reference_ticket_id
-    INNER JOIN user_db.accounts a ON a.account_id = p.product_oda_account_id
+    LEFT OUTER JOIN user_db.accounts a ON a.account_id = p.product_oda_account_id
 WHERE ('.$ticket_query_string.') OR  (oq.qa_being_handled = 1 AND oq.account_id = :account_id)
 ORDER BY oq.qa_being_handled DESC ,p.product_creation_time DESC';
 $stmt = $pdo->prepare($sql);
