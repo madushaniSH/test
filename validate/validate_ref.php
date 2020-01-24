@@ -97,19 +97,35 @@ try {
                             label="Select"
                             chips
                             :items="ticketArray"
-                            item-text="ticket_id"
-                            item-value="ticket_id"
                             multiple
                     >
+
                         <template v-slot:selection="{ item, index }">
                             <v-chip v-if="index === 0">
-                                <span>{{ item.ticket_id }}</span>
+                                <span>{{ item }}</span>
                             </v-chip>
                             <span
                                     v-if="index === 1"
                                     class="grey--text caption"
                             >(+{{ selectedTickets.length - 1 }} others)</span>
                         </template>
+
+                        <template v-slot:prepend-item>
+                            <v-list-item
+                                    ripple
+                                    @click="toggle"
+                            >
+                                <v-list-item-action>
+                                    <v-icon :color="selectedTickets.length > 0 ? 'indigo darken-4' : ''">{{ icon }}</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>Select All</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                            <v-divider class="mt-2"></v-divider>
+                        </template>
+
+
                     </v-autocomplete>
                 </v-col>
                 <v-col
@@ -1168,7 +1184,13 @@ try {
                         .then((response) => {
                             this.selectedTickets = [];
                             this.productInfo = [];
-                            this.ticketArray = response.data[0].ticket_info;
+                            let index = 0;
+                            let array = [];
+                            response.data[0].ticket_info.forEach(item => {
+                                array[index] = item.ticket_id;
+                                index++;
+                            });
+                            this.ticketArray = array.slice();
                             this.overlay = false;
                         });
                 }
@@ -1477,6 +1499,16 @@ try {
                     }
                 }
             },
+            toggle () {
+                this.$nextTick(() => {
+                    if (this.selectAllTickets) {
+                        this.selectedTickets = []
+                    } else {
+                        this.selectedTickets = this.ticketArray.slice();
+                        this.getProductInfo();
+                    }
+                })
+            },
         },
         watch: {
             darkThemeSelected: function (val) {
@@ -1565,6 +1597,17 @@ try {
                 }
                 this.getPendingCount(a);
                 return a;
+            },
+            selectAllTickets() {
+                return this.selectedTickets.length === this.ticketArray.length
+            },
+            selectSomeTickets() {
+                return this.selectedTickets.length > 0 && !this.selectAllTickets
+            },
+            icon () {
+                if (this.selectAllTickets) return 'mdi-close-box';
+                if (this.selectSomeTickets) return 'mdi-minus-box';
+                return 'mdi-checkbox-blank-outline';
             },
         }
     });
