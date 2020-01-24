@@ -658,7 +658,7 @@ try {
                                 md="8"
                         >
                             <v-text-field
-                                    label="Duplicate with Product Name"
+                                    label="DVC, Substitute or Duplicated Product Name"
                                     :disabled="!(eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id > 13 && eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id < 18)"
                                     v-model.trim="eanReferenceInformation.duplicateProductName"
                             >
@@ -1253,7 +1253,7 @@ try {
                             "Product EAN": this.stringCheck(item.product_ean),
                             "Matched With": this.stringCheck(item.matched_method),
                             "Unmatch Reason": this.stringCheck(item.unmatch_reason),
-                            "Product Duplicate with": this.stringCheck(item.duplicate_product_name),
+                            "DVC, Substitute or Duplicated Product name": this.stringCheck(item.duplicate_product_name),
                             "Web Links": this.stringCheck(item.weblink),
                             "EAN Additional Comment": this.stringCheck(item.additional_comment),
                             "EAN QA GID": this.stringCheck(item.account_gid),
@@ -1462,6 +1462,7 @@ try {
                      formData.append('matchWith', matchWith);
                      axios.post('api/save_reference_ean.php', formData)
                          .then((response) => {
+                             console.log(response)
                              this.resetReferenceObject();
                              this.getProductInfo();
                              this.productMatchDialog = false;

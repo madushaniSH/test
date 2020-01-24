@@ -51,6 +51,10 @@ try {
     $additionalComment = $_POST['additionalComment'];
     $matchWith = $_POST['matchWith'];
 
+    if  ($productEAN === '') {
+        $productEAN = NULL;
+    }
+
     if ($unmatchReasonId === '') {
         $unmatchReasonId = NULL;
     }
