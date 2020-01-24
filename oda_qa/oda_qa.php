@@ -256,6 +256,18 @@ try {
                             deletable-chips
                     ></v-autocomplete>
                 </v-col>
+                <v-col
+                        cols="6"
+                        md="2"
+                >
+                    <v-autocomplete
+                            label="Reference Status"
+                            :items="referenceStatus"
+                            v-model="selectedReferenceStatus"
+                            chips
+                            deletable-chips
+                    ></v-autocomplete>
+                </v-col>
             </v-row>
             <v-row>
                 <v-slide-y-transition>
@@ -1094,6 +1106,8 @@ try {
                 v => !!v || 'Manu Link is required',
                 v => (v && v.length > 10) || 'Link must be greater than 10 characters',
             ],
+            referenceStatus: ['All', 'Already Matched', 'Pending'],
+            selectedReferenceStatus: 'All',
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -1544,6 +1558,16 @@ try {
                 a = a.filter((i) => {
                     return !this.selectedClientCategory || (i.client_category_name === this.selectedClientCategory);
                 });
+                let refStatus = this.selectedReferenceStatus;
+                if (refStatus === 'Already Matched') {
+                    a = a.filter((i) => {
+                        return !refStatus || (i.product_ean_id !== null);
+                    });
+                } else if (refStatus === 'Pending') {
+                    a = a.filter((i) => {
+                        return !refStatus || (i.product_ean_id === null);
+                    });
+                }
                 this.getPendingCount(a);
                 return a;
             },
