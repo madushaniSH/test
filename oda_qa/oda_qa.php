@@ -438,25 +438,31 @@ try {
                     <v-card-text>
                         <v-container>
                             <v-tabs
-                                    v-model="tab"
                                     dark
                             >
                                 <v-tabs-slider></v-tabs-slider>
 
                                 <v-tab
-                                        key="qaForm"
+                                        href="#qaForm"
                                 >
                                     QA Form
                                 </v-tab>
                                 <v-tab
-                                        key="sourceInfo"
+                                        href="#sourceInfo"
                                         v-if="selectedProductInfo.productHuntType === 'reference'"
                                 >
                                     Source Information
                                 </v-tab>
 
+                                <v-tab
+                                        href="#eanInfo"
+                                        v-if="selectedProductInfo.eanInformation.eanProductId !== null"
+                                >
+                                    EAN Information
+                                </v-tab>
+
                                 <v-tab-item
-                                        key="qaForm"
+                                        value="qaForm"
                                 >
                                     <v-form
                                             v-model="valid"
@@ -607,7 +613,7 @@ try {
                                 </v-tab-item>
 
                                 <v-tab-item
-                                        key="sourceInfo"
+                                        value="sourceInfo"
                                 >
                                     <v-row>
                                         <v-col
@@ -807,7 +813,94 @@ try {
                                     </v-row>
                                 </v-tab-item>
 
-                                </v-tabs-items>
+                                <v-tab-item
+                                        value="eanInfo"
+                                >
+                                    <v-row>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Item Code"
+                                                    outlined
+                                                    readonly
+                                                    :value="selectedProductInfo.eanInformation.itemCode"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="EAN"
+                                                    outlined
+                                                    readonly
+                                                    :value="selectedProductInfo.eanInformation.ean"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Unmatch Reason"
+                                                    outlined
+                                                    readonly
+                                                    :value="selectedProductInfo.eanInformation.unmatchReason"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="DVC, Substitute or Duplicated Product Name"
+                                                    outlined
+                                                    readonly
+                                                    :value="selectedProductInfo.eanInformation.duplicateWith"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Matched With"
+                                                    outlined
+                                                    readonly
+                                                    :value="selectedProductInfo.eanInformation.matchWith"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                                cols="12"
+                                                md="6"
+                                        >
+                                            <v-text-field
+                                                    label="Additional Comment"
+                                                    outlined
+                                                    readonly
+                                                    :value="selectedProductInfo.eanInformation.addComment"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row v-for="weblink, index in selectedProductInfo.eanInformation.webLinkArray" :key="index">
+                                        <v-col>
+                                            <v-text-field
+                                                    :label="`'Web Link ${index+1}` "
+                                                    outlined
+                                                    readonly
+                                                    :value="weblink"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+                                </v-tab-item>
+
                             </v-tabs>
                         </v-container>
                     </v-card-text>
@@ -980,6 +1073,9 @@ try {
                 productType: '',
                 qaStatus: '',
                 productComment: '',
+                eanInformation: {
+                    eanProductId: '',
+                }
             },
             assigned: 0,
             qaErrors: [],
@@ -1161,7 +1257,19 @@ try {
                 this.selectedProductInfo.product_hunt_type = item.product_hunt_type;
                 this.selectedProductInfo.productId = item.product_id;
                 this.selectedProductInfo.productType = item.product_type;
+                this.selectedProductInfo.eanInformation.eanProductId = item.product_ean_id;
+                this.selectedProductInfo.eanInformation.itemCode = item.product_item_code;
+                this.selectedProductInfo.eanInformation.ean = item.product_ean;
+                this.selectedProductInfo.eanInformation.unmatchReason = item.unmatchReason;
+                this.selectedProductInfo.eanInformation.duplicateWith = item.duplicate_product_name;
+                this.selectedProductInfo.eanInformation.matchWith = item.matched_method;
+                this.selectedProductInfo.eanInformation.addComment = item.additional_comment;
+                this.selectedProductInfo.eanInformation.webLinkArray = [];
+                if (item.weblink !== '') {
+                    this.selectedProductInfo.eanInformation.webLinkArray = item.weblink.split(',');
+                }
                 this.selectedProductInfo.assignMessage = '';
+                this.selectedProductInfo.refInfo = {};
 
                 this.dialog = true;
                 let formData = new FormData();

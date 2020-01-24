@@ -1462,6 +1462,7 @@ try {
                      formData.append('matchWith', matchWith);
                      axios.post('api/save_reference_ean.php', formData)
                          .then((response) => {
+                             console.log(response)
                              this.resetReferenceObject();
                              this.getProductInfo();
                              this.productMatchDialog = false;
