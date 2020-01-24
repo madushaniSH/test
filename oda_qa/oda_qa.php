@@ -204,7 +204,8 @@ try {
                             label="QA Status"
                             :items="qaStatusItems"
                             v-model="selectedQaStatus"
-                            chips
+                            multiple
+                            small-chips
                             deletable-chips
                     ></v-autocomplete>
                 </v-col>
@@ -216,7 +217,8 @@ try {
                             label="Hunt Type"
                             :items="productHuntItems"
                             v-model="selectedHuntType"
-                            chips
+                            multiple
+                            small-chips
                             deletable-chips
                     ></v-autocomplete>
                 </v-col>
@@ -1054,9 +1056,9 @@ try {
                 facing: 0
             },
             qaStatusItems: ['pending', 'approved', 'disapproved', 'active', 'rejected'],
-            selectedQaStatus: 'approved',
+            selectedQaStatus: ['approved'],
             productHuntItems: ['probe', 'radar', 'reference'],
-            selectedHuntType: '',
+            selectedHuntType: [''],
             productTypeItems: ['brand', 'sku', 'dvc', 'facing'],
             selectedProductType: '',
             productBrandItems: [],
@@ -1530,12 +1532,21 @@ try {
         },
         computed: {
             filteredProducts() {
-                let a = this.productInfo.filter((i) => {
-                    return !this.selectedQaStatus || (i.product_qa_status === this.selectedQaStatus);
+                let array = [];
+                this.selectedQaStatus.forEach(status => {
+                    array.push(this.productInfo.filter((i) => {
+                        return !status || (i.product_qa_status === status);
+                    }));
                 });
-                a = a.filter((i) => {
-                    return !this.selectedHuntType || (i.product_hunt_type === this.selectedHuntType);
+                let a = [];
+                for (row of array) for (e of row) a.push(e);
+
+                this.selectedHuntType.forEach(type => {
+                    a = a.filter((i) => {
+                        return !type || (i.product_hunt_type === type);
+                    });
                 });
+
                 a = a.filter((i) => {
                     return !this.selectedProductType || (i.product_type === this.selectedProductType);
                 });
