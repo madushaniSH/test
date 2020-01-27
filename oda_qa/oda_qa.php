@@ -615,11 +615,12 @@ try {
 
                                         <v-row>
                                             <v-col>
-                                                <v-text-field
+                                                <v-combobox
+                                                        :items="productCommentItems"
                                                         label="Product Comment"
                                                         required
                                                         v-model.trim="selectedProductInfo.productComment"
-                                                ></v-text-field>
+                                                ></v-combobox>
                                             </v-col>
                                         </v-row>
 
@@ -1110,6 +1111,7 @@ try {
             ],
             referenceStatus: ['All', 'Already Matched', 'Pending'],
             selectedReferenceStatus: 'All',
+            productCommentItems: ['Detected as a New SKU', 'Detected as a New Brand', 'Detected as a New DVC']
         },
         methods: {
             getHuntTypeColor(hunt_type) {
