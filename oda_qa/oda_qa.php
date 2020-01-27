@@ -1405,7 +1405,7 @@ try {
                             "Product EAN": this.stringCheck(item.product_ean),
                             "Matched With": this.stringCheck(item.matched_method),
                             "Unmatch Reason": this.stringCheck(item.unmatch_reason),
-                            "DVC, Substitute or Duplicated Product Name": this.stringCheck(item.duplicate_product_name),
+                            "DVC or Substitute or Duplicated Product Name": this.stringCheck(item.duplicate_product_name),
                             "Web Links": this.stringCheck(item.weblink),
                             "EAN Additional Comment": this.stringCheck(item.additional_comment),
                             "EAN QA DateTime": this.stringCheck(item.ean_creation_time),
