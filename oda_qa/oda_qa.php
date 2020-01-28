@@ -834,6 +834,19 @@ try {
                                     <v-row>
                                         <v-col
                                                 cols="12"
+                                                md="12"
+                                        >
+                                            <v-text-field
+                                                    label="Chain w/ Product Name"
+                                                    outlined
+                                                    readonly
+                                                    :value="selectedProductInfo.eanInformation.productName"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col
+                                                cols="12"
                                                 md="6"
                                         >
                                             <v-text-field
@@ -1282,6 +1295,7 @@ try {
                 this.selectedProductInfo.eanInformation.duplicateWith = item.duplicate_product_name;
                 this.selectedProductInfo.eanInformation.matchWith = item.matched_method;
                 this.selectedProductInfo.eanInformation.addComment = item.additional_comment;
+                this.selectedProductInfo.eanInformation.productName = item.chain_name;
                 this.selectedProductInfo.eanInformation.webLinkArray = [];
                 if (item.weblink !== '') {
                     this.selectedProductInfo.eanInformation.webLinkArray = item.weblink.split(',');
@@ -1405,10 +1419,12 @@ try {
                             "Product EAN": this.stringCheck(item.product_ean),
                             "Matched With": this.stringCheck(item.matched_method),
                             "Unmatch Reason": this.stringCheck(item.unmatch_reason),
+                            "Product Chain with Product Name": this.stringCheck(item.chain_name),
                             "DVC or Substitute or Duplicated Product Name": this.stringCheck(item.duplicate_product_name),
                             "Web Links": this.stringCheck(item.weblink),
                             "EAN Additional Comment": this.stringCheck(item.additional_comment),
-                            "EAN QA DateTime": this.stringCheck(item.ean_creation_time),
+                            "EAN Creation QA DateTime": this.stringCheck(item.ean_creation_time),
+                            "EAN Last Modified QA DateTime": this.stringCheck(item.ean_last_mod_datetime),
                             "Product QA Previous Name": this.stringCheck(item.product_qa_previous),
                             "Product QA Previous Alt Name": this.stringCheck(item.product_alt_design_qa_previous),
                             "Product ODA Errors": this.stringCheck(item.oda_error),

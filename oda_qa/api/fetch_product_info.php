@@ -39,12 +39,13 @@ foreach ($ticket_array as $ticket) {
     } else {
         $ticket_query_string .= ' OR pt.ticket_id = "' . $ticket.'"';
     }
+    $ticket_query_string .= ' OR pt.ticket_id IS NULL';
 }
 
 $sql = '
 SELECT p.product_id, pt.ticket_id, pt.ticket_status ,DATE(p.product_creation_time) as "product_creation_time", SUBSTRING_INDEX(p.product_name, \' \', 1 ) AS "brand_name" ,p.product_name, p.product_previous, p.product_qa_previous ,p.product_alt_design_name, p.product_alt_design_previous, p.product_alt_design_qa_previous , p.product_type,
        p.product_qa_status, p.product_hunt_type, p.product_qa_datetime, p.product_oda_datetime, p.product_oda_comment,oq.qa_being_handled, p.product_link ,p2.probe_id, ri.reference_ean, rs.radar_source_link, IF (oq.account_id = :account_id, 1, 0) AS assigned_user, IF(cc.client_category_name IS NULL, "NA", cc.client_category_name) AS "client_category_name", pe.product_ean_id, pe.product_ean, pe.product_item_code, pe.additional_comment, pe.duplicate_product_name, ur.unmatch_reason, pe.matched_method, IF(cc.client_category_name IS NULL, "NA", cc.client_category_name) AS "client_category_name",
-       pe.ean_creation_time, a.account_gid, a.account_first_name, p.product_facing_count
+       pe.ean_creation_time, a.account_gid, a.account_first_name, p.product_facing_count, pe.ean_last_mod_datetime 
     FROM products p
     LEFT OUTER JOIN product_ean pe ON pe.product_id = p.product_id
     LEFT OUTER JOIN unmatch_reasons ur ON ur.unmatch_reason_id = pe.unmatch_reason_id
@@ -57,7 +58,7 @@ SELECT p.product_id, pt.ticket_id, pt.ticket_status ,DATE(p.product_creation_tim
     LEFT OUTER JOIN reference_info ri on rpi.reference_info_id = ri.reference_info_id
     LEFT OUTER JOIN product_client_category pcc ON pcc.product_id = p.product_id
     LEFT OUTER JOIN client_category cc on pcc.client_category_id = cc.client_category_id    
-    INNER JOIN project_tickets pt on 
+    LEFT OUTER JOIN project_tickets pt on 
         p2.probe_ticket_id = pt.project_ticket_system_id
         OR
         pt.project_ticket_system_id = rh.radar_ticket_id
@@ -71,6 +72,12 @@ $stmt->execute(['account_id' => $_SESSION['id']]);
 $product_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 for($i = 0; $i < count($product_array); $i++) {
+    $sql = 'SELECT  p.product_name FROM product_ean pe INNER JOIN products p on pe.chain_product_id = p.product_id WHERE pe.product_id = :product_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['product_id'=>$product_array[$i][product_id]]);
+    $product_info = $stmt->fetch(PDO::FETCH_ASSOC);
+    $product_array[$i]['chain_name'] = $product_info['product_name'];
+
     $sql = 'SELECT a.project_error_name FROM product_qa_errors b INNER JOIN project_errors a ON b.error_id = a.project_error_id WHERE b.product_id = :product_id';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['product_id'=>$product_array[$i][product_id]]);
