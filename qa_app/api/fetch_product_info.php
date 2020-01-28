@@ -39,6 +39,7 @@ foreach ($ticket_array as $ticket) {
     } else {
         $ticket_query_string .= ' OR pt.ticket_id = "' . $ticket.'"';
     }
+    $ticket_query_string .= ' OR pt.ticket_id IS NULL';
 }
 
 $sql = '
@@ -52,7 +53,7 @@ SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_cre
     LEFT OUTER JOIN radar_hunt rh on rs.radar_hunt_id = rh.radar_hunt_id
     LEFT OUTER JOIN ref_product_info rpi on p.product_id = rpi.product_id
     LEFT OUTER JOIN reference_info ri on rpi.reference_info_id = ri.reference_info_id
-    INNER JOIN project_tickets pt on 
+    LEFT OUTER JOIN project_tickets pt on 
         p2.probe_ticket_id = pt.project_ticket_system_id
         OR
         pt.project_ticket_system_id = rh.radar_ticket_id

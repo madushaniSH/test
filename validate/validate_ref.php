@@ -134,7 +134,6 @@ try {
                 >
                     <v-file-input
                             v-model="files"
-                            placeholder="Upload your documents"
                             label="Reference File input"
                     >
                         <template v-slot:selection="{ text }">
@@ -154,7 +153,6 @@ try {
                 >
                     <v-file-input
                             v-model="eanFiles"
-                            placeholder="Coming soon"
                             label="Product EAN File"
                     >
                         <template v-slot:selection="{ text }">
@@ -581,176 +579,384 @@ try {
                     </v-btn>
                 </v-toolbar>
 
+                <v-tabs
+                        v-model="tabs"
+                        background-color="purple"
+                        color="white"
+                >
+                    <v-tab
+                            v-for="item, index in productTabs"
+                            :key="index"
+                    >
+                        {{ item }}
+                        <v-btn
+                                class="filters"
+                               fab dark x-small color="red"
+                               v-if="index > 0"
+                               @click="removeChainProduct(index)"
+                        >
+                            <v-icon dark>mdi-close</v-icon>
+                        </v-btn>
+                    </v-tab>
+                </v-tabs>
                 <v-card-text>
-                    <v-row
-                            align="start"
-                            justify="start"
-                            class="filters"
-                    >
-                        <v-col
-                                cols="6"
-                                md="3"
-                        >
-                            <v-text-field
-                                    label="Item Code"
-                                    v-model.trim="eanReferenceInformation.itemCode"
-                                    counter="20"
+                    <v-tabs-items v-model="tabs">
+                        <v-tab-item>
+                            <v-row
+                                    align="start"
+                                    justify="start"
+                                    class="filters"
                             >
-                            </v-text-field>
-                        </v-col>
-                        <v-col
-                                cols="6"
-                                md="3"
-                        >
-                            <v-text-field
-                                    label="EAN"
-                                    v-model.trim="eanReferenceInformation.selectedEAN"
-                                    counter="20"
+                                <v-col
+                                        cols="6"
+                                        md="3"
+                                >
+                                    <v-text-field
+                                            label="Main Product Name"
+                                            v-model.trim="eanReferenceInformation.productName"
+                                            disabled
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row
+                                    align="start"
+                                    justify="start"
+                                    class="filters"
                             >
-                            </v-text-field>
-                        </v-col>
-                        <v-col
-                                cols="12"
-                                md="3"
-                        >
-                            <v-autocomplete
-                                    label="Matched With"
-                                    :items="matchedWith"
-                                    v-model="eanReferenceInformation.selectedMatchWith"
-                                    clearable
+                                <v-col
+                                        cols="6"
+                                        md="3"
+                                >
+                                    <v-text-field
+                                            label="Item Code"
+                                            v-model.trim="eanReferenceInformation.itemCode"
+                                            counter="20"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                                <v-col
+                                        cols="6"
+                                        md="3"
+                                >
+                                    <v-text-field
+                                            label="EAN"
+                                            v-model.trim="eanReferenceInformation.selectedEAN"
+                                            counter="20"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                                <v-col
+                                        cols="12"
+                                        md="3"
+                                >
+                                    <v-autocomplete
+                                            label="Matched With"
+                                            :items="matchedWith"
+                                            v-model="eanReferenceInformation.selectedMatchWith"
+                                            clearable
+                                    >
+                                    </v-autocomplete>
+                                </v-col>
+                                <v-col
+                                        cols="6"
+                                        md="3"
+                                >
+                                    <v-text-field
+                                            label="Additional Comment"
+                                            v-model.trim="eanReferenceInformation.additonalComment"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                                <!--- Web Link with ability to add links -->
+                            </v-row>
+                            <v-row
+                                    align="start"
+                                    justify="start"
+                                    class="filters"
                             >
-                            </v-autocomplete>
-                        </v-col>
-                        <v-col
-                                cols="6"
-                                md="3"
-                        >
-                            <v-text-field
-                                    label="Additional Comment"
-                                    v-model.trim="eanReferenceInformation.additonalComment"
+                                <v-col
+                                        cols="12"
+                                        md="4"
+                                >
+                                    <v-autocomplete
+                                            label="Unmatch Reason"
+                                            :disabled="eanReferenceInformation.selectedEAN !== ''
+                                            && eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id !== '18'"
+                                            :items="unmatchReasons"
+                                            item-text="unmatch_reason"
+                                            return-object
+                                            v-model="eanReferenceInformation.selectedUnmatchReason"
+                                            clearable
+                                    >
+                                    </v-autocomplete>
+                                </v-col>
+                                <v-col
+                                        cols="6"
+                                        md="8"
+                                        v-if="eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id !== '18'"
+                                >
+                                    <v-text-field
+                                            label="DVC, Substitute or Duplicated Product Name"
+                                            :disabled="!(eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id > 13 && eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id < 18)"
+                                            v-model.trim="eanReferenceInformation.duplicateProductName"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                                <v-col
+                                        cols="6"
+                                        md="2"
+                                        v-else
+                                >
+                                    <v-btn
+                                            outlined
+                                            color="teal"
+                                            @click="openChainDialog()"
+                                            :disabled="currentChainIndex !== -1"
+                                    >
+                                        Chain Products
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                            <section v-for="(item, index) in eanReferenceInformation.weblinks">
+                                <v-row
+                                        align="start"
+                                        justify="start"
+                                        class="filters"
+                                >
+                                    <v-col
+                                            md="12"
+                                    >
+                                        <v-text-field
+                                                :label="`Weblink ${index+1}`"
+                                                v-model.trim="item.link"
+                                        >
+                                            <v-icon
+                                                    slot="prepend-inner"
+                                                    fab dark color="blue"
+                                                    @click="addNewWebLink(eanReferenceInformation.weblinks)"
+                                                    :disabled="item.link === ''"
+                                            >
+                                                mdi-plus
+                                            </v-icon>
+                                            <v-icon
+                                                    slot="append"
+                                                    fab dark color="red" @click="removeWebLink(eanReferenceInformation.weblinks, index)"
+                                                    :disabled="index === 0"
+                                            >
+                                                mdi-minus
+                                            </v-icon>
+                                        </v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </section>
+                        </v-tab-item>
+
+
+                        <v-tab-item v-for="item, index in chainProductInfoArray" :key="index">
+                            <v-row
+                                    align="start"
+                                    justify="start"
+                                    class="filters"
                             >
-                            </v-text-field>
-                        </v-col>
-                    <!--- Web Link with ability to add links -->
-                    </v-row>
-                    <v-row
-                            align="start"
-                            justify="start"
-                            class="filters"
-                    >
-                        <v-col
-                                cols="12"
-                                md="4"
-                        >
-                            <v-autocomplete
-                                    label="Unmatch Reason"
-                                    :disabled="eanReferenceInformation.selectedEAN !== ''"
-                                    :items="unmatchReasons"
-                                    item-text="unmatch_reason"
-                                    return-object
-                                    v-model="eanReferenceInformation.selectedUnmatchReason"
-                                    clearable
+                                <v-col
+                                        cols="6"
+                                        md="3"
+                                >
+                                    <v-text-field
+                                            label="Chain Product Name"
+                                            v-model.trim="item.productName"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row
+                                    align="start"
+                                    justify="start"
+                                    class="filters"
                             >
-                            </v-autocomplete>
-                        </v-col>
-                        <v-col
-                                cols="6"
-                                md="8"
-                        >
-                            <v-text-field
-                                    label="DVC, Substitute or Duplicated Product Name"
-                                    :disabled="!(eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id > 13 && eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id < 18)"
-                                    v-model.trim="eanReferenceInformation.duplicateProductName"
+                                <v-col
+                                        cols="6"
+                                        md="3"
+                                >
+                                    <v-text-field
+                                            label="Item Code"
+                                            v-model.trim="item.itemCode"
+                                            counter="20"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                                <v-col
+                                        cols="6"
+                                        md="3"
+                                >
+                                    <v-text-field
+                                            label="EAN"
+                                            v-model.trim="item.selectedEAN"
+                                            counter="20"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                                <v-col
+                                        cols="12"
+                                        md="3"
+                                >
+                                    <v-autocomplete
+                                            label="Matched With"
+                                            :items="matchedWith"
+                                            v-model="item.selectedMatchWith"
+                                            clearable
+                                    >
+                                    </v-autocomplete>
+                                </v-col>
+                                <v-col
+                                        cols="6"
+                                        md="3"
+                                >
+                                    <v-text-field
+                                            label="Additional Comment"
+                                            v-model.trim="item.additonalComment"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                                <!--- Web Link with ability to add links -->
+                            </v-row>
+                            <v-row
+                                    align="start"
+                                    justify="start"
+                                    class="filters"
                             >
-                            </v-text-field>
-                        </v-col>
-                    </v-row>
-                    <section v-for="(item, index) in eanReferenceInformation.weblinks">
+                                <v-col
+                                        cols="12"
+                                        md="4"
+                                >
+                                    <v-autocomplete
+                                            label="Unmatch Reason"
+                                            :disabled="item.selectedEAN !== '' && item.selectedUnmatchReason.unmatch_reason_id  !== '18'"
+                                            :items="unmatchReasons"
+                                            item-text="unmatch_reason"
+                                            return-object
+                                            v-model="item.selectedUnmatchReason"
+                                            clearable
+                                    >
+                                    </v-autocomplete>
+                                </v-col>
+                                <v-col
+                                        cols="6"
+                                        md="8"
+                                        v-if="item.selectedUnmatchReason.unmatch_reason_id !== '18'"
+                                >
+                                    <v-text-field
+                                            label="DVC, Substitute or Duplicated Product Name"
+                                            :disabled="!(item.selectedUnmatchReason.unmatch_reason_id > 13 && item.selectedUnmatchReason.unmatch_reason_id < 18)"
+                                            v-model.trim="item.duplicateProductName"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                                <v-col
+                                        cols="6"
+                                        md="2"
+                                        v-else
+                                >
+                                    <v-btn
+                                            outlined
+                                            color="teal"
+                                            @click="openChainDialog()"
+                                            :disabled="currentChainIndex !== index"
+                                    >
+                                        Chain Products
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                            <section v-for="(links, index) in item.weblinks">
+                                <v-row
+                                        align="start"
+                                        justify="start"
+                                        class="filters"
+                                >
+                                    <v-col
+                                            md="12"
+                                    >
+                                        <v-text-field
+                                                :label="`Weblink ${index+1}`"
+                                                v-model.trim="links.link"
+                                        >
+                                            <v-icon
+                                                    slot="prepend-inner"
+                                                    fab dark color="blue" @click="addNewWebLink(item.weblinks)"
+                                                    :disabled="item.link === ''"
+                                            >
+                                                mdi-plus
+                                            </v-icon>
+                                            <v-icon
+                                                    slot="append"
+                                                    fab dark color="red" @click="removeWebLink(item.weblinks, index)"
+                                                    :disabled="index === 0"
+                                            >
+                                                mdi-minus
+                                            </v-icon>
+                                        </v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </section>
+                        </v-tab-item>
                         <v-row
                                 align="start"
                                 justify="start"
                                 class="filters"
                         >
-                            <v-col
-                                md="12"
-                            >
-                                <v-text-field
-                                        :label="`Weblink ${index+1}`"
-                                        v-model.trim="item.link"
-                                >
-                                    <v-icon
-                                            slot="prepend-inner"
-                                            fab dark color="blue" @click="addNewWebLink()"
-                                            :disabled="item.link === ''"
-                                    >
-                                        mdi-plus
-                                    </v-icon>
-                                    <v-icon
-                                            slot="append"
-                                            fab dark color="red" @click="removeWebLink(index)"
-                                            :disabled="index === 0"
-                                    >
-                                        mdi-minus
-                                    </v-icon>
-                                </v-text-field>
+                            <v-col cols="6" md="5" v-if="searchObjectArray[0].col !== ''">
+                                <v-text-field label="Product Name" v-model.trim="searchObjectArray[0].value"></v-text-field>
+                                <v-btn color="success" @click="matchData">Search</v-btn>
+                                <v-btn color="primary" class="ma-2" dark
+                                       :disabled="files === null || searchObjectArray[0].value === ''" @click="dialog = true">
+                                    Search Options
+                                </v-btn>
                             </v-col>
                         </v-row>
-                    </section>
-                    <v-row
-                            align="start"
-                            justify="start"
-                            class="filters"
-                    >
-                        <v-col cols="6" md="5" v-if="searchObjectArray[0].col !== ''">
-                            <v-text-field label="Product Name" v-model.trim="searchObjectArray[0].value"></v-text-field>
-                            <v-btn color="success" @click="matchData">Search</v-btn>
-                            <v-btn color="primary" class="ma-2" dark
-                                :disabled="files === null || searchObjectArray[0].value === ''" @click="dialog = true">
-                                Search Options
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col>
-                            <v-data-table
-                                    :headers="headers"
-                                    :items="matchInfo"
-                                    :sort-by="['per']"
-                                    :sort-desc="[true]"
-                                    v-if="matchInfo.length > 0"
-                                    :search="search"
-                            >
-                                <template v-slot:top>
-                                    <v-toolbar flat>
-                                        <v-toolbar-title>Result(s)</v-toolbar-title>
-                                        <v-spacer></v-spacer>
-                                        <v-text-field
-                                                v-model="search"
-                                                label="Product Name"
-                                                single-line
-                                                hide-details
-                                        ></v-text-field>
-                                    </v-toolbar>
-                                </template>
+                        <v-row>
+                            <v-col>
+                                <v-data-table
+                                        :headers="headers"
+                                        :items="matchInfo"
+                                        :sort-by="['per']"
+                                        :sort-desc="[true]"
+                                        v-if="matchInfo.length > 0"
+                                        :search="search"
+                                >
+                                    <template v-slot:top>
+                                        <v-toolbar flat>
+                                            <v-toolbar-title>Result(s)</v-toolbar-title>
+                                            <v-spacer></v-spacer>
+                                            <v-text-field
+                                                    v-model="search"
+                                                    label="Product Name"
+                                                    single-line
+                                                    hide-details
+                                            ></v-text-field>
+                                        </v-toolbar>
+                                    </template>
 
-                                <template v-slot:item.action="{ item }">
-                                    <div class="my-2">
-                                        <v-btn color="success"
-                                               @click="eanReferenceInformation.selectedEAN = item.key"
-                                        >Match</v-btn>
-                                    </div>
-                                </template>
+                                    <template v-slot:item.action="{ item }">
+                                        <div class="my-2">
+                                            <v-btn color="success"
+                                                   @click="eanReferenceInformation.selectedEAN = item.key"
+                                            >Match</v-btn>
+                                        </div>
+                                    </template>
 
 
-                                <template v-slot:item.key="{ item }">
-                                    <v-btn text outlined color="info" :href="upcLink(item.key)" target="_blank">
-                                        <v-icon left>mdi-link</v-icon>
-                                        {{ item.key }}
-                                    </v-btn>
-                                </template>
-                            </v-data-table>
-                        </v-col>
-                    </v-row>
+                                    <template v-slot:item.key="{ item }">
+                                        <v-btn text outlined color="info" :href="upcLink(item.key)" target="_blank">
+                                            <v-icon left>mdi-link</v-icon>
+                                            {{ item.key }}
+                                        </v-btn>
+                                    </template>
+                                </v-data-table>
+                            </v-col>
+                        </v-row
+                        >
+                    </v-tabs-items>
                 </v-card-text>
 
             </v-card>
@@ -982,6 +1188,11 @@ try {
             },
             referenceStatus: ['All', 'Already Matched', 'Pending'],
             selectedReferenceStatus: 'All',
+            chainProductInfoArray: [],
+            currentChainIndex: -1,
+            productTabs: ['Main Product'],
+            orgProductTabs: ['Main Product'],
+            tabs: null,
     },
         methods: {
             getPendingCount(data) {
@@ -1117,14 +1328,18 @@ try {
                 };
                 this.searchObjectArray.push(newObject);
             },
-            addNewWebLink() {
-                const webLinkObject = {
-                    link: ''
-                };
-                this.eanReferenceInformation.weblinks.push(webLinkObject);
+            addNewWebLink(item) {
+                if (item !== undefined) {
+                    const webLinkObject = {
+                        link: ''
+                    };
+                    item.push(webLinkObject);
+                }
             },
-            removeWebLink(index) {
-                this.eanReferenceInformation.weblinks.splice(index, 1);
+            removeWebLink(item, index) {
+                if (item !== undefined) {
+                    item.splice(index, 1);
+                }
             },
             removeSearch(index) {
                 this.searchObjectArray.splice(index, 1);
@@ -1253,12 +1468,16 @@ try {
                             "Product EAN": this.stringCheck(item.product_ean),
                             "Matched With": this.stringCheck(item.matched_method),
                             "Unmatch Reason": this.stringCheck(item.unmatch_reason),
-                            "DVC, Substitute or Duplicated Product name": this.stringCheck(item.duplicate_product_name),
+                            "DVC or Substitute or Duplicated Product name": this.stringCheck(item.duplicate_product_name),
+                            "Product Chain with Product Name": this.stringCheck(item.chain_name),
                             "Web Links": this.stringCheck(item.weblink),
                             "EAN Additional Comment": this.stringCheck(item.additional_comment),
-                            "EAN QA GID": this.stringCheck(item.account_gid),
-                            "EAN QA Name": this.stringCheck(item.account_first_name),
-                            "EAN QA DateTime": this.stringCheck(item.ean_creation_time),
+                            "EAN Creation QA GID": this.stringCheck(item.account_gid),
+                            "EAN Creation QA Name": this.stringCheck(item.account_first_name),
+                            "EAN Creation QA DateTime": this.stringCheck(item.ean_creation_time),
+                            "EAN Last Modified QA GID": this.stringCheck(item.mod_gid),
+                            "EAN Last Modified QA Name": this.stringCheck(item.mod_name),
+                            "EAN Last Modified QA DateTime": this.stringCheck(item.ean_last_mod_datetime),
                             "Product QA Previous Name": this.stringCheck(item.product_qa_previous),
                             "Product QA Previous Alt Name": this.stringCheck(item.product_alt_design_qa_previous),
                             "Product ODA Errors": this.stringCheck(item.oda_error),
@@ -1381,6 +1600,7 @@ try {
                     this.productHistory.hunt_source = "REF EAN " + item.reference_ean;
                 }
                 this.searchObjectArray[0].value = item.product_name;
+                this.eanReferenceInformation.productName = item.product_name;
                 this.eanReferenceInformation.productId = item.product_id;
                 this.assignMessage = '';
                 let formData = new FormData();
@@ -1427,8 +1647,22 @@ try {
                         });
                 }
             },
+            checkChainProducts() {
+                let flag = true;
+                if (this.chainProductInfoArray.length > 0) {
+                    this.chainProductInfoArray.forEach(item => {
+                        let selectedEAN = item.selectedEAN.trim();
+                        let unmatchReasonId= item.selectedUnmatchReason.unmatch_reason_id.trim();
+                        if (item.productName.trim() === '' || (selectedEAN === '' && unmatchReasonId === '')) {
+                            flag = false;
+                        }
+                    });
+                }
+                return flag;
+            },
             saveReference() {
                 this.duplicateWarningDialog = false;
+                let chainCheck = this.checkChainProducts();
                 const productId = this.eanReferenceInformation.productId.trim();
                 const selectedEAN = this.eanReferenceInformation.selectedEAN.trim();
                 let unmatchReasonId= this.eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id.trim();
@@ -1436,7 +1670,7 @@ try {
                 const additionalComment = this.eanReferenceInformation.additonalComment.trim();
                 let matchWith = this.eanReferenceInformation.selectedMatchWith;
                 let duplicateProductName = this.eanReferenceInformation.duplicateProductName.trim();
-                if (selectedEAN !== '') {
+                if (selectedEAN !== '' && unmatchReasonId !== '18') {
                     unmatchReasonId = '';
                     duplicateProductName = '';
                 }
@@ -1449,35 +1683,87 @@ try {
                     webLinks[index] = item.link;
                     index++;
                 });
-                 if (selectedEAN !== '' || unmatchReasonId !== '') {
-                     let formData = new FormData;
-                     formData.append('project_name', this.selectedProject);
-                     formData.append('productId', productId);
-                     formData.append('selectedEAN', selectedEAN);
-                     formData.append('unmatchReasonId', unmatchReasonId);
-                     formData.append('duplicateProductName', duplicateProductName);
-                     formData.append('itemCode', itemCode);
-                     formData.append('additionalComment', additionalComment);
-                     formData.append('webLinks', webLinks);
-                     formData.append('matchWith', matchWith);
-                     axios.post('api/save_reference_ean.php', formData)
-                         .then((response) => {
-                             console.log(response)
-                             this.resetReferenceObject();
-                             this.getProductInfo();
-                             this.productMatchDialog = false;
-                         })
-                         .catch(() => {
-                             location.reload();
-                         });
-                 }
+                if ((selectedEAN !== '' || unmatchReasonId !== '') && chainCheck) {
+                    let formData = new FormData;
+                    formData.append('project_name', this.selectedProject);
+                    formData.append('productId', productId);
+                    formData.append('selectedEAN', selectedEAN);
+                    formData.append('unmatchReasonId', unmatchReasonId);
+                    formData.append('duplicateProductName', duplicateProductName);
+                    formData.append('itemCode', itemCode);
+                    formData.append('additionalComment', additionalComment);
+                    formData.append('webLinks', webLinks);
+                    formData.append('matchWith', matchWith);
+                    axios.post('api/save_reference_ean.php', formData)
+                        .then((response) => {
+                            if (this.chainProductInfoArray.length > 0) {
+                                this.saveProductChain();
+                            }
+                            this.resetReferenceObject();
+                            this.getProductInfo();
+                            this.productMatchDialog = false;
+                        })
+                        .catch(() => {
+                            location.reload();
+                        });
+                }
+            },
+            saveProductChain() {
+                this.overlay = true;
+                this.chainProductInfoArray.forEach(async (item, index) => {
+                    const selectedEAN = item.selectedEAN.trim();
+                    let unmatchReasonId= item.selectedUnmatchReason.unmatch_reason_id.trim();
+                    const itemCode = item.itemCode.trim();
+                    const additionalComment = item.additonalComment.trim();
+                    let matchWith = item.selectedMatchWith;
+                    let duplicateProductName = item.duplicateProductName.trim();
+                    if (selectedEAN !== '' && unmatchReasonId !== '18') {
+                        unmatchReasonId = '';
+                        duplicateProductName = '';
+                    }
+                    if (matchWith === null || matchWith === undefined) {
+                        matchWith = '';
+                    }
+                    let webLinks = [];
+                    item.weblinks.forEach((item, count) => {
+                        webLinks[count] = item.link;
+                        count++;
+                    });
+                    let chainProductName = '';
+                    if (index === 0) {
+                        chainProductName = this.eanReferenceInformation.productName;
+                    } else {
+                        chainProductName = this.chainProductInfoArray[index - 1].productName;
+                    }
+                    if (selectedEAN !== '' || unmatchReasonId !== '') {
+                        let formData = new FormData;
+                        formData.append('project_name', this.selectedProject);
+                        formData.append('productName', item.productName.trim());
+                        formData.append('chainProductName', chainProductName);
+                        formData.append('selectedEAN', selectedEAN);
+                        formData.append('unmatchReasonId', unmatchReasonId);
+                        formData.append('duplicateProductName', duplicateProductName);
+                        formData.append('itemCode', itemCode);
+                        formData.append('additionalComment', additionalComment);
+                        formData.append('webLinks', webLinks);
+                        formData.append('matchWith', matchWith);
+                        let product = await axios.post('api/save_reference_chain.php', formData);
+                    }
+                });
+                this.overlay = false;
             },
             resetReferenceObject() {
                 Object.assign(this.eanReferenceInformation, {});
                 Object.assign(this.eanReferenceInformation, this.refObject);
+                this.resetChainInfo();
+            },
+            resetChainInfo() {
+                this.productTabs = this.orgProductTabs.slice();
+                this.chainProductInfoArray = [];
+                this.currentChainIndex = -1;
             },
             checkForDuplicates() {
-                if (this.eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id !== '') {
+                if (this.eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id !== '' && this.eanReferenceInformation.selectedUnmatchReason.unmatch_reason_id !== '18') {
                     this.saveReference();
                 } else if (this.eanFiles !== null && this.matchedProductEanInfo.length !== 0 &&
                     (this.eanReferenceInformation.selectedEAN !== '' || this.eanReferenceInformation.itemCode !== '')) {
@@ -1510,6 +1796,23 @@ try {
                     }
                 })
             },
+            addChainProduct() {
+                const refObj = {};
+                Object.assign(refObj, this.refObject);
+                refObj.productName = '';
+                this.chainProductInfoArray.push(refObj);
+                this.currentChainIndex === -1 ? this.currentChainIndex = 0 : this.currentChainIndex++;
+                this.productTabs.push(`Product ${this.currentChainIndex+1}`);
+                this.tabs = this.currentChainIndex + 1;
+            },
+            removeChainProduct(index) {
+                this.chainProductInfoArray.splice(index - 1, 1);
+                this.productTabs.splice(index, 1);
+                this.currentChainIndex = this.chainProductInfoArray.length - 1;
+            },
+            openChainDialog() {
+                this.addChainProduct();
+            }
         },
         watch: {
             darkThemeSelected: function (val) {
@@ -1541,7 +1844,7 @@ try {
                         this.overlay = false;
                     });
                 }
-            }
+            },
         },
         created() {
             this.addNewSearch();

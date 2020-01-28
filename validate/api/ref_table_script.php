@@ -31,7 +31,7 @@ for ($i = 0; $i < count($project_info); $i++) {
     $pdo = new PDO($dsn, $user, $pwd);
     $e = '';
     try {
-        $sql = 'alter table product_ean add `matched_method` varchar(500) default  null';
+        $sql = 'ALTER TABLE `product_ean` ADD `chain_product_id` INT NULL DEFAULT NULL AFTER `matched_method`;';
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
 
