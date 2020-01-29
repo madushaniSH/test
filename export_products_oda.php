@@ -176,6 +176,11 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     <i class="fas fa-search"></i>
                     <span>ODA QA</span></a>
             </li>
+             <li class="nav-item">
+                <a class="nav-link" href="validate/validate_ref.php">
+                    <i class="fas fa-barcode"></i>
+                    <span>ODA EAN</span></a>
+            </li>
                 <!-- Divider -->
                 <hr class="sidebar-divider d-none d-md-block">
 
