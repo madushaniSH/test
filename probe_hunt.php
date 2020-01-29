@@ -212,6 +212,13 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     <i class=\"fas fa-book fa-2x\"></i>
                     <span>Reference Hunt</span></a>
             </li>
+
+            
+            <li class=\"nav-item\">
+               <a class=\"nav-link\" href=\"constructor\constructor.php\">
+               <i class=\"fas fa-drafting-compass\"></i>
+               <span>Product Name Constructor</span></a>
+            </li>
             "
             ;
 
@@ -230,6 +237,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     <i class=\"fas fa-search-plus fa-2x\"></i>
                     <span>Quality Assurance</span></a>
             </li>
+
             "
             ;
             }
