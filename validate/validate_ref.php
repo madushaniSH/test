@@ -1193,6 +1193,7 @@ try {
             productTabs: ['Main Product'],
             orgProductTabs: ['Main Product'],
             tabs: null,
+            userPerm: false,
     },
         methods: {
             getPendingCount(data) {
@@ -1752,6 +1753,16 @@ try {
                 });
                 this.overlay = false;
             },
+            fetchUserLevel() {
+                axios.get('api/fetch_user_perm.php')
+                    .then((response) => {
+                        let level = response.data;
+                        this.userPerm = level === 'Admin' || level === 'ODA Supervisor';
+                    })
+                    .catch(() => {
+                        location.reload();
+                    });
+            },
             resetReferenceObject() {
                 Object.assign(this.eanReferenceInformation, {});
                 Object.assign(this.eanReferenceInformation, this.refObject);
@@ -1847,6 +1858,7 @@ try {
             },
         },
         created() {
+            this.fetchUserLevel();
             this.addNewSearch();
             this.getProjectList();
             this.$vuetify.theme.dark = this.darkThemeSelected;

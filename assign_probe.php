@@ -48,6 +48,8 @@ $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 if ($row_count == 0) {
     $this_count = 0;
     $iterations = 0;
+    $now = new DateTime();
+    $datetime = $now->format('Y-m-d H:i:s');
     do {
         if ($_POST['client_cat'] == 0 && $_POST['brand'] == 0) {
             $sql = 'UPDATE probe_queue AS upd INNER JOIN (SELECT t1.probe_key_id FROM probe_queue AS t1 INNER JOIN probe AS t2 ON t2.probe_key_id = t1.probe_key_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.probe_ticket_id = :ticket AND t2.client_category_id IS NULL AND t2.brand_id IS NULL LIMIT 1) AS sel ON sel.probe_key_id = upd.probe_key_id SET upd.account_id = :account_id, upd.probe_being_handled = 1';
