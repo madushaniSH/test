@@ -31,7 +31,47 @@ for ($i = 0; $i < count($project_info); $i++) {
     $pdo = new PDO($dsn, $user, $pwd);
     $e = '';
     try {
-        $sql = 'ALTER TABLE `product_ean` ADD `chain_product_id` INT NULL DEFAULT NULL AFTER `matched_method`;';
+        $sql = 'ALTER TABLE `probe_queue` ADD `assign_datetime` DATETIME NULL DEFAULT NULL AFTER `probe_being_handled`';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        $sql = 'ALTER TABLE `probe` ADD `probe_start_datetime` DATETIME NULL DEFAULT NULL AFTER `probe_added_user_id`';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        $sql = 'ALTER TABLE `radar_queue` ADD `assign_datetime` DATETIME NULL DEFAULT NULL AFTER `account_id`';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        $sql = 'ALTER TABLE `radar_hunt` ADD `radar_start_datetime` DATETIME NULL DEFAULT NULL AFTER `radar_hunter_id`';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        $sql = 'ALTER TABLE `reference_queue` ADD `assign_datetime` DATETIME NULL DEFAULT NULL AFTER `reference_being_handled`';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        $sql = 'ALTER TABLE `reference_info` ADD `ref_start_datetime` DATETIME NULL DEFAULT NULL AFTER `reference_added_user_id`';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        $sql = 'ALTER TABLE `probe_qa_queue` ADD `assign_datetime` DATETIME NULL DEFAULT NULL AFTER `account_id`';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        $sql = 'ALTER TABLE `products` ADD `qa_start_datetime` DATETIME NULL DEFAULT NULL AFTER `product_qa_account_id`';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        $sql = 'ALTER TABLE `products` ADD `oda_start_datetime` DATETIME NULL DEFAULT NULL AFTER `product_oda_account_id`';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        $sql = 'ALTER TABLE `product_ean_queue` ADD `assign_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `product_being_handled`';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        $sql = 'ALTER TABLE `product_ean` ADD `ean_assign_datetime` DATETIME NULL DEFAULT NULL AFTER `account_id`';
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
 
