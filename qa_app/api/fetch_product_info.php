@@ -60,7 +60,7 @@ SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_cre
         OR 
         pt.project_ticket_system_id = ri.reference_ticket_id
 WHERE ('.$ticket_query_string.') OR  (pqq.probe_being_handled = 1 AND pqq.account_id = :account_id)
-ORDER BY pqq.probe_being_handled DESC ,p.product_creation_time DESC';
+ORDER BY pqq.probe_being_handled DESC ,p.product_creation_time';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id' => $_SESSION['id']]);
 $product_array = $stmt->fetchAll(PDO::FETCH_ASSOC);

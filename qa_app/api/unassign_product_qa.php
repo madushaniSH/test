@@ -44,7 +44,7 @@ try {
     $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 
     if ($row_count == 1) {
-        $sql = 'UPDATE probe_qa_queue SET account_id = NULL, probe_being_handled = 0 WHERE account_id = :account_id';
+        $sql = 'UPDATE probe_qa_queue SET account_id = NULL, probe_being_handled = 0, assign_datetime = NULL WHERE account_id = :account_id';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['account_id' => $_SESSION['id']]);
     }

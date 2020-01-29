@@ -49,11 +49,12 @@ if ($row_count == 0) {
     $this_count = 0;
     $iterations = 0;
     $search_term = $_POST['sku_brand_name'];
-
+    $now = new DateTime();
+    $datetime = $now->format('Y-m-d H:i:s');
     do {
-        $sql = 'UPDATE reference_queue AS upd INNER JOIN (SELECT t1.reference_info_key_id FROM reference_queue AS t1 INNER JOIN reference_info AS t2 ON t2.reference_info_id = t1.reference_info_key_id WHERE t1.reference_being_handled = 0 AND t1.account_id IS NULL AND t2.reference_brand = :search_term AND t2.reference_ticket_id = :ticket LIMIT 1 ) AS sel ON sel.reference_info_key_id = upd.reference_info_key_id SET upd.account_id = :account_id, upd.reference_being_handled = 1';
+        $sql = 'UPDATE reference_queue AS upd INNER JOIN (SELECT t1.reference_info_key_id FROM reference_queue AS t1 INNER JOIN reference_info AS t2 ON t2.reference_info_id = t1.reference_info_key_id WHERE t1.reference_being_handled = 0 AND t1.account_id IS NULL AND t2.reference_brand = :search_term AND t2.reference_ticket_id = :ticket LIMIT 1 ) AS sel ON sel.reference_info_key_id = upd.reference_info_key_id SET upd.account_id = :account_id, upd.reference_being_handled = 1, upd.assign_datetime = :datetime';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['account_id'=>$_SESSION['id'], 'search_term'=>$search_term, 'ticket'=>$_POST['ticket']]);
+        $stmt->execute(['account_id'=>$_SESSION['id'], 'search_term'=>$search_term, 'ticket'=>$_POST['ticket'], 'datetime' => $datetime]);
 
         $sql = 'SELECT reference_queue_id FROM reference_queue WHERE account_id = :account_id';
         $stmt = $pdo->prepare($sql);
