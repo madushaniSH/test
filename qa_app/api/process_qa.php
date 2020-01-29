@@ -40,13 +40,14 @@ catch(PDOException $e){
 $warning = '';
 try {
     $product_name = '';
-    $sql = "SELECT products.product_id, products.product_name, products.product_alt_design_name  FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE probe_qa_queue.account_id = :account_id AND probe_qa_queue.probe_being_handled = 1";
+    $sql = "SELECT products.product_id, products.product_name, products.product_alt_design_name, probe_qa_queue.assign_datetime  FROM probe_qa_queue INNER JOIN products ON probe_qa_queue.product_id = products.product_id WHERE probe_qa_queue.account_id = :account_id AND probe_qa_queue.probe_being_handled = 1";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['account_id' => $_SESSION['id']]);
     $product_info = $stmt->fetch(PDO::FETCH_OBJ);
     $row_count = $stmt->rowCount();
     $current_product_name = trim($product_info->product_name);
     $product_name = trim($product_info->product_name);
+    $assign_datetime = $product_info->assign_datetime;
     $search_string = '';
 
 
@@ -140,9 +141,9 @@ try {
         }
 
         $now = new DateTime();
-        $sql = "UPDATE products SET manufacturer_link = :manufacturer_link,product_facing_count = :num_facings ,product_qa_account_id = :account_id, product_qa_datetime = :date_time, product_qa_status = :qa_status WHERE product_id = :product_id";
+        $sql = "UPDATE products SET manufacturer_link = :manufacturer_link,product_facing_count = :num_facings ,product_qa_account_id = :account_id, product_qa_datetime = :date_time, product_qa_status = :qa_status, qa_start_datetime = :datetime WHERE product_id = :product_id";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['manufacturer_link' => $manu_link, 'account_id' => $_SESSION['id'], 'date_time' => $now->format('Y-m-d H:i:s'), 'qa_status' => $_POST['status'], 'product_id' => $product_info->product_id, 'num_facings' => $_POST['num_facings']]);
+        $stmt->execute(['manufacturer_link' => $manu_link, 'account_id' => $_SESSION['id'], 'date_time' => $now->format('Y-m-d H:i:s'), 'qa_status' => $_POST['status'], 'product_id' => $product_info->product_id, 'num_facings' => $_POST['num_facings'], 'datetime' => $assign_datetime]);
 
         if ($_POST['status'] === 'approved') {
             $sql = 'INSERT INTO oda_queue (product_id) VALUES (:product_id)';

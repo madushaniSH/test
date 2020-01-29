@@ -52,21 +52,21 @@ if ($row_count == 0) {
     $datetime = $now->format('Y-m-d H:i:s');
     do {
         if ($_POST['client_cat'] == 0 && $_POST['brand'] == 0) {
-            $sql = 'UPDATE probe_queue AS upd INNER JOIN (SELECT t1.probe_key_id FROM probe_queue AS t1 INNER JOIN probe AS t2 ON t2.probe_key_id = t1.probe_key_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.probe_ticket_id = :ticket AND t2.client_category_id IS NULL AND t2.brand_id IS NULL LIMIT 1) AS sel ON sel.probe_key_id = upd.probe_key_id SET upd.account_id = :account_id, upd.probe_being_handled = 1';
+            $sql = 'UPDATE probe_queue AS upd INNER JOIN (SELECT t1.probe_key_id FROM probe_queue AS t1 INNER JOIN probe AS t2 ON t2.probe_key_id = t1.probe_key_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.probe_ticket_id = :ticket AND t2.client_category_id IS NULL AND t2.brand_id IS NULL LIMIT 1) AS sel ON sel.probe_key_id = upd.probe_key_id SET upd.account_id = :account_id, upd.probe_being_handled = 1, upd.assign_datetime = :datetime';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket']]);
+            $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'datetime' =>$datetime]);
         } else if ($_POST['client_cat'] == 0 && $_POST['brand'] != 0 ) {
-            $sql = 'UPDATE probe_queue AS upd INNER JOIN (SELECT t1.probe_key_id FROM probe_queue AS t1 INNER JOIN probe AS t2 ON t2.probe_key_id = t1.probe_key_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.probe_ticket_id = :ticket AND t2.client_category_id IS NULL AND t2.brand_id = :brand_id LIMIT 1) AS sel ON sel.probe_key_id = upd.probe_key_id SET upd.account_id = :account_id, upd.probe_being_handled = 1';
+            $sql = 'UPDATE probe_queue AS upd INNER JOIN (SELECT t1.probe_key_id FROM probe_queue AS t1 INNER JOIN probe AS t2 ON t2.probe_key_id = t1.probe_key_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.probe_ticket_id = :ticket AND t2.client_category_id IS NULL AND t2.brand_id = :brand_id LIMIT 1) AS sel ON sel.probe_key_id = upd.probe_key_id SET upd.account_id = :account_id, upd.probe_being_handled = 1, upd.assign_datetime = :datetime';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'brand_id'=>(int)$_POST['brand']]);
+            $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'brand_id'=>(int)$_POST['brand'], 'datetime' =>$datetime]);
         } else if ($_POST['brand'] == 0 && $_POST['client_cat'] != 0) {
-            $sql = 'UPDATE probe_queue AS upd INNER JOIN (SELECT t1.probe_key_id FROM probe_queue AS t1 INNER JOIN probe AS t2 ON t2.probe_key_id = t1.probe_key_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.probe_ticket_id = :ticket AND t2.client_category_id = :client_id AND t2.brand_id IS NULL LIMIT 1) AS sel ON sel.probe_key_id = upd.probe_key_id SET upd.account_id = :account_id, upd.probe_being_handled = 1';
+            $sql = 'UPDATE probe_queue AS upd INNER JOIN (SELECT t1.probe_key_id FROM probe_queue AS t1 INNER JOIN probe AS t2 ON t2.probe_key_id = t1.probe_key_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.probe_ticket_id = :ticket AND t2.client_category_id = :client_id AND t2.brand_id IS NULL LIMIT 1) AS sel ON sel.probe_key_id = upd.probe_key_id SET upd.account_id = :account_id, upd.probe_being_handled = 1, upd.assign_datetime = :datetime';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'client_id'=>(int)$_POST['client_cat']]);
+            $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'client_id'=>(int)$_POST['client_cat'], 'datetime' =>$datetime]);
         } else {
-            $sql = 'UPDATE probe_queue AS upd INNER JOIN (SELECT t1.probe_key_id FROM probe_queue AS t1 INNER JOIN probe AS t2 ON t2.probe_key_id = t1.probe_key_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.probe_ticket_id = :ticket AND t2.client_category_id = :client_id AND t2.brand_id = :brand_id LIMIT 1) AS sel ON sel.probe_key_id = upd.probe_key_id SET upd.account_id = :account_id, upd.probe_being_handled = 1';
+            $sql = 'UPDATE probe_queue AS upd INNER JOIN (SELECT t1.probe_key_id FROM probe_queue AS t1 INNER JOIN probe AS t2 ON t2.probe_key_id = t1.probe_key_id WHERE t1.probe_being_handled = 0 AND t1.account_id IS NULL AND t2.probe_ticket_id = :ticket AND t2.client_category_id = :client_id AND t2.brand_id = :brand_id LIMIT 1) AS sel ON sel.probe_key_id = upd.probe_key_id SET upd.account_id = :account_id, upd.probe_being_handled = 1, upd.assign_datetime = :datetime';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'client_id'=>(int)$_POST['client_cat'], 'brand_id'=>(int)$_POST['brand']]);
+            $stmt->execute(['account_id'=>$_SESSION['id'],'ticket'=>$_POST['ticket'], 'client_id'=>(int)$_POST['client_cat'], 'brand_id'=>(int)$_POST['brand'], 'datetime' =>$datetime]);
         
         }
 

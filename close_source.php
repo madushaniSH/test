@@ -38,15 +38,15 @@ catch(PDOException $e){
     exit();
 }
 
-$sql = 'SELECT radar_queue_id,radar_hunt_key_id FROM radar_queue WHERE account_id = :account_id AND radar_being_handled = 1';
+$sql = 'SELECT radar_queue_id,radar_hunt_key_id, assign_datetime FROM radar_queue WHERE account_id = :account_id AND radar_being_handled = 1';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id'=>$_SESSION['id']]);
 $radar_info = $stmt->fetch(PDO::FETCH_OBJ);
 
 $now = new DateTime();
-$sql = 'UPDATE radar_hunt SET radar_hunter_id = :radar_hunter_id, radar_processed_time = :radar_processed_time WHERE radar_hunt_id = :id';
+$sql = 'UPDATE radar_hunt SET radar_hunter_id = :radar_hunter_id, radar_processed_time = :radar_processed_time, radar_start_datetime = :datetime WHERE radar_hunt_id = :id';
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['radar_hunter_id'=>$_SESSION['id'], 'radar_processed_time'=>$now->format('Y-m-d H:i:s'), 'id'=>$radar_info->radar_hunt_key_id]);
+$stmt->execute(['radar_hunter_id'=>$_SESSION['id'], 'radar_processed_time'=>$now->format('Y-m-d H:i:s'), 'id'=>$radar_info->radar_hunt_key_id, 'datetime' => $radar_info->assign_datetime]);
 
 $sql = 'DELETE FROM radar_queue WHERE radar_queue_id = :id';
 $stmt = $pdo->prepare($sql);
