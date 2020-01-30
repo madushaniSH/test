@@ -1291,7 +1291,7 @@ try {
                 this.selectedProductInfo.eanInformation.eanProductId = item.product_ean_id;
                 this.selectedProductInfo.eanInformation.itemCode = item.product_item_code;
                 this.selectedProductInfo.eanInformation.ean = item.product_ean;
-                this.selectedProductInfo.eanInformation.unmatchReason = item.unmatchReason;
+                this.selectedProductInfo.eanInformation.unmatchReason = item.unmatch_reason;
                 this.selectedProductInfo.eanInformation.duplicateWith = item.duplicate_product_name;
                 this.selectedProductInfo.eanInformation.matchWith = item.matched_method;
                 this.selectedProductInfo.eanInformation.addComment = item.additional_comment;
