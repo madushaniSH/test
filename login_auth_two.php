@@ -58,6 +58,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $stmt = $pdo->prepare($sql);
             $stmt->execute(['id'=>$_SESSION['id']]);
 
+
             $sql = 'SELECT designations.designation_name FROM designations
                     INNER JOIN account_designations
                     ON designations.designation_id = account_designations.designation_id
