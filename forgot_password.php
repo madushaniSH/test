@@ -7,10 +7,10 @@
 */
 session_start();
 // Redirects the user if the username was not set
-if(!isset($_SESSION['id'])){
-    header("location: login_auth_one.php");
-    exit();
-}
+// if(!isset($_SESSION['id'])){
+//     header("location: login_auth_one.php");
+//     exit();
+// }
 // Current settings to connect to the user account database
 require('user_db_connection.php');
 // Setting up the DSN

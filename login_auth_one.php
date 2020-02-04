@@ -36,7 +36,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     // check username is empty
     if($_POST['username'] != ''){
         // check password is empty
-        if($_POST['password'] != ''){
+        
           
            // Preparing SQL Statement
         $sql = 'SELECT * FROM accounts WHERE account_email = :username';
@@ -52,7 +52,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $_SESSION['username']=$_POST['username'];
             $_SESSION['id']=$user_information->account_id;
             $_SESSION['username'] = $user_information->account_first_name;
-        
+        if($_POST['password'] != ''){
         //check password match
         if (password_verify($_POST['password'], $user_information->account_password)){
             session_regenerate_id();
@@ -79,20 +79,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
           } 
           ///unmatch username
       }else{
-            $error_message='The username you have entered is incorrect';
+            $error_message='Password cannot left blank field';
             
           }
           ///password empty
       } else{
-            $error_message='Password cannot left blank field';
             
+            $error_message='The username you have entered is incorrect';
           }
           ///username empty
       }else{
-            $error_message='Username cannot left blank field';
+            $error_message='Username and Password cannot left blank field';
           }
            
 }
+
 
 ?>
 
@@ -102,18 +103,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="styles/loginnow.css" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel='icon' href='favicon.ico' type='image/x-icon' />
+    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="styles/login.css"/>
     <script src="scripts/transition.js"></script>
     <title>Data Operations Department Login</title>
 </head>
 <body>
+  
 <svg id="fader"></svg>
-<form action="login_auth_four.php method="POST" novalidate>
-<div class="content">
+<form action="login_auth_one.php" method="POST">
+  <div class="content">
   <div class="img-circular"></div>
   <div class="title">Login</div>
   <input type="text" placeholder="User Name" name="username"/>
@@ -128,9 +130,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     }
 
   ?>
-  <button type="submit" >Log In</button>
-  <a href="forgot_password.php">Forgot Password</a>
-</div>
+  <button type="submit">Log In</button>
+  <a href="forgot_password.php">Forgot Password?</a>
 </form>
+
+</div>
 </body>
 </html>

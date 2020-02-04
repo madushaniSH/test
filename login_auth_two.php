@@ -121,7 +121,7 @@ if(isset($error_message)){
             <button type="submit" class="submit">Log In</button>
         </div>
         <div class="form-group">
-            <a href="forgot_password.php" class="text-center">Forgot Password?</a>
+            <a href="https://www.w3schools.com">Visit W3Schools.com!</a>
         </div>
     </form>
 </div>
