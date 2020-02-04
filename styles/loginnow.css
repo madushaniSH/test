@@ -20,7 +20,8 @@ body {
 
 a {
   color: #BBB;
-  margin-left: 150px;
+  margin-left: 200px;
+
 }
 
 .content:before {
@@ -50,8 +51,8 @@ a {
   bottom: 0;
   left: 0;
   right: 0;
-  width: 540px;
-  height: 540px;
+  width: 600px;
+  height: 600px;
   background-color: rgba(10, 10, 10, 0.5);
   margin: auto auto;
   padding: 40px;
@@ -127,10 +128,10 @@ a {
   background: linear-gradient(to top left,#372277 0%, #c6b3ff 101%);
   /*background-color:#260099;*/
   color: White;
-  border: none;
+  /*border: none;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
-  border-radius: 4px;
+  border-radius: 4px;*/
 }
 .content .social {
   width: 100%;
@@ -161,10 +162,11 @@ a {
  width: 200px;
  height: 200px;
  padding: 1em;
- background-image: url('image/logo.jpg');
+ background-image: url('images/logo.jpg');
  background-size: cover;
  display: block;
  border-radius: 50%;
+ margin-left: 150px;
 /* border-top-left-radius: 100px;
  -webkit-border-top-left-radius: 100px;
  -moz-border-top-left-radius: 100px;

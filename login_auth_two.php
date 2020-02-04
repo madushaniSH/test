@@ -118,7 +118,7 @@ if(isset($error_message)){
 }
 ?>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Log In</button>
+            <button type="submit" class="submit">Log In</button>
         </div>
         <div class="form-group">
             <a href="forgot_password.php" class="text-center">Forgot Password?</a>
