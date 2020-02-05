@@ -79,7 +79,7 @@ body {
   width: 100%;
   height: 40px;
   font-size: 1.2rem;
-  font-family: "Open Sans";
+  /*font-family: "Open Sans";*/
   margin: 5px 0px;
   border: none;
   padding: 10px;
@@ -170,8 +170,9 @@ body {
 
 .alert {
   padding: 10px;
-  background-color: #f44336;
-  color: white;
+  background-color:#cf8491;
+  color:#f02245 ;
+  size: 5px;
 }
 .img-circular{
  width: 160px;
