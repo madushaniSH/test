@@ -71,7 +71,7 @@ body {
   text-align: center;
   font-size:25px;
   font-weight: 600;
-  color:linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1));
+  color:linear-gradient(to right, #f3f0f5, #f4ebfa);
   padding-top: 10px;
   padding-bottom:10px;
 }
@@ -178,7 +178,7 @@ body {
  height: 160px;
  margin-top:-20px;
  padding-top:10em;
- background-image: url('images/2.jpg');
+ background-image: url('images/logo.jpg');
  background-size: cover;
  display: block;
  border-radius: 50%;
