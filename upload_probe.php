@@ -100,7 +100,8 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
     <link href="styles/sb-admin-2.min.css" rel="stylesheet">
     <script src="scripts/transition.js"></script>
     <script src="scripts/validate_upload_probe.js"></script>
-    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="styles/main.css" /> -->
+    <link rel="stylesheet" type="text/css" href="loginnew.css" />
     <link rel="stylesheet" type="text/css" href="styles/probe_upload.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
@@ -116,7 +117,7 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
     <title>Upload Probe</title>
 </head>
 
-<body id="page-top">
+<body>
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->

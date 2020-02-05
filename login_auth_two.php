@@ -58,6 +58,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $stmt = $pdo->prepare($sql);
             $stmt->execute(['id'=>$_SESSION['id']]);
 
+
             $sql = 'SELECT designations.designation_name FROM designations
                     INNER JOIN account_designations
                     ON designations.designation_id = account_designations.designation_id
@@ -117,10 +118,10 @@ if(isset($error_message)){
 }
 ?>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Log In</button>
+            <button type="submit" class="submit">Log In</button>
         </div>
         <div class="form-group">
-            <a href="forgot_password.php" class="text-center">Forgot Password?</a>
+            <a href="https://www.w3schools.com">Visit W3Schools.com!</a>
         </div>
     </form>
 </div>
