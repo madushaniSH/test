@@ -170,17 +170,12 @@ $user_information = $stmt->fetch(PDO::FETCH_OBJ);
                     <span>Quality Assurance</span></a>
             </li>
 
-            <li class=\"nav-item\">
-                <a class=\"nav-link\" href=\"probe_qa.php\">
-                    <i class=\"fas fa-search-plus fa-2x\"></i>
-                    <span>Quality Assurance</span></a>
-            </li>
-          
-            <li class=\"nav-item\">
-                <a class=\"nav-link\" href=\"https://github.com/vuejs/vue-devtools\"  target=\"dashboard.php\">
-                    <i class=\"fas fa-link\"></i>
-                    <span>External Link</span></a>
-            </li>
+                     
+            // <li class=\"nav-item\">
+            //     <a class=\"nav-link\" href=\"https://github.com/vuejs/vue-devtools\"  target=\"dashboard.php\">
+            //         <i class=\"fas fa-link\"></i>
+            //         <span>External Link</span></a>
+            // </li>
  
             "
             ;
