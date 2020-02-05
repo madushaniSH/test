@@ -42,6 +42,11 @@ try {
     $stmt->execute(['product_id' => $_POST['productId']]);
     $row_count = $stmt->rowCount();
 
+    $sql = 'SELECT assign_datetime FROM product_ean_queue WHERE product_id = :product_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['product_id' => $_POST['productId']]);
+    $assign_datetime = $stmt->fetchColumn();
+
     $productId = $_POST['productId'];
     $productEAN = $_POST['selectedEAN'];
     $unmatchReasonId = $_POST['unmatchReasonId'];
@@ -76,8 +81,8 @@ try {
     }
 
     if ($row_count == 0) {
-        $sql = 'INSERT INTO product_ean (product_id, product_ean, unmatch_reason_id, duplicate_product_name, account_id, product_item_code, additional_comment, matched_method)
-            VALUES (:product_id, :product_ean, :unmatch_id, :duplicate_product_name, :account_id, :item_code, :additional_comment, :match_with)';
+        $sql = 'INSERT INTO product_ean (product_id, product_ean, unmatch_reason_id, duplicate_product_name, account_id, product_item_code, additional_comment, matched_method, ean_assign_datetime)
+            VALUES (:product_id, :product_ean, :unmatch_id, :duplicate_product_name, :account_id, :item_code, :additional_comment, :match_with, :assign_datetime)';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(
             [
@@ -88,7 +93,8 @@ try {
                 'account_id' => $_SESSION['id'],
                 'item_code' => $itemCode,
                 'additional_comment' => $additionalComment,
-                'match_with' => $matchWith
+                'match_with' => $matchWith,
+                'assign_datetime' => $assign_datetime
             ]
         );
 

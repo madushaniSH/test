@@ -132,6 +132,7 @@ if ($row_count == 0) {
         `probe_id` varchar(255) NOT NULL,
         `probe_added_date` datetime NOT NULL DEFAULT current_timestamp(),
         `probe_added_user_id` int(11) NOT NULL,
+        `probe_start_datetime` DATETIME NULL DEFAULT NULL,
         `probe_hunter_processed_time` datetime DEFAULT NULL,
         `probe_process_comment` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
         `probe_processed_hunter_id` int(11) DEFAULT NULL,
@@ -152,6 +153,7 @@ if ($row_count == 0) {
         `probe_key_id` int(11) NOT NULL,
         `account_id` int(11) DEFAULT NULL,
         `probe_being_handled` tinyint(1) NOT NULL DEFAULT 0,
+        `assign_datetime` DATETIME NULL DEFAULT NULL,
          CONSTRAINT ' . $dbname . '_ACCOUNT_ID FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`),
          CONSTRAINT ' . $dbname . '_PROBE_KEY_ID FOREIGN KEY (`probe_key_id`) REFERENCES `probe` (`probe_key_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
@@ -173,8 +175,10 @@ if ($row_count == 0) {
         `product_creation_time` datetime NOT NULL DEFAULT current_timestamp(),
         `account_id` int(11) NOT NULL,
         `product_qa_account_id` int(11) DEFAULT NULL,
+        `qa_start_datetime` DATETIME NULL DEFAULT NULL,
         `product_qa_datetime` datetime DEFAULT NULL,
         `product_oda_account_id` int(11) DEFAULT NULL,
+        `oda_start_datetime` DATETIME NULL DEFAULT NULL,
         `product_oda_datetime` datetime DEFAULT NULL,
         `product_oda_comment` varchar(500) DEFAULT NULL,
         `product_qa_status` enum(\'pending\',\'approved\',\'disapproved\', \'active\', \'rejected\') NOT NULL DEFAULT \'pending\',
@@ -208,6 +212,7 @@ if ($row_count == 0) {
         `product_id` int(11) NOT NULL,
         `account_id` int(11) DEFAULT NULL,
         `probe_being_handled` tinyint(1) NOT NULL DEFAULT 0,
+        `assign_datetime` DATETIME NULL DEFAULT NULL,
         CONSTRAINT ' . $dbname . '_PROBE_QA_PRODUCT_ID FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
@@ -258,6 +263,7 @@ if ($row_count == 0) {
         `product_id` int(11) NOT NULL,
         `account_id` int(11) DEFAULT NULL,
         `product_being_handled` tinyint(1) NOT NULL DEFAULT 0,
+        `assign_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         CONSTRAINT ' . $dbname . '_ODA_EAN_QUEUE_PRODUCT_ID FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);
@@ -270,6 +276,7 @@ if ($row_count == 0) {
         `product_item_code` VARCHAR(24) DEFAULT NULL,
         `additional_comment` varchar(500) DEFAULT NULL,
         `account_id` int(11) default null,
+        `ean_assign_datetime` DATETIME NULL DEFAULT NULL,
         `ean_creation_time` datetime NOT NULL DEFAULT current_timestamp(),
         `ean_last_mod_datetime` DATETIME NULL DEFAULT NULL,
         `ean_last_mod_account_id` int(11) default null,
@@ -352,6 +359,7 @@ if ($row_count == 0) {
       `reference_multi_pack` varchar(255) DEFAULT NULL,
       `reference_added_date` datetime NOT NULL DEFAULT current_timestamp(),
       `reference_added_user_id` int(11) NOT NULL,
+        `ref_start_datetime` DATETIME NULL DEFAULT NULL,
       `reference_hunter_processed_time` datetime DEFAULT NULL,
       `reference_process_comment` varchar(255) DEFAULT NULL,
       `reference_process_remark` varchar(255) DEFAULT NULL,
@@ -370,6 +378,7 @@ if ($row_count == 0) {
       `reference_info_key_id` int(11) NOT NULL,
       `account_id` int(11) DEFAULT NULL,
       `reference_being_handled` tinyint(1) NOT NULL DEFAULT 0,
+      `assign_datetime` DATETIME NULL DEFAULT NULL,
        CONSTRAINT ' . $dbname . '_REFERENCE_QUEUE_ACCOUNT_ID FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`),
        CONSTRAINT ' . $dbname . '_REFERENCE_QUEUE_REFERENCE_INFO_KEY_ID FOREIGN KEY (`reference_info_key_id`) REFERENCES `reference_info` (`reference_info_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
@@ -384,6 +393,7 @@ if ($row_count == 0) {
   `radar_added_date` datetime NOT NULL DEFAULT current_timestamp(),
    `radar_ticket_id` int(11) NOT NULL,
    `radar_hunter_id` int(11) DEFAULT NULL,
+   `radar_start_datetime` DATETIME NULL DEFAULT NULL,
   `radar_processed_time` datetime DEFAULT NULL,
    CONSTRAINT ' . $dbname . '_RADAR_ACCOUNT_ID FOREIGN KEY (`radar_added_user_id`) REFERENCES `user_db`.`accounts` (`account_id`),
    CONSTRAINT ' . $dbname . '_RADAR_TICKET_ID FOREIGN KEY (`radar_ticket_id`) REFERENCES `project_tickets` (`project_ticket_system_id`)
@@ -396,6 +406,7 @@ if ($row_count == 0) {
   `radar_hunt_key_id` int(11) NOT NULL,
   `account_id` int(11) DEFAULT NULL,
   `radar_being_handled` tinyint(1) NOT NULL DEFAULT 0,
+  `assign_datetime` DATETIME NULL DEFAULT NULL,
    CONSTRAINT ' . $dbname . '_RADAR_QUEUE_ACCOUNT_ID FOREIGN KEY (`account_id`) REFERENCES `user_db`.`accounts` (`account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
     $stmt = $pdo->prepare($sql);

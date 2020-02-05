@@ -39,7 +39,7 @@ catch(PDOException $e){
 
 $success = '';
 $error = '';
-$sql = 'SELECT probe_key_id FROM probe_queue WHERE account_id = :account_id';
+$sql = 'SELECT probe_key_id, assign_datetime FROM probe_queue WHERE account_id = :account_id';
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id'=>$_SESSION['id']]);
 $probe_info = $stmt->fetch(PDO::FETCH_OBJ);
@@ -60,9 +60,9 @@ if ($row_count == 1) {
     try {
         $now = new DateTime();
 
-        $sql = 'UPDATE probe SET probe_hunter_processed_time = :probe_hunter_proccessed_time, probe_process_comment = :probe_proccess_comment, probe_processed_hunter_id = :probe_processed_hunter_id, probe_process_remark = :probe_process_remark, probe_status_id = :probe_status_id WHERE probe_key_id = :probe_key_id';
+        $sql = 'UPDATE probe SET probe_hunter_processed_time = :probe_hunter_proccessed_time, probe_process_comment = :probe_proccess_comment, probe_processed_hunter_id = :probe_processed_hunter_id, probe_process_remark = :probe_process_remark, probe_status_id = :probe_status_id, probe_start_datetime = :datetime WHERE probe_key_id = :probe_key_id';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['probe_hunter_proccessed_time'=> $now->format('Y-m-d H:i:s'), 'probe_proccess_comment'=>$comment, 'probe_processed_hunter_id'=>$_SESSION['id'], 'probe_process_remark'=>$remark, 'probe_status_id'=>$_POST['status'], 'probe_key_id'=>$probe_info->probe_key_id]);
+        $stmt->execute(['probe_hunter_proccessed_time'=> $now->format('Y-m-d H:i:s'), 'probe_proccess_comment'=>$comment, 'probe_processed_hunter_id'=>$_SESSION['id'], 'probe_process_remark'=>$remark, 'probe_status_id'=>$_POST['status'], 'probe_key_id'=>$probe_info->probe_key_id, 'datetime' => $probe_info->assign_datetime]);
 
         $sql = 'DELETE FROM probe_queue WHERE probe_key_id = :probe_key_id AND account_id = :account_id';
         $stmt = $pdo->prepare($sql);

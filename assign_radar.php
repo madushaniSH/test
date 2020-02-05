@@ -49,10 +49,12 @@ if ($row_count == 0) {
     $this_count = 0;
     $iterations = 0;
     $search_term = $_POST["client_cat"];
+    $now = new DateTime();
+    $datetime = $now->format('Y-m-d H:i:s');
     do {
-        $sql = 'UPDATE radar_queue AS upd INNER JOIN (SELECT t1.radar_hunt_key_id FROM radar_queue AS t1 INNER JOIN radar_hunt AS t2 ON t2.radar_hunt_id = t1.radar_hunt_key_id WHERE t1.radar_being_handled = 0 AND t1.account_id IS NULL AND t2.radar_category = :search_term AND t2.radar_ticket_id = :ticket LIMIT 1 ) AS sel ON sel.radar_hunt_key_id = upd.radar_hunt_key_id SET upd.account_id = :account_id, upd.radar_being_handled = 1';
+        $sql = 'UPDATE radar_queue AS upd INNER JOIN (SELECT t1.radar_hunt_key_id FROM radar_queue AS t1 INNER JOIN radar_hunt AS t2 ON t2.radar_hunt_id = t1.radar_hunt_key_id WHERE t1.radar_being_handled = 0 AND t1.account_id IS NULL AND t2.radar_category = :search_term AND t2.radar_ticket_id = :ticket LIMIT 1 ) AS sel ON sel.radar_hunt_key_id = upd.radar_hunt_key_id SET upd.account_id = :account_id, upd.radar_being_handled = 1, upd.assign_datetime = :datetime';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['account_id'=>$_SESSION['id'],'search_term'=>$search_term, "ticket"=>$_POST['ticket']]);
+        $stmt->execute(['account_id'=>$_SESSION['id'],'search_term'=>$search_term, "ticket"=>$_POST['ticket'], 'datetime' => $datetime]);
 
         $sql = 'SELECT radar_queue_id FROM radar_queue WHERE account_id = :account_id';
         $stmt = $pdo->prepare($sql);

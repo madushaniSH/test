@@ -37,7 +37,7 @@ catch(PDOException $e){
 }
 
 $product_name = '';
-$sql = "SELECT products.product_id, products.product_name, products.product_alt_design_name
+$sql = "SELECT products.product_id, products.product_name, products.product_alt_design_name, oda_queue.assign_datetime
     FROM oda_queue INNER JOIN products ON oda_queue.product_id = products.product_id WHERE oda_queue.account_id = :account_id AND oda_queue.qa_being_handled = 1";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['account_id'=>$_SESSION['id']]);
@@ -45,6 +45,7 @@ $product_info = $stmt->fetch(PDO::FETCH_OBJ);
 $row_count = $stmt->rowCount();
 $current_product_name = trim($product_info->product_name);
 $product_name = trim($product_info->product_name);
+$assign_datetime = $product_info->assign_datetime;
 $search_string = '';
 $product_comment = '';
 if ($_POST['product_comment'] == '' || $_POST['product_comment'] == 'undefined') {
@@ -115,9 +116,9 @@ if ($row_count == 1){
     $now = new DateTime();
     $sql = "UPDATE products 
     SET manufacturer_link = :manufacturer_link,product_facing_count = :num_facings ,
-        product_oda_account_id = :account_id, product_oda_datetime = :date_time, product_qa_status = :qa_status, product_oda_comment = :product_comment WHERE product_id = :product_id";
+        product_oda_account_id = :account_id, product_oda_datetime = :date_time, product_qa_status = :qa_status, product_oda_comment = :product_comment, oda_start_datetime = :datetime WHERE product_id = :product_id";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['manufacturer_link'=>$manu_link,'account_id'=>$_SESSION['id'], 'date_time'=>$now->format('Y-m-d H:i:s'), 'qa_status'=>$_POST['status'], 'product_id'=>$product_info->product_id, 'num_facings'=>$_POST['num_facings'], 'product_comment'=>$product_comment]);
+    $stmt->execute(['manufacturer_link'=>$manu_link,'account_id'=>$_SESSION['id'], 'date_time'=>$now->format('Y-m-d H:i:s'), 'qa_status'=>$_POST['status'], 'product_id'=>$product_info->product_id, 'num_facings'=>$_POST['num_facings'], 'product_comment'=>$product_comment, 'datetime' => $assign_datetime]);
 
     $sql = 'DELETE FROM oda_queue WHERE account_id = :account_id AND qa_being_handled = 1';
     $stmt = $pdo->prepare($sql);
