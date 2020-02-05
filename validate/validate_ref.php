@@ -199,13 +199,48 @@ try {
                     >
                     </v-autocomplete>
                 </v-col>
+                <v-col
+                        cols="12"
+                        md="2"
+
+                >
+                    <v-dialog
+                            ref="dateDialog"
+                            v-model="menu"
+                            :return-value.sync="dates"
+                            persistent
+                            width="290px"
+                    >
+                        <template
+                                v-slot:activator="{ on }"
+                        >
+                            <v-combobox
+                                    v-model="dates"
+                                    label="Product Creation Time"
+                                    v-on="on"
+                                    chips
+                                    small-chips
+                                    multiple
+                                    :disabled="productInfo.length === 0"
+                            ></v-combobox>
+                        </template>
+                        <v-date-picker
+                                v-model="dates"
+                                range scrollable
+                        >
+                            <v-spacer></v-spacer>
+                            <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+                            <v-btn text color="primary" :disabled="dates.length < 2" @click="$refs.dateDialog.save(dates);">OK
+                            </v-btn>
+                        </v-date-picker>
+                    </v-dialog>
+                </v-col>
                 <v-col>
                     <v-layout
                             justify-end
                     >
                         <v-col
                                 cols="6"
-                                md="6"
                         >
                             <v-card
                                     class="mx-auto"
@@ -1194,6 +1229,8 @@ try {
             orgProductTabs: ['Main Product'],
             tabs: null,
             userPerm: false,
+            dates: [],
+            menu: false,
     },
         methods: {
             getPendingCount(data) {
@@ -1876,6 +1913,12 @@ try {
                 let a = this.productInfo.filter((i) => {
                     return !this.selectedQaStatus || (i.product_qa_status === this.selectedQaStatus);
                 });
+
+                if (this.dates.length === 2) {
+                    a = a.filter((i) => {
+                        return !this.dates || (i.product_creation_time >= this.dates[0] && i.product_creation_time <= this.dates[1]);
+                    });
+                }
                 a = a.filter((i) => {
                     return !this.selectedHuntType || (i.product_hunt_type === this.selectedHuntType);
                 });

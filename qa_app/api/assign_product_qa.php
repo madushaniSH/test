@@ -48,9 +48,12 @@ $row_count = $stmt->rowCount(PDO::FETCH_OBJ);
 $already_assigned = 0;
 
 if ($row_count == 0) {
-    $sql = 'UPDATE probe_qa_queue pqq SET pqq.account_id = :account_id, pqq.probe_being_handled = 1 WHERE pqq.product_id = :product_id AND pqq.account_id IS NULL';
+    $now = new DateTime();
+    $datetime = $now->format('Y-m-d H:i:s');
+
+    $sql = 'UPDATE probe_qa_queue pqq SET pqq.account_id = :account_id, pqq.probe_being_handled = 1, pqq.assign_datetime = :datetime WHERE pqq.product_id = :product_id AND pqq.account_id IS NULL';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['account_id' => $_SESSION['id'], 'product_id' => $_POST['product_id']]);
+    $stmt->execute(['account_id' => $_SESSION['id'], 'product_id' => $_POST['product_id'], 'datetime' => $datetime]);
 
     $sql = 'SELECT probe_qa_queue_id FROM probe_qa_queue WHERE account_id = :account_id';
     $stmt = $pdo->prepare($sql);

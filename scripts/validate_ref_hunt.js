@@ -239,6 +239,12 @@ const save_ref_info = (save_product, close_reference) => {
     } else {
         document.getElementById('status_error').innerHTML = '';
     }
+    if (status === '1' && comment === '') {
+        document.getElementById('comment_error').innerHTML = 'Already Added Product Name must be entered';
+        is_valid_form = false;
+    } else {
+        document.getElementById('comment_error').innerHTML = '';
+    }
     if (save_product && status == 2 && is_valid_form) {
         if (product_name === '' && product_type === '' && close_reference && product_count > 0) {
             skip_check = true;
