@@ -105,8 +105,8 @@ try {
 
 
     if ($row_count == 0) {
-        $sql = 'INSERT INTO product_ean (product_id, product_ean, unmatch_reason_id, duplicate_product_name, account_id, product_item_code, additional_comment, matched_method, chain_product_id)
-            VALUES (:product_id, :product_ean, :unmatch_id, :duplicate_product_name, :account_id, :item_code, :additional_comment, :match_with, :chain_id)';
+        $sql = 'INSERT INTO product_ean (product_id, product_ean, unmatch_reason_id, duplicate_product_name, account_id, product_item_code, additional_comment, matched_method)
+            VALUES (:product_id, :product_ean, :unmatch_id, :duplicate_product_name, :account_id, :item_code, :additional_comment, :match_with)';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(
             [
@@ -118,7 +118,7 @@ try {
                 'item_code' => $itemCode,
                 'additional_comment' => $additionalComment,
                 'match_with' => $matchWith,
-                'chain_id' => $chainProductId
+                // 'chain_id' => $chainProductId
             ]
         );
 
@@ -128,8 +128,7 @@ try {
         $sql = 'UPDATE product_ean pe SET pe.product_ean = :product_ean, pe.unmatch_reason_id = :unmatch_id, 
                           pe.duplicate_product_name = :duplicate_product_name, pe.ean_last_mod_account_id = :account_id, 
                           pe.ean_last_mod_datetime = :mod_datetime, pe.product_item_code = :item_code,
-                          pe.additional_comment = :additional_comment , pe.matched_method = :match_with, 
-                          pe.chain_product_id = :chain_id WHERE pe.product_id = :product_id';
+                          pe.additional_comment = :additional_comment , pe.matched_method = :match_with WHERE pe.product_id = :product_id';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(
             [
@@ -141,7 +140,7 @@ try {
                 'item_code' => $itemCode,
                 'additional_comment' => $additionalComment,
                 'match_with' => $matchWith,
-                'chain_id' => $chainProductId,
+                // 'chain_id' => $chainProductId,
                 'product_id' => $productId,
             ]
         );
@@ -159,6 +158,15 @@ try {
             );
         }
     }
+
+    // /edited by shanika-03.03.2020//
+
+    $sql='UPDATE product_ean pe SET pe.chain_product_id=:product_id WHERE pe.product_id=:chain_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt ->execute([
+                      'product_id'=>$productId,
+                      'chain_id'=>$chainProductId]);
+   /// end....//
 } catch (PDOException $e) {
     $warning = $e->getMessage();
 }

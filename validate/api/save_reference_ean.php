@@ -78,6 +78,7 @@ try {
     if ($row_count == 0) {
         $sql = 'INSERT INTO product_ean (product_id, product_ean, unmatch_reason_id, duplicate_product_name, account_id, product_item_code, additional_comment, matched_method)
             VALUES (:product_id, :product_ean, :unmatch_id, :duplicate_product_name, :account_id, :item_code, :additional_comment, :match_with)';
+        
         $stmt = $pdo->prepare($sql);
         $stmt->execute(
             [
@@ -104,7 +105,8 @@ try {
                 );
             }
         }
-
+        
+   
         $sql = 'DELETE FROM product_ean_queue WHERE account_id = :account_id';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['account_id' => $_SESSION['id']]);
