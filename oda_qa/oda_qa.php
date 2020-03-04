@@ -94,6 +94,8 @@ try {
                             v-model="selectedTickets"
                             label="Select"
                             chips
+                            hint="Select a Tickets"
+                            persistent-hint
                             :items="ticketArray"
                             multiple
                     >
@@ -132,6 +134,8 @@ try {
                             v-model="selectedTicketStatus"
                             label="Select"
                             chips
+                            hint="Select a Ticket Status"
+                            persistent-hint
                             :items="ticketStatusOptions"
                             multiple
                     >
@@ -1455,11 +1459,15 @@ try {
                             "Product EAN": this.stringCheck(item.product_ean),
                             "Matched With": this.stringCheck(item.matched_method),
                             "Unmatch Reason": this.stringCheck(item.unmatch_reason),
+                            "DVC or Substitute or Duplicated Product name": this.stringCheck(item.duplicate_product_name),
                             "Product Chain with Product Name": this.stringCheck(item.chain_name),
-                            "DVC or Substitute or Duplicated Product Name": this.stringCheck(item.duplicate_product_name),
                             "Web Links": this.stringCheck(item.weblink),
                             "EAN Additional Comment": this.stringCheck(item.additional_comment),
+                            "EAN Creation QA GID":this.stringCheck(item.ean_gid),
+                            "EAN Creation QA Name":this.stringCheck(item.ean_fname),
                             "EAN Creation QA DateTime": this.stringCheck(item.ean_creation_time),
+                            "EAN Last Modified QA GID": this.stringCheck(item.mod_gid),
+                            "EAN Last Modified QA Name": this.stringCheck(item.mod_name),
                             "EAN Last Modified QA DateTime": this.stringCheck(item.ean_last_mod_datetime),
                             "Product QA Previous Name": this.stringCheck(item.product_qa_previous),
                             "Product QA Previous Alt Name": this.stringCheck(item.product_alt_design_qa_previous),

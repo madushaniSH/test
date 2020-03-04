@@ -45,7 +45,7 @@ foreach ($ticket_array as $ticket) {
 $sql = '
 SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_creation_time", SUBSTRING_INDEX(p.product_name, \' \', 1 ) AS "brand_name" ,p.product_name, p.product_previous, p.product_qa_previous ,p.product_alt_design_name, p.product_alt_design_previous, p.product_alt_design_qa_previous , p.product_type,
        p.product_qa_status, p.product_hunt_type, p.product_qa_datetime, p.product_oda_datetime, p.product_oda_comment,peq.product_being_handled, p.product_link ,p2.probe_id, ri.reference_ean, rs.radar_source_link, IF (peq.account_id = :account_id, 1, 0) AS assigned_user, p.product_facing_count, pe.product_ean_id, pe.product_ean, pe.product_item_code, pe.additional_comment, pe.duplicate_product_name, ur.unmatch_reason, pe.matched_method, IF(cc.client_category_name IS NULL, "NA", cc.client_category_name) AS "client_category_name",
-       pe.ean_creation_time, a.account_gid, a.account_first_name, pe.ean_last_mod_datetime, b.account_first_name as "mod_name", b.account_gid as "mod_gid"
+       pe.ean_creation_time, a.account_gid, a.account_first_name, pe.ean_last_mod_datetime, b.account_first_name as "mod_name", b.account_gid as "mod_gid",ae.account_gid as "ogid",ae.account_first_name as "ofname"
     FROM products p
     LEFT OUTER JOIN product_ean pe ON pe.product_id = p.product_id 
     LEFT OUTER JOIN unmatch_reasons ur ON ur.unmatch_reason_id = pe.unmatch_reason_id
@@ -60,6 +60,7 @@ SELECT p.product_id, pt.ticket_id ,DATE(p.product_creation_time) as "product_cre
     LEFT OUTER JOIN client_category cc on pcc.client_category_id = cc.client_category_id    
     LEFT OUTER JOIN user_db.accounts a ON a.account_id = pe.account_id
     LEFT OUTER JOIN user_db.accounts b ON b.account_id = pe.ean_last_mod_account_id
+    LEFT OUTER JOIN user_db.accounts ae ON ae.account_id = p.product_oda_account_id
     LEFT OUTER JOIN project_tickets pt on 
         p2.probe_ticket_id = pt.project_ticket_system_id
         OR
