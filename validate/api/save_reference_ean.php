@@ -89,7 +89,7 @@ try {
                 'account_id' => $_SESSION['id'],
                 'item_code' => $itemCode,
                 'additional_comment' => $additionalComment,
-                'match_with' => $matchWith
+                'match_with' => $matchWith,
             ]
         );
 
