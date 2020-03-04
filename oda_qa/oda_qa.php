@@ -94,6 +94,8 @@ try {
                             v-model="selectedTickets"
                             label="Select"
                             chips
+                            hint="Select a Ticket"
+                            persistent-hint
                             :items="ticketArray"
                             multiple
                     >
@@ -132,6 +134,8 @@ try {
                             v-model="selectedTicketStatus"
                             label="Select"
                             chips
+                            hint="Select a Ticket Status"
+                            persistent-hint
                             :items="ticketStatusOptions"
                             multiple
                     >
