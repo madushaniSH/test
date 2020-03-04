@@ -94,7 +94,7 @@ try {
                             v-model="selectedTickets"
                             label="Select"
                             chips
-                            hint="Select a Ticket"
+                            hint="Select a Tickets"
                             persistent-hint
                             :items="ticketArray"
                             multiple

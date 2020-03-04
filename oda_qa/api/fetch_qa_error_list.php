@@ -31,4 +31,3 @@ $error_rows = $stmt->fetchAll(PDO::FETCH_OBJ);
 
 $return_arr[] = array("error_rows" => $error_rows);
 echo json_encode($return_arr);
-
