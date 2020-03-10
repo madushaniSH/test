@@ -128,7 +128,7 @@ try {
                 </v-col>
                 <v-col
                         cols="6"
-                        md="3"
+                        md="2"
                 >
                     <v-autocomplete
                             v-model="selectedTicketStatus"
@@ -150,12 +150,46 @@ try {
                         </template>
                     </v-autocomplete>
                 </v-col>
+                <v-col
+                        cols="12"
+                        md="2"
+
+                >
+                    <v-dialog
+                            ref="dateDialog"
+                            v-model="menu"
+                            :return-value.sync="dates"
+                            persistent
+                            width="290px"
+                    >
+                        <template
+                                v-slot:activator="{ on }"
+                        >
+                            <v-combobox
+                                    v-model="dates"
+                                    label="Product Creation Time"
+                                    v-on="on"
+                                    chips
+                                    small-chips
+                                    multiple
+                                    :disabled="productInfo.length === 0"
+                            ></v-combobox>
+                        </template>
+                        <v-date-picker
+                                v-model="dates"
+                                range scrollable
+                        >
+                            <v-spacer></v-spacer>
+                            <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+                            <v-btn text color="primary" :disabled="dates.length < 2" @click="$refs.dateDialog.save(dates);">OK
+                            </v-btn>
+                        </v-date-picker>
+                    </v-dialog>
+                </v-col>
                 <v-layout
                         justify-end
                 >
                     <v-col
-                            cols="6"
-                            md="6"
                     >
                         <v-card
                                 class="mx-auto"
@@ -1128,7 +1162,9 @@ try {
             ],
             referenceStatus: ['All', 'Already Matched', 'Pending'],
             selectedReferenceStatus: 'All',
-            productCommentItems: ['Detected as a New SKU', 'Detected as a New Brand', 'Detected as a New DVC']
+            productCommentItems: ['Detected as a New SKU', 'Detected as a New Brand', 'Detected as a New DVC'],
+            dates: [],
+            menu: false,
         },
         methods: {
             getHuntTypeColor(hunt_type) {
@@ -1295,7 +1331,7 @@ try {
                 this.selectedProductInfo.eanInformation.eanProductId = item.product_ean_id;
                 this.selectedProductInfo.eanInformation.itemCode = item.product_item_code;
                 this.selectedProductInfo.eanInformation.ean = item.product_ean;
-                this.selectedProductInfo.eanInformation.unmatchReason = item.unmatchReason;
+                this.selectedProductInfo.eanInformation.unmatchReason = item.unmatch_reason;
                 this.selectedProductInfo.eanInformation.duplicateWith = item.duplicate_product_name;
                 this.selectedProductInfo.eanInformation.matchWith = item.matched_method;
                 this.selectedProductInfo.eanInformation.addComment = item.additional_comment;
@@ -1566,6 +1602,12 @@ try {
                 });
                 let a = [];
                 for (row of array) for (e of row) a.push(e);
+
+                if (this.dates.length === 2) {
+                    a = a.filter((i) => {
+                        return !this.dates || (i.product_creation_time >= this.dates[0] && i.product_creation_time <= this.dates[1]);
+                    });
+                }
 
                 this.selectedHuntType.forEach(type => {
                     a = a.filter((i) => {

@@ -1,4 +1,5 @@
 <?php
+
 /*
     Filename: forgot_password.php
     Author: Malika Liyanage
@@ -13,6 +14,7 @@ session_start();
 // }
 // Current settings to connect to the user account database
 require('user_db_connection.php');
+
 // Setting up the DSN
 $dsn = 'mysql:host='.$host.';dbname='.$dbname;
 /*
@@ -30,47 +32,76 @@ catch(PDOException $e){
     echo "<p>Connection to database failed<br>Reason: ".$e->getMessage().'</p>';
     exit();
 }
-if(isset($_SESSION['id'])){
-    $display_message = '';
-    $sql = 'SELECT account_id, account_email, account_password_reset_request FROM accounts WHERE account_id = :id';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['id'=>$_SESSION['id']]);
-    $user_information = $stmt->fetch(PDO::FETCH_OBJ);
-    
-    if($user_information->account_password_reset_request == 0){
-        //generat unique string
-        $uniqidStr = md5(uniqid(mt_rand()));;
-        $sql = 'UPDATE accounts SET account_password_reset_request = :reset_value, account_password_reset_identity = :reset_identity WHERE account_id = :id';
-        $stmt = $pdo->prepare($sql);
-        $reset_state = 1;
-        $stmt->execute(['reset_value'=>$reset_state,'id'=>$_SESSION['id'], 'reset_identity'=>$uniqidStr]);
+        use PHPMailer\PHPMailer\PHPMailer;
+        use PHPMailer\PHPMailer\SMTP;
+        use PHPMailer\PHPMailer\Exception;
+        
+        require 'styles/PHPMailer/src/Exception.php';
+        require 'styles/PHPMailer/src/PHPMailer.php';
+        require 'styles/PHPMailer/src/SMTP.php';
 
-        $reset_password_link = 'http://192.168.63.199/gss_data_operations_department/reset_password.php?fp_code='.$uniqidStr;
+        if(isset($_SESSION['id'])){
+            $display_message='';
+            $sql='SELECT account_id,account_email,account_password_reset_request FROM accounts WHERE account_id=:id';
+            $stmt=$pdo->prepare($sql);
+            $stmt-> execute(['id'=>$_SESSION['id']]);
+            $user_information = $stmt ->fetch(PDO::FETCH_OBJ);
 
-        // sending reset password email
-        $to = $user_information->account_email;
-        $subject = "Password Update Request";
-        $mail_content = 'Dear '.$_SESSION['first_name'].',
-        <br/>Recently a request was submitted to reset a password for your account.If this was a mistake, just ignore
-        this email and nothing will happen.
-        <br/>To reset your password visit the following link: <a href="'.$reset_password_link.'">'.$reset_password_link.'</a>
-        <br/><br/>Regards,
-        <br/>GSS Data Operations Department';
-        // set content type header for sending HTML email
-        //set content-type header for sending HTML email
-        $headers = "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        //additional headers
-        $headers .= 'From: Data Operations Department<gssdataoperationsdeparment@gmail.com>' . "\r\n";
-        //send email
-        mail($to,$subject,$mail_content,$headers);
-        $display_message = 'A new reset password link has been sent to your email address '.$user_information->account_email;
-    }else{
-        $display_message = 'Reset Password link has already been sent to your email address';
-    }
-}else{
-    header('location: login_auth_one.php');
-}
+            if($user_information->account_password_reset_request== 0){
+
+                $uniqidstr=md5(uniqid(mt_rand()));;
+                $sql = 'UPDATE accounts SET account_password_reset_request = :reset_value, account_password_reset_identity = :reset_identity WHERE account_id = :id';
+                $stmt = $pdo->prepare($sql);
+                $reset_state =1;
+                $stmt->execute(['reset_value'=>$reset_state,'id'=>$_SESSION['id'],'reset_identity'=>$uniqidstr]);
+                $reset_password_link='http://localhost/gss_data_operations_department/reset_password.php?fp_code='.$uniqidstr;
+                 
+                $emailTo=$user_information->account_email;
+                // Instantiation and passing `true` enables exceptions
+                $mail = new PHPMailer;
+            
+            try {
+                //Server settings
+                // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      
+                $mail->isSMTP();                                            
+                $mail->Host       = 'smtp.gmail.com';                    
+                $mail->SMTPAuth   = true;                                   
+                $mail->Username   = 'gssdataoperationsdepartment@gmail.com';                     
+                $mail->Password   = '0115930027';                               
+                $mail->SMTPSecure = 'tsl';        
+                $mail->Port       = 587;                                    
+            
+                //Recipients
+                $mail->setFrom('gssdataoperationsdepartment@gmail.com');
+                $mail->addAddress($emailTo );     
+                 
+            
+                // Content
+                $mail->isHTML(true);                                  
+                $mail->Subject = "Password Update Request";
+                $mail->Body    = 'Dear '.$_SESSION['first_name'].',
+                <br/>Recently a request was submitted to reset a password for your account.If this was a mistake, just ignore
+                this email and nothing will happen.
+                <br/>To reset your password visit the following link: <a href="'.$reset_password_link.'">'.$reset_password_link.'</a>
+                <br/><br/>Regards,
+                <br/>GSS Data Operations Department';
+               
+            
+                $mail->send();
+                $display_message = 'A new reset password link has been sent to your email address '.$user_information->account_email;
+            } catch (Exception $e) {
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+
+            }else{
+                $display_message = 'Reset Password link has already been sent to your email address';
+            }
+           
+        
+        }else{
+            header('location: login_auth_one.php');
+        }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

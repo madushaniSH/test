@@ -1483,8 +1483,6 @@ try {
                             "Product QA Previous Alt Name": this.stringCheck(item.product_alt_design_qa_previous),
                             "Product ODA Errors": this.stringCheck(item.oda_error),
                             "ODA Comment": this.stringCheck(item.product_oda_comment),
-                            "ODA QA GID": this.stringCheck(item.ogid),
-                            "ODA QA Name": this.stringCheck(item.ofname),
                             "ODA QA DateTime": this.stringCheck(item.product_oda_datetime),
                         }
                     });
@@ -1751,7 +1749,6 @@ try {
                         formData.append('webLinks', webLinks);
                         formData.append('matchWith', matchWith);
                         let product = await axios.post('api/save_reference_chain.php', formData);
-                       
                     }
                 });
                 this.overlay = false;
