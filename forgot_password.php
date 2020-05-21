@@ -54,7 +54,7 @@ catch(PDOException $e){
                 $stmt = $pdo->prepare($sql);
                 $reset_state =1;
                 $stmt->execute(['reset_value'=>$reset_state,'id'=>$_SESSION['id'],'reset_identity'=>$uniqidstr]);
-                $reset_password_link=http:'//www.gssdataoperationsdepartment.space/gssdataoperationsdep/reset_password.php?fp_code='.$uniqidStr;
+                $reset_password_link='http://www.gssdataoperationsdepartment.space/gssdataoperationsdep/reset_password.php?fp_code='.$uniqidStr;
                  
                 $emailTo=$user_information->account_email;
                 // Instantiation and passing `true` enables exceptions
