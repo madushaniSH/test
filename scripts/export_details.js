@@ -267,6 +267,32 @@ function fetch_details() {
                 processData: false
             });
         }
+    
+    if (selected_option == 'radar') {
+            formData.append("ticket", selected_ticket);
+            formData.append("project_name", p_name);
+            jQuery.ajax({
+                url: 'fetch_details_radar.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'JSON',
+                success: function (data) {
+                    JSONToCSVConvertor(data[0].radar_details, p_name + " " + $("#ticket_name option[value='" + selected_ticket + "']").text() + " Radar Details " + start_datetime + " - " + end_datetime, true);
+                    console.log(data[0].warning)
+                    if (data[0].reference_details.length != 0) {
+                        JSONToCSVConvertor(data[0].reference_details, p_name + " " + $("#ticket_name option[value='" + selected_ticket + "']").text() + " Reference Details " + start_datetime + " - " + end_datetime, true);
+                    }
+                },
+                error: function (data) {
+                    alert("Error assigning radar. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        }
+
+
         if (selected_option == 'hunter') {
             formData.append("project_name", p_name);
             jQuery.ajax({
@@ -351,6 +377,22 @@ function show_probe_info() {
     });
     project_select.classList.remove('hide');
     selected_option = 'probe';
+    $("#project_name").select2().val("").trigger("change");
+}
+
+function show_radar_info() {
+    const generate_productivity_section = document.getElementById('generate_productivity_section');
+    generate_productivity_section.classList.add('hide');
+    var project_select = document.getElementById('project_select');
+    document.getElementById('export_button_productivity').classList.add('hide');
+    document.getElementById('export_button_performance_report').classList.add('hide');
+    document.getElementById('export_button_productivity_single').classList.add('hide');
+    $("#project_name").select2({
+        width: '100%',
+        multiple: false
+    });
+    project_select.classList.remove('hide');
+    selected_option = 'radar';
     $("#project_name").select2().val("").trigger("change");
 }
 

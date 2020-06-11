@@ -305,6 +305,9 @@ if($_SESSION['role'] === 'Admin'){
                                     <button class="btn btn-success" onclick="show_probe_info();"><i class="fas fa-search fa-2x"></i> Get Probe Details</button>
                                 </div>
                                 <div class="col">
+                                    <button class="btn btn-success" onclick="show_radar_info();"><i class="fas fa-search fa-2x"></i> Get Radar Details</button>
+                                </div>
+                                <div class="col">
                                     <button class="btn btn-success" onclick="show_hunter_info();"><i class="fas fa-fist-raised fa-2x"></i> Get Hunter Summary</button>
                                 </div>
                             </div>
