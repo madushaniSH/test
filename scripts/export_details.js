@@ -354,6 +354,11 @@ function show_probe_info() {
     $("#project_name").select2().val("").trigger("change");
 }
 
+function show_radar_info(){
+    selected_option='radar';
+    alert(selected_option);
+}
+
 function show_hunter_info() {
     const generate_productivity_section = document.getElementById('generate_productivity_section');
     generate_productivity_section.classList.add('hide');
