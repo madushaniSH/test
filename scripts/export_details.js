@@ -267,6 +267,29 @@ function fetch_details() {
                 processData: false
             });
         }
+         if (selected_option == 'radar') {
+            formData.append("ticket", selected_ticket);
+            formData.append("project_name", p_name);
+            jQuery.ajax({
+                url: 'fetch_details_radar.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'JSON',
+                success: function (data) {
+                    JSONToCSVConvertor(data[0].radar_details, p_name + " " + $("#ticket_name option[value='" + selected_ticket + "']").text() + " Radar Details " + start_datetime + " - " + end_datetime, true);
+                    console.log(data[0].warning)
+                    if (data[0].reference_details.length != 0) {
+                        JSONToCSVConvertor(data[0].reference_details, p_name + " " + $("#ticket_name option[value='" + selected_ticket + "']").text() + " Reference Details " + start_datetime + " - " + end_datetime, true);
+                    }
+                },
+                error: function (data) {
+                    alert("Error assigning radar. Please refresh");
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        }
         if (selected_option == 'hunter') {
             formData.append("project_name", p_name);
             jQuery.ajax({
@@ -356,7 +379,7 @@ function show_probe_info() {
 }
 
 function show_radar_info(){
-    const generate_productivity_section = document.getElementById('generate_productivity_section');
+   const generate_productivity_section = document.getElementById('generate_productivity_section');
     generate_productivity_section.classList.add('hide');
     var project_select = document.getElementById('project_select');
     document.getElementById('export_button_productivity').classList.add('hide');
@@ -367,9 +390,10 @@ function show_radar_info(){
         multiple: false
     });
     project_select.classList.remove('hide');
-    selected_option = 'probe';
+    selected_option = 'radar';
     $("#project_name").select2().val("").trigger("change");
     alert(selected_option);
+   
 }
 
 function show_hunter_info() {
@@ -392,7 +416,7 @@ function show_hunter_info() {
 function validate_project_name() {
     export_button.classList.add('hide');
     filter_picked = false;
-    if (selected_option == 'product' || selected_option == 'probe') {
+    if (selected_option == 'product' || selected_option == 'probe' || selected_option=='radar') {
         var project_name_element = document.getElementById('project_name');
         var project_name = project_name_element.options[project_name_element.selectedIndex].value;
     } else if (selected_option == 'hunter') {
