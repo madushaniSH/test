@@ -356,7 +356,19 @@ function show_probe_info() {
 }
 
 function show_radar_info(){
-    selected_option='radar';
+    const generate_productivity_section = document.getElementById('generate_productivity_section');
+    generate_productivity_section.classList.add('hide');
+    var project_select = document.getElementById('project_select');
+    document.getElementById('export_button_productivity').classList.add('hide');
+    document.getElementById('export_button_performance_report').classList.add('hide');
+    document.getElementById('export_button_productivity_single').classList.add('hide');
+    $("#project_name").select2({
+        width: '100%',
+        multiple: false
+    });
+    project_select.classList.remove('hide');
+    selected_option = 'probe';
+    $("#project_name").select2().val("").trigger("change");
     alert(selected_option);
 }
 
