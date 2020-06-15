@@ -375,7 +375,7 @@ function show_probe_info() {
     project_select.classList.remove('hide');
     selected_option = 'probe';
     $("#project_name").select2().val("").trigger("change");
-    alert(selected_option);
+    
 }
 
 function show_radar_info(){
@@ -392,7 +392,7 @@ function show_radar_info(){
     project_select.classList.remove('hide');
     selected_option = 'radar';
     $("#project_name").select2().val("").trigger("change");
-    alert(selected_option);
+    
    
 }
 
