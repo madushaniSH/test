@@ -44,8 +44,8 @@ catch(PDOException $e){
         ON radar_sources.radar_status_id = probe_status.probe_status_id
         LEFT JOIN user_db.accounts a
         ON radar_hunt.radar_hunter_id = a.account_id
-        WHERE
-        (radar_hunt.radar_processed_time >= :start_datetime AND radar_hunt.radar_processed_time <= :end_datetime) OR radar_hunt.radar_processed_time IS NULL';
+        WHERE radar_sources.radar_source_link IS NOT NULL AND
+        radar_hunt.radar_processed_time >= :start_datetime AND radar_hunt.radar_processed_time <= :end_datetime';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['start_datetime'=>strval($_POST['start_datetime']), 'end_datetime'=>strval($_POST['end_datetime'])]);
     $radar_details = $stmt->fetchAll(PDO::FETCH_ASSOC);
